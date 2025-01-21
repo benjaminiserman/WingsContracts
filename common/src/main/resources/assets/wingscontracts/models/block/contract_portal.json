@@ -1,0 +1,72 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"1": "wingscontracts:block/contract_portal_side",
+		"2": "wingscontracts:block/contract_portal_top",
+		"3": "wingscontracts:block/contract_portal_bottom",
+		"particle": "wingscontracts:block/contract_portal_bottom"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [3, 12, 16],
+			"faces": {
+				"north": {"uv": [13, 4, 16, 16], "texture": "#1"},
+				"east": {"uv": [0, 4, 16, 16], "texture": "#1"},
+				"south": {"uv": [0, 4, 3, 16], "texture": "#1"},
+				"west": {"uv": [0, 4, 16, 16], "texture": "#1"},
+				"up": {"uv": [0, 0, 3, 16], "texture": "#2"},
+				"down": {"uv": [0, 0, 3, 16], "texture": "#3"}
+			}
+		},
+		{
+			"from": [3, 0, 0],
+			"to": [13, 12, 3],
+			"faces": {
+				"north": {"uv": [3, 4, 13, 16], "texture": "#1"},
+				"east": {"uv": [13, 4, 16, 16], "texture": "#1"},
+				"south": {"uv": [3, 4, 13, 16], "texture": "#1"},
+				"west": {"uv": [0, 4, 3, 16], "texture": "#1"},
+				"up": {"uv": [3, 0, 13, 3], "texture": "#2"},
+				"down": {"uv": [3, 13, 13, 16], "texture": "#3"}
+			}
+		},
+		{
+			"from": [3, 0, 3],
+			"to": [13, 8, 13],
+			"faces": {
+				"north": {"uv": [3, 4, 13, 16], "texture": "#1"},
+				"east": {"uv": [3, 4, 13, 16], "texture": "#1"},
+				"south": {"uv": [3, 4, 13, 16], "texture": "#1"},
+				"west": {"uv": [3, 4, 13, 16], "texture": "#1"},
+				"up": {"uv": [3, 3, 13, 13], "texture": "#2"},
+				"down": {"uv": [3, 3, 13, 13], "texture": "#3"}
+			}
+		},
+		{
+			"from": [3, 0, 13],
+			"to": [13, 12, 16],
+			"faces": {
+				"north": {"uv": [3, 4, 13, 16], "texture": "#1"},
+				"east": {"uv": [0, 4, 3, 16], "texture": "#1"},
+				"south": {"uv": [3, 4, 13, 16], "texture": "#1"},
+				"west": {"uv": [13, 4, 16, 16], "texture": "#1"},
+				"up": {"uv": [3, 13, 13, 16], "texture": "#2"},
+				"down": {"uv": [2, 0, 14, 3], "texture": "#3"}
+			}
+		},
+		{
+			"from": [13, 0, 0],
+			"to": [16, 12, 16],
+			"faces": {
+				"north": {"uv": [0, 4, 3, 16], "texture": "#1"},
+				"east": {"uv": [0, 4, 16, 16], "texture": "#1"},
+				"south": {"uv": [13, 4, 16, 16], "texture": "#1"},
+				"west": {"uv": [0, 4, 16, 16], "texture": "#1"},
+				"up": {"uv": [13, 0, 16, 16], "texture": "#2"},
+				"down": {"uv": [13, 0, 16, 16], "texture": "#3"}
+			}
+		}
+	],
+	"display": {}
+}

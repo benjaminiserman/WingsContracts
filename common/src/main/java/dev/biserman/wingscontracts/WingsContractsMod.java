@@ -1,9 +1,11 @@
 package dev.biserman.wingscontracts;
 
-public final class ExampleMod {
+import dev.biserman.wingscontracts.core.registry.ItemRegistry;
+
+public final class WingsContractsMod {
     public static final String MOD_ID = "wingscontracts";
 
     public static void init() {
-        // Write common init code here.
+        ItemRegistry.register();
     }
 }
