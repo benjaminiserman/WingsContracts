@@ -1,0 +1,18 @@
+{
+    "variants": {
+      "facing=north,mode=unlit": { "model": "wingscontracts:block/contract_portal" },
+      "facing=east,mode=unlit":  { "model": "wingscontracts:block/contract_portal", "y":  90 },
+      "facing=south,mode=unlit": { "model": "wingscontracts:block/contract_portal", "y": 180 },
+      "facing=west,mode=unlit":  { "model": "wingscontracts:block/contract_portal", "y": 270 },
+
+      "facing=north,mode=lit": { "model": "wingscontracts:block/contract_portal_lit" },
+      "facing=east,mode=lit":  { "model": "wingscontracts:block/contract_portal_lit", "y":  90 },
+      "facing=south,mode=lit": { "model": "wingscontracts:block/contract_portal_lit", "y": 180 },
+      "facing=west,mode=lit":  { "model": "wingscontracts:block/contract_portal_lit", "y": 270 },
+
+      "facing=north,mode=coin": { "model": "wingscontracts:block/contract_portal_coin" },
+      "facing=east,mode=coin":  { "model": "wingscontracts:block/contract_portal_coin", "y":  90 },
+      "facing=south,mode=coin": { "model": "wingscontracts:block/contract_portal_coin", "y": 180 },
+      "facing=west,mode=coin":  { "model": "wingscontracts:block/contract_portal_coin", "y": 270 }
+    }
+  }

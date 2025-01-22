@@ -1,3 +1,5 @@
 {
-    "item.wingscontracts.contract": "Contract"
+    "item.wingscontracts.contract": "Contract",
+
+    "block.wingscontracts.contract_portal": "Contract Portal"
 }

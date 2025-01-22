@@ -6,6 +6,7 @@
 		"2": "wingscontracts:block/contract_portal_top",
 		"3": "wingscontracts:block/contract_portal_bottom",
 		"4": "wingscontracts:block/contract_portal_side_frame",
+		"5": "wingscontracts:block/portal",
 		"particle": "wingscontracts:block/contract_portal_bottom"
 	},
 	"elements": [
@@ -95,6 +96,16 @@
 				"south": {"uv": [13, 4, 16, 16], "texture": "#1"},
 				"up": {"uv": [13, 13, 16, 16], "texture": "#2"},
 				"down": {"uv": [13, 0, 16, 3], "texture": "#3"}
+			}
+		},
+		{
+			"name": "portal",
+			"from": [3, 9, 2],
+			"to": [13, 10, 13],
+			"light_emission": 11,
+			"rotation": {"angle": 0, "axis": "y", "origin": [6, 9, 7]},
+			"faces": {
+				"up": {"uv": [3, 3, 13, 13], "texture": "#5"}
 			}
 		}
 	]
