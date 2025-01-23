@@ -1,5 +1,7 @@
 package dev.biserman.wingscontracts.core.block;
 
+import java.util.UUID;
+
 import org.jetbrains.annotations.NotNull;
 
 import dev.biserman.wingscontracts.core.block.state.properties.ContractPortalMode;
@@ -55,7 +57,6 @@ public class ContractPortalBlock extends Block {
                 blockPos.getZ(), 
                 contractItem
             );
-            itemEntity.setDefaultPickUpDelay();
             level.addFreshEntity(itemEntity);
         }
         

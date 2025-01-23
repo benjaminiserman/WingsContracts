@@ -1,0 +1,68 @@
+cobble: 8 stacks for 1 cog
+wood: 4 stacks for 1 cog
+paper: 4 stacks for 1 cog
+iron ingot: 2 stacks for 1 cog
+gold ingot: 1 stack for 2 cogs
+diamond: ½ stack for 2 cogs
+copper ingot: 2 stacks for 0.75 cog
+arrow: 2 stacks for 1 cog
+bone: 2 stacks for 1 cog
+bonemeal: 4 stacks for 0.75 cog
+wheat/potato/carrot/beetroot/sweetberries/glowberries: 4 stacks for 1 cog
+chorus flower: ¾ stack for 2 cogs
+popped chorus: 1 stack for 1 cogs
+watermelon/pumpkin block: 2 stacks for 1 cog
+*wool: 4 stacks for 0.75 cog
+*cyan wool: 2 stacks for 1 cog
+*pink wool: 2 stacks for 1 cog
+cactus: 2 stacks for 1 cog
+mushrooms: 2 stacks for 1 cog
+warped fungus / crimson fungus: 2 stacks for 1 cog
+mushroom block: 1 stack for 1 cog
+redstone dust: 2 stacks for 1 cog
+glowstone block: 1 stack for 1 cog
+lapis lazuli: 1 stack for 1 cog
+nether quartz: 1 stack for 1 cog
+snow blocks: 4 stacks for 1 cog
+ender pearl: 1 stack for 1 cog
+clay block: 2 stacks for 1 cog
+nether star: 1 for 4 cogs
+slime: 1 stack for 1 cog
+nether warts: 2 stacks for 1 cog
+blaze rods: 1 stack for 1 cog
+apples: 1 stack for 1 cog
+golden apple: 4 for 1 cog
+golden carrots: ½ stack for 1 cog
+gunpowder: 1 stack for 1 cog
+fermented spider eye: ¾ stack for 1 cog
+string: 2 stacks for 1 cog
+ghast tear: ¼ stack for 1
+glass: 2 stacks for 0.75 cog
+cookie: 4 stacks for 1 cog
+bread: 1 stack for 1
+dried kelp: 4 stacks for 0.75 cog
+mushroom stew: 2 stacks for 1 cog
+potion of healing: 16 for 1 cog
+splash potion of harming: 16 for 1 cog
+potion of fire resistance: 16 for 1 cog
+amethyst shards: 2 stacks for 1 cog
+rotten flesh: 2 stacks for 1 cog
+netherite ingot: 1 for 1 cog
+sea pickle: 2 stacks for 1 cog
+obsidian: ½ stack for 1 cog
+mangrove propagule: 2 stacks for 1 cog
+lava bucket: 16 for 1 cog
+lily of the valley: 1 stack for 1 cog
+prismarine shard: 1 stack for 2 cog
+dirt: 4 stacks for 1 cog
+gravel: 2 stacks for 0.75 cog
+mycelium: 1 stacks for 1 cog
+podzol: 2 stacks for 1 cog
+grass: 2 stacks for 0.75 cog
+phantom membrane: 1 stack for 1 cog
+moss block: 2 stacks for 1 cog
+vines: 2 stacks for 0.75 cog
+saplings: 4 stacks for 1 cog
+iron pickaxe: 32 for 1 cog
+beetroot soup: 1 stack for 1 cog
+seeds: 8 stacks for 1 cog
