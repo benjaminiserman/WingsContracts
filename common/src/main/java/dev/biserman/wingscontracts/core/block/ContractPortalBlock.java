@@ -3,11 +3,16 @@ package dev.biserman.wingscontracts.core.block;
 import org.jetbrains.annotations.NotNull;
 
 import dev.biserman.wingscontracts.core.block.state.properties.ContractPortalMode;
+import dev.biserman.wingscontracts.core.item.ContractItem;
+import dev.biserman.wingscontracts.core.registry.ItemRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -38,9 +43,25 @@ public class ContractPortalBlock extends Block {
 
     @Override
     public InteractionResult use(final BlockState blockState, final Level level, final BlockPos blockPos, final Player player, final InteractionHand interactionHand, final BlockHitResult blockHitResult) { 
+        if (blockState.getValue(MODE) == ContractPortalMode.UNLIT) {
+            var contractTag = new CompoundTag();
+            contractTag.putString("hello", "world");
+            var contractItem = new ItemStack(ItemRegistry.CONTRACT.get());
+            contractItem.setTag(contractTag);
+            ItemEntity itemEntity = new ItemEntity(
+                level, 
+                blockPos.getX(), 
+                blockPos.getY() + 1, 
+                blockPos.getZ(), 
+                contractItem
+            );
+            itemEntity.setDefaultPickUpDelay();
+            level.addFreshEntity(itemEntity);
+        }
+        
         final BlockState endBlockState = blockState.cycle(ContractPortalBlock.MODE);
         level.setBlockAndUpdate(blockPos, endBlockState);
-        return InteractionResult.SUCCESS;
+        return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Override
