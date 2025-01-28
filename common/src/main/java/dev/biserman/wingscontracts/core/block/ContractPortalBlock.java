@@ -1,11 +1,9 @@
 package dev.biserman.wingscontracts.core.block;
 
-import java.util.UUID;
-
 import org.jetbrains.annotations.NotNull;
 
 import dev.biserman.wingscontracts.core.block.state.properties.ContractPortalMode;
-import dev.biserman.wingscontracts.core.item.ContractItem;
+import dev.biserman.wingscontracts.core.registry.BlockEntityRegistry;
 import dev.biserman.wingscontracts.core.registry.ItemRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,10 +16,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -30,7 +32,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class ContractPortalBlock extends Block {
+public class ContractPortalBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty<ContractPortalMode> MODE = EnumProperty.create("mode", ContractPortalMode.class);
 
@@ -98,5 +100,16 @@ public class ContractPortalBlock extends Block {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
         builder.add(MODE);
+    }
+
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState,
+            BlockEntityType<T> blockEntityType) {
+        return level.isClientSide ? null : createTickerHelper(blockEntityType, BlockEntityRegistry.CONTRACT_PORTAL.get(), ContractPortalBlockEntity::serverTick);
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new ContractPortalBlockEntity(blockPos, blockState);
     }
 }
