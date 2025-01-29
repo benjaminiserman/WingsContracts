@@ -41,34 +41,35 @@ public class ContractPortalBlock extends BaseEntityBlock {
     public ContractPortalBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.defaultBlockState()
-            .setValue(FACING, Direction.NORTH)
-            .setValue(MODE, ContractPortalMode.UNLIT));
+                .setValue(FACING, Direction.NORTH)
+                .setValue(MODE, ContractPortalMode.UNLIT));
     }
 
     @Override
-    public InteractionResult use(final BlockState blockState, final Level level, final BlockPos blockPos, final Player player, final InteractionHand interactionHand, final BlockHitResult blockHitResult) { 
+    public InteractionResult use(final BlockState blockState, final Level level, final BlockPos blockPos,
+            final Player player, final InteractionHand interactionHand, final BlockHitResult blockHitResult) {
         if (blockState.getValue(MODE) == ContractPortalMode.UNLIT) {
             var contractTag = new CompoundTag();
             contractTag.putString("hello", "world");
             var contractItem = new ItemStack(ItemRegistry.CONTRACT.get());
             contractItem.setTag(contractTag);
             ItemEntity itemEntity = new ItemEntity(
-                level, 
-                blockPos.getX(), 
-                blockPos.getY() + 1, 
-                blockPos.getZ(), 
-                contractItem
-            );
+                    level,
+                    blockPos.getX(),
+                    blockPos.getY() + 1,
+                    blockPos.getZ(),
+                    contractItem);
             level.addFreshEntity(itemEntity);
         }
-        
+
         final BlockState endBlockState = blockState.cycle(ContractPortalBlock.MODE);
         level.setBlockAndUpdate(blockPos, endBlockState);
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Override
-    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos,
+            CollisionContext collisionContext) {
         return SHAPE;
     }
 
@@ -87,14 +88,14 @@ public class ContractPortalBlock extends BaseEntityBlock {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
-	public static int getLightLevel(BlockState state) {
-		return switch (state.getValue(MODE)) {
+    public static int getLightLevel(BlockState state) {
+        return switch (state.getValue(MODE)) {
             case UNLIT -> 0;
             case LIT -> 11;
             case COIN -> 15;
             default -> 0;
         };
-	}
+    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -105,7 +106,9 @@ public class ContractPortalBlock extends BaseEntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState,
             BlockEntityType<T> blockEntityType) {
-        return level.isClientSide ? null : createTickerHelper(blockEntityType, BlockEntityRegistry.CONTRACT_PORTAL.get(), ContractPortalBlockEntity::serverTick);
+        return level.isClientSide ? null
+                : createTickerHelper(blockEntityType, BlockEntityRegistry.CONTRACT_PORTAL.get(),
+                        ContractPortalBlockEntity::serverTick);
     }
 
     @Override

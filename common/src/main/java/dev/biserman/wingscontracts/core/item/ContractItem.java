@@ -14,17 +14,16 @@ public class ContractItem extends Item {
     }
 
     public static ItemStack createContract(
-        final String contractTargetItem,
-        final String contractTargetTag,
-        final String contractRewardItem,
-        final int contractUnitPrice,
-        final int countPerUnit,
-        final int levelOneQuantity,
-        final float quantityGrowthFactor,
-        final int startLevel,
-        final int maxLevel,
-        final String author
-    ) {
+            final String contractTargetItem,
+            final String contractTargetTag,
+            final String contractRewardItem,
+            final int contractUnitPrice,
+            final int countPerUnit,
+            final int levelOneQuantity,
+            final float quantityGrowthFactor,
+            final int startLevel,
+            final int maxLevel,
+            final String author) {
         var contractTag = new CompoundTag();
         contractTag.putString("contractTargetItem", contractTargetItem);
         contractTag.putString("contractTargetTag", contractTargetTag);
@@ -35,7 +34,8 @@ public class ContractItem extends Item {
         contractTag.putFloat("quantityGrowthFactor", quantityGrowthFactor);
         contractTag.putInt("startLevel", startLevel);
         contractTag.putInt("level", startLevel);
-        contractTag.putInt("quantityDemanded", calculateQuantityDemanded(levelOneQuantity, startLevel, quantityGrowthFactor));
+        contractTag.putInt("quantityDemanded",
+                calculateQuantityDemanded(levelOneQuantity, startLevel, quantityGrowthFactor));
         contractTag.putLong("startHour", System.currentTimeMillis());
         contractTag.putLong("lastCycleStart", System.currentTimeMillis());
         contractTag.putLong("contractPeriod", 1000L * 60 * 60 * 24 * 7);
@@ -49,7 +49,7 @@ public class ContractItem extends Item {
     }
 
     public static int calculateQuantityDemanded(int levelOneQuantity, int startLevel, float quantityGrowthFactor) {
-        return levelOneQuantity + (int)(levelOneQuantity * (startLevel - 1) * quantityGrowthFactor);
+        return levelOneQuantity + (int) (levelOneQuantity * (startLevel - 1) * quantityGrowthFactor);
     }
 
     public static void tick(ItemStack contract) {
@@ -58,7 +58,7 @@ public class ContractItem extends Item {
 
         var lastCycleStart = contractTag.getLong("timeUpdated");
         var contractPeriod = contractTag.getLong("contractPeriod");
-        var cyclesPassed = (int)((currentTime - lastCycleStart) / contractPeriod);
+        var cyclesPassed = (int) ((currentTime - lastCycleStart) / contractPeriod);
         if (cyclesPassed > 0) {
             update(contract, cyclesPassed);
         }
@@ -79,10 +79,9 @@ public class ContractItem extends Item {
         }
 
         contractTag.putInt("quantityDemanded", calculateQuantityDemanded(
-            contractTag.getInt("levelOneQuantity"), 
-            contractTag.getInt("startLevel"), 
-            contractTag.getFloat("quantityGrowthFactor")
-        ));
+                contractTag.getInt("levelOneQuantity"),
+                contractTag.getInt("startLevel"),
+                contractTag.getFloat("quantityGrowthFactor")));
 
         contractTag.putInt("quantityFulfilled", 0);
     }
@@ -99,9 +98,9 @@ public class ContractItem extends Item {
     }
 
     public static int remainingQuantity(ItemStack contract) {
-        var quantityDemanded = contract.getTagElement("contractInfo").getInt("quantityDemanded");        
+        var quantityDemanded = contract.getTagElement("contractInfo").getInt("quantityDemanded");
         var quantityFulfilled = contract.getTagElement("contractInfo").getInt("quantityFulfilled");
-        
+
         return quantityDemanded - quantityFulfilled;
     }
 

@@ -32,10 +32,9 @@ public class ContractPortalBlockEntity extends BaseContainerBlockEntity implemen
         this.cooldownTime = -1;
     }
 
-     protected Component getDefaultName() {
-      return Component.translatable("container.wingscontracts.contractportal");
-   }
-
+    protected Component getDefaultName() {
+        return Component.translatable("container.wingscontracts.contractportal");
+    }
 
     @Override
     public void load(CompoundTag compoundTag) {
@@ -221,9 +220,11 @@ public class ContractPortalBlockEntity extends BaseContainerBlockEntity implemen
 
     public void clearContent() {
         this.getItems().clear();
-    }public ItemStack removeItemNoUpdate(int i) {
-      return ContainerHelper.takeItem(this.getItems(), i);
-   }
+    }
+
+    public ItemStack removeItemNoUpdate(int i) {
+        return ContainerHelper.takeItem(this.getItems(), i);
+    }
 
     @Nullable
     public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
@@ -235,6 +236,6 @@ public class ContractPortalBlockEntity extends BaseContainerBlockEntity implemen
     }
 
     protected AbstractContainerMenu createMenu(int i, Inventory inventory) {
-      return null;
-   }
+        return null;
+    }
 }
