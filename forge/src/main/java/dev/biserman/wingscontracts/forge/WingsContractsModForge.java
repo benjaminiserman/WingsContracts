@@ -9,8 +9,9 @@ import dev.biserman.wingscontracts.WingsContractsMod;
 @Mod(WingsContractsMod.MOD_ID)
 public final class WingsContractsModForge {
     public WingsContractsModForge() {
+        var modBus = FMLJavaModLoadingContext.get().getModEventBus();
         // Submit our event bus to let Architectury API register our content on the right time.
-        EventBuses.registerModEventBus(WingsContractsMod.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
+        EventBuses.registerModEventBus(WingsContractsMod.MOD_ID, modBus);
 
         // Run our common setup.
         WingsContractsMod.init();

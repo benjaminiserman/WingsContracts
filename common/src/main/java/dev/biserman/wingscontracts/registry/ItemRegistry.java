@@ -1,9 +1,9 @@
-package dev.biserman.wingscontracts.core.registry;
+package dev.biserman.wingscontracts.registry;
 
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.biserman.wingscontracts.WingsContractsMod;
-import dev.biserman.wingscontracts.core.item.ContractItem;
+import dev.biserman.wingscontracts.item.ContractItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;

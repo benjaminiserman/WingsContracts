@@ -1,13 +1,14 @@
-package dev.biserman.wingscontracts.core.block;
+package dev.biserman.wingscontracts.block;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.Nullable;
 
-import dev.biserman.wingscontracts.core.registry.BlockEntityRegistry;
+import dev.biserman.wingscontracts.registry.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -24,11 +25,11 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class ContractPortalBlockEntity extends BaseContainerBlockEntity implements Hopper {
     private int cooldownTime;
-    private NonNullList<ItemStack> items;
+    public NonNullList<ItemStack> items;
 
     public ContractPortalBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState);
-        this.items = NonNullList.withSize(54, ItemStack.EMPTY);
+        this.items = NonNullList.withSize(27, ItemStack.EMPTY);
         this.cooldownTime = -1;
     }
 
@@ -114,7 +115,7 @@ public class ContractPortalBlockEntity extends BaseContainerBlockEntity implemen
     public static ItemStack addItem(ContractPortalBlockEntity portal, ItemStack itemStack) {
         int size = portal.getContainerSize();
 
-        for (int i = 0; i < size && !itemStack.isEmpty(); ++i) {
+        for (int i = 1; i < size && !itemStack.isEmpty(); ++i) {
             itemStack = tryMoveInItem(portal, itemStack, i);
         }
 
@@ -211,11 +212,19 @@ public class ContractPortalBlockEntity extends BaseContainerBlockEntity implemen
     }
 
     public ItemStack getItem(int i) {
-        return (ItemStack) this.getItems().get(i);
+        return this.getItems().get(i);
     }
 
     public boolean stillValid(Player player) {
         return Container.stillValidBlockEntity(this, player);
+    }
+
+    public ItemStack getContractSlot() {
+        return getItem(0);
+    }
+
+    public void setContractSlot(ItemStack itemStack) {
+        setItem(0, itemStack);
     }
 
     public void clearContent() {
@@ -237,5 +246,33 @@ public class ContractPortalBlockEntity extends BaseContainerBlockEntity implemen
 
     protected AbstractContainerMenu createMenu(int i, Inventory inventory) {
         return null;
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        var tag = new CompoundTag();
+        var listTag = new ListTag();
+
+        var firstItem = items.get(0);
+        if (!firstItem.isEmpty()) {
+            var itemTag = new CompoundTag();
+            itemTag.putByte("Slot", (byte) 0);
+            firstItem.save(itemTag);
+            listTag.add(itemTag);
+        }
+
+        if (!listTag.isEmpty()) {
+            tag.put("Items", listTag);
+        }
+
+        return tag;
+    }
+
+    @Override
+    public boolean canTakeItem(Container container, int i, ItemStack itemStack) {
+        if (i == 0) {
+            return false;
+        }
+        return super.canTakeItem(container, i, itemStack);
     }
 }

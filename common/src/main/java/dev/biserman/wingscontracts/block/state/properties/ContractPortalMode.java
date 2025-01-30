@@ -1,4 +1,4 @@
-package dev.biserman.wingscontracts.core.block.state.properties;
+package dev.biserman.wingscontracts.block.state.properties;
 
 import net.minecraft.util.StringRepresentable;
 
