@@ -50,7 +50,7 @@ public class ContractPortalBlock extends BaseEntityBlock {
     public InteractionResult use(final BlockState blockState, final Level level, final BlockPos blockPos,
             final Player player, final InteractionHand interactionHand, final BlockHitResult blockHitResult) {
         if (level.isClientSide) {
-            return InteractionResult.PASS;
+            return InteractionResult.SUCCESS;
         }
 
         var blockEntity = level.getBlockEntity(blockPos);
@@ -75,32 +75,15 @@ public class ContractPortalBlock extends BaseEntityBlock {
         }
 
         level.gameEvent(player, GameEvent.BLOCK_CHANGE, blockPos);
+        level.sendBlockUpdated(blockPos, blockState, blockState, UPDATE_ALL);
         return InteractionResult.SUCCESS;
-
-        // if (blockState.getValue(MODE) == ContractPortalMode.UNLIT) {
-        // var contractTag = new CompoundTag();
-        // contractTag.putString("hello", "world");
-        // var contractItem = new ItemStack(ItemRegistry.CONTRACT.get());
-        // contractItem.setTag(contractTag);
-        // ItemEntity itemEntity = new ItemEntity(
-        // level,
-        // blockPos.getX(),
-        // blockPos.getY() + 1,
-        // blockPos.getZ(),
-        // contractItem);
-        // level.addFreshEntity(itemEntity);
-        // }
-
-        // final BlockState endBlockState = blockState.cycle(ContractPortalBlock.MODE);
-        // level.setBlockAndUpdate(blockPos, endBlockState);
-        // return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     public void spawnItem(ItemStack itemStack, Level level, BlockPos blockPos) {
-        ItemEntity itemEntity = new ItemEntity(level, blockPos.getX(), blockPos.getY() + 0.75, blockPos.getZ(), itemStack);
-        var magnitude = 0;
+        ItemEntity itemEntity = new ItemEntity(level, blockPos.getX() + 0.5, blockPos.getY() + 0.75, blockPos.getZ() + 0.5, itemStack);
+        var magnitude = 0.15;
         var radians = level.random.nextDouble() * Math.PI * 2;
-        itemEntity.setDeltaMovement(Math.sin(radians) * magnitude, magnitude, Math.cos(radians) * magnitude);
+        itemEntity.setDeltaMovement(Math.sin(radians) * magnitude, magnitude * 3, Math.cos(radians) * magnitude);
         level.addFreshEntity(itemEntity);
     }
 

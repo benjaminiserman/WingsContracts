@@ -4,12 +4,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.Nullable;
 
+import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode;
 import dev.biserman.wingscontracts.registry.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.EntitySelector;
@@ -60,19 +64,27 @@ public class ContractPortalBlockEntity extends BaseContainerBlockEntity implemen
     public static boolean serverTick(Level level, BlockPos blockPos, BlockState blockState,
             ContractPortalBlockEntity contractPortalBlockEntity) {
         --contractPortalBlockEntity.cooldownTime;
-        if (!contractPortalBlockEntity.isOnCooldown()) {
-            contractPortalBlockEntity.setCooldown(0);
-            if (!contractPortalBlockEntity.inventoryFull()) {
 
-                if (suckInItems(level, contractPortalBlockEntity)) {
-                    contractPortalBlockEntity.setCooldown(10);
-                    setChanged(level, blockPos, blockState);
-                    return true;
-                }
-            }
+        if (contractPortalBlockEntity.getBlockState().getValue(ContractPortalBlock.MODE) != ContractPortalMode.LIT) {
+            return false;
         }
 
-        return false;
+        if (contractPortalBlockEntity.isOnCooldown()) {
+            return false;
+        }
+        contractPortalBlockEntity.setCooldown(0);
+
+        if (contractPortalBlockEntity.inventoryFull()) {
+            return false;
+        }
+
+        if (!suckInItems(level, contractPortalBlockEntity)) {
+            return false;
+        }
+
+        contractPortalBlockEntity.setCooldown(10);
+        setChanged(level, blockPos, blockState);
+        return true;
     }
 
     public static List<ItemEntity> getItemsAtAndAbove(Level level, ContractPortalBlockEntity portal) {
@@ -250,29 +262,16 @@ public class ContractPortalBlockEntity extends BaseContainerBlockEntity implemen
 
     @Override
     public CompoundTag getUpdateTag() {
-        var tag = new CompoundTag();
-        var listTag = new ListTag();
+        return this.saveWithoutMetadata();
+    }
 
-        var firstItem = items.get(0);
-        if (!firstItem.isEmpty()) {
-            var itemTag = new CompoundTag();
-            itemTag.putByte("Slot", (byte) 0);
-            firstItem.save(itemTag);
-            listTag.add(itemTag);
-        }
-
-        if (!listTag.isEmpty()) {
-            tag.put("Items", listTag);
-        }
-
-        return tag;
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
     public boolean canTakeItem(Container container, int i, ItemStack itemStack) {
-        if (i == 0) {
-            return false;
-        }
-        return super.canTakeItem(container, i, itemStack);
+        return false;
     }
 }

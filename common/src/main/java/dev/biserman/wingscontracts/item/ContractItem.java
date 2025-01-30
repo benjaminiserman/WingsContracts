@@ -179,7 +179,7 @@ public class ContractItem extends Item {
         }
 
         var targetItem = contractTag.getString("targetItem");
-        return new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(targetItem)));
+        return new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(targetItem)));
     }
 
     public static int consume(ItemStack contract, ItemStack itemStack) {
