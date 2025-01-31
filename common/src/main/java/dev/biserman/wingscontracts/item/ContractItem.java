@@ -3,6 +3,7 @@ package dev.biserman.wingscontracts.item;
 import java.util.List;
 
 import dev.biserman.wingscontracts.registry.ItemRegistry;
+import dev.biserman.wingscontracts.util.ContractKey;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -25,10 +26,10 @@ public class ContractItem extends Item {
     // e.g.: Contract de Niveau 10 des Diamants de winggar
     public Component getName(ItemStack itemStack) {
         var contractTag = getBaseTag(itemStack);
-        var author = contractTag.getString("author");
-        var level = contractTag.getInt("level");
-        var targetItem = contractTag.getString("targetItem");
-        var targetTag = contractTag.getString("targetTag");
+        var author = contractTag.getString(ContractKey.author);
+        var level = contractTag.getInt(ContractKey.level);
+        var targetItem = contractTag.getString(ContractKey.targetItem);
+        var targetTag = contractTag.getString(ContractKey.targetTag);
 
         var stringBuilder = new StringBuilder();
         if (author != null) {
@@ -89,36 +90,36 @@ public class ContractItem extends Item {
         var contractTag = new CompoundTag();
 
         if (rewardItem != null) {
-            contractTag.putString("targetItem", targetItem);
+            contractTag.putString(ContractKey.targetItem, targetItem);
         }
 
         if (targetTag != null) {
-            contractTag.putString("targetTag", targetTag);
+            contractTag.putString(ContractKey.targetTag, targetTag);
         }
 
-        contractTag.putString("rewardItem", rewardItem);
-        contractTag.putInt("unitPrice", unitPrice);
-        contractTag.putInt("countPerUnit", countPerUnit);
-        contractTag.putInt("levelOneQuantity", levelOneQuantity);
-        contractTag.putFloat("quantityGrowthFactor", quantityGrowthFactor);
-        contractTag.putInt("startLevel", startLevel);
-        contractTag.putInt("level", startLevel);
-        contractTag.putInt("quantityDemanded",
+        contractTag.putString(ContractKey.rewardItem, rewardItem);
+        contractTag.putInt(ContractKey.unitPrice, unitPrice);
+        contractTag.putInt(ContractKey.countPerUnit, countPerUnit);
+        contractTag.putInt(ContractKey.levelOneQuantity, levelOneQuantity);
+        contractTag.putFloat(ContractKey.quantityGrowthFactor, quantityGrowthFactor);
+        contractTag.putInt(ContractKey.startLevel, startLevel);
+        contractTag.putInt(ContractKey.level, startLevel);
+        contractTag.putInt(ContractKey.quantityDemanded,
                 calculateQuantityDemanded(levelOneQuantity, startLevel, quantityGrowthFactor, countPerUnit));
-        contractTag.putLong("startTime", System.currentTimeMillis());
-        contractTag.putLong("currentCycleStart", System.currentTimeMillis());
-        contractTag.putLong("cycleDurationMs", 1000L * 60 * 60 * 24 * 7);
-        contractTag.putInt("quantityFulfilled", 0);
-        contractTag.putInt("maxLevel", maxLevel);
-        contractTag.putString("author", author);
+        contractTag.putLong(ContractKey.startTime, System.currentTimeMillis());
+        contractTag.putLong(ContractKey.currentCycleStart, System.currentTimeMillis());
+        contractTag.putLong(ContractKey.cycleDurationMs, 1000L * 60 * 60 * 24 * 7);
+        contractTag.putInt(ContractKey.quantityFulfilled, 0);
+        contractTag.putInt(ContractKey.maxLevel, maxLevel);
+        contractTag.putString(ContractKey.author, author);
 
         var contractItem = new ItemStack(ItemRegistry.CONTRACT.get());
-        contractItem.addTagElement("contractInfo", contractTag);
+        contractItem.addTagElement(ContractKey.contractInfo, contractTag);
         return contractItem;
     }
 
     public static CompoundTag getBaseTag(ItemStack contract) {
-        return contract.getTagElement("contractInfo");
+        return contract.getTagElement(ContractKey.contractInfo);
     }
 
     public static int calculateQuantityDemanded(int levelOneQuantity, int startLevel, float quantityGrowthFactor,
@@ -135,8 +136,8 @@ public class ContractItem extends Item {
             return;
         }
 
-        var currentCycleStart = contractTag.getLong("timeUpdated");
-        var contractPeriod = contractTag.getLong("contractPeriod");
+        var currentCycleStart = contractTag.getLong(ContractKey.currentCycleStart);
+        var contractPeriod = contractTag.getLong(ContractKey.cycleDurationMs);
         var cyclesPassed = (int) ((currentTime - currentCycleStart) / contractPeriod);
         if (cyclesPassed > 0) {
             update(contract, cyclesPassed);
@@ -149,40 +150,40 @@ public class ContractItem extends Item {
             return;
         }
 
-        var quantityDemanded = contractTag.getInt("quantityDemanded");
-        var quantityFulfilled = contractTag.getInt("quantityFulfilled");
+        var quantityDemanded = contractTag.getInt(ContractKey.quantityDemanded);
+        var quantityFulfilled = contractTag.getInt(ContractKey.quantityFulfilled);
         if (quantityFulfilled >= quantityDemanded) {
-            var currentLevel = contractTag.getInt("level");
-            var maxLevel = contractTag.getInt("maxLevel");
+            var currentLevel = contractTag.getInt(ContractKey.level);
+            var maxLevel = contractTag.getInt(ContractKey.maxLevel);
 
             if (currentLevel < maxLevel) {
-                contractTag.putInt("level", currentLevel + 1);
+                contractTag.putInt(ContractKey.level, currentLevel + 1);
             }
         }
 
-        contractTag.putInt("quantityDemanded", calculateQuantityDemanded(
-                contractTag.getInt("levelOneQuantity"),
-                contractTag.getInt("startLevel"),
-                contractTag.getFloat("quantityGrowthFactor"),
-                contractTag.getInt("countPerUnit")));
+        contractTag.putInt(ContractKey.quantityDemanded, calculateQuantityDemanded(
+                contractTag.getInt(ContractKey.levelOneQuantity),
+                contractTag.getInt(ContractKey.startLevel),
+                contractTag.getFloat(ContractKey.quantityGrowthFactor),
+                contractTag.getInt(ContractKey.countPerUnit)));
 
-        contractTag.putInt("quantityFulfilled", 0);
+        contractTag.putInt(ContractKey.quantityFulfilled, 0);
     }
 
     public static boolean matches(ItemStack contract, ItemStack itemStack) {
-        var targetTag = getBaseTag(contract).getString("targetTag");
+        var targetTag = getBaseTag(contract).getString(ContractKey.targetTag);
         var tagKey = TagKey.create(Registries.ITEM, ResourceLocation.tryParse(targetTag));
         if (!targetTag.equals("")) {
             return itemStack.is(tagKey);
         }
 
-        var targetItem = getBaseTag(contract).getString("targetItem");
+        var targetItem = getBaseTag(contract).getString(ContractKey.targetItem);
         return itemStack.getItem().getDescriptionId().equals(targetItem);
     }
 
     public static int remainingQuantity(ItemStack contract) {
-        var quantityDemanded = getBaseTag(contract).getInt("quantityDemanded");
-        var quantityFulfilled = getBaseTag(contract).getInt("quantityFulfilled");
+        var quantityDemanded = getBaseTag(contract).getInt(ContractKey.quantityDemanded);
+        var quantityFulfilled = getBaseTag(contract).getInt(ContractKey.quantityFulfilled);
 
         return quantityDemanded - quantityFulfilled;
     }
@@ -193,7 +194,7 @@ public class ContractItem extends Item {
             return null;
         }
 
-        var targetItem = contractTag.getString("targetItem");
+        var targetItem = contractTag.getString(ContractKey.targetItem);
         return new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(targetItem)));
     }
 
@@ -203,8 +204,8 @@ public class ContractItem extends Item {
             var amountConsumed = Math.min(itemStack.getCount(), remainingQuantity);
             itemStack.setCount(itemStack.getCount() - amountConsumed);
             var contractTag = getBaseTag(contract);
-            contractTag.putInt("quantityFulfilled", contractTag.getInt("quantityFulfilled") + amountConsumed);
-            itemStack.addTagElement("contractInfo", contractTag);
+            contractTag.putInt(ContractKey.quantityFulfilled, contractTag.getInt(ContractKey.quantityFulfilled) + amountConsumed);
+            itemStack.addTagElement(ContractKey.contractInfo, contractTag);
             return amountConsumed;
         }
 
