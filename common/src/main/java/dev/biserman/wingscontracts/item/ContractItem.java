@@ -1,6 +1,9 @@
 package dev.biserman.wingscontracts.item;
 
+import java.util.List;
+
 import dev.biserman.wingscontracts.registry.ItemRegistry;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -9,6 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public class ContractItem extends Item {
     public ContractItem(Properties properties) {
@@ -16,8 +21,8 @@ public class ContractItem extends Item {
     }
 
     @Override
-    // TODO: how do I localize this properly? e.g.: Contract de Niveau 10 des
-    // Diamants de winggar
+    // TODO: how do I localize this properly?
+    // e.g.: Contract de Niveau 10 des Diamants de winggar
     public Component getName(ItemStack itemStack) {
         var contractTag = getBaseTag(itemStack);
         var author = contractTag.getString("author");
@@ -40,7 +45,9 @@ public class ContractItem extends Item {
         }
 
         if (targetItem != null) {
-            var targetItemDisplayName = Component.translatable(BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(targetItem)).getDescriptionId()).getString();
+            var targetItemDisplayName = Component
+                    .translatable(BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(targetItem)).getDescriptionId())
+                    .getString();
             stringBuilder.append(targetItemDisplayName);
             stringBuilder.append(" ");
         }
@@ -58,6 +65,14 @@ public class ContractItem extends Item {
         stringBuilder.append(Component.translatable(getDescriptionId()).getString());
 
         return Component.literal(stringBuilder.toString());
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, Level level, List<Component> components, TooltipFlag tooltipFlag) {
+        components.add(Component.literal(""));
+        if (Screen.hasShiftDown()) {
+            components.add(Component.literal(""));
+        }
     }
 
     public static ItemStack createContract(
@@ -90,9 +105,9 @@ public class ContractItem extends Item {
         contractTag.putInt("level", startLevel);
         contractTag.putInt("quantityDemanded",
                 calculateQuantityDemanded(levelOneQuantity, startLevel, quantityGrowthFactor, countPerUnit));
-        contractTag.putLong("startHour", System.currentTimeMillis());
-        contractTag.putLong("lastCycleStart", System.currentTimeMillis());
-        contractTag.putLong("contractPeriodMs", 1000L * 60 * 60 * 24 * 7);
+        contractTag.putLong("startTime", System.currentTimeMillis());
+        contractTag.putLong("currentCycleStart", System.currentTimeMillis());
+        contractTag.putLong("cycleDurationMs", 1000L * 60 * 60 * 24 * 7);
         contractTag.putInt("quantityFulfilled", 0);
         contractTag.putInt("maxLevel", maxLevel);
         contractTag.putString("author", author);
@@ -120,9 +135,9 @@ public class ContractItem extends Item {
             return;
         }
 
-        var lastCycleStart = contractTag.getLong("timeUpdated");
+        var currentCycleStart = contractTag.getLong("timeUpdated");
         var contractPeriod = contractTag.getLong("contractPeriod");
-        var cyclesPassed = (int) ((currentTime - lastCycleStart) / contractPeriod);
+        var cyclesPassed = (int) ((currentTime - currentCycleStart) / contractPeriod);
         if (cyclesPassed > 0) {
             update(contract, cyclesPassed);
         }
