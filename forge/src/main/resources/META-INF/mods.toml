@@ -1,35 +1,42 @@
-modLoader = "javafml"
-loaderVersion = "[47,)"
+modLoader = "kotlinforforge"
+loaderVersion = "[4,)"
 #issueTrackerURL = ""
-license = "Insert License Here"
+license = "MIT"
 
 [[mods]]
-modId = "wingscontracts"
+modId = "${mod_id}"
 version = "${version}"
 displayName = "Wing's Contracts"
-authors = "Me!"
+authors = "benjaminiserman"
 description = '''
 This is an example description! Tell everyone what your mod is about!
 '''
 #logoFile = ""
 
-[[dependencies.wingscontracts]]
+[[dependencies.${mod_id}]]
 modId = "forge"
 mandatory = true
 versionRange = "[47,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.wingscontracts]]
+[[dependencies.${mod_id}]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.20.1,)"
+versionRange = "[${minecraft_version},)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.wingscontracts]]
+[[dependencies.${mod_id}]]
 modId = "architectury"
 mandatory = true
-versionRange = "[9.2.14,)"
+versionRange = "[${architectury_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "kotlinforforge"
+mandatory = true
+versionRange = "[${kotlin_for_forge_version}]"
 ordering = "AFTER"
 side = "BOTH"
