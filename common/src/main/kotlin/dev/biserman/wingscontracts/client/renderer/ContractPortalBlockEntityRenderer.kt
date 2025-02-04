@@ -21,15 +21,14 @@ class ContractPortalBlockEntityRenderer(private val context: BlockEntityRenderer
     ) {
         poseStack.pushPose()
 
-        val itemStack = blockEntity.getItem(0)
+        val contractSlot = blockEntity.contractSlot
 
-
-        if (itemStack.item !is ContractItem) {
+        if (contractSlot.item !is ContractItem) {
             poseStack.popPose()
             return
         }
 
-        val showItem: ItemStack? = ContractItem.targetItem(itemStack)
+        val showItem: ItemStack? = ContractItem.targetItem(contractSlot)
         if (showItem == null) {
             poseStack.popPose()
             return

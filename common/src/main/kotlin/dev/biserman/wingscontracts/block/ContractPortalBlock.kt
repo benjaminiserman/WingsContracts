@@ -7,6 +7,7 @@ import dev.biserman.wingscontracts.item.ContractItem
 import dev.biserman.wingscontracts.registry.BlockEntityRegistry
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.world.Containers
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.item.ItemEntity
@@ -122,6 +123,36 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
 
     override fun getRenderShape(blockState: BlockState): RenderShape {
         return RenderShape.MODEL
+    }
+
+    override fun onRemove(
+        blockState: BlockState,
+        level: Level,
+        blockPos: BlockPos,
+        blockState2: BlockState,
+        bl: Boolean
+    ) {
+        if (!blockState.`is`(blockState2.block)) {
+            val blockEntity = level.getBlockEntity(blockPos)
+            if (blockEntity is ContractPortalBlockEntity) {
+                Containers.dropContents(level, blockPos, blockEntity.cachedInput)
+                Containers.dropItemStack(
+                    level,
+                    blockPos.x.toDouble(),
+                    blockPos.y.toDouble(),
+                    blockPos.z.toDouble(),
+                    blockEntity.contractSlot
+                )
+                Containers.dropItemStack(
+                    level,
+                    blockPos.x.toDouble(),
+                    blockPos.y.toDouble(),
+                    blockPos.z.toDouble(),
+                    blockEntity.cachedRewards
+                )
+                level.updateNeighbourForOutputSignal(blockPos, this)
+            }
+        }
     }
 
     companion object {

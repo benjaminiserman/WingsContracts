@@ -207,7 +207,7 @@ class ContractItem(properties: Properties) : Item(properties) {
         fun consume(contract: ItemStack, itemStack: ItemStack): Int {
             val remainingQuantity = remainingQuantity(contract)
             if (remainingQuantity > 0 && matches(contract, itemStack)) {
-                val amountConsumed = min(itemStack.count.toDouble(), remainingQuantity.toDouble()).toInt()
+                val amountConsumed = min(itemStack.count, remainingQuantity)
                 itemStack.count -= amountConsumed
                 val contractTag = ContractTag(getBaseTag(contract) ?: return 0)
                 contractTag.quantityFulfilled.put(
