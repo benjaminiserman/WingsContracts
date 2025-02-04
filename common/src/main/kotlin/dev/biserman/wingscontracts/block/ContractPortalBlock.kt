@@ -58,12 +58,14 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
                 return InteractionResult.FAIL
             }
 
-            blockEntity.contractSlot = itemInHand
             player.setItemInHand(interactionHand, ItemStack.EMPTY)
+            blockEntity.contractSlot = itemInHand
             level.setBlockAndUpdate(blockPos, blockState.setValue(MODE, ContractPortalMode.LIT))
         } else {
+            val contract = blockEntity.contractSlot
             blockEntity.contractSlot = ItemStack.EMPTY
-            spawnItem(contractSlotItem, level, blockPos)
+            player.setItemInHand(interactionHand, contract)
+//            spawnItem(contractSlotItem, level, blockPos)
             level.setBlockAndUpdate(blockPos, blockState.setValue(MODE, ContractPortalMode.UNLIT))
         }
 
