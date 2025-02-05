@@ -19,31 +19,17 @@ class ContractPortalBlockEntityRenderer(private val context: BlockEntityRenderer
         blockEntity: ContractPortalBlockEntity, partialTick: Float, poseStack: PoseStack,
         multiBufferSource: MultiBufferSource, packedLight: Int, packedOverlay: Int
     ) {
-        poseStack.pushPose()
 
-        val contractSlot = blockEntity.contractSlot
+        val contractTag = ContractItem.getBaseTag(blockEntity.contractSlot) ?: return
 
-        if (contractSlot.item !is ContractItem) {
-            poseStack.popPose()
-            return
-        }
-
-        val showItem: ItemStack? = ContractItem.targetItem(contractSlot)
-        if (showItem == null) {
-            poseStack.popPose()
-            return
-        }
-
-        val level = blockEntity.level
-        if (level == null) {
-            poseStack.popPose()
-            return
-        }
+        val showItem = ItemStack(contractTag.targetItem ?: return)
+        val level = blockEntity.level ?: return
 
         val blockPos = blockEntity.blockPos.above()
         val relativeGameTime = level.gameTime + partialTick
         val rotation = relativeGameTime * 2
 
+        poseStack.pushPose()
         poseStack.translate(0.5, 1.3, 0.5)
         poseStack.mulPose(Axis.YP.rotationDegrees(rotation))
         context.itemRenderer.renderStatic(

@@ -22,12 +22,12 @@ object ContractCommand {
         return Commands.literal("contract")
             .requires { cs: CommandSourceStack -> cs.hasPermission(2) }
                 .then(Commands.argument("targetItem", ItemArgument.item(commandBuildContext))
+                .then(Commands.argument("countPerUnit",IntegerArgumentType.integer())
+                .then(Commands.argument("rewardItem",ItemArgument.item(commandBuildContext))
                 .then(Commands.argument("unitPrice", IntegerArgumentType.integer())
                 .then(Commands.argument("levelOneQuantity", IntegerArgumentType.integer())
                 .then(Commands.argument("quantityGrowthFactor", FloatArgumentType.floatArg())
                 .then(Commands.argument("maxLevel", IntegerArgumentType.integer())
-                .then(Commands.argument("rewardItem",ItemArgument.item(commandBuildContext))
-                .then(Commands.argument("countPerUnit",IntegerArgumentType.integer())
                     .executes { context: CommandContext<CommandSourceStack> ->
                         val targetItem = BuiltInRegistries.ITEM
                             .getKey(

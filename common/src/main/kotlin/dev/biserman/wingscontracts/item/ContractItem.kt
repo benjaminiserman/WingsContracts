@@ -2,6 +2,7 @@ package dev.biserman.wingscontracts.item
 
 import dev.biserman.wingscontracts.registry.ItemRegistry
 import dev.biserman.wingscontracts.tag.ContractTag
+import dev.biserman.wingscontracts.util.DenominationHelper
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -14,18 +15,19 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.level.Level
 import java.util.*
+import kotlin.math.ceil
 import kotlin.math.min
 
 class ContractItem(properties: Properties) : Item(properties) {
     // TODO: how do I localize this properly?
     // e.g.: Contract de Niveau 10 des Diamants de winggar
     override fun getName(itemStack: ItemStack): Component {
-        val contractTag = ContractTag(getBaseTag(itemStack) ?: return Component.literal("Unknown Contract"))
+        val contractTag = getBaseTag(itemStack) ?: return Component.literal("Unknown Contract")
 
         val author = contractTag.author.get()
         val level = contractTag.level.get()
-        val targetItem = contractTag.targetItem.get()
-        val targetTag = contractTag.targetTag.get()
+        val targetItem = contractTag.targetItem
+        val targetTagKey = contractTag.targetTagKey.get()
 
         val stringBuilder = StringBuilder()
         if (author != null) {
@@ -41,18 +43,12 @@ class ContractItem(properties: Properties) : Item(properties) {
         )
 
         if (targetItem != null) {
-            val targetItemDisplayName = Component
-                .translatable(
-                    BuiltInRegistries.ITEM[ResourceLocation.tryParse(
-                        targetItem
-                    )].descriptionId
-                )
-                .string
+            val targetItemDisplayName = Component.translatable(targetItem.descriptionId).string
             stringBuilder.append("$targetItemDisplayName ")
         }
 
-        if (targetTag != null) {
-            val split = targetTag.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        if (targetTagKey != null) {
+            val split = targetTagKey.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             if (split.size >= 2) {
                 val tagName = split[1]
                 stringBuilder.append(tagName.substring(0, 1).uppercase(Locale.getDefault()))
@@ -72,9 +68,53 @@ class ContractItem(properties: Properties) : Item(properties) {
         components: MutableList<Component>,
         tooltipFlag: TooltipFlag
     ) {
-        components.add(Component.literal(""))
+        val contractTag = getBaseTag(itemStack) ?: return
+        val rewardItem = contractTag.rewardItem ?: return
+        val targetItem = contractTag.targetItem
+        val targetTagKey = contractTag.targetTagKey.get()
+        val rewardName = rewardItem.getName(ItemStack(rewardItem)).string
+        val currentCycleStart = contractTag.currentCycleStart.get() ?: return
+
+        components.add(Component.literal("Quantity Fulfilled: ${contractTag.quantityFulfilled.get()}/${contractTag.quantityDemanded}"))
+
+        if (!targetTagKey.isNullOrEmpty()) {
+            components.add(Component.literal("Rewards ${contractTag.unitPrice.get()} $rewardName for every ${contractTag.countPerUnit.get()} items matching $targetTagKey"))
+        } else if (targetItem != null) {
+            val targetName = targetItem.getName(ItemStack(targetItem)).string
+            components.add(Component.literal("Rewards ${contractTag.unitPrice.get()} $rewardName for every ${contractTag.countPerUnit.get()} $targetName"))
+        }
+
+
+        val nextCycleStart = currentCycleStart + contractTag.cycleDurationMs.get()
+        val timeRemaining = DenominationHelper
+            .denominate(nextCycleStart - System.currentTimeMillis(), DenominationHelper.timeDenominationsWithoutMs)
+            .joinToString(separator = ", ") { kvp ->
+                "${kvp.second} ${kvp.first}${
+                    if (kvp.second == 1) {
+                        ""
+                    } else {
+                        "s"
+                    }
+                }"
+            }
+        components.add(Component.literal("Current Cycle Ends at ${Date(nextCycleStart)}"))
+        components.add(Component.literal("Current Cycle Remaining Time:"))
+        components.add(Component.literal("    $timeRemaining"))
+
         if (Screen.hasShiftDown()) {
-            components.add(Component.literal(""))
+            components.add(Component.literal("Max Level: ${contractTag.maxLevel.get()}"))
+            components.add(Component.literal("Base Quantity: ${contractTag.levelOneQuantity.get()}"))
+            components.add(Component.literal("Quantity Growth Factor: ${contractTag.quantityGrowthFactor.get()}"))
+            val startTime = contractTag.startTime.get()
+            components.add(
+                Component.literal(
+                    "Started On: ${
+                        if (startTime == null) {
+                            "???"
+                        } else Date(startTime)
+                    }"
+                )
+            )
         }
     }
 
@@ -96,14 +136,14 @@ class ContractItem(properties: Properties) : Item(properties) {
             val contractTag = ContractTag(CompoundTag())
 
             if (targetItem != null) {
-                contractTag.targetItem.put(targetItem)
+                contractTag.targetItemKey.put(targetItem)
             }
 
             if (targetTag != null) {
-                contractTag.targetTag.put(targetTag)
+                contractTag.targetTagKey.put(targetTag)
             }
 
-            contractTag.rewardItem.put(rewardItem)
+            contractTag.rewardItemKey.put(rewardItem)
             contractTag.unitPrice.put(unitPrice)
             contractTag.countPerUnit.put(countPerUnit)
             contractTag.levelOneQuantity.put(levelOneQuantity)
@@ -112,8 +152,10 @@ class ContractItem(properties: Properties) : Item(properties) {
             contractTag.level.put(startLevel)
             contractTag.startTime.put(System.currentTimeMillis())
             contractTag.currentCycleStart.put(System.currentTimeMillis())
-            contractTag.cycleDurationMs.put(1000L * 60 * 60 * 24 * 7)
+//            contractTag.cycleDurationMs.put(1000L * 60 * 60 * 24 * 7)
+            contractTag.cycleDurationMs.put(1000L * 60 * 5) // 5-minute cycles for now
             contractTag.quantityFulfilled.put(0)
+            contractTag.quantityFulfilledEver.put(0)
             contractTag.maxLevel.put(maxLevel)
             contractTag.author.put(author)
 
@@ -123,28 +165,13 @@ class ContractItem(properties: Properties) : Item(properties) {
             return itemStack
         }
 
-        fun getBaseTag(contract: ItemStack): CompoundTag? {
-            return contract.getTagElement(ContractTag.CONTRACT_INFO)
+        fun getBaseTag(contract: ItemStack): ContractTag? {
+            return ContractTag(contract.getTagElement(ContractTag.CONTRACT_INFO) ?: return null)
         }
-
-        fun getQuantityDemanded(
-            levelOneQuantity: Int, startLevel: Int, quantityGrowthFactor: Float,
-            countPerUnit: Int
-        ): Int {
-            val quantity = levelOneQuantity + (levelOneQuantity * (startLevel - 1) * quantityGrowthFactor).toInt()
-            return quantity - quantity % countPerUnit
-        }
-
-        fun ContractTag.getQuantityDemanded() = getQuantityDemanded(
-            this.levelOneQuantity.get(),
-            this.startLevel.get(),
-            this.quantityGrowthFactor.get(),
-            this.countPerUnit.get()
-        )
 
         fun tick(contract: ItemStack) {
             val currentTime = System.currentTimeMillis()
-            val contractTag = ContractTag(getBaseTag(contract) ?: return)
+            val contractTag = getBaseTag(contract) ?: return
 
             val currentCycleStart = contractTag.currentCycleStart.get() ?: return
             val contractPeriod = contractTag.cycleDurationMs.get()
@@ -155,12 +182,11 @@ class ContractItem(properties: Properties) : Item(properties) {
         }
 
         private fun update(contract: ItemStack, cycles: Int) {
-            val contractTag = ContractTag(getBaseTag(contract) ?: return)
+            val contractTag = getBaseTag(contract) ?: return
             val currentCycleStart = contractTag.currentCycleStart.get() ?: return
 
-            val quantityDemanded = contractTag.getQuantityDemanded()
             val quantityFulfilled = contractTag.quantityFulfilled.get()
-            if (quantityFulfilled >= quantityDemanded) {
+            if (quantityFulfilled >= contractTag.quantityDemanded) {
                 val currentLevel = contractTag.level.get()
                 val maxLevel = contractTag.maxLevel.get()
 
@@ -174,47 +200,44 @@ class ContractItem(properties: Properties) : Item(properties) {
         }
 
         fun matches(contract: ItemStack, itemStack: ItemStack): Boolean {
-            val contractTag = ContractTag(getBaseTag(contract) ?: return false)
-            val targetTag = contractTag.targetTag.get() ?: ""
-            if (targetTag.isNotEmpty()) {
-                val tagKey = TagKey.create(Registries.ITEM, ResourceLocation.tryParse(targetTag) ?: return false)
-                return itemStack.`is`(tagKey)
+            val contractTag = getBaseTag(contract) ?: return false
+
+            val targetTag = contractTag.targetTag
+            if (targetTag != null) {
+                return itemStack.`is`(targetTag)
             }
 
-            val targetItem = contractTag.targetItem.get()
-            return itemStack.item.descriptionId == targetItem
+            return itemStack.item.`arch$registryName`().toString() == contractTag.targetItemKey.get()
         }
 
         fun remainingQuantity(contract: ItemStack): Int {
-            val contractTag = ContractTag(getBaseTag(contract) ?: return -1)
-            val quantityDemanded = contractTag.getQuantityDemanded()
+            val contractTag = getBaseTag(contract) ?: return -1
             val quantityFulfilled = contractTag.quantityFulfilled.get()
 
-            return quantityDemanded - quantityFulfilled
+            return contractTag.quantityDemanded - quantityFulfilled
         }
 
-        fun targetItem(contract: ItemStack): ItemStack? {
-            val contractTag = ContractTag(getBaseTag(contract) ?: return null)
-
-            val targetItem = contractTag.targetItem.get() ?: return null
-            return ItemStack(
-                BuiltInRegistries.ITEM[ResourceLocation.tryParse(
-                    targetItem
-                )]
-            )
-        }
 
         fun consume(contract: ItemStack, itemStack: ItemStack): Int {
             val remainingQuantity = remainingQuantity(contract)
-            if (remainingQuantity > 0 && matches(contract, itemStack)) {
-                val amountConsumed = min(itemStack.count, remainingQuantity)
+            val contractTag = getBaseTag(contract) ?: return 0
+            val countPerUnit = contractTag.countPerUnit.get()
+
+            if (matches(contract, itemStack) && remainingQuantity >= countPerUnit) {
+                val countWithoutRemainder = (itemStack.count / countPerUnit) * countPerUnit
+                val amountConsumed = min(countWithoutRemainder, remainingQuantity)
                 itemStack.count -= amountConsumed
-                val contractTag = ContractTag(getBaseTag(contract) ?: return 0)
                 contractTag.quantityFulfilled.put(
                     contractTag.quantityFulfilled.get() + amountConsumed
                 )
+                contractTag.quantityFulfilledEver.put(
+                    contractTag.quantityFulfilledEver.get() + amountConsumed
+                )
                 itemStack.addTagElement(ContractTag.CONTRACT_INFO, contractTag.tag)
-                return amountConsumed
+
+                val unitsConsumed = ceil(amountConsumed.toDouble() / countPerUnit).toInt()
+                val rewardsReceived = unitsConsumed * contractTag.unitPrice.get()
+                return rewardsReceived
             }
 
             return 0

@@ -10,7 +10,6 @@ import net.minecraft.core.Direction
 import net.minecraft.world.Containers
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
-import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.BlockPlaceContext
@@ -28,8 +27,6 @@ import net.minecraft.world.level.gameevent.GameEvent
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.VoxelShape
-import kotlin.math.cos
-import kotlin.math.sin
 
 class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) {
     init {
@@ -48,38 +45,45 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
             return InteractionResult.SUCCESS
         }
 
-        val blockEntity = level.getBlockEntity(blockPos) as? ContractPortalBlockEntity
+        if (blockState.getValue(MODE) == ContractPortalMode.COIN) {
+            return InteractionResult.FAIL;
+        }
+
+        val portal = level.getBlockEntity(blockPos) as? ContractPortalBlockEntity
             ?: return InteractionResult.FAIL
 
-        val contractSlotItem = blockEntity.contractSlot
+        val itemInHand = player.getItemInHand(interactionHand)
+        val contractSlotItem = portal.contractSlot
+
         if (contractSlotItem.isEmpty) {
-            val itemInHand = player.getItemInHand(interactionHand)
             if (itemInHand.item !is ContractItem) {
                 return InteractionResult.FAIL
             }
 
-            player.setItemInHand(interactionHand, ItemStack.EMPTY)
-            blockEntity.contractSlot = itemInHand
+            portal.contractSlot = itemInHand
+            player.setItemInHand(interactionHand, contractSlotItem)
             level.setBlockAndUpdate(blockPos, blockState.setValue(MODE, ContractPortalMode.LIT))
         } else {
-            val contract = blockEntity.contractSlot
-            blockEntity.contractSlot = ItemStack.EMPTY
-            player.setItemInHand(interactionHand, contract)
-//            spawnItem(contractSlotItem, level, blockPos)
-            level.setBlockAndUpdate(blockPos, blockState.setValue(MODE, ContractPortalMode.UNLIT))
+            if (!itemInHand.isEmpty) {
+                return InteractionResult.FAIL
+            }
+
+            portal.contractSlot = ItemStack.EMPTY
+            player.setItemInHand(interactionHand, contractSlotItem)
+            level.setBlockAndUpdate(
+                blockPos, blockState.setValue(
+                    MODE, if (portal.cachedRewards.count > 0) {
+                        ContractPortalMode.COIN
+                    } else {
+                        ContractPortalMode.UNLIT
+                    }
+                )
+            )
         }
 
         level.gameEvent(player, GameEvent.BLOCK_CHANGE, blockPos)
         level.sendBlockUpdated(blockPos, blockState, blockState, UPDATE_ALL)
         return InteractionResult.SUCCESS
-    }
-
-    private fun spawnItem(itemStack: ItemStack, level: Level, blockPos: BlockPos) {
-        val itemEntity = ItemEntity(level, blockPos.x + 0.5, blockPos.y + 0.75, blockPos.z + 0.5, itemStack)
-        val magnitude = 0.15
-        val radians = level.random.nextDouble() * Math.PI * 2
-        itemEntity.setDeltaMovement(sin(radians) * magnitude, magnitude * 3, cos(radians) * magnitude)
-        level.addFreshEntity(itemEntity)
     }
 
     override fun getShape(

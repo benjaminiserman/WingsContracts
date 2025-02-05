@@ -1,27 +1,34 @@
 package dev.biserman.wingscontracts.block
 
+import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.item.ContractItem
 import dev.biserman.wingscontracts.registry.BlockEntityRegistry
+import dev.biserman.wingscontracts.tag.ContractTag
 import net.minecraft.core.BlockPos
 import net.minecraft.core.NonNullList
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.ContainerHelper
 import net.minecraft.world.entity.EntitySelector
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.BaseEntityBlock.UPDATE_ALL
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.gameevent.GameEvent
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
 import java.util.stream.Collectors
+import kotlin.math.cos
 import kotlin.math.min
+import kotlin.math.sin
 
 class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
     BlockEntity(BlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState) {
@@ -127,15 +134,51 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
                     }
                 }
 
-                ContractPortalMode.COIN -> {}
+                ContractPortalMode.COIN -> {
+                    val stackToSpit = if (!portal.cachedRewards.isEmpty) {
+                        portal.cachedRewards
+                    } else if (!portal.cachedInput.isEmpty()) {
+                        portal.cachedInput.firstOrNull { itemStack -> !itemStack.isEmpty }
+                    } else {
+                        null
+                    }
+
+                    if (stackToSpit == null) {
+                        level.setBlockAndUpdate(blockPos, blockState.setValue(MODE, ContractPortalMode.UNLIT))
+                        level.gameEvent(null, GameEvent.BLOCK_CHANGE, blockPos)
+                        level.sendBlockUpdated(blockPos, blockState, blockState, UPDATE_ALL)
+                        return true
+                    }
+
+                    // TO-DO: handle denominations
+                    val amountToSpit = level.random.nextIntBetweenInclusive(
+                        min(5, stackToSpit.count),
+                        min(stackToSpit.maxStackSize, stackToSpit.count)
+                    )
+
+                    val splitStack = stackToSpit.split(amountToSpit)
+                    spawnItem(splitStack, level, blockPos)
+
+                    portal.setCooldown(10)
+                    return true
+                }
+
                 else -> {}
             }
 
             return false
         }
 
+        private fun spawnItem(itemStack: ItemStack, level: Level, blockPos: BlockPos) {
+            val itemEntity = ItemEntity(level, blockPos.x + 0.5, blockPos.y + 0.75, blockPos.z + 0.5, itemStack)
+            val magnitude = 0.15
+            val radians = level.random.nextDouble() * Math.PI * 2
+            itemEntity.setDeltaMovement(sin(radians) * magnitude, magnitude * 3, cos(radians) * magnitude)
+            level.addFreshEntity(itemEntity)
+        }
+
         private fun getItemsAtAndAbove(level: Level, portal: ContractPortalBlockEntity): List<ItemEntity> {
-            return Companion.getSuckShape().toAabbs().stream().flatMap { aABB: AABB ->
+            return getSuckShape().toAabbs().stream().flatMap { aABB: AABB ->
                 level.getEntitiesOfClass(
                     ItemEntity::class.java,
                     aABB.move(portal.getLevelX() - 0.5, portal.getLevelY() - 0.5, portal.getLevelZ() - 0.5),
@@ -150,8 +193,20 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
                     continue
                 }
 
+                val contractTag = ContractItem.getBaseTag(portal.contractSlot) ?: return false
+                val rewardItem = contractTag.rewardItem ?: return false
+
                 if (ContractItem.matches(portal.contractSlot, itemStack)) {
-                    return ContractItem.consume(portal.contractSlot, itemStack) > 0
+                    val rewardsReceived = ContractItem.consume(portal.contractSlot, itemStack)
+                    if (rewardsReceived > 0) {
+                        if (portal.cachedRewards.isEmpty) {
+                            portal.cachedRewards = ItemStack(rewardItem, rewardsReceived)
+                        } else {
+                            portal.cachedRewards.grow(rewardsReceived)
+                        }
+
+                        return true
+                    }
                 }
             }
 
