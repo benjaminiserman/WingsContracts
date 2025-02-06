@@ -24,14 +24,18 @@ import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.DirectionProperty
 import net.minecraft.world.level.block.state.properties.EnumProperty
 import net.minecraft.world.level.gameevent.GameEvent
+import net.minecraft.world.level.pathfinder.PathComputationType
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.VoxelShape
+import kotlin.math.min
 
 class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) {
     init {
+        getStateDefinition()
         this.registerDefaultState(
-            defaultBlockState()
+            getStateDefinition()
+                .any()
                 .setValue(FACING, Direction.NORTH)
                 .setValue(MODE, ContractPortalMode.UNLIT)
         )
@@ -72,7 +76,7 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
             player.setItemInHand(interactionHand, contractSlotItem)
             level.setBlockAndUpdate(
                 blockPos, blockState.setValue(
-                    MODE, if (portal.cachedRewards.count > 0) {
+                    MODE, if (portal.cachedRewards.count > 0 || !portal.inputItemsEmpty) {
                         ContractPortalMode.COIN
                     } else {
                         ContractPortalMode.UNLIT
@@ -157,9 +161,34 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
                     blockEntity.cachedRewards
                 )
                 level.updateNeighbourForOutputSignal(blockPos, this)
+                @Suppress("DEPRECATION")
+                super.onRemove(blockState, level, blockPos, blockState2, bl)
             }
         }
     }
+
+    override fun hasAnalogOutputSignal(blockState: BlockState): Boolean = true
+    override fun getAnalogOutputSignal(blockState: BlockState, level: Level, blockPos: BlockPos): Int {
+        if (blockState.getValue(MODE) == ContractPortalMode.LIT) {
+            val portal = level.getBlockEntity(blockPos) as? ContractPortalBlockEntity
+                ?: return 0
+            val contractTag = ContractItem.getBaseTag(portal.contractSlot) ?: return 0
+            val quantityFulfilled = contractTag.quantityFulfilled.get()
+            val quantityDemanded = contractTag.quantityDemanded
+            return min(((quantityFulfilled.toFloat() / quantityDemanded.toFloat()) * 15).toInt(), 15)
+        }
+
+        return 0
+    }
+
+    override fun useShapeForLightOcclusion(blockState: BlockState) = true
+
+    override fun isPathfindable(
+        blockState: BlockState,
+        blockGetter: BlockGetter,
+        blockPos: BlockPos,
+        pathComputationType: PathComputationType
+    ) = false
 
     companion object {
         val FACING: DirectionProperty = HorizontalDirectionalBlock.FACING

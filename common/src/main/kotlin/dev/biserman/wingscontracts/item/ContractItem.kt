@@ -10,11 +10,15 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.InteractionResultHolder
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.level.Level
 import java.util.*
+import kotlin.contracts.contract
 import kotlin.math.ceil
 import kotlin.math.min
 
@@ -84,7 +88,6 @@ class ContractItem(properties: Properties) : Item(properties) {
             components.add(Component.literal("Rewards ${contractTag.unitPrice.get()} $rewardName for every ${contractTag.countPerUnit.get()} $targetName"))
         }
 
-
         val nextCycleStart = currentCycleStart + contractTag.cycleDurationMs.get()
         val timeRemaining = DenominationHelper
             .denominate(nextCycleStart - System.currentTimeMillis(), DenominationHelper.timeDenominationsWithoutMs)
@@ -98,8 +101,13 @@ class ContractItem(properties: Properties) : Item(properties) {
                 }"
             }
         components.add(Component.literal("Current Cycle Ends at ${Date(nextCycleStart)}"))
-        components.add(Component.literal("Current Cycle Remaining Time:"))
-        components.add(Component.literal("    $timeRemaining"))
+        if (Date(nextCycleStart) <= Date()) {
+            components.add(Component.literal("Cycle Complete!"))
+            components.add(Component.literal("Right-click with contract in hand or place in contract portal to start next cycle."))
+        } else {
+            components.add(Component.literal("Current Cycle Remaining Time:"))
+            components.add(Component.literal("    $timeRemaining"))
+        }
 
         if (Screen.hasShiftDown()) {
             components.add(Component.literal("Max Level: ${contractTag.maxLevel.get()}"))
@@ -115,7 +123,22 @@ class ContractItem(properties: Properties) : Item(properties) {
                     }"
                 )
             )
+        } else {
+            components.add(Component.literal("Hold shift for more info"))
         }
+    }
+
+    override fun use(
+        level: Level,
+        player: Player,
+        interactionHand: InteractionHand
+    ): InteractionResultHolder<ItemStack> {
+        val itemInHand = player.getItemInHand(interactionHand)
+        if (itemInHand.item is ContractItem) {
+            tick(itemInHand)
+        }
+
+        return super.use(level, player, interactionHand)
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
@@ -169,21 +192,23 @@ class ContractItem(properties: Properties) : Item(properties) {
             return ContractTag(contract.getTagElement(ContractTag.CONTRACT_INFO) ?: return null)
         }
 
-        fun tick(contract: ItemStack) {
+        fun tick(contract: ItemStack): Boolean {
             val currentTime = System.currentTimeMillis()
-            val contractTag = getBaseTag(contract) ?: return
+            val contractTag = getBaseTag(contract) ?: return false
 
-            val currentCycleStart = contractTag.currentCycleStart.get() ?: return
+            val currentCycleStart = contractTag.currentCycleStart.get() ?: return false
             val contractPeriod = contractTag.cycleDurationMs.get()
             val cyclesPassed = ((currentTime - currentCycleStart) / contractPeriod).toInt()
             if (cyclesPassed > 0) {
-                update(contract, cyclesPassed)
+                return update(contract, cyclesPassed)
             }
+
+            return false
         }
 
-        private fun update(contract: ItemStack, cycles: Int) {
-            val contractTag = getBaseTag(contract) ?: return
-            val currentCycleStart = contractTag.currentCycleStart.get() ?: return
+        private fun update(contract: ItemStack, cycles: Int): Boolean {
+            val contractTag = getBaseTag(contract) ?: return false
+            val currentCycleStart = contractTag.currentCycleStart.get() ?: return false
 
             val quantityFulfilled = contractTag.quantityFulfilled.get()
             if (quantityFulfilled >= contractTag.quantityDemanded) {
@@ -197,6 +222,8 @@ class ContractItem(properties: Properties) : Item(properties) {
 
             contractTag.currentCycleStart.put(currentCycleStart + contractTag.cycleDurationMs.get() * cycles)
             contractTag.quantityFulfilled.put(0)
+
+            return true
         }
 
         fun matches(contract: ItemStack, itemStack: ItemStack): Boolean {
@@ -226,7 +253,7 @@ class ContractItem(properties: Properties) : Item(properties) {
             if (matches(contract, itemStack) && remainingQuantity >= countPerUnit) {
                 val countWithoutRemainder = (itemStack.count / countPerUnit) * countPerUnit
                 val amountConsumed = min(countWithoutRemainder, remainingQuantity)
-                itemStack.count -= amountConsumed
+                itemStack.shrink(amountConsumed)
                 contractTag.quantityFulfilled.put(
                     contractTag.quantityFulfilled.get() + amountConsumed
                 )

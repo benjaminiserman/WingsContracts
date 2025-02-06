@@ -4,17 +4,17 @@ import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.item.ContractItem
 import dev.biserman.wingscontracts.registry.BlockEntityRegistry
-import dev.biserman.wingscontracts.tag.ContractTag
 import net.minecraft.core.BlockPos
 import net.minecraft.core.NonNullList
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.Container
 import net.minecraft.world.ContainerHelper
 import net.minecraft.world.entity.EntitySelector
 import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.BaseEntityBlock.UPDATE_ALL
@@ -31,7 +31,7 @@ import kotlin.math.min
 import kotlin.math.sin
 
 class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
-    BlockEntity(BlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState) {
+    BlockEntity(BlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState), Container {
     var cooldownTime: Int
     var contractSlot: ItemStack
     var cachedRewards: ItemStack
@@ -66,7 +66,7 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
         compoundTag.put("ContractSlot", contractSlotTag)
 
         val cachedRewardsTag = CompoundTag()
-        contractSlot.save(cachedRewardsTag)
+        cachedRewards.save(cachedRewardsTag)
         compoundTag.put("CachedRewards", cachedRewardsTag)
 
         ContainerHelper.saveAllItems(compoundTag, cachedInput)
@@ -95,15 +95,45 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
         return false
     }
 
-    fun getItem(i: Int): ItemStack = cachedInput[i]
+    override fun clearContent() {
+        cachedRewards = ItemStack.EMPTY
+    }
 
-    fun setItem(i: Int, itemStack: ItemStack) {
+    override fun getContainerSize(): Int = 1
+    override fun isEmpty() = cachedRewards.count == 0
+    override fun getItem(i: Int) = cachedRewards
+
+    override fun setItem(i: Int, itemStack: ItemStack) {
+        cachedRewards = itemStack
+    }
+
+    override fun removeItem(i: Int, amount: Int): ItemStack {
+        val split = cachedRewards.split(amount)
+        if (!split.isEmpty) {
+            this.setChanged()
+        }
+
+        return split
+    }
+
+    override fun removeItemNoUpdate(i: Int): ItemStack {
+        val split = cachedRewards
+        cachedRewards = ItemStack.EMPTY
+        return split
+    }
+
+    override fun stillValid(player: Player) = level?.getBlockEntity(this.blockPos) == this
+
+    fun getInputItem(i: Int): ItemStack = cachedInput[i]
+    fun setInputItem(i: Int, itemStack: ItemStack) {
         cachedInput[i] = itemStack
         if (itemStack.count > MAX_STACK_SIZE) {
             itemStack.count = MAX_STACK_SIZE
         }
         this.setChanged()
     }
+
+    val inputItemsEmpty get() = cachedInput.isEmpty() || cachedInput.all { itemStack -> itemStack.isEmpty }
 
     companion object {
         fun serverTick(
@@ -116,19 +146,20 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
             }
             portal.setCooldown(0)
 
-            when (portal.blockState.getValue(ContractPortalBlock.MODE)) {
+            when (portal.blockState.getValue(MODE)) {
                 ContractPortalMode.UNLIT -> {}
                 ContractPortalMode.LIT -> {
                     if (portal.contractSlot.isEmpty) {
                         return false
                     }
 
-                    val didConsume = tryConsume(portal)
+                    val didConsumeOrSpit = tryConsume(level, portal, blockPos)
                     val didSuck = suckInItems(level, portal)
+                    val didUpdate = ContractItem.tick(portal.contractSlot)
 
                     portal.setCooldown(10)
 
-                    if (didConsume || didSuck) {
+                    if (didConsumeOrSpit || didSuck || didUpdate) {
                         setChanged(level, blockPos, blockState)
                         return true
                     }
@@ -150,15 +181,7 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
                         return true
                     }
 
-                    // TO-DO: handle denominations
-                    val amountToSpit = level.random.nextIntBetweenInclusive(
-                        min(5, stackToSpit.count),
-                        min(stackToSpit.maxStackSize, stackToSpit.count)
-                    )
-
-                    val splitStack = stackToSpit.split(amountToSpit)
-                    spawnItem(splitStack, level, blockPos)
-
+                    spitItemStack(stackToSpit, portal, level, blockPos, false)
                     portal.setCooldown(10)
                     return true
                 }
@@ -167,6 +190,23 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
             }
 
             return false
+        }
+
+        private fun spitItemStack(
+            stackToSpit: ItemStack,
+            portal: ContractPortalBlockEntity,
+            level: Level,
+            blockPos: BlockPos,
+            denominate: Boolean
+        ) {
+            // TO-DO: handle denominations
+            val amountToSpit = level.random.nextIntBetweenInclusive(
+                min(5, stackToSpit.count),
+                min(stackToSpit.maxStackSize, stackToSpit.count)
+            )
+
+            val splitStack = stackToSpit.split(amountToSpit)
+            spawnItem(splitStack, level, blockPos)
         }
 
         private fun spawnItem(itemStack: ItemStack, level: Level, blockPos: BlockPos) {
@@ -187,7 +227,7 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
             }.collect(Collectors.toList())
         }
 
-        private fun tryConsume(portal: ContractPortalBlockEntity): Boolean {
+        private fun tryConsume(level: Level, portal: ContractPortalBlockEntity, blockPos: BlockPos): Boolean {
             for (itemStack in portal.cachedInput) {
                 if (itemStack.isEmpty) {
                     continue
@@ -207,6 +247,9 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
 
                         return true
                     }
+                } else {
+                    spitItemStack(itemStack, portal, level, blockPos, false)
+                    return true
                 }
             }
 
@@ -223,11 +266,7 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
             while (aboveItems.hasNext()) {
                 val itemEntity = aboveItems.next()
 
-                if (!ContractItem.matches(portal.contractSlot, itemEntity.item)) {
-                    continue
-                }
-
-                if (addItem(portal, itemEntity)) {
+                if (addInputItem(portal, itemEntity)) {
                     return true
                 }
             }
@@ -235,10 +274,10 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
             return false
         }
 
-        private fun addItem(portal: ContractPortalBlockEntity, itemEntity: ItemEntity): Boolean {
+        private fun addInputItem(portal: ContractPortalBlockEntity, itemEntity: ItemEntity): Boolean {
             var didConsumeAll = false
             val beforeStack = itemEntity.item.copy()
-            val afterStack = addItem(portal, beforeStack)
+            val afterStack = addInputItem(portal, beforeStack)
             if (afterStack.isEmpty) {
                 didConsumeAll = true
                 itemEntity.discard()
@@ -249,25 +288,25 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
             return didConsumeAll
         }
 
-        private fun addItem(portal: ContractPortalBlockEntity, itemStack: ItemStack): ItemStack {
+        private fun addInputItem(portal: ContractPortalBlockEntity, itemStack: ItemStack): ItemStack {
             var mutItemStack = itemStack
             val size = CONTAINER_SIZE
 
             var i = 0
             while (i < size && !mutItemStack.isEmpty) {
-                mutItemStack = tryMoveInItem(portal, mutItemStack, i)
+                mutItemStack = tryMoveInInputItem(portal, mutItemStack, i)
                 ++i
             }
 
             return mutItemStack
         }
 
-        private fun tryMoveInItem(portal: ContractPortalBlockEntity, itemStack: ItemStack, i: Int): ItemStack {
+        private fun tryMoveInInputItem(portal: ContractPortalBlockEntity, itemStack: ItemStack, i: Int): ItemStack {
             var mutItemStack = itemStack
-            val stackAtSlot = portal.getItem(i)
+            val stackAtSlot = portal.getInputItem(i)
             var movedItems = false
             if (stackAtSlot.isEmpty) {
-                portal.setItem(i, mutItemStack)
+                portal.setInputItem(i, mutItemStack)
                 mutItemStack = ItemStack.EMPTY
                 movedItems = true
             } else if (canMergeItems(stackAtSlot, mutItemStack)) {

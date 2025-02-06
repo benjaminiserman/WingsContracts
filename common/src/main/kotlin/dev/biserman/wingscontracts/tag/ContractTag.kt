@@ -63,7 +63,7 @@ class ContractTag(val tag: CompoundTag) {
     val quantityDemanded
         get() = getQuantityDemanded(
             this.levelOneQuantity.get(),
-            this.startLevel.get(),
+            this.level.get(),
             this.quantityGrowthFactor.get(),
             this.countPerUnit.get()
         )
@@ -98,10 +98,10 @@ class ContractTag(val tag: CompoundTag) {
     companion object {
         const val CONTRACT_INFO = "contractInfo"
         fun getQuantityDemanded(
-            levelOneQuantity: Int, startLevel: Int, quantityGrowthFactor: Float,
+            levelOneQuantity: Int, level: Int, quantityGrowthFactor: Float,
             countPerUnit: Int
         ): Int {
-            val quantity = levelOneQuantity + (levelOneQuantity * (startLevel - 1) * quantityGrowthFactor).toInt()
+            val quantity = levelOneQuantity + (levelOneQuantity * (level - 1) * quantityGrowthFactor).toInt()
             return quantity - quantity % countPerUnit
         }
     }
