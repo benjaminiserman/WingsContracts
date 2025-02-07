@@ -29,6 +29,7 @@ import java.util.stream.Collectors
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
     BlockEntity(BlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState), Container {
@@ -153,15 +154,16 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
                         return false
                     }
 
-                    val didConsumeOrSpit = tryConsume(level, portal, blockPos)
+                    val didConsume = tryConsume(portal)
                     val didSuck = suckInItems(level, portal)
                     val didUpdate = ContractItem.tick(portal.contractSlot)
 
-                    portal.setCooldown(10)
-
-                    if (didConsumeOrSpit || didSuck || didUpdate) {
+                    if (didConsume || didSuck || didUpdate) {
+                        portal.setCooldown(5)
                         setChanged(level, blockPos, blockState)
                         return true
+                    } else {
+                        portal.setCooldown(10)
                     }
                 }
 
@@ -181,7 +183,7 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
                         return true
                     }
 
-                    spitItemStack(stackToSpit, portal, level, blockPos, false)
+                    spitItemStack(stackToSpit, level, blockPos, false, max = sqrt(stackToSpit.count.toFloat()).toInt())
                     portal.setCooldown(10)
                     return true
                 }
@@ -194,15 +196,16 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
 
         private fun spitItemStack(
             stackToSpit: ItemStack,
-            portal: ContractPortalBlockEntity,
             level: Level,
             blockPos: BlockPos,
-            denominate: Boolean
+            denominate: Boolean,
+            min: Int = 1,
+            max: Int? = null,
         ) {
             // TO-DO: handle denominations
             val amountToSpit = level.random.nextIntBetweenInclusive(
-                min(5, stackToSpit.count),
-                min(stackToSpit.maxStackSize, stackToSpit.count)
+                min(stackToSpit.maxStackSize, min(min, stackToSpit.count)),
+                min(stackToSpit.maxStackSize, min(max ?: stackToSpit.maxStackSize, stackToSpit.count))
             )
 
             val splitStack = stackToSpit.split(amountToSpit)
@@ -227,33 +230,54 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
             }.collect(Collectors.toList())
         }
 
-        private fun tryConsume(level: Level, portal: ContractPortalBlockEntity, blockPos: BlockPos): Boolean {
+        private fun tryConsume(portal: ContractPortalBlockEntity): Boolean {
+            val contractTag = ContractItem.getBaseTag(portal.contractSlot) ?: return false
+            val rewardItem = contractTag.rewardItem ?: return false
+            val matchingStacks = portal.cachedInput.filter { itemStack ->
+                !itemStack.isEmpty && ContractItem.matches(
+                    portal.contractSlot,
+                    itemStack
+                )
+            }
+            val matchingCount = matchingStacks.sumOf { itemStack -> itemStack.count }
+            val unitCount = matchingCount / contractTag.countPerUnit.get()
+            if (unitCount == 0) {
+                return false
+            }
+
+            val goalAmount = unitCount * contractTag.countPerUnit.get()
+            var amountTaken = 0
             for (itemStack in portal.cachedInput) {
+                if (amountTaken >= goalAmount) {
+                    break
+                }
+
                 if (itemStack.isEmpty) {
                     continue
                 }
 
-                val contractTag = ContractItem.getBaseTag(portal.contractSlot) ?: return false
-                val rewardItem = contractTag.rewardItem ?: return false
-
                 if (ContractItem.matches(portal.contractSlot, itemStack)) {
-                    val rewardsReceived = ContractItem.consume(portal.contractSlot, itemStack)
-                    if (rewardsReceived > 0) {
-                        if (portal.cachedRewards.isEmpty) {
-                            portal.cachedRewards = ItemStack(rewardItem, rewardsReceived)
-                        } else {
-                            portal.cachedRewards.grow(rewardsReceived)
-                        }
-
-                        return true
-                    }
-                } else {
-                    spitItemStack(itemStack, portal, level, blockPos, false)
-                    return true
+                    val amountToTake = min(itemStack.count, goalAmount - amountTaken)
+                    amountTaken += amountToTake
+                    itemStack.shrink(amountToTake)
                 }
             }
 
-            return false
+            val rewardsReceived = unitCount * contractTag.unitPrice.get()
+            if (portal.cachedRewards.isEmpty) {
+                portal.cachedRewards = ItemStack(rewardItem, rewardsReceived)
+            } else {
+                portal.cachedRewards.grow(rewardsReceived)
+            }
+
+            contractTag.quantityFulfilled.put(
+                contractTag.quantityFulfilled.get() + amountTaken
+            )
+            contractTag.quantityFulfilledEver.put(
+                contractTag.quantityFulfilledEver.get() + amountTaken
+            )
+
+            return true
         }
 
         private fun suckInItems(level: Level, portal: ContractPortalBlockEntity): Boolean {
@@ -266,8 +290,12 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
             while (aboveItems.hasNext()) {
                 val itemEntity = aboveItems.next()
 
-                if (addInputItem(portal, itemEntity)) {
-                    return true
+                if (ContractItem.matches(portal.contractSlot, itemEntity.item)) {
+                    if (addInputItem(portal, itemEntity)) {
+                        return true
+                    }
+                } else {
+                    spitItemStack(itemEntity.item, level, portal.blockPos, false)
                 }
             }
 

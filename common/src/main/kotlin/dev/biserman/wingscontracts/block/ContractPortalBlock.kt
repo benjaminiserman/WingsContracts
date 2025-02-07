@@ -153,13 +153,21 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
                     blockPos.z.toDouble(),
                     blockEntity.contractSlot
                 )
-                Containers.dropItemStack(
-                    level,
-                    blockPos.x.toDouble(),
-                    blockPos.y.toDouble(),
-                    blockPos.z.toDouble(),
-                    blockEntity.cachedRewards
-                )
+                while (blockEntity.cachedRewards.count > 0) {
+                    val splitStack = blockEntity.cachedRewards.split(
+                        min(
+                            level.random.nextInt(21) + 10,
+                            blockEntity.cachedRewards.maxStackSize
+                        )
+                    )
+                    Containers.dropItemStack(
+                        level,
+                        blockPos.x.toDouble(),
+                        blockPos.y.toDouble(),
+                        blockPos.z.toDouble(),
+                        splitStack
+                    )
+                }
                 level.updateNeighbourForOutputSignal(blockPos, this)
                 @Suppress("DEPRECATION")
                 super.onRemove(blockState, level, blockPos, blockState2, bl)
