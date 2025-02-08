@@ -111,6 +111,7 @@ class ContractItem(properties: Properties) : Item(properties) {
 
         if (Screen.hasShiftDown()) {
             components.add(Component.literal("Max Level: ${contractTag.maxLevel.get()}"))
+            components.add(Component.literal(("Total Quantity Fulfilled Ever: ${contractTag.quantityFulfilledEver.get()}")))
             components.add(Component.literal("Base Quantity: ${contractTag.levelOneQuantity.get()}"))
             components.add(Component.literal("Quantity Growth Factor: ${contractTag.quantityGrowthFactor.get()}"))
             val startTime = contractTag.startTime.get()
@@ -242,32 +243,6 @@ class ContractItem(properties: Properties) : Item(properties) {
             val quantityFulfilled = contractTag.quantityFulfilled.get()
 
             return contractTag.quantityDemanded - quantityFulfilled
-        }
-
-
-        fun consume(contract: ItemStack, itemStack: ItemStack): Int {
-            val remainingQuantity = remainingQuantity(contract)
-            val contractTag = getBaseTag(contract) ?: return 0
-            val countPerUnit = contractTag.countPerUnit.get()
-
-            if (matches(contract, itemStack) && remainingQuantity >= countPerUnit) {
-                val countWithoutRemainder = (itemStack.count / countPerUnit) * countPerUnit
-                val amountConsumed = min(countWithoutRemainder, remainingQuantity)
-                itemStack.shrink(amountConsumed)
-                contractTag.quantityFulfilled.put(
-                    contractTag.quantityFulfilled.get() + amountConsumed
-                )
-                contractTag.quantityFulfilledEver.put(
-                    contractTag.quantityFulfilledEver.get() + amountConsumed
-                )
-                itemStack.addTagElement(ContractTag.CONTRACT_INFO, contractTag.tag)
-
-                val unitsConsumed = ceil(amountConsumed.toDouble() / countPerUnit).toInt()
-                val rewardsReceived = unitsConsumed * contractTag.unitPrice.get()
-                return rewardsReceived
-            }
-
-            return 0
         }
     }
 }
