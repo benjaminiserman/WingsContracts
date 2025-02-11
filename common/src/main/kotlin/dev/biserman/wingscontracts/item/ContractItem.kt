@@ -2,6 +2,7 @@ package dev.biserman.wingscontracts.item
 
 import dev.biserman.wingscontracts.registry.ItemRegistry
 import dev.biserman.wingscontracts.tag.ContractTag
+import dev.biserman.wingscontracts.tag.ContractTagHelper
 import dev.biserman.wingscontracts.util.DenominationHelper
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.core.registries.BuiltInRegistries
@@ -157,6 +158,10 @@ class ContractItem(properties: Properties) : Item(properties) {
             maxLevel: Int,
             author: String?
         ): ItemStack {
+            val test = CompoundTag()
+
+            ContractTagHelper.author.get
+
             val contractTag = ContractTag(CompoundTag())
 
             if (targetItem != null) {

@@ -1,46 +1,44 @@
 package dev.biserman.wingscontracts.api
 
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
 
-class AbyssalContract(
-    targetItems: List<Item>,
-    targetTags: List<TagKey<Item>>,
+@Suppress("MemberVisibilityCanBePrivate")
+class AbyssalContract : Contract() {
+    val rewardItem: Item
+    val unitPrice: Int
 
-    startTime: Long,
-    currentCycleStart: Long,
-    cycleDurationMs: Long,
-
-    countPerUnit: Int,
-    baseUnitsDemanded: Int,
-    unitsFulfilled: Int,
-    unitsFulfilledEver: Long,
-
-    isActive: Boolean,
-    author: String,
-
-    val rewardItem: Item,
-    val unitPrice: Int,
-
-    var level: Int,
-    val startLevel: Int,
-    val levelOneQuantity: Int,
-    val quantityGrowthFactor: Double,
+    var level: Int
+    val levelOneQuantity: Int
+    val quantityGrowthFactor: Double
     val maxLevel: Int
-) : Contract(
-    targetItems,
-    targetTags,
-    startTime,
-    currentCycleStart,
-    cycleDurationMs,
-    countPerUnit,
-    baseUnitsDemanded,
-    unitsFulfilled,
-    unitsFulfilledEver,
-    isActive,
-    author
-) {
-    override fun getRewardsForUnits(units: Item) {
-        TODO("Not yet implemented")
+
+    override val displayName: String
+        get() = if (level > 0) {
+            "Level $level $targetName Contract"
+        } else {
+            super.displayName
+        }
+
+    override val unitsDemanded: Int
+        get() {
+            val quantity = levelOneQuantity + (levelOneQuantity * (level - 1) * quantityGrowthFactor).toInt()
+            return quantity - quantity % countPerUnit
+        }
+
+    override fun onContractFulfilled() {
+        if (level < maxLevel) {
+            level += 1
+        }
+    }
+
+    override fun getRewardsForUnits(units: Int) = ItemStack(rewardItem, unitPrice * units)
+
+    companion object {
+        fun load(tag: CompoundTag) {
+            Contract.load(tag)
+        }
     }
 }

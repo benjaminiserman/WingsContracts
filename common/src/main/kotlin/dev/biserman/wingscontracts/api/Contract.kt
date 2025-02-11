@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.core.NonNullList
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
@@ -17,22 +18,21 @@ import java.util.*
 import kotlin.math.min
 
 @Suppress("MemberVisibilityCanBePrivate")
-abstract class Contract(
-    val targetItems: List<Item>,
-    val targetTags: List<TagKey<Item>>,
+abstract class Contract {
+    val targetItems: MutableList<Item> = mutableListOf()
+    val targetTags: MutableList<TagKey<Item>> = mutableListOf()
 
-    val startTime: Long,
-    var currentCycleStart: Long,
-    var cycleDurationMs: Long,
+    var startTime: Long = System.currentTimeMillis()
+    var currentCycleStart: Long = System.currentTimeMillis()
+    var cycleDurationMs: Long = 1000L * 60 * 5
 
-    val countPerUnit: Int,
-    val baseUnitsDemanded: Int,
-    var unitsFulfilled: Int,
-    var unitsFulfilledEver: Long,
+    var countPerUnit: Int = 1
+    var baseUnitsDemanded: Int = 16
+    var unitsFulfilled: Int = 0
+    var unitsFulfilledEver: Long = 0
 
-    var isActive: Boolean,
-    val author: String
-) {
+    var isActive: Boolean = true
+    var author: String = ""
     open val unitsDemanded = baseUnitsDemanded
 
     fun matches(itemStack: ItemStack): Boolean {
@@ -48,12 +48,10 @@ abstract class Contract(
     }
 
     val allMatchingItems by lazy {
-        targetItems.map { it.defaultInstance }.plus(
-            targetTags
-                .flatMap {
-                    BuiltInRegistries.ITEM.getTagOrEmpty(it)
-                        .map { holder -> holder.value().defaultInstance }
-                })
+        targetItems.map { it.defaultInstance }
+            .plus(targetTags.flatMap {
+                BuiltInRegistries.ITEM.getTagOrEmpty(it).map { holder -> holder.value().defaultInstance }
+            })
     }
 
     open val targetName by lazy {
@@ -81,9 +79,14 @@ abstract class Contract(
             return false
         }
 
-        if (cycleDurationMs < 0 && unitsFulfilled >= unitsDemanded) {
-            onQuantityFulfilled()
-            isActive = false
+        if (cycleDurationMs <= 0) {
+            if (unitsFulfilled >= unitsDemanded) {
+                onContractFulfilled()
+                isActive = false
+                return true
+            } else {
+                return false
+            }
         }
 
         val currentTime = System.currentTimeMillis()
@@ -98,14 +101,14 @@ abstract class Contract(
 
     open fun reset(newCycleStart: Long) {
         if (unitsFulfilled >= unitsDemanded) {
-            onQuantityFulfilled()
+            onContractFulfilled()
         }
 
         currentCycleStart = newCycleStart
         unitsFulfilled = 0
     }
 
-    open fun onQuantityFulfilled() {}
+    open fun onContractFulfilled() {}
 
     open val displayName get() = "$targetName Contract"
 
@@ -119,9 +122,10 @@ abstract class Contract(
     open fun getTimeInfo(): List<Component> {
         val components = mutableListOf<Component>()
         val nextCycleStart = currentCycleStart + cycleDurationMs
-        val timeRemaining = DenominationHelper
-            .denominate(nextCycleStart - System.currentTimeMillis(), DenominationHelper.timeDenominationsWithoutMs)
-            .joinToString(separator = ", ") { kvp ->
+        val timeRemaining = DenominationHelper.denominate(
+                nextCycleStart - System.currentTimeMillis(),
+                DenominationHelper.timeDenominationsWithoutMs
+            ).joinToString(separator = ", ") { kvp ->
                 "${kvp.second} ${kvp.first}${
                     if (kvp.second == 1) {
                         ""
@@ -144,8 +148,7 @@ abstract class Contract(
     }
 
     open fun getExtraInfo(
-        showExtraInfo: Boolean,
-        extraInfoMessage: String
+        showExtraInfo: Boolean, extraInfoMessage: String
     ): List<Component> {
         val components = mutableListOf<Component>()
         if (showExtraInfo) {
@@ -206,7 +209,7 @@ abstract class Contract(
         return amountTaken
     }
 
-    abstract fun getRewardsForUnits(units: Item)
+    abstract fun getRewardsForUnits(units: Int): ItemStack
 
     open fun portalRender(
         context: BlockEntityRendererProvider.Context,
@@ -217,12 +220,12 @@ abstract class Contract(
         poseStack: PoseStack,
         multiBufferSource: MultiBufferSource
     ) = ContractRenderer.render(
-        context,
-        contract,
-        blockEntity,
-        translate,
-        partialTick,
-        poseStack,
-        multiBufferSource
+        context, contract, blockEntity, translate, partialTick, poseStack, multiBufferSource
     )
+
+    companion object {
+        fun load(tag: CompoundTag) {
+
+        }
+    }
 }
