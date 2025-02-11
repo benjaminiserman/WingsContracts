@@ -107,7 +107,7 @@ abstract class Contract(
 
     open fun onQuantityFulfilled() {}
 
-    open val displayName get() = targetName
+    open val displayName get() = "$targetName Contract"
 
     open fun getBasicInfo(): List<Component> {
         val components = mutableListOf<Component>()
