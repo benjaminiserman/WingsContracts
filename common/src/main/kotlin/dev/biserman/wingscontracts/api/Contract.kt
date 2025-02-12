@@ -3,6 +3,10 @@ package dev.biserman.wingscontracts.api
 import com.mojang.blaze3d.vertex.PoseStack
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.client.renderer.ContractRenderer
+import dev.biserman.wingscontracts.tag.ContractTag
+import dev.biserman.wingscontracts.tag.ContractTagHelper.targetItemKeys
+import dev.biserman.wingscontracts.tag.ContractTagHelper.targetItems
+import dev.biserman.wingscontracts.tag.ContractTagHelper.targetTags
 import dev.biserman.wingscontracts.util.DenominationHelper
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
@@ -18,21 +22,22 @@ import java.util.*
 import kotlin.math.min
 
 @Suppress("MemberVisibilityCanBePrivate")
-abstract class Contract {
-    val targetItems: MutableList<Item> = mutableListOf()
-    val targetTags: MutableList<TagKey<Item>> = mutableListOf()
+abstract class Contract(
+    val targetItems: List<Item> = listOf(),
+    val targetTags: List<TagKey<Item>> = listOf(),
 
-    var startTime: Long = System.currentTimeMillis()
-    var currentCycleStart: Long = System.currentTimeMillis()
-    var cycleDurationMs: Long = 1000L * 60 * 5
+    val startTime: Long = System.currentTimeMillis(),
+    var currentCycleStart: Long = System.currentTimeMillis(),
+    val cycleDurationMs: Long = 1000L * 60 * 5,
 
-    var countPerUnit: Int = 1
-    var baseUnitsDemanded: Int = 16
-    var unitsFulfilled: Int = 0
-    var unitsFulfilledEver: Long = 0
+    val countPerUnit: Int = 1,
+    val baseUnitsDemanded: Int = 16,
+    var unitsFulfilled: Int = 0,
+    var unitsFulfilledEver: Long = 0,
 
-    var isActive: Boolean = true
-    var author: String = ""
+    var isActive: Boolean = true,
+    val author: String = ""
+) {
     open val unitsDemanded = baseUnitsDemanded
 
     fun matches(itemStack: ItemStack): Boolean {
@@ -223,9 +228,25 @@ abstract class Contract {
         context, contract, blockEntity, translate, partialTick, poseStack, multiBufferSource
     )
 
-    companion object {
-        fun load(tag: CompoundTag) {
+    open fun save(contractStack: ItemStack) {
+        val tag = ContractTag.from(contractStack) ?: return
 
-        }
+        tag.targetItemKeys = targetItems.map {  }
+
+
+        val targetItems: List<Item> = listOf(),
+        val targetTags: List<TagKey<Item>> = listOf(),
+
+        val startTime: Long = System.currentTimeMillis(),
+        var currentCycleStart: Long = System.currentTimeMillis(),
+        val cycleDurationMs: Long = 1000L * 60 * 5,
+
+        val countPerUnit: Int = 1,
+        val baseUnitsDemanded: Int = 16,
+        var unitsFulfilled: Int = 0,
+        var unitsFulfilledEver: Long = 0,
+
+        var isActive: Boolean = true,
+        val author: String = ""
     }
 }

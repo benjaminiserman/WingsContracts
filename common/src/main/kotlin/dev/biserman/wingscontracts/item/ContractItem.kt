@@ -1,7 +1,6 @@
 package dev.biserman.wingscontracts.item
 
 import dev.biserman.wingscontracts.registry.ItemRegistry
-import dev.biserman.wingscontracts.tag.ContractTag
 import dev.biserman.wingscontracts.tag.ContractTagHelper
 import dev.biserman.wingscontracts.util.DenominationHelper
 import net.minecraft.client.gui.screens.Screen
@@ -19,7 +18,6 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.level.Level
 import java.util.*
-import kotlin.contracts.contract
 import kotlin.math.ceil
 import kotlin.math.min
 
