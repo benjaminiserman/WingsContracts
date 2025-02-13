@@ -4,25 +4,31 @@ import com.mojang.blaze3d.vertex.PoseStack
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.client.renderer.ContractRenderer
 import dev.biserman.wingscontracts.tag.ContractTag
-import dev.biserman.wingscontracts.tag.ContractTagHelper.targetItemKeys
-import dev.biserman.wingscontracts.tag.ContractTagHelper.targetItems
-import dev.biserman.wingscontracts.tag.ContractTagHelper.targetTags
+import dev.biserman.wingscontracts.tag.ContractTagHelper.boolean
+import dev.biserman.wingscontracts.tag.ContractTagHelper.csv
+import dev.biserman.wingscontracts.tag.ContractTagHelper.int
+import dev.biserman.wingscontracts.tag.ContractTagHelper.long
+import dev.biserman.wingscontracts.tag.ContractTagHelper.string
 import dev.biserman.wingscontracts.util.DenominationHelper
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.core.NonNullList
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.core.registries.Registries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import org.joml.Vector3d
 import java.util.*
 import kotlin.math.min
 
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class Contract(
+    val type: Int = 0,
     val targetItems: List<Item> = listOf(),
     val targetTags: List<TagKey<Item>> = listOf(),
 
@@ -39,6 +45,7 @@ abstract class Contract(
     val author: String = ""
 ) {
     open val unitsDemanded = baseUnitsDemanded
+
 
     fun matches(itemStack: ItemStack): Boolean {
         if (targetTags.isNotEmpty()) {
@@ -128,17 +135,17 @@ abstract class Contract(
         val components = mutableListOf<Component>()
         val nextCycleStart = currentCycleStart + cycleDurationMs
         val timeRemaining = DenominationHelper.denominate(
-                nextCycleStart - System.currentTimeMillis(),
-                DenominationHelper.timeDenominationsWithoutMs
-            ).joinToString(separator = ", ") { kvp ->
-                "${kvp.second} ${kvp.first}${
-                    if (kvp.second == 1) {
-                        ""
-                    } else {
-                        "s"
-                    }
-                }"
-            }
+            nextCycleStart - System.currentTimeMillis(),
+            DenominationHelper.timeDenominationsWithoutMs
+        ).joinToString(separator = ", ") { kvp ->
+            "${kvp.second} ${kvp.first}${
+                if (kvp.second == 1) {
+                    ""
+                } else {
+                    "s"
+                }
+            }"
+        }
         if (Date(nextCycleStart) <= Date()) {
             components.add(Component.literal("Cycle Complete!"))
             components.add(Component.literal("Completed at ${Date(nextCycleStart)}"))
@@ -228,25 +235,74 @@ abstract class Contract(
         context, contract, blockEntity, translate, partialTick, poseStack, multiBufferSource
     )
 
-    open fun save(contractStack: ItemStack) {
-        val tag = ContractTag.from(contractStack) ?: return
+    open fun save(nbt: CompoundTag? = null): ContractTag {
+        val tag = ContractTag(nbt ?: CompoundTag())
 
-        tag.targetItemKeys = targetItems.map {  }
+        tag.type = type
+        tag.targetItems = targetItems
+        tag.targetTags = targetTags
+        tag.startTime = startTime
+        tag.currentCycleStart = currentCycleStart
+        tag.cycleDurationMs = cycleDurationMs
+        tag.countPerUnit = countPerUnit
+        tag.baseUnitsDemanded = baseUnitsDemanded
+        tag.unitsFulfilled = unitsFulfilled
+        tag.unitsFulfilledEver = unitsFulfilledEver
+        tag.isActive = isActive
+        tag.author = author
+
+        return tag
+    }
+
+    companion object {
+        var (ContractTag).type by int()
+
+        var (ContractTag).targetItemKeys by csv("targetItems")
+        var (ContractTag).targetTagKeys by csv("targetTags")
+
+        var (ContractTag).startTime by long()
+        var (ContractTag).currentCycleStart by long()
+        var (ContractTag).cycleDurationMs by long()
+
+        var (ContractTag).countPerUnit by int()
+        var (ContractTag).baseUnitsDemanded by int()
+        var (ContractTag).unitsFulfilled by int()
+        var (ContractTag).unitsFulfilledEver by long()
+
+        var (ContractTag).isActive by boolean()
+        var (ContractTag).author by string()
 
 
-        val targetItems: List<Item> = listOf(),
-        val targetTags: List<TagKey<Item>> = listOf(),
+        var (ContractTag).targetTags: List<TagKey<Item>>?
+            get() {
+                val tagKeys = targetTagKeys ?: return null
+                if (tagKeys.isNotEmpty()) {
+                    return tagKeys.map {
+                        TagKey.create(
+                            Registries.ITEM, ResourceLocation.tryParse(it) ?: ResourceLocation("")
+                        )
+                    }
+                }
 
-        val startTime: Long = System.currentTimeMillis(),
-        var currentCycleStart: Long = System.currentTimeMillis(),
-        val cycleDurationMs: Long = 1000L * 60 * 5,
+                return null
+            }
+            set(value) {
+                targetTagKeys = value?.map { it.registry.location().toString() }
+            }
 
-        val countPerUnit: Int = 1,
-        val baseUnitsDemanded: Int = 16,
-        var unitsFulfilled: Int = 0,
-        var unitsFulfilledEver: Long = 0,
+        var (ContractTag).targetItems: List<Item>?
+            get() {
+                val targetItems = targetItemKeys ?: return null
+                if (targetItems.isNotEmpty()) {
+                    return targetItems.map {
+                        BuiltInRegistries.ITEM[ResourceLocation.tryParse(it)]
+                    }
+                }
 
-        var isActive: Boolean = true,
-        val author: String = ""
+                return null
+            }
+            set(value) {
+                targetItemKeys = value?.mapNotNull { it.`arch$registryName`()?.path }
+            }
     }
 }

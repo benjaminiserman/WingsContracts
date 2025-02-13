@@ -1,54 +1,14 @@
 package dev.biserman.wingscontracts.tag
 
-import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.core.registries.Registries
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.resources.ResourceLocation
-import net.minecraft.tags.TagKey
-import net.minecraft.world.item.Item
-import net.minecraft.world.item.ItemStack
 import kotlin.reflect.KProperty
 
 @JvmInline
-value class ContractTag(val tag: CompoundTag) {
-    companion object {
-        fun from(stack: ItemStack): ContractTag? {
-            return ContractTag(stack.tag?.getCompound(ContractTagHelper.CONTRACT_INFO) ?: return null)
-        }
-
-        fun from(tag: CompoundTag): ContractTag? {
-            return ContractTag(tag.getCompound(ContractTagHelper.CONTRACT_INFO) ?: return null)
-        }
-    }
-}
+value class ContractTag(val tag: CompoundTag)
 
 @Suppress("MemberVisibilityCanBePrivate")
 object ContractTagHelper {
-    const val CONTRACT_INFO = "contractInfo"
-
-    // Shared Properties
-    var (ContractTag).targetItemKeys by csv("targetItems")
-    var (ContractTag).targetTagKeys by csv("targetTags")
-
-    var (ContractTag).startTime by long()
-    var (ContractTag).currentCycleStart by long()
-    var (ContractTag).cycleDurationMs by long()
-
-    var (ContractTag).countPerUnit by int()
-    var (ContractTag).baseUnitsDemanded by int()
-    var (ContractTag).unitsFulfilled by int()
-    var (ContractTag).unitsFulfilledEver by long()
-
-    var (ContractTag).isActive by boolean()
-    var (ContractTag).author by string()
-
-    // Abyssal Contract Properties
-    var (ContractTag).rewardItemKey by string("rewardItem")
-    var (ContractTag).unitPrice by int()
-
-    var (ContractTag).level by int()
-    var (ContractTag).quantityGrowthFactor by double()
-    var (ContractTag).maxLevel by int()
+    const val CONTRACT_ID = "contractID"
 
     class Property<T>(
         val key: String?, val getFn: (CompoundTag).(String) -> T?, val putFn: (CompoundTag).(String, T) -> Unit
@@ -83,46 +43,4 @@ object ContractTagHelper {
             }
         }
     }
-
-    var (ContractTag).targetTags: List<TagKey<Item>>?
-        get() {
-            val tagKeys = targetTagKeys ?: return null
-            if (tagKeys.isNotEmpty()) {
-                return tagKeys.map {
-                    TagKey.create(
-                        Registries.ITEM, ResourceLocation.tryParse(it) ?: ResourceLocation("")
-                    )
-                }
-            }
-
-            return null
-        }
-        set(value) {
-            targetTagKeys = value?.map { it.registry.location().toString() }
-        }
-
-    var (ContractTag).targetItems: List<Item>?
-        get() {
-            val targetItems = targetItemKeys ?: return null
-            if (targetItems.isNotEmpty()) {
-                return targetItems.map {
-                    BuiltInRegistries.ITEM[ResourceLocation.tryParse(it)]
-                }
-            }
-
-            return null
-        }
-        set(value) {
-            targetItems = value?.map { it.  .registry.location().toString() }
-        }
-
-    val (ContractTag).rewardItem: Item?
-        get() {
-            val rewardItem = rewardItemKey ?: return null
-            if (rewardItem.isNotEmpty()) {
-                return BuiltInRegistries.ITEM[ResourceLocation.tryParse(rewardItem)]
-            }
-
-            return null
-        }
 }
