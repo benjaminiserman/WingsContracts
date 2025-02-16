@@ -3,6 +3,7 @@
 package dev.biserman.wingscontracts.block
 
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
+import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.item.ContractItem
 import dev.biserman.wingscontracts.registry.BlockEntityRegistry
 import net.minecraft.core.BlockPos
@@ -180,10 +181,8 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
         if (blockState.getValue(MODE) == ContractPortalMode.LIT) {
             val portal = level.getBlockEntity(blockPos) as? ContractPortalBlockEntity
                 ?: return 0
-            val contractTag = ContractItem.getBaseTag(portal.contractSlot) ?: return 0
-            val quantityFulfilled = contractTag.quantityFulfilled.get()
-            val quantityDemanded = contractTag.quantityDemanded
-            return min(((quantityFulfilled.toFloat() / quantityDemanded.toFloat()) * 15).toInt(), 15)
+            val contract = LoadedContracts[portal.contractSlot] ?: return 0
+            return min(((contract.unitsFulfilled.toFloat() / contract.unitsDemanded.toFloat()) * 15).toInt(), 15)
         }
 
         return 0

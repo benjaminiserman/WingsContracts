@@ -11,10 +11,11 @@ import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import java.util.*
 
 @Suppress("MemberVisibilityCanBePrivate")
 class AbyssalContract(
-    type: Int,
+    id: UUID,
     targetItems: List<Item>,
     targetTags: List<TagKey<Item>>,
 
@@ -28,6 +29,7 @@ class AbyssalContract(
     unitsFulfilledEver: Long,
 
     isActive: Boolean,
+    isLoaded: Boolean,
     author: String,
 
     val rewardItem: Item,
@@ -37,7 +39,8 @@ class AbyssalContract(
     val quantityGrowthFactor: Double,
     val maxLevel: Int
 ) : Contract(
-    type,
+    1,
+    id,
     targetItems,
     targetTags,
     startTime,
@@ -48,6 +51,7 @@ class AbyssalContract(
     unitsFulfilled,
     unitsFulfilledEver,
     isActive,
+    isLoaded,
     author
 ) {
     override val displayName: String
@@ -63,9 +67,10 @@ class AbyssalContract(
             return quantity - quantity % countPerUnit
         }
 
-    override fun onContractFulfilled() {
+    override fun onContractFulfilled(tag: ContractTag?) {
         if (level < maxLevel) {
             level += 1
+            tag?.level = level
         }
     }
 
@@ -112,7 +117,7 @@ class AbyssalContract(
             }
 
             return AbyssalContract(
-                type = 1,
+                id = contract.id ?: UUID.randomUUID(),
                 targetItems = contract.targetItems ?: defaultTargetItems,
                 targetTags = contract.targetTags ?: listOf(),
                 startTime = contract.startTime ?: System.currentTimeMillis(),
@@ -123,6 +128,7 @@ class AbyssalContract(
                 unitsFulfilled = contract.unitsFulfilled ?: 0,
                 unitsFulfilledEver = contract.unitsFulfilledEver ?: 0,
                 isActive = contract.isActive ?: true,
+                isLoaded = contract.isLoaded ?: true,
                 author = contract.author ?: "",
                 rewardItem = contract.rewardItem ?: Items.EMERALD,
                 unitPrice = contract.unitPrice ?: 1,

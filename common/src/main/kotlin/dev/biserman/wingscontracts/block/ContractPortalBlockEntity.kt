@@ -1,9 +1,14 @@
 package dev.biserman.wingscontracts.block
 
+import dev.biserman.wingscontracts.api.Contract
+import dev.biserman.wingscontracts.api.Contract.Companion.unitsFulfilled
+import dev.biserman.wingscontracts.api.Contract.Companion.unitsFulfilledEver
 import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
-import dev.biserman.wingscontracts.item.ContractItem
+import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.registry.BlockEntityRegistry
+import dev.biserman.wingscontracts.tag.ContractTag
+import dev.biserman.wingscontracts.tag.ContractTagHelper
 import net.minecraft.core.BlockPos
 import net.minecraft.core.NonNullList
 import net.minecraft.nbt.CompoundTag
@@ -38,9 +43,9 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
     var cachedRewards: ItemStack
     var cachedInput: NonNullList<ItemStack>
 
-    fun getLevelX(): Double = worldPosition.x.toDouble() + 0.5
-    fun getLevelY(): Double = worldPosition.y.toDouble() + 0.5
-    fun getLevelZ(): Double = worldPosition.z.toDouble() + 0.5
+    private fun getLevelX(): Double = worldPosition.x.toDouble() + 0.5
+    private fun getLevelY(): Double = worldPosition.y.toDouble() + 0.5
+    private fun getLevelZ(): Double = worldPosition.z.toDouble() + 0.5
 
     init {
         this.cooldownTime = -1
@@ -125,8 +130,8 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
 
     override fun stillValid(player: Player) = level?.getBlockEntity(this.blockPos) == this
 
-    fun getInputItem(i: Int): ItemStack = cachedInput[i]
-    fun setInputItem(i: Int, itemStack: ItemStack) {
+    private fun getInputItem(i: Int): ItemStack = cachedInput[i]
+    private fun setInputItem(i: Int, itemStack: ItemStack) {
         cachedInput[i] = itemStack
         if (itemStack.count > MAX_STACK_SIZE) {
             itemStack.count = MAX_STACK_SIZE
@@ -150,13 +155,12 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
             when (portal.blockState.getValue(MODE)) {
                 ContractPortalMode.UNLIT -> {}
                 ContractPortalMode.LIT -> {
-                    if (portal.contractSlot.isEmpty) {
-                        return false
-                    }
+                    val contractTag = ContractTagHelper.getContractTag(portal.contractSlot) ?: return false
+                    val contract = LoadedContracts[contractTag] ?: return false
 
-                    val didConsume = portal.tryConsume()
-                    val didSuck = portal.suckInItems(level)
-                    val didUpdate = ContractItem.tick(portal.contractSlot)
+                    val didConsume = portal.tryConsume(contract, contractTag)
+                    val didSuck = portal.suckInItems(contract, level)
+                    val didUpdate = contract.tryUpdateTick(contractTag)
 
                     if (didConsume || didSuck || didUpdate) {
                         portal.setCooldown(5)
@@ -233,7 +237,7 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
         private fun getSuckShape(): VoxelShape = SUCK
     }
 
-    private fun suckInItems(level: Level): Boolean {
+    private fun suckInItems(contract: Contract, level: Level): Boolean {
         val aboveItems = getItemsAtAndAbove(level).iterator()
 
         if (inventoryFull()) {
@@ -243,7 +247,7 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
         while (aboveItems.hasNext()) {
             val itemEntity = aboveItems.next()
 
-            if (ContractItem.matches(contractSlot, itemEntity.item)) {
+            if (contract.matches(itemEntity.item)) {
                 if (addInputItem(itemEntity)) {
                     return true
                 }
@@ -307,52 +311,17 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
         return mutItemStack
     }
 
-    private fun tryConsume(): Boolean {
-        val contractTag = ContractItem.getBaseTag(contractSlot) ?: return false
-        val rewardItem = contractTag.rewardItem ?: return false
-        val matchingStacks = cachedInput.filter { itemStack ->
-            !itemStack.isEmpty && ContractItem.matches(
-                contractSlot,
-                itemStack
-            )
-        }
-        val matchingCount = matchingStacks.sumOf { itemStack -> itemStack.count }
-        val unitCount = matchingCount / contractTag.countPerUnit.get()
-        if (unitCount == 0) {
-            return false
-        }
-
-        val goalAmount = unitCount * contractTag.countPerUnit.get()
-        var amountTaken = 0
-        for (itemStack in cachedInput) {
-            if (amountTaken >= goalAmount) {
-                break
-            }
-
-            if (itemStack.isEmpty) {
-                continue
-            }
-
-            if (ContractItem.matches(contractSlot, itemStack)) {
-                val amountToTake = min(itemStack.count, goalAmount - amountTaken)
-                amountTaken += amountToTake
-                itemStack.shrink(amountToTake)
-            }
-        }
-
-        val rewardsReceived = unitCount * contractTag.unitPrice.get()
-        if (cachedRewards.isEmpty) {
-            cachedRewards = ItemStack(rewardItem, rewardsReceived)
+    private fun tryConsume(contract: Contract, contractTag: ContractTag): Boolean {
+        val unitsConsumed = contract.tryConsumeFromItems(contractTag, cachedInput)
+        val rewards = contract.getRewardsForUnits(unitsConsumed)
+        if (cachedRewards.isEmpty || rewards.item != cachedRewards.item) {
+            cachedRewards = rewards
         } else {
-            cachedRewards.grow(rewardsReceived)
+            cachedRewards.grow(rewards.count)
         }
 
-        contractTag.quantityFulfilled.put(
-            contractTag.quantityFulfilled.get() + amountTaken
-        )
-        contractTag.quantityFulfilledEver.put(
-            contractTag.quantityFulfilledEver.get() + amountTaken
-        )
+        contractTag.unitsFulfilled = contract.unitsFulfilled
+        contractTag.unitsFulfilledEver = contract.unitsFulfilledEver
 
         return true
     }

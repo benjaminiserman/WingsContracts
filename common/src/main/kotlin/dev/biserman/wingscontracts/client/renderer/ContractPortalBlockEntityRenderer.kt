@@ -3,12 +3,13 @@ package dev.biserman.wingscontracts.client.renderer
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.math.Axis
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
-import dev.biserman.wingscontracts.item.ContractItem
+import dev.biserman.wingscontracts.data.LoadedContracts
 import net.minecraft.client.renderer.LightTexture
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.client.renderer.texture.OverlayTexture
+import net.minecraft.util.Mth
 import net.minecraft.world.item.ItemDisplayContext
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.LightLayer
@@ -19,17 +20,19 @@ class ContractPortalBlockEntityRenderer(private val context: BlockEntityRenderer
         blockEntity: ContractPortalBlockEntity, partialTick: Float, poseStack: PoseStack,
         multiBufferSource: MultiBufferSource, packedLight: Int, packedOverlay: Int
     ) {
-        val contractTag = ContractItem.getBaseTag(blockEntity.contractSlot) ?: return
-
-        val showItem = ItemStack(contractTag.targetItem ?: return)
         val level = blockEntity.level ?: return
+        val contract = LoadedContracts[blockEntity.contractSlot] ?: return
 
         val blockPos = blockEntity.blockPos.above()
         val relativeGameTime = level.gameTime + partialTick
         val rotation = relativeGameTime * 2
 
+        val showItem =
+            if (contract.allMatchingItems.isEmpty()) ItemStack.EMPTY
+            else contract.allMatchingItems[Mth.floor(relativeGameTime / 30.0f) % contract.allMatchingItems.size]
+
         poseStack.pushPose()
-        poseStack.translate(0.5, 1.3, 0.5)
+        poseStack.translate(0.5, 1.6, 0.5)
         poseStack.mulPose(Axis.YP.rotationDegrees(rotation))
         context.itemRenderer.renderStatic(
             showItem, ItemDisplayContext.GROUND,

@@ -1,15 +1,14 @@
 package dev.biserman.wingscontracts.command
 
-import com.mojang.brigadier.arguments.FloatArgumentType
+import com.mojang.brigadier.arguments.DoubleArgumentType
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
-import dev.biserman.wingscontracts.item.ContractItem.Companion.createContract
+import dev.biserman.wingscontracts.api.AbyssalContract
 import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.commands.arguments.item.ItemArgument
-import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundEvents
@@ -25,33 +24,21 @@ object ContractCommand {
                 .then(Commands.argument("countPerUnit",IntegerArgumentType.integer())
                 .then(Commands.argument("rewardItem",ItemArgument.item(commandBuildContext))
                 .then(Commands.argument("unitPrice", IntegerArgumentType.integer())
-                .then(Commands.argument("levelOneQuantity", IntegerArgumentType.integer())
-                .then(Commands.argument("quantityGrowthFactor", FloatArgumentType.floatArg())
+                .then(Commands.argument("baseUnitsDemanded", IntegerArgumentType.integer())
+                .then(Commands.argument("quantityGrowthFactor", DoubleArgumentType.doubleArg())
                 .then(Commands.argument("maxLevel", IntegerArgumentType.integer())
                     .executes { context: CommandContext<CommandSourceStack> ->
-                        val targetItem = BuiltInRegistries.ITEM
-                            .getKey(
-                                ItemArgument
-                                    .getItem(context, "targetItem")
-                                    .item
-                            )
-                            .toString()
-                        val rewardItem = BuiltInRegistries.ITEM
-                            .getKey(
-                                ItemArgument
-                                    .getItem(context, "rewardItem")
-                                    .item
-                            )
-                            .toString()
+                        val targetItem = ItemArgument.getItem(context, "targetItem").item
+                        val rewardItem = ItemArgument.getItem(context, "rewardItem").item
 
                         val unitPrice = IntegerArgumentType
                             .getInteger(context, "unitPrice")
                         val countPerUnit = IntegerArgumentType
                             .getInteger(context, "countPerUnit")
-                        val levelOneQuantity = IntegerArgumentType
-                            .getInteger(context, "levelOneQuantity")
-                        val quantityGrowthFactor = FloatArgumentType
-                            .getFloat(context, "quantityGrowthFactor")
+                        val baseUnitsDemanded = IntegerArgumentType
+                            .getInteger(context, "baseUnitsDemanded")
+                        val quantityGrowthFactor = DoubleArgumentType
+                            .getDouble(context, "quantityGrowthFactor")
                         val maxLevel = IntegerArgumentType
                             .getInteger(context, "maxLevel")
 
@@ -65,9 +52,9 @@ object ContractCommand {
                                 .sendFailure(Component.literal("countPerUnit must be greater than 0"))
                         }
 
-                        if (levelOneQuantity <= 0) {
+                        if (baseUnitsDemanded <= 0) {
                             context.source
-                                .sendFailure(Component.literal("levelOneQuantity must be greater than 0"))
+                                .sendFailure(Component.literal("baseUnitsDemanded must be greater than 0"))
                         }
 
                         if (quantityGrowthFactor < 0) {
@@ -80,20 +67,31 @@ object ContractCommand {
                                 .sendFailure(Component.literal("maxLevel must be -1 or greater than 0"))
                         }
 
-                        val contract = createContract(
-                            targetItem,
-                            null,
-                            rewardItem,
-                            unitPrice,
-                            countPerUnit,
-                            levelOneQuantity,
-                            quantityGrowthFactor,
-                            1,
-                            maxLevel,
-                            Objects.requireNonNull(context.source.player)
-                                ?.name
-                                ?.string
-                        )
+                        val author = Objects.requireNonNull(context.source.player)
+                            ?.name
+                            ?.string ?: "Unknown"
+
+                        val contract = AbyssalContract(
+                            id = UUID.randomUUID(),
+                            targetItems = listOf(targetItem),
+                            targetTags = listOf(),
+                            startTime = System.currentTimeMillis(),
+                            currentCycleStart = System.currentTimeMillis(),
+                            cycleDurationMs = 1000L * 60 * 5,
+                            countPerUnit = countPerUnit,
+                            baseUnitsDemanded = baseUnitsDemanded,
+                            unitsFulfilled = 0,
+                            unitsFulfilledEver = 0,
+                            isActive = true,
+                            isLoaded = false,
+                            author = author,
+                            rewardItem = rewardItem,
+                            unitPrice = unitPrice,
+                            level = 1,
+                            quantityGrowthFactor = quantityGrowthFactor,
+                            maxLevel = maxLevel,
+                        ).createItem()
+
                         giveContract(
                             context.source, contract,
                             context.source.player!!

@@ -1,17 +1,16 @@
 package dev.biserman.wingscontracts.api
 
-import com.mojang.blaze3d.vertex.PoseStack
-import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
-import dev.biserman.wingscontracts.client.renderer.ContractRenderer
+import dev.biserman.wingscontracts.data.LoadedContracts
+import dev.biserman.wingscontracts.registry.ItemRegistry
 import dev.biserman.wingscontracts.tag.ContractTag
+import dev.biserman.wingscontracts.tag.ContractTagHelper
 import dev.biserman.wingscontracts.tag.ContractTagHelper.boolean
 import dev.biserman.wingscontracts.tag.ContractTagHelper.csv
 import dev.biserman.wingscontracts.tag.ContractTagHelper.int
 import dev.biserman.wingscontracts.tag.ContractTagHelper.long
 import dev.biserman.wingscontracts.tag.ContractTagHelper.string
+import dev.biserman.wingscontracts.tag.ContractTagHelper.uuid
 import dev.biserman.wingscontracts.util.DenominationHelper
-import net.minecraft.client.renderer.MultiBufferSource
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.core.NonNullList
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -21,13 +20,13 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import org.joml.Vector3d
 import java.util.*
 import kotlin.math.min
 
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class Contract(
     val type: Int = 0,
+    val id: UUID = UUID.randomUUID(),
     val targetItems: List<Item> = listOf(),
     val targetTags: List<TagKey<Item>> = listOf(),
 
@@ -41,10 +40,10 @@ abstract class Contract(
     var unitsFulfilledEver: Long = 0,
 
     var isActive: Boolean = true,
+    var isLoaded: Boolean = true,
     val author: String = ""
 ) {
     open val unitsDemanded = baseUnitsDemanded
-
 
     fun matches(itemStack: ItemStack): Boolean {
         if (targetTags.isNotEmpty()) {
@@ -85,15 +84,16 @@ abstract class Contract(
         return@lazy "Empty"
     }
 
-    fun tryUpdateTick(): Boolean {
+    fun tryUpdateTick(tag: ContractTag?): Boolean {
         if (!isActive) {
             return false
         }
 
         if (cycleDurationMs <= 0) {
             if (unitsFulfilled >= unitsDemanded) {
-                onContractFulfilled()
+                onContractFulfilled(tag)
                 isActive = false
+                tag?.isActive = isActive
                 return true
             } else {
                 return false
@@ -103,23 +103,25 @@ abstract class Contract(
         val currentTime = System.currentTimeMillis()
         val cyclesPassed = ((currentTime - currentCycleStart) / cycleDurationMs).toInt()
         if (cyclesPassed > 0) {
-            reset(currentCycleStart + cycleDurationMs * cyclesPassed)
+            reset(tag, currentCycleStart + cycleDurationMs * cyclesPassed)
             return true
         }
 
         return false
     }
 
-    open fun reset(newCycleStart: Long) {
+    open fun reset(tag: ContractTag?, newCycleStart: Long) {
         if (unitsFulfilled >= unitsDemanded) {
-            onContractFulfilled()
+            onContractFulfilled(tag)
         }
 
         currentCycleStart = newCycleStart
+        tag?.currentCycleStart = currentCycleStart
         unitsFulfilled = 0
+        tag?.unitsFulfilled = unitsFulfilled
     }
 
-    open fun onContractFulfilled() {}
+    open fun onContractFulfilled(tag: ContractTag?) {}
 
     open val displayName get() = "$targetName Contract"
 
@@ -190,7 +192,7 @@ abstract class Contract(
         return matchingCount / countPerUnit
     }
 
-    open fun tryConsumeFromItems(items: NonNullList<ItemStack>): Int {
+    open fun tryConsumeFromItems(tag: ContractTag?, items: NonNullList<ItemStack>): Int {
         val unitCount = countConsumableUnits(items)
         if (unitCount == 0) {
             return 0
@@ -215,29 +217,20 @@ abstract class Contract(
         }
 
         unitsFulfilled += amountTaken
+        tag?.unitsFulfilled = unitsFulfilled
         unitsFulfilledEver += amountTaken
+        tag?.unitsFulfilledEver = unitsFulfilledEver
 
         return amountTaken
     }
 
     abstract fun getRewardsForUnits(units: Int): ItemStack
 
-    open fun portalRender(
-        context: BlockEntityRendererProvider.Context,
-        contract: Contract,
-        blockEntity: ContractPortalBlockEntity,
-        translate: Vector3d,
-        partialTick: Float,
-        poseStack: PoseStack,
-        multiBufferSource: MultiBufferSource
-    ) = ContractRenderer.render(
-        context, contract, blockEntity, translate, partialTick, poseStack, multiBufferSource
-    )
-
     open fun save(nbt: CompoundTag? = null): ContractTag {
         val tag = ContractTag(nbt ?: CompoundTag())
 
         tag.type = type
+        tag.id = id
         tag.targetItems = targetItems
         tag.targetTags = targetTags
         tag.startTime = startTime
@@ -248,13 +241,24 @@ abstract class Contract(
         tag.unitsFulfilled = unitsFulfilled
         tag.unitsFulfilledEver = unitsFulfilledEver
         tag.isActive = isActive
+        tag.isLoaded = isLoaded
         tag.author = author
 
         return tag
     }
 
+    fun createItem(): ItemStack {
+        val itemStack = ItemStack(ItemRegistry.CONTRACT.get() ?: throw Error())
+        val tag = save(null)
+        ContractTagHelper.setContractTag(itemStack, tag)
+        LoadedContracts.update(this)
+
+        return itemStack
+    }
+
     companion object {
         var (ContractTag).type by int()
+        var (ContractTag).id by uuid()
 
         var (ContractTag).targetItemKeys by csv("targetItems")
         var (ContractTag).targetTagKeys by csv("targetTags")
@@ -269,8 +273,8 @@ abstract class Contract(
         var (ContractTag).unitsFulfilledEver by long()
 
         var (ContractTag).isActive by boolean()
+        var (ContractTag).isLoaded by boolean()
         var (ContractTag).author by string()
-
 
         var (ContractTag).targetTags: List<TagKey<Item>>?
             get() {

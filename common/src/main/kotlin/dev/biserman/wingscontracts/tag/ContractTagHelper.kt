@@ -1,6 +1,7 @@
 package dev.biserman.wingscontracts.tag
 
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.world.item.ItemStack
 import kotlin.reflect.KProperty
 
 @JvmInline
@@ -8,7 +9,16 @@ value class ContractTag(val tag: CompoundTag)
 
 @Suppress("MemberVisibilityCanBePrivate")
 object ContractTagHelper {
-    const val CONTRACT_ID = "contractID"
+    const val CONTRACT_INFO_KEY = "contractInfo"
+
+    fun getContractTag(contractItemStack: ItemStack): ContractTag? {
+        val contractTag = contractItemStack.tag?.getCompound(CONTRACT_INFO_KEY) ?: return null
+        return ContractTag(contractTag)
+    }
+
+    fun setContractTag(contractItemStack: ItemStack, contractTag: ContractTag) {
+        contractItemStack.tag?.put(CONTRACT_INFO_KEY, contractTag.tag) ?: return
+    }
 
     class Property<T>(
         val key: String?, val getFn: (CompoundTag).(String) -> T?, val putFn: (CompoundTag).(String, T) -> Unit
@@ -22,6 +32,7 @@ object ContractTagHelper {
     fun string(key: String? = null) = Property(key, safeGet(CompoundTag::getString), CompoundTag::putString)
     fun int(key: String? = null) = Property(key, safeGet(CompoundTag::getInt), CompoundTag::putInt)
     fun long(key: String? = null) = Property(key, safeGet(CompoundTag::getLong), CompoundTag::putLong)
+    fun uuid(key: String? = null) = Property(key, safeGet(CompoundTag::getUUID), CompoundTag::putUUID)
     fun float(key: String? = null) = Property(key, safeGet(CompoundTag::getFloat), CompoundTag::putFloat)
     fun double(key: String? = null) = Property(key, safeGet(CompoundTag::getDouble), CompoundTag::putDouble)
     fun boolean(key: String? = null) = Property(key, safeGet(CompoundTag::getBoolean), CompoundTag::putBoolean)

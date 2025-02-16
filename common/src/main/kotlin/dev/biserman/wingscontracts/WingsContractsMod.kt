@@ -8,7 +8,6 @@ import dev.biserman.wingscontracts.registry.BlockEntityRegistry
 import dev.biserman.wingscontracts.registry.BlockRegistry
 import dev.biserman.wingscontracts.registry.CommandRegistry
 import dev.biserman.wingscontracts.registry.ItemRegistry
-import net.minecraft.client.Minecraft
 
 object WingsContractsMod {
     const val MOD_ID: String = "wingscontracts"
