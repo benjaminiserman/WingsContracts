@@ -154,8 +154,8 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
                         return false
                     }
 
-                    val didConsume = tryConsume(portal)
-                    val didSuck = suckInItems(level, portal)
+                    val didConsume = portal.tryConsume()
+                    val didSuck = portal.suckInItems(level)
                     val didUpdate = ContractItem.tick(portal.contractSlot)
 
                     if (didConsume || didSuck || didUpdate) {
@@ -220,140 +220,6 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
             level.addFreshEntity(itemEntity)
         }
 
-        private fun getItemsAtAndAbove(level: Level, portal: ContractPortalBlockEntity): List<ItemEntity> {
-            return getSuckShape().toAabbs().stream().flatMap { aABB: AABB ->
-                level.getEntitiesOfClass(
-                    ItemEntity::class.java,
-                    aABB.move(portal.getLevelX() - 0.5, portal.getLevelY() - 0.5, portal.getLevelZ() - 0.5),
-                    EntitySelector.ENTITY_STILL_ALIVE
-                ).stream()
-            }.collect(Collectors.toList())
-        }
-
-        private fun tryConsume(portal: ContractPortalBlockEntity): Boolean {
-            val contractTag = ContractItem.getBaseTag(portal.contractSlot) ?: return false
-            val rewardItem = contractTag.rewardItem ?: return false
-            val matchingStacks = portal.cachedInput.filter { itemStack ->
-                !itemStack.isEmpty && ContractItem.matches(
-                    portal.contractSlot,
-                    itemStack
-                )
-            }
-            val matchingCount = matchingStacks.sumOf { itemStack -> itemStack.count }
-            val unitCount = matchingCount / contractTag.countPerUnit.get()
-            if (unitCount == 0) {
-                return false
-            }
-
-            val goalAmount = unitCount * contractTag.countPerUnit.get()
-            var amountTaken = 0
-            for (itemStack in portal.cachedInput) {
-                if (amountTaken >= goalAmount) {
-                    break
-                }
-
-                if (itemStack.isEmpty) {
-                    continue
-                }
-
-                if (ContractItem.matches(portal.contractSlot, itemStack)) {
-                    val amountToTake = min(itemStack.count, goalAmount - amountTaken)
-                    amountTaken += amountToTake
-                    itemStack.shrink(amountToTake)
-                }
-            }
-
-            val rewardsReceived = unitCount * contractTag.unitPrice.get()
-            if (portal.cachedRewards.isEmpty) {
-                portal.cachedRewards = ItemStack(rewardItem, rewardsReceived)
-            } else {
-                portal.cachedRewards.grow(rewardsReceived)
-            }
-
-            contractTag.quantityFulfilled.put(
-                contractTag.quantityFulfilled.get() + amountTaken
-            )
-            contractTag.quantityFulfilledEver.put(
-                contractTag.quantityFulfilledEver.get() + amountTaken
-            )
-
-            return true
-        }
-
-        private fun suckInItems(level: Level, portal: ContractPortalBlockEntity): Boolean {
-            val aboveItems = getItemsAtAndAbove(level, portal).iterator()
-
-            if (portal.inventoryFull()) {
-                return false
-            }
-
-            while (aboveItems.hasNext()) {
-                val itemEntity = aboveItems.next()
-
-                if (ContractItem.matches(portal.contractSlot, itemEntity.item)) {
-                    if (addInputItem(portal, itemEntity)) {
-                        return true
-                    }
-                } else {
-                    spitItemStack(itemEntity.item, level, portal.blockPos, false)
-                }
-            }
-
-            return false
-        }
-
-        private fun addInputItem(portal: ContractPortalBlockEntity, itemEntity: ItemEntity): Boolean {
-            var didConsumeAll = false
-            val beforeStack = itemEntity.item.copy()
-            val afterStack = addInputItem(portal, beforeStack)
-            if (afterStack.isEmpty) {
-                didConsumeAll = true
-                itemEntity.discard()
-            } else {
-                itemEntity.item = afterStack
-            }
-
-            return didConsumeAll
-        }
-
-        private fun addInputItem(portal: ContractPortalBlockEntity, itemStack: ItemStack): ItemStack {
-            var mutItemStack = itemStack
-            val size = CONTAINER_SIZE
-
-            var i = 0
-            while (i < size && !mutItemStack.isEmpty) {
-                mutItemStack = tryMoveInInputItem(portal, mutItemStack, i)
-                ++i
-            }
-
-            return mutItemStack
-        }
-
-        private fun tryMoveInInputItem(portal: ContractPortalBlockEntity, itemStack: ItemStack, i: Int): ItemStack {
-            var mutItemStack = itemStack
-            val stackAtSlot = portal.getInputItem(i)
-            var movedItems = false
-            if (stackAtSlot.isEmpty) {
-                portal.setInputItem(i, mutItemStack)
-                mutItemStack = ItemStack.EMPTY
-                movedItems = true
-            } else if (canMergeItems(stackAtSlot, mutItemStack)) {
-                val j = mutItemStack.maxStackSize - stackAtSlot.count
-                val k = min(mutItemStack.count.toDouble(), j.toDouble()).toInt()
-                mutItemStack.shrink(k)
-                stackAtSlot.grow(k)
-                movedItems = k > 0
-            }
-
-            if (movedItems) {
-                portal.setCooldown(10)
-            }
-
-            portal.setChanged()
-
-            return mutItemStack
-        }
-
         private fun canMergeItems(itemStack: ItemStack, itemStack2: ItemStack): Boolean {
             return itemStack.count <= itemStack.maxStackSize
                     && ItemStack.isSameItemSameTags(itemStack, itemStack2)
@@ -365,5 +231,139 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
         private const val CONTAINER_SIZE = 27
         private const val MAX_STACK_SIZE = 64
         private fun getSuckShape(): VoxelShape = SUCK
+    }
+
+    private fun suckInItems(level: Level): Boolean {
+        val aboveItems = getItemsAtAndAbove(level).iterator()
+
+        if (inventoryFull()) {
+            return false
+        }
+
+        while (aboveItems.hasNext()) {
+            val itemEntity = aboveItems.next()
+
+            if (ContractItem.matches(contractSlot, itemEntity.item)) {
+                if (addInputItem(itemEntity)) {
+                    return true
+                }
+            } else {
+                spitItemStack(itemEntity.item, level, blockPos, false)
+            }
+        }
+
+        return false
+    }
+
+    private fun addInputItem(itemEntity: ItemEntity): Boolean {
+        var didConsumeAll = false
+        val beforeStack = itemEntity.item.copy()
+        val afterStack = addInputItem(beforeStack)
+        if (afterStack.isEmpty) {
+            didConsumeAll = true
+            itemEntity.discard()
+        } else {
+            itemEntity.item = afterStack
+        }
+
+        return didConsumeAll
+    }
+
+    private fun addInputItem(itemStack: ItemStack): ItemStack {
+        var mutItemStack = itemStack
+        val size = CONTAINER_SIZE
+
+        var i = 0
+        while (i < size && !mutItemStack.isEmpty) {
+            mutItemStack = tryMoveInInputItem(mutItemStack, i)
+            ++i
+        }
+
+        return mutItemStack
+    }
+
+    private fun tryMoveInInputItem(itemStack: ItemStack, i: Int): ItemStack {
+        var mutItemStack = itemStack
+        val stackAtSlot = getInputItem(i)
+        var movedItems = false
+        if (stackAtSlot.isEmpty) {
+            setInputItem(i, mutItemStack)
+            mutItemStack = ItemStack.EMPTY
+            movedItems = true
+        } else if (canMergeItems(stackAtSlot, mutItemStack)) {
+            val j = mutItemStack.maxStackSize - stackAtSlot.count
+            val k = min(mutItemStack.count.toDouble(), j.toDouble()).toInt()
+            mutItemStack.shrink(k)
+            stackAtSlot.grow(k)
+            movedItems = k > 0
+        }
+
+        if (movedItems) {
+            setCooldown(10)
+        }
+
+        setChanged()
+
+        return mutItemStack
+    }
+
+    private fun tryConsume(): Boolean {
+        val contractTag = ContractItem.getBaseTag(contractSlot) ?: return false
+        val rewardItem = contractTag.rewardItem ?: return false
+        val matchingStacks = cachedInput.filter { itemStack ->
+            !itemStack.isEmpty && ContractItem.matches(
+                contractSlot,
+                itemStack
+            )
+        }
+        val matchingCount = matchingStacks.sumOf { itemStack -> itemStack.count }
+        val unitCount = matchingCount / contractTag.countPerUnit.get()
+        if (unitCount == 0) {
+            return false
+        }
+
+        val goalAmount = unitCount * contractTag.countPerUnit.get()
+        var amountTaken = 0
+        for (itemStack in cachedInput) {
+            if (amountTaken >= goalAmount) {
+                break
+            }
+
+            if (itemStack.isEmpty) {
+                continue
+            }
+
+            if (ContractItem.matches(contractSlot, itemStack)) {
+                val amountToTake = min(itemStack.count, goalAmount - amountTaken)
+                amountTaken += amountToTake
+                itemStack.shrink(amountToTake)
+            }
+        }
+
+        val rewardsReceived = unitCount * contractTag.unitPrice.get()
+        if (cachedRewards.isEmpty) {
+            cachedRewards = ItemStack(rewardItem, rewardsReceived)
+        } else {
+            cachedRewards.grow(rewardsReceived)
+        }
+
+        contractTag.quantityFulfilled.put(
+            contractTag.quantityFulfilled.get() + amountTaken
+        )
+        contractTag.quantityFulfilledEver.put(
+            contractTag.quantityFulfilledEver.get() + amountTaken
+        )
+
+        return true
+    }
+
+    private fun getItemsAtAndAbove(level: Level): List<ItemEntity> {
+        return getSuckShape().toAabbs().stream().flatMap { aABB: AABB ->
+            level.getEntitiesOfClass(
+                ItemEntity::class.java,
+                aABB.move(getLevelX() - 0.5, getLevelY() - 0.5, getLevelZ() - 0.5),
+                EntitySelector.ENTITY_STILL_ALIVE
+            ).stream()
+        }.collect(Collectors.toList())
     }
 }
