@@ -3,6 +3,7 @@ package dev.biserman.wingscontracts.item
 import dev.biserman.wingscontracts.registry.ItemRegistry
 import dev.biserman.wingscontracts.tag.ContractTagHelper
 import dev.biserman.wingscontracts.util.DenominationHelper
+import dev.biserman.wingscontracts.world.ContractWorldData
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries

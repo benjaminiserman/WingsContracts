@@ -19,7 +19,6 @@ class ContractPortalBlockEntityRenderer(private val context: BlockEntityRenderer
         blockEntity: ContractPortalBlockEntity, partialTick: Float, poseStack: PoseStack,
         multiBufferSource: MultiBufferSource, packedLight: Int, packedOverlay: Int
     ) {
-
         val contractTag = ContractItem.getBaseTag(blockEntity.contractSlot) ?: return
 
         val showItem = ItemStack(contractTag.targetItem ?: return)

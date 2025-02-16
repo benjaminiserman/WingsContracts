@@ -11,11 +11,13 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.saveddata.SavedData
 
 class ContractWorldData(
-    val contracts: MutableList<out Contract>? = null
+    private val contracts: MutableList<out Contract> = mutableListOf()
 ) : SavedData() {
+    operator fun get(index: Int) = contracts[index]
+
     override fun save(compoundTag: CompoundTag): CompoundTag {
         val listTag = ListTag()
-        contracts?.forEach { listTag.add(it.save().tag) }
+        contracts.forEach { listTag.add(it.save().tag) }
         compoundTag.put(CONTRACT_LIST, listTag)
         return compoundTag
     }
@@ -27,7 +29,7 @@ class ContractWorldData(
             1 to AbyssalContract::load,
         )
 
-        fun from(nbt: CompoundTag): ContractWorldData {
+        fun load(nbt: CompoundTag): ContractWorldData {
             val contractList = nbt.getList(CONTRACT_LIST, 10)
             val contracts = contractList
                 .filterIsInstance<CompoundTag>()
@@ -44,7 +46,7 @@ class ContractWorldData(
             }
 
             val data = world.server.getLevel(Level.OVERWORLD)?.dataStorage?.computeIfAbsent(
-                ContractWorldData::from,
+                ContractWorldData::load,
                 ::ContractWorldData,
                 IDENTIFIER
             )
