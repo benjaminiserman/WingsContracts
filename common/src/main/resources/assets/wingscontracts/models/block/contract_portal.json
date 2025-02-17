@@ -5,7 +5,6 @@
 		"1": "wingscontracts:block/contract_portal_side",
 		"2": "wingscontracts:block/contract_portal_top",
 		"3": "wingscontracts:block/contract_portal_bottom",
-		"4": "wingscontracts:block/contract_portal_side_frame",
 		"particle": "wingscontracts:block/contract_portal_bottom"
 	},
 	"elements": [
@@ -13,7 +12,7 @@
 			"from": [0, 0, 0],
 			"to": [3, 12, 3],
 			"faces": {
-				"north": {"uv": [13, 4, 16, 16], "texture": "#4"},
+				"north": {"uv": [13, 4, 16, 16], "texture": "#3"},
 				"west": {"uv": [0, 4, 3, 16], "texture": "#1"},
 				"up": {"uv": [0, 0, 3, 3], "texture": "#2"},
 				"down": {"uv": [0, 13, 3, 16], "texture": "#3"}
@@ -43,7 +42,7 @@
 			"from": [3, 0, 0],
 			"to": [13, 12, 3],
 			"faces": {
-				"north": {"uv": [3, 4, 13, 16], "texture": "#4"},
+				"north": {"uv": [3, 4, 13, 16], "texture": "#3"},
 				"south": {"uv": [3, 4, 13, 16], "texture": "#1"},
 				"up": {"uv": [3, 0, 13, 3], "texture": "#2"},
 				"down": {"uv": [3, 13, 13, 16], "texture": "#3"}
@@ -71,7 +70,7 @@
 			"from": [13, 0, 0],
 			"to": [16, 12, 3],
 			"faces": {
-				"north": {"uv": [0, 4, 3, 16], "texture": "#4"},
+				"north": {"uv": [0, 4, 3, 16], "texture": "#3"},
 				"east": {"uv": [13, 4, 16, 16], "texture": "#1"},
 				"up": {"uv": [13, 0, 16, 3], "texture": "#2"},
 				"down": {"uv": [13, 13, 16, 16], "texture": "#3"}
