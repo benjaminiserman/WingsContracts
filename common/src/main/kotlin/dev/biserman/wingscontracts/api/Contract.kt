@@ -188,7 +188,7 @@ abstract class Contract(
         if (showExtraInfo) {
             components.add(Component.literal("Started On: ${Date(startTime)}"))
             components.add(Component.literal(("Total Units Fulfilled Ever: $unitsFulfilledEver (${unitsFulfilledEver * countPerUnit})")))
-            components.add(Component.literal("Base Units Demanded: $baseUnitsDemanded (${baseUnitsDemanded * countPerUnit}"))
+            components.add(Component.literal("Base Units Demanded: $baseUnitsDemanded (${baseUnitsDemanded * countPerUnit})"))
         } else {
             components.add(Component.literal(extraInfoMessage))
         }
