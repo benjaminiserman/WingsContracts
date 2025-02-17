@@ -7,7 +7,7 @@ import kotlin.reflect.KProperty
 @JvmInline
 value class ContractTag(val tag: CompoundTag)
 
-@Suppress("MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate", "MoveLambdaOutsideParentheses")
 object ContractTagHelper {
     const val CONTRACT_INFO_KEY = "contractInfo"
 
@@ -17,7 +17,7 @@ object ContractTagHelper {
     }
 
     fun setContractTag(contractItemStack: ItemStack, contractTag: ContractTag) {
-        contractItemStack.tag?.put(CONTRACT_INFO_KEY, contractTag.tag) ?: return
+        contractItemStack.addTagElement(CONTRACT_INFO_KEY, contractTag.tag)
     }
 
     class Property<T>(
@@ -36,6 +36,10 @@ object ContractTagHelper {
     fun float(key: String? = null) = Property(key, safeGet(CompoundTag::getFloat), CompoundTag::putFloat)
     fun double(key: String? = null) = Property(key, safeGet(CompoundTag::getDouble), CompoundTag::putDouble)
     fun boolean(key: String? = null) = Property(key, safeGet(CompoundTag::getBoolean), CompoundTag::putBoolean)
+    fun itemStack(key: String? = null) =
+        Property(key, safeGet { ItemStack.of(this.getCompound(it)) }, { safeKey, value ->
+            this.put(safeKey, value.save(CompoundTag()))
+        })
 
     @Suppress("MoveLambdaOutsideParentheses")
     fun csv(key: String? = null) = Property(

@@ -3,10 +3,9 @@ package dev.biserman.wingscontracts.api
 import dev.biserman.wingscontracts.tag.ContractTag
 import dev.biserman.wingscontracts.tag.ContractTagHelper.double
 import dev.biserman.wingscontracts.tag.ContractTagHelper.int
-import dev.biserman.wingscontracts.tag.ContractTagHelper.string
-import net.minecraft.core.registries.BuiltInRegistries
+import dev.biserman.wingscontracts.tag.ContractTagHelper.itemStack
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.network.chat.Component
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -32,8 +31,7 @@ class AbyssalContract(
     isLoaded: Boolean,
     author: String,
 
-    val rewardItem: Item,
-    val unitPrice: Int,
+    val reward: ItemStack,
 
     var level: Int,
     val quantityGrowthFactor: Double,
@@ -61,6 +59,14 @@ class AbyssalContract(
             super.displayName
         }
 
+    override fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> {
+        val components = list ?: mutableListOf()
+
+        components.add(Component.literal("Rewards ${reward.count} ${reward.displayName.string} for every $countPerUnit ${listTargets()}"))
+
+        return super.getBasicInfo(components)
+    }
+
     override val unitsDemanded: Int
         get() {
             val quantity = baseUnitsDemanded + (baseUnitsDemanded * (level - 1) * quantityGrowthFactor).toInt()
@@ -74,13 +80,12 @@ class AbyssalContract(
         }
     }
 
-    override fun getRewardsForUnits(units: Int) = ItemStack(rewardItem, unitPrice * units)
+    override fun getRewardsForUnits(units: Int) = ItemStack(reward.item, reward.count * units)
 
     override fun save(nbt: CompoundTag?): ContractTag {
         val tag = super.save(nbt)
 
-        tag.rewardItem = rewardItem
-        tag.unitPrice = unitPrice
+        tag.reward = reward
         tag.level = level
         tag.quantityGrowthFactor = quantityGrowthFactor
         tag.maxLevel = maxLevel
@@ -89,24 +94,16 @@ class AbyssalContract(
     }
 
     companion object {
-        var (ContractTag).rewardItemKey by string("rewardItem")
-        var (ContractTag).unitPrice by int()
+        var (ContractTag).reward by itemStack()
 
         var (ContractTag).level by int()
         var (ContractTag).quantityGrowthFactor by double()
         var (ContractTag).maxLevel by int()
 
         var (ContractTag).rewardItem: Item?
-            get() {
-                val rewardItem = rewardItemKey ?: return null
-                if (rewardItem.isNotEmpty()) {
-                    return BuiltInRegistries.ITEM[ResourceLocation.tryParse(rewardItem)]
-                }
-
-                return null
-            }
+            get() = reward?.item
             set(value) {
-                rewardItemKey = value?.`arch$registryName`()?.path
+                reward = ItemStack(value ?: Items.AIR, reward?.count ?: 1)
             }
 
         fun load(contract: ContractTag): AbyssalContract {
@@ -130,8 +127,7 @@ class AbyssalContract(
                 isActive = contract.isActive ?: true,
                 isLoaded = contract.isLoaded ?: true,
                 author = contract.author ?: "",
-                rewardItem = contract.rewardItem ?: Items.EMERALD,
-                unitPrice = contract.unitPrice ?: 1,
+                reward = contract.reward ?: ItemStack(Items.EMERALD, 1),
                 level = contract.level ?: 1,
                 quantityGrowthFactor = contract.quantityGrowthFactor ?: 0.5,
                 maxLevel = contract.maxLevel ?: 10

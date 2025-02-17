@@ -125,14 +125,35 @@ abstract class Contract(
 
     open val displayName get() = "$targetName Contract"
 
-    open fun getBasicInfo(): List<Component> {
-        val components = mutableListOf<Component>()
-        components.add(Component.literal("Units Fulfilled: ${unitsFulfilled}/${unitsDemanded}"))
+    fun listTargets(): String {
+        fun (Item).name() = this.defaultInstance.displayName.string
+        fun (TagKey<Item>).name() = this.registry.location()
+        val totalSize = targetItems.size + targetTags.size
+        return when (totalSize) {
+            0 -> "Nothing"
+            1 ->
+                if (targetItems.size >= 1) {
+                    targetItems[0].name()
+                } else {
+                    "items of tag ${targetTags[0].name()}"
+                }
+
+            else -> "of one of the following:\n${
+                targetItems.map { it.name() }
+                    .plus(targetTags.map { it.name() })
+                    .joinToString { " - $it\n" }
+            }"
+        }
+    }
+
+    open fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> {
+        val components = list ?: mutableListOf()
+        components.add(Component.literal("Units Fulfilled: ${unitsFulfilled}/${unitsDemanded} (${unitsFulfilled * countPerUnit}/${unitsDemanded * countPerUnit})"))
 
         return components
     }
 
-    open fun getTimeInfo(): List<Component> {
+    open fun getTimeInfo(list: MutableList<Component>?): MutableList<Component> {
         val components = mutableListOf<Component>()
         val nextCycleStart = currentCycleStart + cycleDurationMs
         val timeRemaining = DenominationHelper.denominate(
@@ -149,7 +170,6 @@ abstract class Contract(
         }
         if (Date(nextCycleStart) <= Date()) {
             components.add(Component.literal("Cycle Complete!"))
-            components.add(Component.literal("Completed at ${Date(nextCycleStart)}"))
             components.add(Component.literal("Right-click with contract in hand or place in contract portal to start next cycle."))
         } else {
             components.add(Component.literal("Current Cycle Ends at ${Date(nextCycleStart)}"))
@@ -161,14 +181,14 @@ abstract class Contract(
     }
 
     open fun getExtraInfo(
+        list: MutableList<Component>?,
         showExtraInfo: Boolean, extraInfoMessage: String
-    ): List<Component> {
+    ): MutableList<Component> {
         val components = mutableListOf<Component>()
         if (showExtraInfo) {
             components.add(Component.literal("Started On: ${Date(startTime)}"))
-            components.add(Component.literal(("Units Fulfilled Ever: $unitsFulfilledEver")))
-            components.add(Component.literal(("Total Quantity Fulfilled Ever: ${unitsFulfilledEver * countPerUnit}")))
-            components.add(Component.literal("Base Units Demanded: $baseUnitsDemanded"))
+            components.add(Component.literal(("Total Units Fulfilled Ever: $unitsFulfilledEver (${unitsFulfilledEver * countPerUnit})")))
+            components.add(Component.literal("Base Units Demanded: $baseUnitsDemanded (${baseUnitsDemanded * countPerUnit}"))
         } else {
             components.add(Component.literal(extraInfoMessage))
         }
@@ -176,12 +196,15 @@ abstract class Contract(
         return components
     }
 
-    open fun getDescription(showExtraInfo: Boolean, extraInfoMessage: String): List<Component> {
+    open fun getDescription(
+        showExtraInfo: Boolean,
+        extraInfoMessage: String
+    ): MutableList<Component> {
         val components = mutableListOf<Component>()
 
-        components.addAll(getBasicInfo())
-        components.addAll(getTimeInfo())
-        components.addAll(getExtraInfo(showExtraInfo, extraInfoMessage))
+        components.addAll(getBasicInfo(null))
+        components.addAll(getTimeInfo(null))
+        components.addAll(getExtraInfo(null, showExtraInfo, extraInfoMessage))
 
         return components
     }
@@ -216,12 +239,12 @@ abstract class Contract(
             }
         }
 
-        unitsFulfilled += amountTaken
+        unitsFulfilled += unitCount
         tag?.unitsFulfilled = unitsFulfilled
-        unitsFulfilledEver += amountTaken
+        unitsFulfilledEver += unitCount
         tag?.unitsFulfilledEver = unitsFulfilledEver
 
-        return amountTaken
+        return unitCount
     }
 
     abstract fun getRewardsForUnits(units: Int): ItemStack

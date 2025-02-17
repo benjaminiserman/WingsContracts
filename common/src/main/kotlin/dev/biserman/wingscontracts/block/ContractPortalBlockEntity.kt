@@ -1,8 +1,6 @@
 package dev.biserman.wingscontracts.block
 
 import dev.biserman.wingscontracts.api.Contract
-import dev.biserman.wingscontracts.api.Contract.Companion.unitsFulfilled
-import dev.biserman.wingscontracts.api.Contract.Companion.unitsFulfilledEver
 import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.data.LoadedContracts
@@ -313,15 +311,18 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
 
     private fun tryConsume(contract: Contract, contractTag: ContractTag): Boolean {
         val unitsConsumed = contract.tryConsumeFromItems(contractTag, cachedInput)
+
+        if (unitsConsumed == 0) {
+            return false
+        }
+
         val rewards = contract.getRewardsForUnits(unitsConsumed)
+
         if (cachedRewards.isEmpty || rewards.item != cachedRewards.item) {
             cachedRewards = rewards
         } else {
             cachedRewards.grow(rewards.count)
         }
-
-        contractTag.unitsFulfilled = contract.unitsFulfilled
-        contractTag.unitsFulfilledEver = contract.unitsFulfilledEver
 
         return true
     }
