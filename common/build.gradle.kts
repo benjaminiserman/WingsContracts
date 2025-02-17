@@ -12,4 +12,5 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${rootProject.property("fabric_loader_version")}")
     // Remove the next line if you don't want to depend on the API
     modApi("dev.architectury:architectury:${rootProject.property("architectury_version")}")
+    modImplementation("me.shedaniel.cloth:cloth-config:${rootProject.property("cloth_config_version")}")
 }

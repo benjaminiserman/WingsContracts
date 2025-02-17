@@ -13,11 +13,10 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
-import net.minecraft.world.Container
+import net.minecraft.util.Mth.*
 import net.minecraft.world.ContainerHelper
 import net.minecraft.world.entity.EntitySelector
 import net.minecraft.world.entity.item.ItemEntity
-import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.BaseEntityBlock.UPDATE_ALL
@@ -29,13 +28,11 @@ import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
 import java.util.stream.Collectors
-import kotlin.math.cos
+import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.sin
-import kotlin.math.sqrt
 
 class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
-    BlockEntity(BlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState), Container {
+    BlockEntity(BlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState) {
     var cooldownTime: Int
     var contractSlot: ItemStack
     var cachedRewards: ItemStack
@@ -99,35 +96,6 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
         return false
     }
 
-    override fun clearContent() {
-        cachedRewards = ItemStack.EMPTY
-    }
-
-    override fun getContainerSize(): Int = 1
-    override fun isEmpty() = cachedRewards.count == 0
-    override fun getItem(i: Int) = cachedRewards
-
-    override fun setItem(i: Int, itemStack: ItemStack) {
-        cachedRewards = itemStack
-    }
-
-    override fun removeItem(i: Int, amount: Int): ItemStack {
-        val split = cachedRewards.split(amount)
-        if (!split.isEmpty) {
-            this.setChanged()
-        }
-
-        return split
-    }
-
-    override fun removeItemNoUpdate(i: Int): ItemStack {
-        val split = cachedRewards
-        cachedRewards = ItemStack.EMPTY
-        return split
-    }
-
-    override fun stillValid(player: Player) = level?.getBlockEntity(this.blockPos) == this
-
     private fun getInputItem(i: Int): ItemStack = cachedInput[i]
     private fun setInputItem(i: Int, itemStack: ItemStack) {
         cachedInput[i] = itemStack
@@ -156,6 +124,13 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
                     val contractTag = ContractTagHelper.getContractTag(portal.contractSlot) ?: return false
                     val contract = LoadedContracts[contractTag] ?: return false
 
+                    if (level.hasNeighborSignal(blockPos)) {
+                        level.setBlockAndUpdate(blockPos, blockState.setValue(MODE, ContractPortalMode.COIN))
+                        level.gameEvent(null, GameEvent.BLOCK_CHANGE, blockPos)
+                        level.sendBlockUpdated(blockPos, blockState, blockState, UPDATE_ALL)
+                        return true
+                    }
+
                     val didConsume = portal.tryConsume(contract, contractTag)
                     val didSuck = portal.suckInItems(contract, level)
                     val didUpdate = contract.tryUpdateTick(contractTag)
@@ -172,20 +147,32 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
                 ContractPortalMode.COIN -> {
                     val stackToSpit = if (!portal.cachedRewards.isEmpty) {
                         portal.cachedRewards
-                    } else if (!portal.cachedInput.isEmpty()) {
+                    } else if (portal.contractSlot.isEmpty && !portal.cachedInput.isEmpty()) {
                         portal.cachedInput.firstOrNull { itemStack -> !itemStack.isEmpty }
                     } else {
                         null
                     }
 
                     if (stackToSpit == null) {
-                        level.setBlockAndUpdate(blockPos, blockState.setValue(MODE, ContractPortalMode.UNLIT))
+                        if (level.hasNeighborSignal(blockPos)) {
+                            return false
+                        }
+
+                        level.setBlockAndUpdate(
+                            blockPos, blockState.setValue(
+                                MODE, if (portal.contractSlot.isEmpty) {
+                                    ContractPortalMode.UNLIT
+                                } else {
+                                    ContractPortalMode.LIT
+                                }
+                            )
+                        )
                         level.gameEvent(null, GameEvent.BLOCK_CHANGE, blockPos)
                         level.sendBlockUpdated(blockPos, blockState, blockState, UPDATE_ALL)
                         return true
                     }
 
-                    spitItemStack(stackToSpit, level, blockPos, false, max = sqrt(stackToSpit.count.toFloat()).toInt())
+                    spitItemStack(stackToSpit, level, blockPos, false, amountToSpit = max(4, stackToSpit.count / 2))
                     portal.setCooldown(10)
                     return true
                 }
@@ -201,23 +188,24 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
             level: Level,
             blockPos: BlockPos,
             denominate: Boolean,
-            min: Int = 1,
-            max: Int? = null,
+            amountToSpit: Int
+//            min: Int = 1,
+//            max: Int? = null,
         ) {
             // TO-DO: handle denominations
-            val amountToSpit = level.random.nextIntBetweenInclusive(
-                min(stackToSpit.maxStackSize, min(min, stackToSpit.count)),
-                min(stackToSpit.maxStackSize, min(max ?: stackToSpit.maxStackSize, stackToSpit.count))
-            )
+//            val amountToSpit = level.random.nextIntBetweenInclusive(
+//                min(stackToSpit.maxStackSize, min(min, stackToSpit.count)),
+//                min(stackToSpit.maxStackSize, min(max ?: stackToSpit.maxStackSize, stackToSpit.count))
+//            )
 
-            val splitStack = stackToSpit.split(amountToSpit)
+            val splitStack = stackToSpit.split(min(amountToSpit, stackToSpit.count))
             spawnItem(splitStack, level, blockPos)
         }
 
         private fun spawnItem(itemStack: ItemStack, level: Level, blockPos: BlockPos) {
             val itemEntity = ItemEntity(level, blockPos.x + 0.5, blockPos.y + 0.75, blockPos.z + 0.5, itemStack)
             val magnitude = 0.15
-            val radians = level.random.nextDouble() * Math.PI * 2
+            val radians = level.random.nextFloat() * PI * 2
             itemEntity.setDeltaMovement(sin(radians) * magnitude, magnitude * 3, cos(radians) * magnitude)
             level.addFreshEntity(itemEntity)
         }
@@ -250,7 +238,7 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
                     return true
                 }
             } else {
-                spitItemStack(itemEntity.item, level, blockPos, false)
+                spitItemStack(itemEntity.item, level, blockPos, false, itemEntity.item.count)
             }
         }
 

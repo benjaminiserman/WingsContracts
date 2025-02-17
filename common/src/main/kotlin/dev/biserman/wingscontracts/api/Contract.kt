@@ -212,7 +212,7 @@ abstract class Contract(
     open fun countConsumableUnits(items: NonNullList<ItemStack>): Int {
         val matchingStacks = items.filter { !it.isEmpty && matches(it) }
         val matchingCount = matchingStacks.sumOf { it.count }
-        return matchingCount / countPerUnit
+        return min(matchingCount / countPerUnit, unitsDemanded - unitsFulfilled)
     }
 
     open fun tryConsumeFromItems(tag: ContractTag?, items: NonNullList<ItemStack>): Int {
