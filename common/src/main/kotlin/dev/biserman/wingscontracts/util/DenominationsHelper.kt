@@ -1,14 +1,18 @@
 package dev.biserman.wingscontracts.util
 
+import dev.biserman.wingscontracts.WingsContractsMod
+import net.minecraft.network.chat.Component
 import kotlin.math.floor
 
 object DenominationsHelper {
+    private fun translateTime(key: String) = Component.translatable("${WingsContractsMod.MOD_ID}.time.$key").string
+    @Suppress("MemberVisibilityCanBePrivate")
     val timeDenominations = mapOf(
-        "Millisecond" to 1L,
-        "Second" to 1000L,
-        "Minute" to 1000L * 60,
-        "Hour" to 1000L * 60 * 60,
-        "Day" to 1000L * 60 * 60 * 24
+        translateTime("ms") to 1L,
+        translateTime("second") to 1000L,
+        translateTime("minute") to 1000L * 60,
+        translateTime("hour") to 1000L * 60 * 60,
+        translateTime("day") to 1000L * 60 * 60 * 24
     )
 
     val timeDenominationsWithoutMs = timeDenominations.filterKeys { x -> x != "Millisecond" }

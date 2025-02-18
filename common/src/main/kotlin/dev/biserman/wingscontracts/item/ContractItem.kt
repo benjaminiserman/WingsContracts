@@ -1,5 +1,6 @@
 package dev.biserman.wingscontracts.item
 
+import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.tag.ContractTagHelper
 import net.minecraft.client.gui.screens.Screen
@@ -16,7 +17,8 @@ class ContractItem(properties: Properties) : Item(properties) {
     // TODO: how do I localize this properly?
     // e.g.: Contract de Niveau 10 des Diamants de winggar
     override fun getName(itemStack: ItemStack): Component {
-        val contract = LoadedContracts[itemStack] ?: return Component.literal("Unknown Contract")
+        val contract = LoadedContracts[itemStack]
+            ?: return Component.translatable("item.${WingsContractsMod.MOD_ID}.contract.unknown")
         return Component.literal(contract.displayName)
     }
 
@@ -28,11 +30,16 @@ class ContractItem(properties: Properties) : Item(properties) {
     ) {
         val contract = LoadedContracts[itemStack]
         if (contract == null) {
-            components.add(Component.literal("Unknown Contract"))
+            components.add(Component.translatable("item.${WingsContractsMod.MOD_ID}.contract.unknown"))
             return
         }
 
-        components.addAll(contract.getDescription(Screen.hasShiftDown(), "Hold shift for more info"))
+        components.addAll(
+            contract.getDescription(
+                Screen.hasShiftDown(),
+                Component.translatable("${WingsContractsMod.MOD_ID}.hold_shift").string
+            )
+        )
     }
 
     override fun use(

@@ -1,5 +1,6 @@
 package dev.biserman.wingscontracts.api
 
+import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.registry.ItemRegistry
 import dev.biserman.wingscontracts.tag.ContractTag
@@ -59,19 +60,20 @@ abstract class Contract(
 
     val allMatchingItems by lazy {
         targetItems.map { it.defaultInstance }.plus(targetTags.flatMap {
-                BuiltInRegistries.ITEM.getTagOrEmpty(it).map { holder -> holder.value().defaultInstance }
-            })
+            BuiltInRegistries.ITEM.getTagOrEmpty(it).map { holder -> holder.value().defaultInstance }
+        })
     }
 
     open val targetName by lazy {
         val targetComponentCount = targetItems.size + targetTags.size
         if (targetComponentCount > 1) {
-            return@lazy "Complex"
+            return@lazy translateContract("complex").string
         }
 
         if (targetItems.isNotEmpty()) {
             val targetItemDisplayName = Component.translatable(targetItems[0].descriptionId).string
-            return@lazy targetItemDisplayName ?: "Unknown"
+            return@lazy targetItemDisplayName
+                ?: translateContract("unknown").string
         }
 
         if (targetTags.isNotEmpty()) {
@@ -80,7 +82,7 @@ abstract class Contract(
             return@lazy "${firstLetterCapital}${path.substring(1)}"
         }
 
-        return@lazy "Empty"
+        return@lazy translateContract("empty").string
     }
 
     fun tryUpdateTick(tag: ContractTag?): Boolean {
@@ -122,31 +124,40 @@ abstract class Contract(
 
     open fun onContractFulfilled(tag: ContractTag?) {}
 
-    open val displayName get() = "$targetName Contract"
+    open val displayName get() = "$targetName ${Component.translatable("item.${WingsContractsMod.MOD_ID}.contract")}"
 
     fun listTargets(): String {
         fun (Item).name() = this.defaultInstance.displayName.string
         fun (TagKey<Item>).name() = this.registry.location()
         val totalSize = targetItems.size + targetTags.size
         return when (totalSize) {
-            0 -> "Nothing"
-            1 -> if (targetItems.size >= 1) {
+            0 -> translateContract("no_targets").string
+            1 -> if (targetItems.isNotEmpty()) {
                 targetItems[0].name()
             } else {
-                "items of tag ${targetTags[0].name()}"
+                translateContract("items_of_tag", targetTags[0].name()).string
             }
 
-            else -> "of one of the following:\n${
+            else -> translateContract(
+                "matches_following",
                 targetItems.asSequence().map { it.name() }
                     .plus(targetTags.map { it.name() })
                     .joinToString { " - $it\n" }
-            }"
+            ).string
         }
     }
 
     open fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> {
         val components = list ?: mutableListOf()
-        components.add(Component.literal("Units Fulfilled: ${unitsFulfilled}/${unitsDemanded} (${unitsFulfilled * countPerUnit}/${unitsDemanded * countPerUnit})"))
+        components.add(
+            translateContract(
+                "units_fulfilled",
+                unitsFulfilled,
+                unitsDemanded,
+                unitsFulfilled * countPerUnit,
+                unitsDemanded * countPerUnit
+            )
+        )
 
         return components
     }
@@ -166,12 +177,9 @@ abstract class Contract(
             }"
         }
         if (Date(nextCycleStart) <= Date()) {
-            components.add(Component.literal("Cycle Complete!"))
-            components.add(Component.literal("Right-click with contract in hand or place in contract portal to start next cycle."))
+            components.add(translateContract("cycle_complete"))
         } else {
-            components.add(Component.literal("Current Cycle Ends at ${Date(nextCycleStart)}"))
-            components.add(Component.literal("Current Cycle Remaining Time:"))
-            components.add(Component.literal("    $timeRemaining"))
+            components.add(translateContract("cycle_remaining", Date(nextCycleStart), timeRemaining))
         }
 
         return components
@@ -182,9 +190,9 @@ abstract class Contract(
     ): MutableList<Component> {
         val components = mutableListOf<Component>()
         if (showExtraInfo) {
-            components.add(Component.literal("Started On: ${Date(startTime)}"))
-            components.add(Component.literal(("Total Units Fulfilled Ever: $unitsFulfilledEver (${unitsFulfilledEver * countPerUnit})")))
-            components.add(Component.literal("Base Units Demanded: $baseUnitsDemanded (${baseUnitsDemanded * countPerUnit})"))
+            components.add(translateContract("cycle_started", Date(startTime)))
+            components.add(translateContract("total_fulfilled", unitsFulfilledEver, unitsFulfilledEver * countPerUnit))
+            components.add(translateContract("base_units_demanded", baseUnitsDemanded, baseUnitsDemanded * countPerUnit))
         } else {
             components.add(Component.literal(extraInfoMessage))
         }
@@ -325,5 +333,9 @@ abstract class Contract(
             set(value) {
                 targetItemKeys = value?.mapNotNull { it.`arch$registryName`()?.path }
             }
+
+        fun translateContract(key: String, vararg objects: Any): Component =
+            Component.translatable("${WingsContractsMod.MOD_ID}.contract.$key", *objects)
+
     }
 }

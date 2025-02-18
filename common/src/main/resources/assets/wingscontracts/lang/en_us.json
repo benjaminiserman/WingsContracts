@@ -1,5 +1,41 @@
 {
-    "item.wingscontracts.contract": "Contract",
+    "wingscontracts.hold_shift": "Hold shift for more info",
 
-    "block.wingscontracts.contract_portal": "Contract Portal"
+    "wingscontracts.time.ms": "Millisecond",
+    "wingscontracts.time.second": "Second",
+    "wingscontracts.time.minute": "Minute",
+    "wingscontracts.time.hour": "Hour",
+    "wingscontracts.time.day": "Day",
+
+
+    "wingscontracts.contract.complex": "Complex",
+    "wingscontracts.contract.unknown": "Unknown",
+    "wingscontracts.contract.empty": "Empty",
+    "wingscontracts.contract.no_targets": "Nothing",
+    "wingscontracts.contract.items_of_tag": "items of tag %s",
+    "wingscontracts.contract.matches_following": "of one of the following:\n%s",
+    "wingscontracts.contract.units_fulfilled": "Units Fulfilled: %d/%d (%d/%d)",
+    "wingscontracts.contract.cycle_complete": "Cycle Complete!\nRight-click with contract in hand or place in contract portal to start next cycle.",
+    "wingscontracts.contract.cycle_remaining": "Current Cycle Ends at %s\nCurrent Cycle Remaining Time:\n    %s",
+    "wingscontracts.contract.cycle_started": "Started On: %s",
+    "wingscontracts.contract.total_fulfilled": "Total Units Fulfilled Ever: %d (%d)",
+    "wingscontracts.contract.base_units_demanded": "Base Units Demanded: %d (%d)",
+
+    "wingscontracts.contract.abyssal.rewards": "Rewards %d %s for every %d %s",
+
+
+    "item.wingscontracts.contract": "Contract",
+    "item.wingscontracts.contract.unknown": "Unknown Contract",
+    "item.wingscontracts.contract.abyssal": "Level %d %s Contract",
+
+
+    "block.wingscontracts.contract_portal": "Contract Portal",
+
+
+    "wingscontracts.command.contract.unit_price_greater_than_zero": "unitPrice must be greater than 0",
+    "wingscontracts.command.contract.count_per_unit_greater_than_zero": "countPerUnit must be greater than 0",
+    "wingscontracts.command.contract.base_units_demanded_greater_than_zero": "baseUnitsDemanded must be greater than 0",
+    "wingscontracts.command.contract.quantity_growth_non_negative": "quantityGrowthFactor must be non-negative",
+    "wingscontracts.command.contract.max_level_negative_one_or_positive": "maxLevel must be -1 or greater than 0",
+    "wingscontracts.command.contract.unknown_author": "Unknown"
 }

@@ -54,7 +54,7 @@ class AbyssalContract(
 ) {
     override val displayName: String
         get() = if (level > 0) {
-            "Level $level $targetName Contract"
+            Component.translatable("item.wingscontracts.contract.abyssal", level, targetName).string
         } else {
             super.displayName
         }
@@ -62,7 +62,7 @@ class AbyssalContract(
     override fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> {
         val components = list ?: mutableListOf()
 
-        components.add(Component.literal("Rewards ${reward.count} ${reward.displayName.string} for every $countPerUnit ${listTargets()}"))
+        components.add(translateContract("abyssal.rewards", reward.count, reward.displayName.string, countPerUnit, listTargets()))
 
         return super.getBasicInfo(components)
     }

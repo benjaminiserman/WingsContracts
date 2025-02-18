@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.DoubleArgumentType
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
+import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.api.AbyssalContract
 import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.CommandSourceStack
@@ -20,83 +21,109 @@ object ContractCommand {
     fun register(commandBuildContext: CommandBuildContext): ArgumentBuilder<CommandSourceStack, *> {
         return Commands.literal("contract")
             .requires { cs: CommandSourceStack -> cs.hasPermission(2) }
-                .then(Commands.argument("targetItem", ItemArgument.item(commandBuildContext))
-                .then(Commands.argument("countPerUnit",IntegerArgumentType.integer())
-                .then(Commands.argument("rewardItem",ItemArgument.item(commandBuildContext))
-                .then(Commands.argument("unitPrice", IntegerArgumentType.integer())
-                .then(Commands.argument("baseUnitsDemanded", IntegerArgumentType.integer())
-                .then(Commands.argument("quantityGrowthFactor", DoubleArgumentType.doubleArg())
-                .then(Commands.argument("maxLevel", IntegerArgumentType.integer())
-                    .executes { context: CommandContext<CommandSourceStack> ->
-                        val targetItem = ItemArgument.getItem(context, "targetItem").item
-                        val rewardItem = ItemArgument.getItem(context, "rewardItem").item
+            .then(
+                Commands.argument("targetItem", ItemArgument.item(commandBuildContext))
+                    .then(
+                        Commands.argument("countPerUnit", IntegerArgumentType.integer())
+                            .then(
+                                Commands.argument("rewardItem", ItemArgument.item(commandBuildContext))
+                                    .then(
+                                        Commands.argument("unitPrice", IntegerArgumentType.integer())
+                                            .then(
+                                                Commands.argument("baseUnitsDemanded", IntegerArgumentType.integer())
+                                                    .then(
+                                                        Commands.argument(
+                                                            "quantityGrowthFactor",
+                                                            DoubleArgumentType.doubleArg()
+                                                        )
+                                                            .then(
+                                                                Commands.argument(
+                                                                    "maxLevel",
+                                                                    IntegerArgumentType.integer()
+                                                                )
+                                                                    .executes { context: CommandContext<CommandSourceStack> ->
+                                                                        val targetItem = ItemArgument.getItem(
+                                                                            context,
+                                                                            "targetItem"
+                                                                        ).item
+                                                                        val rewardItem = ItemArgument.getItem(
+                                                                            context,
+                                                                            "rewardItem"
+                                                                        ).item
 
-                        val unitPrice = IntegerArgumentType
-                            .getInteger(context, "unitPrice")
-                        val countPerUnit = IntegerArgumentType
-                            .getInteger(context, "countPerUnit")
-                        val baseUnitsDemanded = IntegerArgumentType
-                            .getInteger(context, "baseUnitsDemanded")
-                        val quantityGrowthFactor = DoubleArgumentType
-                            .getDouble(context, "quantityGrowthFactor")
-                        val maxLevel = IntegerArgumentType
-                            .getInteger(context, "maxLevel")
+                                                                        val unitPrice = IntegerArgumentType
+                                                                            .getInteger(context, "unitPrice")
+                                                                        val countPerUnit = IntegerArgumentType
+                                                                            .getInteger(context, "countPerUnit")
+                                                                        val baseUnitsDemanded = IntegerArgumentType
+                                                                            .getInteger(context, "baseUnitsDemanded")
+                                                                        val quantityGrowthFactor = DoubleArgumentType
+                                                                            .getDouble(context, "quantityGrowthFactor")
+                                                                        val maxLevel = IntegerArgumentType
+                                                                            .getInteger(context, "maxLevel")
 
-                        if (unitPrice <= 0) {
-                            context.source
-                                .sendFailure(Component.literal("unitPrice must be greater than 0"))
-                        }
+                                                                        if (unitPrice <= 0) {
+                                                                            context.source
+                                                                                .sendFailure(Component.translatable("${WingsContractsMod.MOD_ID}.command.contract.unit_price_greater_than_zero"))
+                                                                        }
 
-                        if (countPerUnit <= 0) {
-                            context.source
-                                .sendFailure(Component.literal("countPerUnit must be greater than 0"))
-                        }
+                                                                        if (countPerUnit <= 0) {
+                                                                            context.source
+                                                                                .sendFailure(Component.translatable("${WingsContractsMod.MOD_ID}.command.contract.count_per_unit_greater_than_zero"))
+                                                                        }
 
-                        if (baseUnitsDemanded <= 0) {
-                            context.source
-                                .sendFailure(Component.literal("baseUnitsDemanded must be greater than 0"))
-                        }
+                                                                        if (baseUnitsDemanded <= 0) {
+                                                                            context.source
+                                                                                .sendFailure(Component.translatable("${WingsContractsMod.MOD_ID}.command.contract.base_units_demanded_greater_than_zero"))
+                                                                        }
 
-                        if (quantityGrowthFactor < 0) {
-                            context.source
-                                .sendFailure(Component.literal("quantityGrowthFactor must be non-negative"))
-                        }
+                                                                        if (quantityGrowthFactor < 0) {
+                                                                            context.source
+                                                                                .sendFailure(Component.translatable("${WingsContractsMod.MOD_ID}.command.contract.quantity_growth_non_negative"))
+                                                                        }
 
-                        if (maxLevel <= 0 && maxLevel != -1) {
-                            context.source
-                                .sendFailure(Component.literal("maxLevel must be -1 or greater than 0"))
-                        }
+                                                                        if (maxLevel <= 0 && maxLevel != -1) {
+                                                                            context.source
+                                                                                .sendFailure(Component.translatable("${WingsContractsMod.MOD_ID}.command.contract.max_level_negative_one_or_positive"))
+                                                                        }
 
-                        val author = Objects.requireNonNull(context.source.player)
-                            ?.name
-                            ?.string ?: "Unknown"
+                                                                        val author =
+                                                                            Objects.requireNonNull(context.source.player)
+                                                                                ?.name
+                                                                                ?.string
+                                                                                ?: Component.translatable("${WingsContractsMod.MOD_ID}.command.contract.unknown_author").string
 
-                        val contract = AbyssalContract(
-                            id = UUID.randomUUID(),
-                            targetItems = listOf(targetItem),
-                            targetTags = listOf(),
-                            startTime = System.currentTimeMillis(),
-                            currentCycleStart = System.currentTimeMillis(),
-                            cycleDurationMs = 1000L * 60 * 5,
-                            countPerUnit = countPerUnit,
-                            baseUnitsDemanded = baseUnitsDemanded,
-                            unitsFulfilled = 0,
-                            unitsFulfilledEver = 0,
-                            isActive = true,
-                            isLoaded = false,
-                            author = author,
-                            reward = ItemStack(rewardItem, unitPrice),
-                            level = 1,
-                            quantityGrowthFactor = quantityGrowthFactor,
-                            maxLevel = maxLevel,
-                        ).createItem()
+                                                                        val contract = AbyssalContract(
+                                                                            id = UUID.randomUUID(),
+                                                                            targetItems = listOf(targetItem),
+                                                                            targetTags = listOf(),
+                                                                            startTime = System.currentTimeMillis(),
+                                                                            currentCycleStart = System.currentTimeMillis(),
+                                                                            cycleDurationMs = 1000L * 60 * 5,
+                                                                            countPerUnit = countPerUnit,
+                                                                            baseUnitsDemanded = baseUnitsDemanded,
+                                                                            unitsFulfilled = 0,
+                                                                            unitsFulfilledEver = 0,
+                                                                            isActive = true,
+                                                                            isLoaded = false,
+                                                                            author = author,
+                                                                            reward = ItemStack(rewardItem, unitPrice),
+                                                                            level = 1,
+                                                                            quantityGrowthFactor = quantityGrowthFactor,
+                                                                            maxLevel = maxLevel,
+                                                                        ).createItem()
 
-                        giveContract(
-                            context.source, contract,
-                            context.source.player!!
-                        )
-                    })
-                ))))))
+                                                                        giveContract(
+                                                                            context.source, contract,
+                                                                            context.source.player!!
+                                                                        )
+                                                                    })
+                                                    )
+                                            )
+                                    )
+                            )
+                    )
+            )
     }
 
     private fun giveContract(
