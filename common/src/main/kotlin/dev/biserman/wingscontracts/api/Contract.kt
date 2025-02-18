@@ -10,7 +10,7 @@ import dev.biserman.wingscontracts.tag.ContractTagHelper.int
 import dev.biserman.wingscontracts.tag.ContractTagHelper.long
 import dev.biserman.wingscontracts.tag.ContractTagHelper.string
 import dev.biserman.wingscontracts.tag.ContractTagHelper.uuid
-import dev.biserman.wingscontracts.util.DenominationHelper
+import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.core.NonNullList
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -58,8 +58,7 @@ abstract class Contract(
     }
 
     val allMatchingItems by lazy {
-        targetItems.map { it.defaultInstance }
-            .plus(targetTags.flatMap {
+        targetItems.map { it.defaultInstance }.plus(targetTags.flatMap {
                 BuiltInRegistries.ITEM.getTagOrEmpty(it).map { holder -> holder.value().defaultInstance }
             })
     }
@@ -131,15 +130,14 @@ abstract class Contract(
         val totalSize = targetItems.size + targetTags.size
         return when (totalSize) {
             0 -> "Nothing"
-            1 ->
-                if (targetItems.size >= 1) {
-                    targetItems[0].name()
-                } else {
-                    "items of tag ${targetTags[0].name()}"
-                }
+            1 -> if (targetItems.size >= 1) {
+                targetItems[0].name()
+            } else {
+                "items of tag ${targetTags[0].name()}"
+            }
 
             else -> "of one of the following:\n${
-                targetItems.map { it.name() }
+                targetItems.asSequence().map { it.name() }
                     .plus(targetTags.map { it.name() })
                     .joinToString { " - $it\n" }
             }"
@@ -156,10 +154,9 @@ abstract class Contract(
     open fun getTimeInfo(list: MutableList<Component>?): MutableList<Component> {
         val components = mutableListOf<Component>()
         val nextCycleStart = currentCycleStart + cycleDurationMs
-        val timeRemaining = DenominationHelper.denominate(
-            nextCycleStart - System.currentTimeMillis(),
-            DenominationHelper.timeDenominationsWithoutMs
-        ).joinToString(separator = ", ") { kvp ->
+        val timeRemaining = DenominationsHelper.denominate(
+            nextCycleStart - System.currentTimeMillis(), DenominationsHelper.timeDenominationsWithoutMs
+        ).asSequence().joinToString(separator = ", ") { kvp ->
             "${kvp.second} ${kvp.first}${
                 if (kvp.second == 1) {
                     ""
@@ -181,8 +178,7 @@ abstract class Contract(
     }
 
     open fun getExtraInfo(
-        list: MutableList<Component>?,
-        showExtraInfo: Boolean, extraInfoMessage: String
+        list: MutableList<Component>?, showExtraInfo: Boolean, extraInfoMessage: String
     ): MutableList<Component> {
         val components = mutableListOf<Component>()
         if (showExtraInfo) {
@@ -197,8 +193,7 @@ abstract class Contract(
     }
 
     open fun getDescription(
-        showExtraInfo: Boolean,
-        extraInfoMessage: String
+        showExtraInfo: Boolean, extraInfoMessage: String
     ): MutableList<Component> {
         val components = mutableListOf<Component>()
 

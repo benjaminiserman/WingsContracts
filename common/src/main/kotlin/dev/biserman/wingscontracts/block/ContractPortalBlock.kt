@@ -3,6 +3,7 @@
 package dev.biserman.wingscontracts.block
 
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
+import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.item.ContractItem
 import dev.biserman.wingscontracts.registry.BlockEntityRegistry
@@ -155,19 +156,23 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
                     blockEntity.contractSlot
                 )
                 while (blockEntity.cachedRewards.count > 0) {
-                    val splitStack = blockEntity.cachedRewards.split(
-                        min(
-                            level.random.nextInt(21) + 10,
-                            blockEntity.cachedRewards.maxStackSize
+                    val rewardStackToSpit =
+                        DenominatedCurrenciesHandler.splitHighestDenomination(blockEntity.cachedRewards)
+                    while (rewardStackToSpit.count > 0) {
+                        val splitStack = rewardStackToSpit.split(
+                            min(
+                                level.random.nextInt(21) + 10,
+                                rewardStackToSpit.maxStackSize
+                            )
                         )
-                    )
-                    Containers.dropItemStack(
-                        level,
-                        blockPos.x.toDouble(),
-                        blockPos.y.toDouble(),
-                        blockPos.z.toDouble(),
-                        splitStack
-                    )
+                        Containers.dropItemStack(
+                            level,
+                            blockPos.x.toDouble(),
+                            blockPos.y.toDouble(),
+                            blockPos.z.toDouble(),
+                            splitStack
+                        )
+                    }
                 }
                 level.updateNeighbourForOutputSignal(blockPos, this)
                 @Suppress("DEPRECATION")

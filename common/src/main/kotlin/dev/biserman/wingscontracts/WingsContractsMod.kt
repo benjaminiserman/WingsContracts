@@ -8,9 +8,11 @@ import dev.biserman.wingscontracts.registry.BlockEntityRegistry
 import dev.biserman.wingscontracts.registry.BlockRegistry
 import dev.biserman.wingscontracts.registry.CommandRegistry
 import dev.biserman.wingscontracts.registry.ItemRegistry
+import org.apache.logging.log4j.LogManager
 
 object WingsContractsMod {
     const val MOD_ID: String = "wingscontracts"
+    val LOGGER = LogManager.getLogger("WingsContracts")
 
     fun init() {
         BlockRegistry.register()

@@ -2,7 +2,7 @@ package dev.biserman.wingscontracts.util
 
 import kotlin.math.floor
 
-object DenominationHelper {
+object DenominationsHelper {
     val timeDenominations = mapOf(
         "Millisecond" to 1L,
         "Second" to 1000L,
@@ -13,39 +13,40 @@ object DenominationHelper {
 
     val timeDenominationsWithoutMs = timeDenominations.filterKeys { x -> x != "Millisecond" }
 
-    fun denominate(value: Double, denominations: Map<String, Double>): List<Pair<String, Int>> {
+    fun <T> denominate(value: Double, denominations: Map<T, Double>) = iterator {
         if (denominations.values.any { x -> x <= 0 }) {
             throw IllegalArgumentException("all denominations must be positive")
         }
 
-        val results = mutableListOf<Pair<String, Int>>()
         var runningValue = value
         while (true) {
             val denomination =
-                denominations.filter { x -> x.value <= runningValue }.maxByOrNull { x -> x.value } ?: break
+                denominations.asSequence().filter { x -> x.value <= runningValue }.maxByOrNull { x -> x.value } ?: break
             val unitsToTake = floor(runningValue / denomination.value).toInt()
             runningValue -= unitsToTake * denomination.value
-            results.add(Pair(denomination.key, unitsToTake))
+            yield(Pair(denomination.key, unitsToTake))
         }
-
-        return results.toList()
     }
 
-    fun denominate(value: Long, denominations: Map<String, Long>): List<Pair<String, Int>> {
+    fun <T> getLargestDenomination(value: Double, denominations: Map<T, Double>): Pair<T, Int>? {
+        val denomination =
+            denominations.filter { x -> x.value <= value }.maxByOrNull { x -> x.value } ?: return null
+        val unitsToTake = (value / denomination.value).toInt()
+        return Pair(denomination.key, unitsToTake)
+    }
+
+    fun <T> denominate(value: Long, denominations: Map<T, Long>) = iterator {
         if (denominations.values.any { x -> x <= 0 }) {
             throw IllegalArgumentException("all denominations must be positive")
         }
 
-        val results = mutableListOf<Pair<String, Int>>()
         var runningValue = value
         while (true) {
             val denomination =
                 denominations.filter { x -> x.value <= runningValue }.maxByOrNull { x -> x.value } ?: break
             val unitsToTake = (runningValue / denomination.value).toInt()
             runningValue -= unitsToTake * denomination.value
-            results.add(Pair(denomination.key, unitsToTake))
+            yield(Pair(denomination.key, unitsToTake))
         }
-
-        return results.toList()
     }
 }

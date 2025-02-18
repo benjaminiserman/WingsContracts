@@ -3,6 +3,7 @@ package dev.biserman.wingscontracts.block
 import dev.biserman.wingscontracts.api.Contract
 import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
+import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.registry.BlockEntityRegistry
 import dev.biserman.wingscontracts.tag.ContractTag
@@ -172,7 +173,13 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
                         return true
                     }
 
-                    spitItemStack(stackToSpit, level, blockPos, false, amountToSpit = max(4, stackToSpit.count / 2))
+                    if (DenominatedCurrenciesHandler.isCurrency(stackToSpit)) {
+                        val denominatedStack = DenominatedCurrenciesHandler.splitHighestDenomination(stackToSpit)
+                        spitItemStack(denominatedStack, level, blockPos, amountToSpit = denominatedStack.count)
+                    } else {
+                        spitItemStack(stackToSpit, level, blockPos, amountToSpit = max(4, stackToSpit.count / 2))
+                    }
+
                     portal.setCooldown(10)
                     return true
                 }
@@ -187,17 +194,8 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
             stackToSpit: ItemStack,
             level: Level,
             blockPos: BlockPos,
-            denominate: Boolean,
             amountToSpit: Int
-//            min: Int = 1,
-//            max: Int? = null,
         ) {
-            // TO-DO: handle denominations
-//            val amountToSpit = level.random.nextIntBetweenInclusive(
-//                min(stackToSpit.maxStackSize, min(min, stackToSpit.count)),
-//                min(stackToSpit.maxStackSize, min(max ?: stackToSpit.maxStackSize, stackToSpit.count))
-//            )
-
             val splitStack = stackToSpit.split(min(amountToSpit, stackToSpit.count))
             spawnItem(splitStack, level, blockPos)
         }
@@ -238,7 +236,7 @@ class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
                     return true
                 }
             } else {
-                spitItemStack(itemEntity.item, level, blockPos, false, itemEntity.item.count)
+                spitItemStack(itemEntity.item, level, blockPos, itemEntity.item.count)
             }
         }
 
