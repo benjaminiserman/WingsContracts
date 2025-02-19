@@ -5,12 +5,12 @@ import dev.architectury.platform.Platform
 import dev.architectury.utils.Env
 import dev.architectury.utils.EnvExecutor
 import dev.biserman.wingscontracts.client.WingsContractsClient
-import dev.biserman.wingscontracts.compat.computercraft.peripherals.CompatMods
-import dev.biserman.wingscontracts.compat.computercraft.peripherals.ModItemDetailProvider
-import dev.biserman.wingscontracts.registry.BlockEntityRegistry
-import dev.biserman.wingscontracts.registry.BlockRegistry
-import dev.biserman.wingscontracts.registry.CommandRegistry
-import dev.biserman.wingscontracts.registry.ItemRegistry
+import dev.biserman.wingscontracts.compat.CompatMods
+import dev.biserman.wingscontracts.compat.computercraft.ModItemDetailProvider
+import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
+import dev.biserman.wingscontracts.registry.ModBlockRegistry
+import dev.biserman.wingscontracts.registry.ModCommandRegistry
+import dev.biserman.wingscontracts.registry.ModItemRegistry
 import org.apache.logging.log4j.LogManager
 
 object WingsContractsMod {
@@ -18,10 +18,10 @@ object WingsContractsMod {
     val LOGGER = LogManager.getLogger("WingsContracts")
 
     fun init() {
-        BlockRegistry.register()
-        ItemRegistry.register()
-        BlockEntityRegistry.register()
-        CommandRegistry.register()
+        ModBlockRegistry.register()
+        ModItemRegistry.register()
+        ModBlockEntityRegistry.register()
+        ModCommandRegistry.register()
 
         if (Platform.isModLoaded(CompatMods.COMPUTERCRAFT)) {
             ModItemDetailProvider.register()

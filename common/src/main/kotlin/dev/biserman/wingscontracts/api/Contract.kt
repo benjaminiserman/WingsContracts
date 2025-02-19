@@ -2,7 +2,7 @@ package dev.biserman.wingscontracts.api
 
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.data.LoadedContracts
-import dev.biserman.wingscontracts.registry.ItemRegistry
+import dev.biserman.wingscontracts.registry.ModItemRegistry
 import dev.biserman.wingscontracts.tag.ContractTag
 import dev.biserman.wingscontracts.tag.ContractTagHelper
 import dev.biserman.wingscontracts.tag.ContractTagHelper.boolean
@@ -280,7 +280,7 @@ abstract class Contract(
     }
 
     fun createItem(): ItemStack {
-        val itemStack = ItemStack(ItemRegistry.CONTRACT.get() ?: throw Error())
+        val itemStack = ItemStack(ModItemRegistry.CONTRACT.get() ?: throw Error())
         val tag = save(null)
         ContractTagHelper.setContractTag(itemStack, tag)
         LoadedContracts.update(this)

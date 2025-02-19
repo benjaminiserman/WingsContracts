@@ -1,4 +1,4 @@
-package dev.biserman.wingscontracts.compat.computercraft.peripherals
+package dev.biserman.wingscontracts.compat.computercraft
 
 import dan200.computercraft.api.detail.DetailProvider
 import dan200.computercraft.impl.ComputerCraftAPIService

@@ -7,7 +7,7 @@ import dev.biserman.wingscontracts.item.ContractItem
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.Item
 
-object ItemRegistry {
+object ModItemRegistry {
     val ITEMS: DeferredRegister<Item?> = DeferredRegister.create(
         WingsContractsMod.MOD_ID,
         Registries.ITEM

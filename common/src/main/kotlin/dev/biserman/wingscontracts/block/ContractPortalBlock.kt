@@ -6,7 +6,7 @@ import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.item.ContractItem
-import dev.biserman.wingscontracts.registry.BlockEntityRegistry
+import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.world.Containers
@@ -124,7 +124,7 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
             null
         } else {
             createTickerHelper(
-                blockEntityType, BlockEntityRegistry.CONTRACT_PORTAL.get(), ContractPortalBlockEntity::serverTick
+                blockEntityType, ModBlockEntityRegistry.CONTRACT_PORTAL.get(), ContractPortalBlockEntity::serverTick
             )
         }
     }

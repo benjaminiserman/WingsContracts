@@ -1,10 +1,10 @@
-package dev.biserman.wingscontracts.compat.computercraft.peripherals
+package dev.biserman.wingscontracts.compat.computercraft
 
 import dan200.computercraft.api.lua.LuaFunction
 import dan200.computercraft.api.peripheral.IPeripheral
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
-import dev.biserman.wingscontracts.compat.computercraft.peripherals.DetailsHelper.details
+import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
 import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.data.LoadedContracts
 

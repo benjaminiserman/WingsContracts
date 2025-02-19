@@ -5,7 +5,7 @@ import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.data.LoadedContracts
-import dev.biserman.wingscontracts.registry.BlockEntityRegistry
+import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
 import dev.biserman.wingscontracts.tag.ContractTag
 import dev.biserman.wingscontracts.tag.ContractTagHelper
 import net.minecraft.core.BlockPos
@@ -36,7 +36,7 @@ class ContractPortalBlockEntity(
     blockPos: BlockPos,
     blockState: BlockState,
 ) :
-    BlockEntity(BlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState) {
+    BlockEntity(ModBlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState) {
     var cooldownTime: Int
     var contractSlot: ItemStack
     var cachedRewards: ItemStack

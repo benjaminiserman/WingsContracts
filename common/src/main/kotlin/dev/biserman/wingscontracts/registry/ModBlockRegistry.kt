@@ -11,11 +11,10 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
-import net.minecraft.world.level.material.PushReaction
 import java.util.function.Supplier
 
 @Suppress("MemberVisibilityCanBePrivate")
-object BlockRegistry {
+object ModBlockRegistry {
     val BLOCKS: DeferredRegister<Block> = DeferredRegister.create(
         WingsContractsMod.MOD_ID,
         Registries.BLOCK
@@ -36,7 +35,7 @@ object BlockRegistry {
 
     private fun <T : Block?> registerBlockWithItem(name: String?, block: Supplier<T>?): RegistrySupplier<T> {
         val toReturn = BLOCKS.register(name, block)
-        ItemRegistry.ITEMS.register(
+        ModItemRegistry.ITEMS.register(
             name
         ) { BlockItem(toReturn.get()!!, Item.Properties()) }
         return toReturn

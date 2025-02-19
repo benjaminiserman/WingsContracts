@@ -1,4 +1,4 @@
-package dev.biserman.wingscontracts.compat.computercraft.peripherals
+package dev.biserman.wingscontracts.compat.computercraft
 
 import dan200.computercraft.api.detail.VanillaDetailRegistries
 import net.minecraft.world.item.ItemStack

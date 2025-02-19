@@ -4,7 +4,7 @@ import dan200.computercraft.api.ForgeComputerCraftAPI
 import dan200.computercraft.api.peripheral.IPeripheral
 import dan200.computercraft.api.peripheral.IPeripheralProvider
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
-import dev.biserman.wingscontracts.compat.computercraft.peripherals.ContractPortalPeripheral
+import dev.biserman.wingscontracts.compat.computercraft.ContractPortalPeripheral
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.world.level.Level

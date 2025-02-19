@@ -2,7 +2,7 @@ package dev.biserman.wingscontracts.forge
 
 import dev.architectury.platform.forge.EventBuses
 import dev.biserman.wingscontracts.WingsContractsMod
-import dev.biserman.wingscontracts.compat.computercraft.peripherals.CompatMods
+import dev.biserman.wingscontracts.compat.CompatMods
 import net.minecraftforge.fml.ModList
 import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.common.Mod

@@ -8,7 +8,7 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.world.level.block.entity.BlockEntityType
 
 @Suppress("MemberVisibilityCanBePrivate")
-object BlockEntityRegistry {
+object ModBlockEntityRegistry {
     val BLOCK_ENTITIES: DeferredRegister<BlockEntityType<*>> = DeferredRegister
         .create(WingsContractsMod.MOD_ID, Registries.BLOCK_ENTITY_TYPE)
 
@@ -23,7 +23,7 @@ object BlockEntityRegistry {
                         blockPos,
                         blockState
                     )
-                }, BlockRegistry.CONTRACT_PORTAL.get()).build(null)
+                }, ModBlockRegistry.CONTRACT_PORTAL.get()).build(null)
         }
 
     @JvmStatic

@@ -7,7 +7,7 @@ import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 
-object CommandRegistry {
+object ModCommandRegistry {
     @JvmStatic
     fun register() {
         CommandRegistrationEvent.EVENT.register(CommandRegistrationEvent {
