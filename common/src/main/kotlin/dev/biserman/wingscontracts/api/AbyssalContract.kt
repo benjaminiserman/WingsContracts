@@ -1,5 +1,6 @@
 package dev.biserman.wingscontracts.api
 
+import dev.biserman.wingscontracts.compat.computercraft.peripherals.DetailsHelper.details
 import dev.biserman.wingscontracts.tag.ContractTag
 import dev.biserman.wingscontracts.tag.ContractTagHelper.double
 import dev.biserman.wingscontracts.tag.ContractTagHelper.int
@@ -11,31 +12,21 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import java.util.*
+import kotlin.reflect.full.memberProperties
 
 @Suppress("MemberVisibilityCanBePrivate")
 class AbyssalContract(
-    id: UUID,
-    targetItems: List<Item>,
-    targetTags: List<TagKey<Item>>,
+    id: UUID, targetItems: List<Item>, targetTags: List<TagKey<Item>>,
 
-    startTime: Long,
-    currentCycleStart: Long,
-    cycleDurationMs: Long,
+    startTime: Long, currentCycleStart: Long, cycleDurationMs: Long,
 
-    countPerUnit: Int,
-    baseUnitsDemanded: Int,
-    unitsFulfilled: Int,
-    unitsFulfilledEver: Long,
+    countPerUnit: Int, baseUnitsDemanded: Int, unitsFulfilled: Int, unitsFulfilledEver: Long,
 
-    isActive: Boolean,
-    isLoaded: Boolean,
-    author: String,
+    isActive: Boolean, isLoaded: Boolean, author: String,
 
     val reward: ItemStack,
 
-    var level: Int,
-    val quantityGrowthFactor: Double,
-    val maxLevel: Int
+    var level: Int, val quantityGrowthFactor: Double, val maxLevel: Int
 ) : Contract(
     1,
     id,
@@ -62,7 +53,11 @@ class AbyssalContract(
     override fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> {
         val components = list ?: mutableListOf()
 
-        components.add(translateContract("abyssal.rewards", reward.count, reward.displayName.string, countPerUnit, listTargets()))
+        components.add(
+            translateContract(
+                "abyssal.rewards", reward.count, reward.displayName.string, countPerUnit, listTargets()
+            )
+        )
 
         return super.getBasicInfo(components)
     }
@@ -92,6 +87,19 @@ class AbyssalContract(
 
         return tag
     }
+
+    override val details
+        get() = AbyssalContract::class.memberProperties
+            .filter { it.name != "details" }
+            .associate { prop ->
+                return@associate Pair(
+                    prop.name, when (prop.name) {
+                        "targetItems" -> targetItems.map { it.defaultInstance.details }
+                        "targetTags" -> targetTags.map { "#${it.location}" }
+                        "reward" -> reward.details
+                        else -> prop.get(this)
+                    })
+            }.toMutableMap()
 
     companion object {
         var (ContractTag).reward by itemStack()

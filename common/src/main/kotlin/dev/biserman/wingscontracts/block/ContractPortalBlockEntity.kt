@@ -32,7 +32,10 @@ import java.util.stream.Collectors
 import kotlin.math.max
 import kotlin.math.min
 
-class ContractPortalBlockEntity(blockPos: BlockPos, blockState: BlockState) :
+class ContractPortalBlockEntity(
+    blockPos: BlockPos,
+    blockState: BlockState,
+) :
     BlockEntity(BlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState) {
     var cooldownTime: Int
     var contractSlot: ItemStack

@@ -192,7 +192,13 @@ abstract class Contract(
         if (showExtraInfo) {
             components.add(translateContract("cycle_started", Date(startTime)))
             components.add(translateContract("total_fulfilled", unitsFulfilledEver, unitsFulfilledEver * countPerUnit))
-            components.add(translateContract("base_units_demanded", baseUnitsDemanded, baseUnitsDemanded * countPerUnit))
+            components.add(
+                translateContract(
+                    "base_units_demanded",
+                    baseUnitsDemanded,
+                    baseUnitsDemanded * countPerUnit
+                )
+            )
         } else {
             components.add(Component.literal(extraInfoMessage))
         }
@@ -281,6 +287,8 @@ abstract class Contract(
 
         return itemStack
     }
+
+    abstract val details: MutableMap<String, Any?>
 
     companion object {
         var (ContractTag).type by int()
