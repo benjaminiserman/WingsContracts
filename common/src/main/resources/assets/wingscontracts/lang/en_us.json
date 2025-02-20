@@ -37,5 +37,12 @@
     "wingscontracts.command.contract.base_units_demanded_greater_than_zero": "baseUnitsDemanded must be greater than 0",
     "wingscontracts.command.contract.quantity_growth_non_negative": "quantityGrowthFactor must be non-negative",
     "wingscontracts.command.contract.max_level_negative_one_or_positive": "maxLevel must be -1 or greater than 0",
-    "wingscontracts.command.contract.unknown_author": "Unknown"
+    "wingscontracts.command.contract.unknown_author": "Unknown",
+
+
+    "wingscontracts.subtitles.block.contract_portal.spit": "Contract portal spits reward",
+    "wingscontracts.subtitles.block.contract_portal.accept": "Contract portal accepts item",
+    "wingscontracts.subtitles.block.contract_portal.reject": "Contract portal rejects item",
+    "wingscontracts.subtitles.block.contract_portal.add_contract": "Contract portal activates",
+    "wingscontracts.subtitles.block.contract_portal.remove_contract": "Contract portal contract removed"
 }

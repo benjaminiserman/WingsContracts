@@ -7,8 +7,10 @@ import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.item.ContractItem
 import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
+import dev.biserman.wingscontracts.registry.ModSoundRegistry
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.sounds.SoundSource
 import net.minecraft.world.Containers
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
@@ -69,6 +71,7 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
             portal.contractSlot = itemInHand
             player.setItemInHand(interactionHand, contractSlotItem)
             level.setBlockAndUpdate(blockPos, blockState.setValue(MODE, ContractPortalMode.LIT))
+            level.playSound(null, blockPos, ModSoundRegistry.PORTAL_ADD_CONTRACT.get(), SoundSource.BLOCKS)
         } else {
             if (!itemInHand.isEmpty) {
                 return InteractionResult.FAIL
@@ -85,6 +88,7 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
                     }
                 )
             )
+            level.playSound(null, blockPos, ModSoundRegistry.PORTAL_REMOVE_CONTRACT.get(), SoundSource.BLOCKS)
         }
 
         level.gameEvent(player, GameEvent.BLOCK_CHANGE, blockPos)

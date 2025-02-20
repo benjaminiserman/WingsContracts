@@ -6,6 +6,7 @@ import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
+import dev.biserman.wingscontracts.registry.ModSoundRegistry
 import dev.biserman.wingscontracts.tag.ContractTag
 import dev.biserman.wingscontracts.tag.ContractTagHelper
 import net.minecraft.core.BlockPos
@@ -14,6 +15,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
+import net.minecraft.sounds.SoundSource
 import net.minecraft.util.Mth.*
 import net.minecraft.world.ContainerHelper
 import net.minecraft.world.entity.EntitySelector
@@ -183,6 +185,8 @@ class ContractPortalBlockEntity(
                         spitItemStack(stackToSpit, level, blockPos, amountToSpit = max(4, stackToSpit.count / 2))
                     }
 
+                    level.playSound(null, blockPos, ModSoundRegistry.PORTAL_SPIT.get(), SoundSource.BLOCKS)
+
                     portal.setCooldown(10)
                     return true
                 }
@@ -236,10 +240,12 @@ class ContractPortalBlockEntity(
 
             if (contract.matches(itemEntity.item)) {
                 if (addInputItem(itemEntity)) {
+                    level.playSound(null, blockPos, ModSoundRegistry.PORTAL_ACCEPT.get(), SoundSource.BLOCKS)
                     return true
                 }
             } else {
                 spitItemStack(itemEntity.item, level, blockPos, itemEntity.item.count)
+                level.playSound(null, blockPos, ModSoundRegistry.PORTAL_REJECT.get(), SoundSource.BLOCKS)
             }
         }
 

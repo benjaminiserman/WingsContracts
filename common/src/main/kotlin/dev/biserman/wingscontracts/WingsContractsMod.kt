@@ -7,10 +7,7 @@ import dev.architectury.utils.EnvExecutor
 import dev.biserman.wingscontracts.client.WingsContractsClient
 import dev.biserman.wingscontracts.compat.CompatMods
 import dev.biserman.wingscontracts.compat.computercraft.ModItemDetailProvider
-import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
-import dev.biserman.wingscontracts.registry.ModBlockRegistry
-import dev.biserman.wingscontracts.registry.ModCommandRegistry
-import dev.biserman.wingscontracts.registry.ModItemRegistry
+import dev.biserman.wingscontracts.registry.*
 import org.apache.logging.log4j.LogManager
 
 object WingsContractsMod {
@@ -21,6 +18,7 @@ object WingsContractsMod {
         ModBlockRegistry.register()
         ModItemRegistry.register()
         ModBlockEntityRegistry.register()
+        ModSoundRegistry.register()
         ModCommandRegistry.register()
 
         if (Platform.isModLoaded(CompatMods.COMPUTERCRAFT)) {

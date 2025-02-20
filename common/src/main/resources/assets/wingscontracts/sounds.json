@@ -1,0 +1,52 @@
+{
+  "portal_spit": {
+    "subtitle": "wingscontracts.subtitles.block.contract_portal.spit",
+    "sounds": [
+      {
+        "name": "mob/chicken/plop",
+        "pitch": 0.6
+      },
+      {
+        "name": "mob/chicken/plop",
+        "pitch": 0.7
+      },
+      {
+        "name": "mob/chicken/plop",
+        "pitch": 0.8
+      }
+    ]
+  },
+  "portal_accept": {
+    "subtitle": "wingscontracts.subtitles.block.contract_portal.accept",
+    "sounds": [
+      "mob/villager/yes1",
+      "mob/villager/yes2",
+      "mob/villager/yes3"
+    ]
+  },
+  "portal_reject": {
+    "subtitle": "wingscontracts.subtitles.block.contract_portal.reject",
+    "sounds": [
+      "mob/villager/no1",
+      "mob/villager/no2",
+      "mob/villager/no3"
+    ]
+  },
+  "portal_add_contract": {
+    "subtitle": "wingscontracts.subtitles.block.contract_portal.add_contract",
+    "sounds": [
+      "block/end_portal/eyeplace1",
+      "block/end_portal/eyeplace2",
+      "block/end_portal/eyeplace3"
+    ]
+  },
+  "portal_remove_contract": {
+    "subtitle": "wingscontracts.subtitles.block.contract_portal.remove_contract",
+    "sounds": [
+      "entity/itemframe/remove_item1",
+      "entity/itemframe/remove_item2",
+      "entity/itemframe/remove_item3",
+      "entity/itemframe/remove_item4"
+    ]
+  }
+}
