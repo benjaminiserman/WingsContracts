@@ -65,6 +65,7 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
 
         if (contractSlotItem.isEmpty) {
             if (itemInHand.item !is ContractItem) {
+
                 return InteractionResult.FAIL
             }
 

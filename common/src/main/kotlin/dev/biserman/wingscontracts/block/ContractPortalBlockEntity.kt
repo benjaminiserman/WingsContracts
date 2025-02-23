@@ -6,20 +6,27 @@ import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
+import dev.biserman.wingscontracts.registry.ModBlockRegistry
+import dev.biserman.wingscontracts.registry.ModMenuRegistry
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
 import dev.biserman.wingscontracts.tag.ContractTag
 import dev.biserman.wingscontracts.tag.ContractTagHelper
 import net.minecraft.core.BlockPos
 import net.minecraft.core.NonNullList
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
 import net.minecraft.sounds.SoundSource
 import net.minecraft.util.Mth.*
 import net.minecraft.world.ContainerHelper
+import net.minecraft.world.MenuProvider
 import net.minecraft.world.entity.EntitySelector
 import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.BaseEntityBlock.UPDATE_ALL
@@ -38,7 +45,7 @@ class ContractPortalBlockEntity(
     blockPos: BlockPos,
     blockState: BlockState,
 ) :
-    BlockEntity(ModBlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState) {
+    BlockEntity(ModBlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState), MenuProvider {
     var cooldownTime: Int
     var contractSlot: ItemStack
     var cachedRewards: ItemStack
@@ -331,4 +338,12 @@ class ContractPortalBlockEntity(
             ).stream()
         }.collect(Collectors.toList())
     }
+
+    override fun getDisplayName(): Component? = ModBlockRegistry.CONTRACT_PORTAL.get()?.name
+
+    override fun createMenu(
+        i: Int,
+        inventory: Inventory,
+        player: Player
+    ): AbstractContainerMenu? = ModMenuRegistry.CONTRACT_PORTAL.get().create(i, inventory)
 }
