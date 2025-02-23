@@ -39,7 +39,28 @@ class AvailableContractsMenu(id: Int, inventory: Inventory) :
         player: Player,
         i: Int
     ): ItemStack? {
-        TODO("Not yet implemented")
+        val slot = slots[i]
+        if (!slot.hasItem()) {
+            return ItemStack.EMPTY
+        }
+
+        val slotItemStack = slot.item
+        val itemStack = slotItemStack.copy()
+        if (i < container.containerSize) {
+            if (!this.moveItemStackTo(slotItemStack, container.containerSize, slots.size, true)) {
+                return ItemStack.EMPTY
+            }
+        } else {
+            return ItemStack.EMPTY
+        }
+
+        if (slotItemStack.isEmpty) {
+            slot.setByPlayer(ItemStack.EMPTY)
+        } else {
+            slot.setChanged()
+        }
+
+        return itemStack
     }
 
     override fun stillValid(player: Player): Boolean = container.stillValid(player)
