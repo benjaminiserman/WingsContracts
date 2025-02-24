@@ -345,5 +345,5 @@ class ContractPortalBlockEntity(
         i: Int,
         inventory: Inventory,
         player: Player
-    ): AbstractContainerMenu? = ModMenuRegistry.CONTRACT_PORTAL.get().create(i, inventory)
+    ): AbstractContainerMenu = ModMenuRegistry.CONTRACT_PORTAL.get().create(i, inventory)!!
 }

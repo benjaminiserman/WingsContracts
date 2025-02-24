@@ -7,7 +7,7 @@ import net.minecraft.world.ContainerHelper
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 
-class AvailableContractsContainer : Container {
+class AvailableContractsContainer(val data: AvailableContractsData) : Container {
     val items: NonNullList<ItemStack> = NonNullList.withSize(MAX_OPTIONS, ItemStack.EMPTY)
     override fun getContainerSize(): Int = MAX_OPTIONS
     override fun isEmpty(): Boolean = items.isEmpty() || items.all { it.isEmpty }
@@ -27,7 +27,14 @@ class AvailableContractsContainer : Container {
         items[i] = itemStack
     }
 
-    override fun setChanged() {}
+    override fun setChanged() {
+        data.setDirty()
+    }
+
     override fun stillValid(player: Player): Boolean = true
     override fun clearContent() = items.clear()
+
+    override fun startOpen(player: Player) {
+        super.startOpen(player)
+    }
 }

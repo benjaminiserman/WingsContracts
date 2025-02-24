@@ -1,6 +1,7 @@
 package dev.biserman.wingscontracts
 
 import dev.architectury.event.events.client.ClientLifecycleEvent
+import dev.architectury.event.events.common.TickEvent
 import dev.architectury.platform.Platform
 import dev.architectury.utils.Env
 import dev.architectury.utils.EnvExecutor
@@ -8,6 +9,7 @@ import dev.biserman.wingscontracts.client.WingsContractsClient
 import dev.biserman.wingscontracts.compat.CompatMods
 import dev.biserman.wingscontracts.compat.computercraft.ModItemDetailProvider
 import dev.biserman.wingscontracts.registry.*
+import dev.biserman.wingscontracts.server.AvailableContractsData
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
@@ -22,14 +24,20 @@ object WingsContractsMod {
         ModSoundRegistry.register()
         ModCommandRegistry.register()
         ModMenuRegistry.register()
+        ModReloadListenerRegistry.register()
 
         if (Platform.isModLoaded(CompatMods.COMPUTERCRAFT)) {
             ModItemDetailProvider.register()
         }
 
+        TickEvent.Server.SERVER_LEVEL_POST.register { level -> AvailableContractsData.get(level).serverTick() }
+
         EnvExecutor.runInEnv(Env.CLIENT) {
             Runnable {
-                ClientLifecycleEvent.CLIENT_SETUP.register(ClientLifecycleEvent.ClientState { WingsContractsClient.init() })
+                ClientLifecycleEvent.CLIENT_SETUP.register(ClientLifecycleEvent.ClientState {
+                    WingsContractsClient.init()
+                    ModMenuRegistry.clientsideRegister()
+                })
             }
         }
     }

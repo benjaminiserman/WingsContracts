@@ -1,7 +1,10 @@
 package dev.biserman.wingscontracts.api
 
+import com.google.gson.JsonObject
+import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
 import dev.biserman.wingscontracts.tag.ContractTag
+import dev.biserman.wingscontracts.tag.ContractTagHelper.Property
 import dev.biserman.wingscontracts.tag.ContractTagHelper.double
 import dev.biserman.wingscontracts.tag.ContractTagHelper.int
 import dev.biserman.wingscontracts.tag.ContractTagHelper.itemStack
@@ -12,9 +15,11 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import java.util.*
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.memberExtensionProperties
 import kotlin.reflect.full.memberProperties
 
-@Suppress("MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate", "NullableBooleanElvis")
 class AbyssalContract(
     id: UUID, targetItems: List<Item>, targetTags: List<TagKey<Item>>,
 
@@ -108,12 +113,6 @@ class AbyssalContract(
         var (ContractTag).quantityGrowthFactor by double()
         var (ContractTag).maxLevel by int()
 
-        var (ContractTag).rewardItem: Item?
-            get() = reward?.item
-            set(value) {
-                reward = ItemStack(value ?: Items.AIR, reward?.count ?: 1)
-            }
-
         fun load(contract: ContractTag): AbyssalContract {
             val defaultTargetItems = if (contract.targetItems == null && contract.targetTags == null) {
                 listOf(Items.DIRT)
@@ -140,6 +139,18 @@ class AbyssalContract(
                 quantityGrowthFactor = contract.quantityGrowthFactor ?: 0.5,
                 maxLevel = contract.maxLevel ?: 10
             )
+        }
+
+        fun fromJson(json: JsonObject): ContractTag {
+            val tag = ContractTag(CompoundTag())
+
+            ContractTag::class.memberExtensionProperties.filterIsInstance<KProperty1<ContractTag, Property<*>>>()
+                .forEach {
+                    WingsContractsMod.LOGGER.info("there is NO SHOT this works ${it.name}")
+                    it.get(tag).loadJson(tag, it, json)
+                }
+
+            return tag
         }
     }
 }

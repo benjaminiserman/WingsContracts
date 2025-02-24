@@ -2,6 +2,7 @@
 
 package dev.biserman.wingscontracts.block
 
+import dev.architectury.registry.menu.MenuRegistry
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.data.LoadedContracts
@@ -10,6 +11,7 @@ import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.Containers
 import net.minecraft.world.InteractionHand
@@ -65,8 +67,13 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
 
         if (contractSlotItem.isEmpty) {
             if (itemInHand.item !is ContractItem) {
-
-                return InteractionResult.FAIL
+                val blockEntity = level.getBlockEntity(blockPos)
+                if (player is ServerPlayer && blockEntity is ContractPortalBlockEntity) {
+                    MenuRegistry.openMenu(player, blockEntity)
+                    return InteractionResult.CONSUME
+                } else {
+                    return InteractionResult.SUCCESS
+                }
             }
 
             portal.contractSlot = itemInHand
@@ -225,4 +232,5 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
             }
         }
     }
+
 }

@@ -24,7 +24,10 @@ object ModMenuRegistry {
     @JvmStatic
     fun register() {
         MENUS.register()
+    }
+
+    @JvmStatic
+    fun clientsideRegister() {
         MenuRegistry.registerScreenFactory(CONTRACT_PORTAL.get(), ::AvailableContractsScreen)
-        MenuRegistry::openMenu
     }
 }

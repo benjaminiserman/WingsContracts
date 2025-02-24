@@ -1,5 +1,6 @@
 package dev.biserman.wingscontracts.tag
 
+import com.google.gson.JsonObject
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.ItemStack
 import kotlin.reflect.KProperty
@@ -21,11 +22,16 @@ object ContractTagHelper {
     }
 
     class Property<T>(
-        val key: String?, val getFn: (CompoundTag).(String) -> T?, val putFn: (CompoundTag).(String, T) -> Unit
+        val key: String?, val getFn: (CompoundTag).(String) -> T?, val putFn: (CompoundTag).(String, T) -> Unit, val jsonCastFn: ((JsonObject).() -> T)? = null
     ) {
         operator fun getValue(ref: ContractTag, prop: KProperty<*>): T? = ref.tag.getFn(key ?: prop.name)
         operator fun setValue(ref: ContractTag, prop: KProperty<*>, value: T?) {
             ref.tag.putFn(key ?: prop.name, value ?: return)
+        }
+        fun loadJson(ref: ContractTag, prop: KProperty<*>, json: JsonObject) {
+            if (jsonCastFn != null) {
+                setValue(ref, prop, json.jsonCastFn())
+            }
         }
     }
 
