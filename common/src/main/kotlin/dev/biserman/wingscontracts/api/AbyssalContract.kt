@@ -1,22 +1,24 @@
 package dev.biserman.wingscontracts.api
 
 import com.google.gson.JsonObject
-import dev.biserman.wingscontracts.WingsContractsMod
+import com.mojang.serialization.JsonOps
 import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
+import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.tag.ContractTag
-import dev.biserman.wingscontracts.tag.ContractTagHelper.Property
 import dev.biserman.wingscontracts.tag.ContractTagHelper.double
 import dev.biserman.wingscontracts.tag.ContractTagHelper.int
 import dev.biserman.wingscontracts.tag.ContractTagHelper.itemStack
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtOps
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
+import net.minecraft.util.Mth
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import java.util.*
-import kotlin.reflect.KProperty1
-import kotlin.reflect.full.memberExtensionProperties
 import kotlin.reflect.full.memberProperties
 
 @Suppress("MemberVisibilityCanBePrivate", "NullableBooleanElvis")
@@ -69,6 +71,10 @@ class AbyssalContract(
 
     override val unitsDemanded: Int
         get() {
+            if (countPerUnit == 0) {
+                return 0
+            }
+
             val quantity = baseUnitsDemanded + (baseUnitsDemanded * (level - 1) * quantityGrowthFactor).toInt()
             return quantity - quantity % countPerUnit
         }
@@ -120,37 +126,41 @@ class AbyssalContract(
                 listOf()
             }
 
+            val tagReward = contract.reward
+            val reward = if (tagReward == null || tagReward.item == Items.AIR) {
+                ItemStack(
+                    BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(ModConfig.SERVER.defaultRewardCurrencyId.get())),
+                    Mth.floor(
+                        (tagReward?.count?.toDouble()
+                            ?: 1.0) * ModConfig.SERVER.defaultRewardCurrencyMultiplier.get()
+                    )
+                )
+            } else {
+                tagReward
+            }
+
             return AbyssalContract(
                 id = contract.id ?: UUID.randomUUID(),
                 targetItems = contract.targetItems ?: defaultTargetItems,
                 targetTags = contract.targetTags ?: listOf(),
                 startTime = contract.startTime ?: System.currentTimeMillis(),
                 currentCycleStart = contract.currentCycleStart ?: System.currentTimeMillis(),
-                cycleDurationMs = contract.cycleDurationMs ?: (1000L * 60 * 5),
+                cycleDurationMs = contract.cycleDurationMs ?: ModConfig.SERVER.defaultCycleDurationMs.get(),
                 countPerUnit = contract.countPerUnit ?: 64,
                 baseUnitsDemanded = contract.baseUnitsDemanded ?: 256,
                 unitsFulfilled = contract.unitsFulfilled ?: 0,
                 unitsFulfilledEver = contract.unitsFulfilledEver ?: 0,
                 isActive = contract.isActive ?: true,
                 isLoaded = contract.isLoaded ?: true,
-                author = contract.author ?: "",
-                reward = contract.reward ?: ItemStack(Items.EMERALD, 1),
+                author = contract.author ?: ModConfig.SERVER.defaultAuthor.get(),
+                reward = reward,
                 level = contract.level ?: 1,
-                quantityGrowthFactor = contract.quantityGrowthFactor ?: 0.5,
-                maxLevel = contract.maxLevel ?: 10
+                quantityGrowthFactor = contract.quantityGrowthFactor ?: ModConfig.SERVER.defaultGrowthFactor.get(),
+                maxLevel = contract.maxLevel ?: ModConfig.SERVER.defaultMaxLevel.get()
             )
         }
 
-        fun fromJson(json: JsonObject): ContractTag {
-            val tag = ContractTag(CompoundTag())
-
-            ContractTag::class.memberExtensionProperties.filterIsInstance<KProperty1<ContractTag, Property<*>>>()
-                .forEach {
-                    WingsContractsMod.LOGGER.info("there is NO SHOT this works ${it.name}")
-                    it.get(tag).loadJson(tag, it, json)
-                }
-
-            return tag
-        }
+        fun fromJson(json: JsonObject): ContractTag =
+            ContractTag(JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json) as CompoundTag)
     }
 }

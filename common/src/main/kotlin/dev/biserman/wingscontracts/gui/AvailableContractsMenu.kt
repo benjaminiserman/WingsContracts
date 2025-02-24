@@ -37,12 +37,12 @@ class AvailableContractsMenu(id: Int, inventory: Inventory) :
 
         for (i in 0..<3) {
             for (j in 0..<9) {
-                this.addSlot(Slot(inventory, j + i * 9 + 9, 8 + j * 18, i * 18 + 51))
+                this.addSlot(Slot(inventory, j + i * 9 + 9, 8 + j * 18, i * 18 + 69))
             }
         }
 
         for (i in 0..<9) {
-            this.addSlot(Slot(inventory, i, 8 + i * 18, 109))
+            this.addSlot(Slot(inventory, i, 8 + i * 18, 137))
         }
     }
 

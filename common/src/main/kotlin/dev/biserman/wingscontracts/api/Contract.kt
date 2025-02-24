@@ -199,6 +199,10 @@ abstract class Contract(
                     baseUnitsDemanded * countPerUnit
                 )
             )
+
+            if (author.isNotBlank()) {
+                components.add(translateContract("author", author))
+            }
         } else {
             components.add(Component.literal(extraInfoMessage))
         }

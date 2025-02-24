@@ -1,5 +1,6 @@
 package dev.biserman.wingscontracts.gui
 
+import dev.biserman.wingscontracts.WingsContractsMod
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
@@ -27,7 +28,6 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, inventory: Inventor
     }
 
     companion object {
-        // val TEXTURE: ResourceLocation = ResourceLocation(WingsContractsMod.MOD_ID, "textures/gui/contract_portal.png")
-        val TEXTURE: ResourceLocation = ResourceLocation("textures/gui/container/hopper.png")
+        val TEXTURE: ResourceLocation = ResourceLocation(WingsContractsMod.MOD_ID, "textures/gui/contract_portal.png")
     }
 }

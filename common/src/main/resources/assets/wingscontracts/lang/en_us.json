@@ -20,6 +20,7 @@
     "wingscontracts.contract.cycle_started": "Started On: %s",
     "wingscontracts.contract.total_fulfilled": "Total Units Fulfilled Ever: %d (%d)",
     "wingscontracts.contract.base_units_demanded": "Base Units Demanded: %d (%d)",
+    "wingscontracts.contract.author": "Author: %s",
 
     "wingscontracts.contract.abyssal.rewards": "Rewards %d %s for every %d %s",
 
