@@ -130,7 +130,7 @@ class AbyssalContract(
             val reward = if (tagReward == null || tagReward.item == Items.AIR) {
                 ItemStack(
                     BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(ModConfig.SERVER.defaultRewardCurrencyId.get())),
-                    Mth.floor(
+                    Mth.ceil(
                         (tagReward?.count?.toDouble()
                             ?: 1.0) * ModConfig.SERVER.defaultRewardCurrencyMultiplier.get()
                     )
@@ -147,7 +147,7 @@ class AbyssalContract(
                 currentCycleStart = contract.currentCycleStart ?: System.currentTimeMillis(),
                 cycleDurationMs = contract.cycleDurationMs ?: ModConfig.SERVER.defaultCycleDurationMs.get(),
                 countPerUnit = contract.countPerUnit ?: 64,
-                baseUnitsDemanded = contract.baseUnitsDemanded ?: 256,
+                baseUnitsDemanded = contract.baseUnitsDemanded ?: 16,
                 unitsFulfilled = contract.unitsFulfilled ?: 0,
                 unitsFulfilledEver = contract.unitsFulfilledEver ?: 0,
                 isActive = contract.isActive ?: true,

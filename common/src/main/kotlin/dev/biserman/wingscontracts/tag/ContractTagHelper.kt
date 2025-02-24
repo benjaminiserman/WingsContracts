@@ -4,6 +4,7 @@ package dev.biserman.wingscontracts.tag
 
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import kotlin.reflect.KProperty
 
 @JvmInline
@@ -34,6 +35,7 @@ object ContractTagHelper {
 
             return ref.tag.getFn(key ?: prop.name)
         }
+
         operator fun setValue(ref: ContractTag, prop: KProperty<*>, value: T?) {
             ref.tag.putFn(key ?: prop.name, value ?: return)
         }
@@ -60,7 +62,15 @@ object ContractTagHelper {
     )
 
     fun itemStack(key: String? = null) =
-        Property(key, safeGet { ItemStack.of(this.getCompound(it)) }, { safeKey, value ->
+        Property(key, safeGet {
+            if (this.contains(it, 99)) {
+                return@safeGet ItemStack(Items.AIR, this.getInt(it))
+            } else if (this.contains(it)) {
+                return@safeGet ItemStack.of(this.getCompound(it))
+            } else {
+                return@safeGet ItemStack(Items.AIR, 1)
+            }
+        }, { safeKey, value ->
             this.put(safeKey, value.save(CompoundTag()))
         })
 

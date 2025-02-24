@@ -1,0 +1,296 @@
+[
+  {
+    "targetItems": "iron_ingot",
+    "countPerUnit": 16,
+    "baseUnitsDemanded": 16,
+    "reward": {
+      "Count": 1,
+      "id": "minecraft:air"
+    }
+  },
+  {
+    "targetTags": "#minecraft:coals",
+    "countPerUnit": 24
+  },
+  {
+    "targetItems": "diamond",
+    "countPerUnit": 2
+  },
+  {
+    "targetItems": "gold_ingot",
+    "countPerUnit": 4
+  },
+  {
+    "targetItems": "copper_ingot",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "arrow",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "bone",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "bonemeal",
+    "countPerUnit": 48
+  },
+  {
+    "targetTags": "#minecraft:logs",
+    "countPerUnit": 32
+  },
+  {
+    "targetItems": "paper",
+    "countPerUnit": 32
+  },
+  {
+    "targetItems": "wheat",
+    "countPerUnit": 48
+  },
+  {
+    "targetItems": "poisonous_potato",
+    "countPerUnit": 6
+  },
+  {
+    "targetItems": "beetroot",
+    "countPerUnit": 32
+  },
+  {
+    "targetItems": "sweet_berries",
+    "countPerUnit": 32
+  },
+  {
+    "targetItems": "glow_berries",
+    "countPerUnit": 24
+  },
+  {
+    "targetItems": "chorus_flower",
+    "countPerUnit": 9,
+    "reward": 3
+  },
+  {
+    "targetItems": "popped_chorus_fruit",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetItems": "melon",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "carved_pumpkin",
+    "countPerUnit": 24,
+    "reward": 2
+  },
+  {
+    "targetItems": "cactus",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "warped_fungus,crimson_fungus",
+    "countPerUnit": 24,
+    "reward": 2
+  },
+  {
+    "targetItems": "mushroom_stem,brown_mushroom_block,red_mushroom_block",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetItems": "redstone",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "glowstone_dust",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetItems": "lapis_lazuli",
+    "countPerUnit": 8
+  },
+  {
+    "targetItems": "quartz",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "snow_block",
+    "countPerUnit": 64
+  },
+  {
+    "targetItems": "ender_pearl",
+    "countPerUnit": 16,
+    "reward": 3
+  },
+  {
+    "targetItems": "clay",
+    "countPerUnit": 32
+  },
+  {
+    "targetItems": "nether_star",
+    "countPerUnit": 1,
+    "baseUnitsDemanded": 2,
+    "reward": 32
+  },
+  {
+    "targetItems": "slime_ball",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "nether_wart",
+    "countPerUnit": 64,
+    "reward": 2
+  },
+  {
+    "targetItems": "blaze_rod",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "apple",
+    "countPerUnit": 12
+  },
+  {
+    "targetItems": "golden_apple",
+    "countPerUnit": 1,
+    "reward": 3
+  },
+  {
+    "targetItems": "golden_carrot",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetItems": "gunpowder",
+    "countPerUnit": 24,
+    "reward": 2
+  },
+  {
+    "targetItems": "fermented_spider_eye",
+    "countPerUnit": 12,
+    "reward": 2
+  },
+  {
+    "targetItems": "string",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "ghast_tear",
+    "countPerUnit": 6,
+    "reward": 3
+  },
+  {
+    "targetItems": "glass",
+    "countPerUnit": "24"
+  },
+  {
+    "targetItems": "cookie",
+    "countPerUnit": "64"
+  },
+  {
+    "targetItems": "bread",
+    "countPerUnit": "16"
+  },
+  {
+    "targetItems": "dried_kelp",
+    "countPerUnit": 128
+  },
+  {
+    "targetItems": "mushroom_stew",
+    "countPerUnit": 8
+  },
+  {
+    "targetItems": "amethyst_shard",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetItems": "rotten_flesh",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "netherite_ingot",
+    "countPerUnit": 1,
+    "reward": 8
+  },
+  {
+    "targetItems": "sea_pickle",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "obsidian",
+    "countPerUnit": 16,
+    "reward": 3
+  },
+  {
+    "targetItems": "mangove_propagule",
+    "countPerUnit": 24,
+    "reward": 2
+  },
+  {
+    "targetItems": "lava_bucket",
+    "countPerUnit": 4,
+    "reward": 2
+  },
+  {
+    "targetItems": "lily_of_the_valley",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "prismarine_shard",
+    "countPerUnit": 16,
+    "reward": 3
+  },
+  {
+    "targetItems": "dirt",
+    "countPerUnit": 64
+  },
+  {
+    "targetItems": "gravel",
+    "countPerUnit": 32
+  },
+  {
+    "targetItems": "mycelium",
+    "countPerUnit": 32,
+    "reward": 3
+  },
+  {
+    "targetItems": "podzol",
+    "countPerUnit": 32,
+    "reward": 2
+  },
+  {
+    "targetItems": "grass_block",
+    "countPerUnit": 24
+  },
+  {
+    "targetItems": "phantom_membrane",
+    "countPerUnit": 8
+  },
+  {
+    "targetItems": "moss_block",
+    "countPerUnit": 32
+  },
+  {
+    "targetItems": "vines",
+    "countPerUnit": 32
+  },
+  {
+    "targetTags": "#minecraft:saplings",
+    "countPerUnit": 32
+  },
+  {
+    "targetTags": "#minecraft:pickaxes",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetItems": "beetroot_soup",
+    "countPerUnit": 8,
+    "reward": 2
+  },
+  {
+    "targetItems": "seeds",
+    "countPerUnit": 48
+  }
+]

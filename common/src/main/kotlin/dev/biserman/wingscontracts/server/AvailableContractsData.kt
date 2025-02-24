@@ -50,7 +50,7 @@ class AvailableContractsData : SavedData() {
         tag.currentCycleStart = currentCycleStart
         tag.startTime = currentCycleStart
         tag.baseUnitsDemanded =
-            Mth.floor((tag.baseUnitsDemanded ?: 64).toDouble() * ModConfig.SERVER.defaultUnitsDemandedMultiplier.get())
+            Mth.ceil((tag.baseUnitsDemanded ?: 64).toDouble() * ModConfig.SERVER.defaultUnitsDemandedMultiplier.get())
 
         return AbyssalContract.load(tag).createItem()
     }

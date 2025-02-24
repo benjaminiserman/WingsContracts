@@ -1,0 +1,46 @@
+[
+  {
+    "targetTags": "#forge:mushrooms",
+    "countPerUnit": 24
+  },
+  {
+    "targetTags": "#forge:ingots",
+    "countPerUnit": 32
+  },
+  {
+    "targetTags": "#forge:cobblestone",
+    "countPerUnit": 128
+  },
+  {
+    "targetTags": "#forge:crops",
+    "countPerUnit": 64
+  },
+  {
+    "targetTags": "#forge:dusts",
+    "countPerUnit": 48
+  },
+  {
+    "targetTags": "#forge:dyes",
+    "countPerUnit": 48
+  },
+  {
+    "targetTags": "#forge:gems",
+    "countPerUnit": 16
+  },
+  {
+    "targetTags": "#forge:gems/quartz",
+    "countPerUnit": 24
+  },
+  {
+    "targetTags": "#forge:seeds",
+    "countPerUnit": 64
+  },
+  {
+    "targetTags": "#forge:slimeballs",
+    "countPerUnit": 24
+  },
+  {
+    "targetTags": "#forge:string",
+    "countPerUnit": 24
+  }
+]
