@@ -1,12 +1,16 @@
 [
   {
-    "targetItems": "iron_ingot",
+    "targetItems": "minecraft:iron_ingot",
     "countPerUnit": 16,
     "baseUnitsDemanded": 16,
     "reward": {
       "Count": 1,
-      "id": "minecraft:air"
+      "id": "wingscontracts:fake_id_that_doesnt_work"
     }
+  },
+  {
+    "targetItems": "iron_ingot",
+    "countPerUnit": 16
   },
   {
     "targetTags": "#minecraft:coals",
