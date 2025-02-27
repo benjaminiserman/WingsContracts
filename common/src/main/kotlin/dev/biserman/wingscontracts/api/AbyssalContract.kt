@@ -2,22 +2,21 @@ package dev.biserman.wingscontracts.api
 
 import com.google.gson.JsonObject
 import com.mojang.serialization.JsonOps
+import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.tag.ContractTag
 import dev.biserman.wingscontracts.tag.ContractTagHelper.double
 import dev.biserman.wingscontracts.tag.ContractTagHelper.int
 import dev.biserman.wingscontracts.tag.ContractTagHelper.itemStack
-import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.network.chat.MutableComponent
 import net.minecraft.tags.TagKey
 import net.minecraft.util.Mth
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Items
 import java.util.*
 import kotlin.reflect.full.memberProperties
 
@@ -50,12 +49,8 @@ class AbyssalContract(
     isLoaded,
     author
 ) {
-    override val displayName: String
-        get() = if (level > 0) {
-            Component.translatable("item.wingscontracts.contract.abyssal", level, targetName).string
-        } else {
-            super.displayName
-        }
+    override val displayName: MutableComponent
+        get() = Component.translatable("item.${WingsContractsMod.MOD_ID}.contract.abyssal", level, targetName)
 
     override fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> {
         val components = list ?: mutableListOf()
@@ -100,17 +95,15 @@ class AbyssalContract(
     }
 
     override val details
-        get() = AbyssalContract::class.memberProperties
-            .filter { it.name != "details" }
-            .associate { prop ->
-                return@associate Pair(
-                    prop.name, when (prop.name) {
-                        "targetItems" -> targetItems.map { it.defaultInstance.details }
-                        "targetTags" -> targetTags.map { "#${it.location}" }
-                        "reward" -> reward.details
-                        else -> prop.get(this)
-                    })
-            }.toMutableMap()
+        get() = AbyssalContract::class.memberProperties.filter { it.name != "details" }.associate { prop ->
+            return@associate Pair(
+                prop.name, when (prop.name) {
+                "targetItems" -> targetItems.map { it.defaultInstance.details }
+                "targetTags" -> targetTags.map { "#${it.location}" }
+                "reward" -> reward.details
+                else -> prop.get(this)
+            })
+        }.toMutableMap()
 
     companion object {
         var (ContractTag).reward by itemStack()
@@ -120,19 +113,12 @@ class AbyssalContract(
         var (ContractTag).maxLevel by int()
 
         fun load(contract: ContractTag): AbyssalContract {
-            val defaultTargetItems = if (contract.targetItems == null && contract.targetTags == null) {
-                listOf(Items.DIRT)
-            } else {
-                listOf()
-            }
-
             val tagReward = contract.reward
-            val reward = if (tagReward == null || tagReward.item == Items.AIR) {
+            val reward = if (tagReward == null) {
+                WingsContractsMod.LOGGER.info("creating default reward... ${ModConfig.SERVER.defaultRewardCurrencyId.get()}")
                 ItemStack(
-                    BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(ModConfig.SERVER.defaultRewardCurrencyId.get())),
-                    Mth.ceil(
-                        (tagReward?.count?.toDouble()
-                            ?: 1.0) * ModConfig.SERVER.defaultRewardCurrencyMultiplier.get()
+                    ModConfig.SERVER.defaultRewardCurrency, Mth.ceil(
+                        ModConfig.SERVER.defaultRewardCurrencyMultiplier.get()
                     )
                 )
             } else {
@@ -141,7 +127,7 @@ class AbyssalContract(
 
             return AbyssalContract(
                 id = contract.id ?: UUID.randomUUID(),
-                targetItems = contract.targetItems ?: defaultTargetItems,
+                targetItems = contract.targetItems ?: listOf(),
                 targetTags = contract.targetTags ?: listOf(),
                 startTime = contract.startTime ?: System.currentTimeMillis(),
                 currentCycleStart = contract.currentCycleStart ?: System.currentTimeMillis(),

@@ -28,13 +28,15 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
         resourceManager: ResourceManager,
         profilerFiller: ProfilerFiller
     ) {
-        WingsContractsMod.LOGGER.info("applying available contracts KOMENCI")
+        WingsContractsMod.LOGGER.info("applying available contracts $$$ KOMENCI ${jsonMap.size}")
         val buildAvailableContracts = mutableListOf<ContractTag>()
 
         for ((resourceLocation, json) in jsonMap) {
             if (resourceLocation.path.startsWith("_")) {
                 continue
             }
+
+            WingsContractsMod.LOGGER.info("found $resourceLocation")
 
             try {
                 if (json.isJsonObject) {

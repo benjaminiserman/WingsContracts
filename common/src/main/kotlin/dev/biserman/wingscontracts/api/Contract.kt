@@ -24,6 +24,13 @@ import net.minecraft.world.item.ItemStack
 import java.util.*
 import kotlin.math.min
 
+fun (Item).name(): String = this.defaultInstance.displayName.string
+fun (TagKey<Item>).name(): String {
+    val path = this.location.path
+    val firstLetterCapital = path.substring(0, 1).uppercase(Locale.getDefault())
+    return "${firstLetterCapital}${path.substring(1)}"
+}
+
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class Contract(
     val type: Int = 0,
@@ -71,15 +78,11 @@ abstract class Contract(
         }
 
         if (targetItems.isNotEmpty()) {
-            val targetItemDisplayName = Component.translatable(targetItems[0].descriptionId).string
-            return@lazy targetItemDisplayName
-                ?: translateContract("unknown").string
+            return@lazy targetItems[0].name()
         }
 
         if (targetTags.isNotEmpty()) {
-            val path = targetTags[0].registry.location().path
-            val firstLetterCapital = path.substring(0, 1).uppercase(Locale.getDefault())
-            return@lazy "${firstLetterCapital}${path.substring(1)}"
+            return@lazy targetTags[0].name()
         }
 
         return@lazy translateContract("empty").string
@@ -124,11 +127,10 @@ abstract class Contract(
 
     open fun onContractFulfilled(tag: ContractTag?) {}
 
-    open val displayName get() = "$targetName ${Component.translatable("item.${WingsContractsMod.MOD_ID}.contract")}"
+    open val displayName get() = Component.translatable("item.${WingsContractsMod.MOD_ID}.contract", targetName)
 
     fun listTargets(): String {
-        fun (Item).name() = this.defaultInstance.displayName.string
-        fun (TagKey<Item>).name() = this.registry.location()
+
         val totalSize = targetItems.size + targetTags.size
         return when (totalSize) {
             0 -> translateContract("no_targets").string
@@ -142,7 +144,7 @@ abstract class Contract(
                 "matches_following",
                 targetItems.asSequence().map { it.name() }
                     .plus(targetTags.map { it.name() })
-                    .joinToString { " - $it\n" }
+                    .joinToString(separator = "\n") { " - $it" }
             ).string
         }
     }
@@ -317,10 +319,12 @@ abstract class Contract(
         var (ContractTag).targetTags: List<TagKey<Item>>?
             get() {
                 val tagKeys = targetTagKeys ?: return null
+
                 if (tagKeys.isNotEmpty()) {
-                    return tagKeys.map {
-                        TagKey.create(
-                            Registries.ITEM, ResourceLocation.tryParse(it) ?: ResourceLocation("")
+                    return tagKeys.map { it.trimStart('#') }.mapNotNull {
+                        WingsContractsMod.LOGGER.info("YTTER found tag $it")
+                        return@mapNotNull TagKey.create(
+                            Registries.ITEM, ResourceLocation.tryParse(it) ?: return@mapNotNull null
                         )
                     }
                 }
@@ -328,7 +332,7 @@ abstract class Contract(
                 return null
             }
             set(value) {
-                targetTagKeys = value?.map { it.registry.location().toString() }
+                targetTagKeys = value?.map { it.location().toString() }
             }
 
         var (ContractTag).targetItems: List<Item>?

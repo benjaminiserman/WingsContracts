@@ -25,7 +25,7 @@
     "wingscontracts.contract.abyssal.rewards": "Rewards %d %s for every %d %s",
 
 
-    "item.wingscontracts.contract": "Contract",
+    "item.wingscontracts.contract": "%s Contract",
     "item.wingscontracts.contract.unknown": "Unknown Contract",
     "item.wingscontracts.contract.abyssal": "Level %d %s Contract",
 

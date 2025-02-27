@@ -2,9 +2,10 @@
 
 package dev.biserman.wingscontracts.tag
 
+import dev.biserman.wingscontracts.config.ModConfig
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.util.Mth
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Items
 import kotlin.reflect.KProperty
 
 @JvmInline
@@ -64,11 +65,14 @@ object ContractTagHelper {
     fun itemStack(key: String? = null) =
         Property(key, safeGet {
             if (this.contains(it, 99)) {
-                return@safeGet ItemStack(Items.AIR, this.getInt(it))
+                return@safeGet ItemStack(
+                    ModConfig.SERVER.defaultRewardCurrency,
+                    Mth.ceil(this.getInt(it).toDouble() * ModConfig.SERVER.defaultRewardCurrencyMultiplier.get())
+                )
             } else if (this.contains(it)) {
                 return@safeGet ItemStack.of(this.getCompound(it))
             } else {
-                return@safeGet ItemStack(Items.AIR, 1)
+                return@safeGet null
             }
         }, { safeKey, value ->
             this.put(safeKey, value.save(CompoundTag()))

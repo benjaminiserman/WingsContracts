@@ -19,7 +19,7 @@ class ContractItem(properties: Properties) : Item(properties) {
     override fun getName(itemStack: ItemStack): Component {
         val contract = LoadedContracts[itemStack]
             ?: return Component.translatable("item.${WingsContractsMod.MOD_ID}.contract.unknown")
-        return Component.literal(contract.displayName)
+        return contract.displayName
     }
 
     override fun appendHoverText(
