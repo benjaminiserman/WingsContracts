@@ -93,6 +93,11 @@
     "reward": 2
   },
   {
+    "targetItems": "red_mushroom,brown_mushroom",
+    "countPerUnit": 16,
+    "reward": 1
+  },
+  {
     "targetItems": "mushroom_stem,brown_mushroom_block,red_mushroom_block",
     "countPerUnit": 16,
     "reward": 2
@@ -194,10 +199,6 @@
   {
     "targetItems": "dried_kelp",
     "countPerUnit": 128
-  },
-  {
-    "targetItems": "mushroom_stew",
-    "countPerUnit": 8
   },
   {
     "targetItems": "amethyst_shard",
