@@ -1,5 +1,6 @@
 package dev.biserman.wingscontracts.gui
 
+import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.registry.ModMenuRegistry
 import dev.biserman.wingscontracts.server.AvailableContractsContainer
 import dev.biserman.wingscontracts.server.AvailableContractsData
@@ -17,12 +18,13 @@ class AvailableContractsMenu(id: Int, inventory: Inventory) :
         AvailableContractsData.get(inventory.player.level()).container
 
     init {
-        checkContainerSize(container, AvailableContractsData.MAX_OPTIONS)
+        val maxOptions = ModConfig.SERVER.availableContractsPoolOptions.get()
+        checkContainerSize(container, maxOptions)
         container.startOpen(inventory.player)
 
-        if (AvailableContractsData.MAX_OPTIONS > 5) {
-            val bottomRowCount = AvailableContractsData.MAX_OPTIONS / 2
-            val topRowCount = AvailableContractsData.MAX_OPTIONS - bottomRowCount
+        if (maxOptions > 5) {
+            val bottomRowCount = maxOptions / 2
+            val topRowCount = maxOptions - bottomRowCount
             for (i in 0..<topRowCount) {
                 this.addSlot(Slot(container, i, 44 + 9 * (5 - topRowCount) + i * 18, 20))
             }
@@ -30,7 +32,7 @@ class AvailableContractsMenu(id: Int, inventory: Inventory) :
                 this.addSlot(Slot(container, i + topRowCount, 44 + 9 * (5 - bottomRowCount) + i * 18, 38))
             }
         } else {
-            for (i in 0..<AvailableContractsData.MAX_OPTIONS) {
+            for (i in 0..<maxOptions) {
                 this.addSlot(Slot(container, i, 44 + i * 18, 29))
             }
         }

@@ -56,7 +56,6 @@ class AvailableContractsData : SavedData() {
     }
 
     companion object {
-        const val MAX_OPTIONS = 5
         const val CONTRACT_LIST = "contractList"
         const val CURRENT_CYCLE_START = "currentCycleStart"
         const val IDENTIFIER = "${WingsContractsMod.MOD_ID}_world_data"
