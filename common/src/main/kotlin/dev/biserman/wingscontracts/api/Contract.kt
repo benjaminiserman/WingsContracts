@@ -17,6 +17,7 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
@@ -49,7 +50,8 @@ abstract class Contract(
 
     var isActive: Boolean = true,
     var isLoaded: Boolean = true,
-    val author: String = ""
+    val author: String = "",
+    val name: String? = null
 ) {
     open val unitsDemanded = baseUnitsDemanded
 
@@ -71,7 +73,7 @@ abstract class Contract(
         })
     }
 
-    open val targetName by lazy {
+    open val targetName: String by lazy {
         val targetComponentCount = targetItems.size + targetTags.size
         if (targetComponentCount > 1) {
             return@lazy translateContract("complex").string
@@ -82,7 +84,8 @@ abstract class Contract(
         }
 
         if (targetTags.isNotEmpty()) {
-            return@lazy targetTags[0].name()
+            return@lazy targetTags[0].name().split("/").reversed()
+                .joinToString(" ") { it.replaceFirstChar { it.titlecase(Locale.getDefault()) } }
         }
 
         return@lazy translateContract("empty").string
@@ -127,10 +130,12 @@ abstract class Contract(
 
     open fun onContractFulfilled(tag: ContractTag?) {}
 
-    open val displayName get() = Component.translatable("item.${WingsContractsMod.MOD_ID}.contract", targetName)
+    open val displayName: MutableComponent
+        get() = Component.translatable(
+            "item.${WingsContractsMod.MOD_ID}.contract", name ?: targetName
+        )
 
     fun listTargets(): String {
-
         val totalSize = targetItems.size + targetTags.size
         return when (totalSize) {
             0 -> translateContract("no_targets").string
@@ -142,10 +147,8 @@ abstract class Contract(
 
             else -> translateContract(
                 "matches_following",
-                targetItems.asSequence().map { it.name() }
-                    .plus(targetTags.map { it.name() })
-                    .joinToString(separator = "\n") { " - $it" }
-            ).string
+                targetItems.asSequence().map { it.name() }.plus(targetTags.map { it.name() })
+                    .joinToString(separator = "\n") { " - $it" }).string
         }
     }
 
@@ -196,9 +199,7 @@ abstract class Contract(
             components.add(translateContract("total_fulfilled", unitsFulfilledEver, unitsFulfilledEver * countPerUnit))
             components.add(
                 translateContract(
-                    "base_units_demanded",
-                    baseUnitsDemanded,
-                    baseUnitsDemanded * countPerUnit
+                    "base_units_demanded", baseUnitsDemanded, baseUnitsDemanded * countPerUnit
                 )
             )
 
@@ -281,6 +282,7 @@ abstract class Contract(
         tag.isActive = isActive
         tag.isLoaded = isLoaded
         tag.author = author
+        tag.name = name
 
         return tag
     }
@@ -315,6 +317,7 @@ abstract class Contract(
         var (ContractTag).isActive by boolean()
         var (ContractTag).isLoaded by boolean()
         var (ContractTag).author by string()
+        var (ContractTag).name by string()
 
         var (ContractTag).targetTags: List<TagKey<Item>>?
             get() {

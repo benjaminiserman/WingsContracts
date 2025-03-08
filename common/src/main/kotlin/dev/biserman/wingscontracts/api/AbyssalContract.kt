@@ -28,7 +28,7 @@ class AbyssalContract(
 
     countPerUnit: Int, baseUnitsDemanded: Int, unitsFulfilled: Int, unitsFulfilledEver: Long,
 
-    isActive: Boolean, isLoaded: Boolean, author: String,
+    isActive: Boolean, isLoaded: Boolean, author: String, name: String?,
 
     val reward: ItemStack,
 
@@ -47,10 +47,11 @@ class AbyssalContract(
     unitsFulfilledEver,
     isActive,
     isLoaded,
-    author
+    author,
+    name
 ) {
     override val displayName: MutableComponent
-        get() = Component.translatable("item.${WingsContractsMod.MOD_ID}.contract.abyssal", level, targetName)
+        get() = Component.translatable("item.${WingsContractsMod.MOD_ID}.contract.abyssal", level, name ?: targetName)
 
     override fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> {
         val components = list ?: mutableListOf()
@@ -98,11 +99,11 @@ class AbyssalContract(
         get() = AbyssalContract::class.memberProperties.filter { it.name != "details" }.associate { prop ->
             return@associate Pair(
                 prop.name, when (prop.name) {
-                "targetItems" -> targetItems.map { it.defaultInstance.details }
-                "targetTags" -> targetTags.map { "#${it.location}" }
-                "reward" -> reward.details
-                else -> prop.get(this)
-            })
+                    "targetItems" -> targetItems.map { it.defaultInstance.details }
+                    "targetTags" -> targetTags.map { "#${it.location}" }
+                    "reward" -> reward.details
+                    else -> prop.get(this)
+                })
         }.toMutableMap()
 
     companion object {
@@ -139,6 +140,7 @@ class AbyssalContract(
                 isActive = contract.isActive ?: true,
                 isLoaded = contract.isLoaded ?: true,
                 author = contract.author ?: ModConfig.SERVER.defaultAuthor.get(),
+                name = contract.name,
                 reward = reward,
                 level = contract.level ?: 1,
                 quantityGrowthFactor = contract.quantityGrowthFactor ?: ModConfig.SERVER.defaultGrowthFactor.get(),
