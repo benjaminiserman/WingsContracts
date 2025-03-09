@@ -107,6 +107,7 @@ object ContractCommand {
                                                                             isActive = true,
                                                                             isLoaded = false,
                                                                             author = author,
+                                                                            name = null,
                                                                             reward = ItemStack(rewardItem, unitPrice),
                                                                             level = 1,
                                                                             quantityGrowthFactor = quantityGrowthFactor,

@@ -6,6 +6,7 @@ import kotlin.math.floor
 
 object DenominationsHelper {
     private fun translateTime(key: String) = Component.translatable("${WingsContractsMod.MOD_ID}.time.$key").string
+
     @Suppress("MemberVisibilityCanBePrivate")
     val timeDenominations = mapOf(
         translateTime("ms") to 1L,
@@ -16,6 +17,18 @@ object DenominationsHelper {
     )
 
     val timeDenominationsWithoutMs = timeDenominations.filterKeys { x -> x != "Millisecond" }
+
+    fun denominateDurationToString(duration: Long) = denominate(
+        duration, timeDenominationsWithoutMs
+    ).asSequence().joinToString(separator = ", ") { kvp ->
+        "${kvp.second} ${kvp.first}${
+            if (kvp.second == 1) {
+                ""
+            } else {
+                "s"
+            }
+        }"
+    }
 
     fun <T> denominate(value: Double, denominations: Map<T, Double>) = iterator {
         if (denominations.values.any { x -> x <= 0 }) {
@@ -33,8 +46,7 @@ object DenominationsHelper {
     }
 
     fun <T> getLargestDenomination(value: Double, denominations: Map<T, Double>): Pair<T, Int>? {
-        val denomination =
-            denominations.filter { x -> x.value <= value }.maxByOrNull { x -> x.value } ?: return null
+        val denomination = denominations.filter { x -> x.value <= value }.maxByOrNull { x -> x.value } ?: return null
         val unitsToTake = (value / denomination.value).toInt()
         return Pair(denomination.key, unitsToTake)
     }

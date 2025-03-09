@@ -170,17 +170,10 @@ abstract class Contract(
     open fun getTimeInfo(list: MutableList<Component>?): MutableList<Component> {
         val components = mutableListOf<Component>()
         val nextCycleStart = currentCycleStart + cycleDurationMs
-        val timeRemaining = DenominationsHelper.denominate(
-            nextCycleStart - System.currentTimeMillis(), DenominationsHelper.timeDenominationsWithoutMs
-        ).asSequence().joinToString(separator = ", ") { kvp ->
-            "${kvp.second} ${kvp.first}${
-                if (kvp.second == 1) {
-                    ""
-                } else {
-                    "s"
-                }
-            }"
-        }
+        val timeRemaining = DenominationsHelper.denominateDurationToString(
+            nextCycleStart - System.currentTimeMillis()
+        )
+
         if (Date(nextCycleStart) <= Date()) {
             components.add(translateContract("cycle_complete"))
         } else {

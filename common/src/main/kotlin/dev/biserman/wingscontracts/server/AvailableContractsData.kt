@@ -20,6 +20,7 @@ import net.minecraft.world.level.saveddata.SavedData
 class AvailableContractsData : SavedData() {
     val container = AvailableContractsContainer(this)
     var currentCycleStart: Long = 0
+    val nextCycleStart get() = currentCycleStart + ModConfig.SERVER.availableContractsPoolRefreshPeriodMs.get()
 
     override fun save(compoundTag: CompoundTag): CompoundTag? {
         val contractListTag = CompoundTag()

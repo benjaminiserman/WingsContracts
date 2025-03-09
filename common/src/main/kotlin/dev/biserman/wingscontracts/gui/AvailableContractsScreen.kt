@@ -1,13 +1,15 @@
 package dev.biserman.wingscontracts.gui
 
 import dev.biserman.wingscontracts.WingsContractsMod
+import dev.biserman.wingscontracts.server.AvailableContractsData
+import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.player.Inventory
 
-class AvailableContractsScreen(menu: AvailableContractsMenu, inventory: Inventory, title: Component) :
+class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inventory, title: Component) :
     AbstractContainerScreen<AvailableContractsMenu>(menu, inventory, title) {
 
     init {
@@ -18,6 +20,12 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, inventory: Inventor
     override fun render(graphics: GuiGraphics, x: Int, y: Int, partialTick: Float) {
         this.renderBackground(graphics)
         super.render(graphics, x, y, partialTick)
+
+        val timeTilRefresh = DenominationsHelper.denominate(
+            System.currentTimeMillis() - AvailableContractsData.get(inventory.player.level()).nextCycleStart,
+            DenominationsHelper.timeDenominations
+        ).asSequence().joinToString(":")
+        graphics.drawString(font, "Refreshes in: $timeTilRefresh", titleLabelX + 100, titleLabelY, 0x404040, false)
         this.renderTooltip(graphics, x, y)
     }
 
