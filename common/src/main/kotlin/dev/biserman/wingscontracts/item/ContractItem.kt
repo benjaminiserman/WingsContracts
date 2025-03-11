@@ -5,13 +5,17 @@ import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.tag.ContractTagHelper
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
+import net.minecraft.util.Mth
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.tooltip.TooltipComponent
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.level.Level
+import java.util.*
+import kotlin.math.roundToInt
 
 class ContractItem(properties: Properties) : Item(properties) {
     // TODO: how do I localize this properly?
@@ -53,5 +57,18 @@ class ContractItem(properties: Properties) : Item(properties) {
         }
 
         return super.use(level, player, interactionHand)
+    }
+
+    override fun getBarWidth(itemStack: ItemStack): Int {
+        val unitsFulfilled = LoadedContracts[itemStack]?.unitsFulfilled?.toFloat() ?: return 0
+        val unitsDemanded = LoadedContracts[itemStack]?.unitsDemanded?.toFloat() ?: return 0
+
+        return (unitsFulfilled * 13.0f / unitsDemanded).roundToInt()
+    }
+
+    override fun getBarColor(itemStack: ItemStack): Int = Mth.hsvToRgb(21f / 36f, 1.0f, 1.0f)
+
+    override fun getTooltipImage(itemStack: ItemStack): Optional<TooltipComponent> {
+        return Optional.of(ContractTooltip(itemStack))
     }
 }

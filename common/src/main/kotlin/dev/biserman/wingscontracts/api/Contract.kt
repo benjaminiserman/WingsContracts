@@ -211,6 +211,7 @@ abstract class Contract(
     ): MutableList<Component> {
         val components = mutableListOf<Component>()
 
+        components.add(Compon)
         components.addAll(getBasicInfo(null))
         components.addAll(getTimeInfo(null))
         components.addAll(getExtraInfo(null, showExtraInfo, extraInfoMessage))
