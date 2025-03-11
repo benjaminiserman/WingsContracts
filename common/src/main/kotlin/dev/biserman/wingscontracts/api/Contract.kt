@@ -142,7 +142,7 @@ abstract class Contract(
             1 -> if (targetItems.isNotEmpty()) {
                 targetItems[0].name()
             } else {
-                translateContract("items_of_tag", targetTags[0].name()).string
+                translateContract("items_of_tag", targetTags[0].location()).string
             }
 
             else -> translateContract(

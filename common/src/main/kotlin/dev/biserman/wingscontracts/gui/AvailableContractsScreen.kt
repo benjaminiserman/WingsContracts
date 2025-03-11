@@ -21,12 +21,20 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
         this.renderBackground(graphics)
         super.render(graphics, x, y, partialTick)
 
+        this.renderTooltip(graphics, x, y)
+    }
+
+    override fun renderLabels(graphics: GuiGraphics, i: Int, j: Int) {
+        super.renderLabels(graphics, i, j)
+
         val timeTilRefresh = DenominationsHelper.denominate(
             System.currentTimeMillis() - AvailableContractsData.get(inventory.player.level()).nextCycleStart,
-            DenominationsHelper.timeDenominations
-        ).asSequence().joinToString(":")
-        graphics.drawString(font, "Refreshes in: $timeTilRefresh", titleLabelX + 100, titleLabelY, 0x404040, false)
-        this.renderTooltip(graphics, x, y)
+            DenominationsHelper.timeDenominationsWithoutMs
+        ).asSequence().map { it.second }.joinToString(":")
+
+        val rightTitleEdge = imageWidth - titleLabelY
+        val refreshLabel = "Refreshes in: $timeTilRefresh"
+        graphics.drawString(font, refreshLabel, rightTitleEdge - font.width(refreshLabel), titleLabelY, 0x404040, false)
     }
 
     override fun renderBg(graphics: GuiGraphics, f: Float, i: Int, j: Int) {
