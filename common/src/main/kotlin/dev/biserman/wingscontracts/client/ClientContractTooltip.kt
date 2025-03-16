@@ -2,12 +2,15 @@ package dev.biserman.wingscontracts.client
 
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.item.ContractTooltip
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.util.Mth
 import net.minecraft.world.item.ItemStack
 
+@Environment(EnvType.CLIENT)
 class ClientContractTooltip(val tooltip: ContractTooltip) : ClientTooltipComponent {
     override fun getHeight(): Int = 26
     override fun getWidth(font: Font): Int = 20
