@@ -33,6 +33,10 @@
     "block.wingscontracts.contract_portal": "Contract Portal",
 
 
+    "wingscontracts.gui.contract_portal.refreshes_in": "Refreshes in: %s",
+    "wingscontracts.gui.contract_portal.remaining_picks": "Remaining picks: %d",
+
+
     "wingscontracts.command.contract.unit_price_greater_than_zero": "unitPrice must be greater than 0",
     "wingscontracts.command.contract.count_per_unit_greater_than_zero": "countPerUnit must be greater than 0",
     "wingscontracts.command.contract.base_units_demanded_greater_than_zero": "baseUnitsDemanded must be greater than 0",

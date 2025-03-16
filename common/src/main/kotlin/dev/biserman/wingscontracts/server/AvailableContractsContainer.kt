@@ -18,6 +18,7 @@ class AvailableContractsContainer(val data: AvailableContractsData) : Container 
     override fun removeItem(i: Int, count: Int): ItemStack? {
         val itemStack = ContainerHelper.removeItem(items, i, count)
         if (!itemStack.isEmpty) {
+            setItem(i, data.generateContract())
             this.setChanged()
         }
 

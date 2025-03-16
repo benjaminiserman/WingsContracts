@@ -8,6 +8,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val denominations: ForgeConfigSpec.ConfigValue<String>
     val availableContractsPoolRefreshPeriodMs: ForgeConfigSpec.LongValue
     val availableContractsPoolOptions: ForgeConfigSpec.IntValue
+    val availableContractsPoolPicks: ForgeConfigSpec.IntValue
 
     // Contract Defaults
     val defaultRewardCurrencyId: ForgeConfigSpec.ConfigValue<String>
@@ -34,6 +35,10 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
         availableContractsPoolOptions =
             builder.comment("Determines how many Abyssal Contracts are available in the pool at any one time.")
                 .defineInRange("availableContractsPoolOptions", 5, 0, 10)
+
+        availableContractsPoolPicks =
+            builder.comment("Determines how many picks each player gets from the Abyssal Contracts pool per refresh period.")
+                .defineInRange("availableContractsPoolPicks", 1, 0, Int.MAX_VALUE)
 
         builder.pop()
         builder.push("Contract Defaults")

@@ -33,8 +33,16 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
         ).asSequence().map { it.second }.joinToString(":")
 
         val rightTitleEdge = imageWidth - titleLabelY
-        val refreshLabel = "Refreshes in: $timeTilRefresh"
+        val refreshLabel = Component.translatable(
+            "${WingsContractsMod.MOD_ID}.gui.contract_portal.refreshes_in",
+            timeTilRefresh
+        ).string
         graphics.drawString(font, refreshLabel, rightTitleEdge - font.width(refreshLabel), titleLabelY, 0x404040, false)
+        val remainingPicksLabel = Component.translatable(
+            "${WingsContractsMod.MOD_ID}.gui.contract_portal.remaining_picks",
+            AvailableContractsData.remainingPicks(inventory.player)
+        )
+        graphics.drawString(font, remainingPicksLabel, rightTitleEdge - font.width(remainingPicksLabel), titleLabelY + font.lineHeight + 2, 0x404040, false)
     }
 
     override fun renderBg(graphics: GuiGraphics, f: Float, i: Int, j: Int) {
