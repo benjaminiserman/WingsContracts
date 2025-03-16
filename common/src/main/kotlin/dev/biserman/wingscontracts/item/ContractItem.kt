@@ -57,6 +57,11 @@ class ContractItem(properties: Properties) : Item(properties) {
         return super.use(level, player, interactionHand)
     }
 
+    override fun isBarVisible(itemStack: ItemStack): Boolean {
+        val contract = LoadedContracts[itemStack] ?: return false
+        return System.currentTimeMillis() < contract.currentCycleStart + contract.cycleDurationMs
+    }
+
     override fun getBarWidth(itemStack: ItemStack): Int {
         val unitsFulfilled = LoadedContracts[itemStack]?.unitsFulfilled?.toFloat() ?: return 0
         val unitsDemanded = LoadedContracts[itemStack]?.unitsDemanded?.toFloat() ?: return 0
