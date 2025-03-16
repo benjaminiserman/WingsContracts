@@ -10,13 +10,9 @@ architectury {
 loom {
     accessWidenerPath.set(project(":common").loom.accessWidenerPath)
 
-    mixin.useLegacyMixinAp = false
-
     forge.apply {
         convertAccessWideners.set(true)
         extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
-
-        mixinConfig("wingscontracts-common.mixins.json")
     }
 }
 
