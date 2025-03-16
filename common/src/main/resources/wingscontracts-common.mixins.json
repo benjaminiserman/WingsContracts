@@ -5,6 +5,7 @@
   "client": [
     "ClientTooltipComponentMixin"
   ],
+  "mixins": [],
   "injectors": {
     "defaultRequire": 1
   },

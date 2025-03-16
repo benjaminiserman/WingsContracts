@@ -10,6 +10,7 @@ architectury {
 
 loom {
     accessWidenerPath.set(file("src/main/resources/wingscontracts.accesswidener"))
+    mixin.useLegacyMixinAp = false
 }
 
 dependencies {
