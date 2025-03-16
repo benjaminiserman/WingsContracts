@@ -1,6 +1,5 @@
 package dev.biserman.wingscontracts.client
 
-import dev.architectury.event.events.client.ClientTooltipEvent
 import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry
 import dev.biserman.wingscontracts.client.renderer.ContractPortalBlockEntityRenderer
 import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
@@ -19,7 +18,5 @@ object WingsContractsClient {
                 context
             )
         }
-
-        ClientTooltipEvent.ITEM.register()
     }
 }
