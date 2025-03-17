@@ -20,6 +20,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
+import net.minecraft.util.Mth
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import java.util.*
@@ -349,5 +350,14 @@ abstract class Contract(
         fun translateContract(key: String, vararg objects: Any): Component =
             Component.translatable("${WingsContractsMod.MOD_ID}.contract.$key", *objects)
 
+        fun getDisplayItem(itemStack: ItemStack, time: Float): ItemStack {
+            val contract = LoadedContracts[itemStack] ?: return ItemStack.EMPTY
+
+            return if (contract.allMatchingItems.isEmpty()) {
+                ItemStack.EMPTY
+            } else {
+                contract.allMatchingItems[Mth.floor(time / 30.0f) % contract.allMatchingItems.size]
+            }
+        }
     }
 }
