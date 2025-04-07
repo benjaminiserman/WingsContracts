@@ -63,8 +63,12 @@ class ContractItem(properties: Properties) : Item(properties) {
     }
 
     override fun getBarWidth(itemStack: ItemStack): Int {
-        val unitsFulfilled = LoadedContracts[itemStack]?.unitsFulfilled?.toFloat() ?: return 0
-        val unitsDemanded = LoadedContracts[itemStack]?.unitsDemanded?.toFloat() ?: return 0
+        val unitsFulfilled = LoadedContracts[itemStack]?.unitsFulfilled?.toFloat() ?: 0f
+        val unitsDemanded = LoadedContracts[itemStack]?.unitsDemanded?.toFloat() ?: 0f
+
+        if (unitsDemanded == 0f || unitsFulfilled == 0f) {
+            return 0
+        }
 
         return (unitsFulfilled * 13.0f / unitsDemanded).roundToInt()
     }

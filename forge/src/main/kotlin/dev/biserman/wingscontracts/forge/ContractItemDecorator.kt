@@ -17,22 +17,22 @@ class ContractItemDecorator : IItemDecorator {
         graphics: GuiGraphics, font: Font, itemStack: ItemStack, x: Int, y: Int
     ): Boolean {
         val minecraft = Minecraft.getInstance()
-        val showItem = Contract.getDisplayItem(itemStack, minecraft.deltaFrameTime)
+        val showItem = Contract.getDisplayItem(itemStack, minecraft.level?.gameTime?.toFloat() ?: 0f)
         if (showItem.isEmpty) {
             return false
         }
 
         val contract = LoadedContracts[itemStack]
-        val yOffset = if (contract?.unitsFulfilled == 0) {
-            8
-        } else {
-            6
-        }
+//        val yOffset = if (contract?.unitsFulfilled == 0) {
+//            8
+//        } else {
+//            5
+//        }
 
         val poseStack = graphics.pose()
         poseStack.pushPose()
         poseStack.translate(
-            x.toFloat(), (y + yOffset).toFloat(), 100f
+            (x + 4).toFloat(), (y + 4).toFloat(), 100f
         )
         poseStack.scale(0.5f, 0.5f, 0.5f)
         graphics.renderItem(showItem, 0, 0)
