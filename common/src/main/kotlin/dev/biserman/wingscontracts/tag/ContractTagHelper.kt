@@ -9,7 +9,10 @@ import net.minecraft.world.item.ItemStack
 import kotlin.reflect.KProperty
 
 @JvmInline
-value class ContractTag(val tag: CompoundTag)
+value class ContractTag(val tag: CompoundTag) {
+    val isValid get() = true // $$$ make this actually check for invalid contracts
+    override fun toString() = "ContractTag($tag)"
+}
 
 @Suppress("MemberVisibilityCanBePrivate")
 object ContractTagHelper {

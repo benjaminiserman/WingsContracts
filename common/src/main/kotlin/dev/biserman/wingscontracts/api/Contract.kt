@@ -319,8 +319,6 @@ abstract class Contract(
 
     abstract val details: MutableMap<String, Any?>
 
-    open val isValid get() = true
-
     companion object {
         var (ContractTag).type by int()
         var (ContractTag).id by uuid()
@@ -348,7 +346,6 @@ abstract class Contract(
 
                 if (tagKeys.isNotEmpty()) {
                     return tagKeys.map { it.trimStart('#') }.mapNotNull {
-                        WingsContractsMod.LOGGER.info("YTTER found tag $it")
                         return@mapNotNull TagKey.create(
                             Registries.ITEM, ResourceLocation.tryParse(it) ?: return@mapNotNull null
                         )

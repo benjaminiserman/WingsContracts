@@ -44,6 +44,13 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
                         AbyssalContract.fromJson(it.asJsonObject)
                     }
 
+                for (contract in parsedContracts) {
+                    if (contract.isValid) {
+                        buildAvailableContracts.add(contract)
+                    } else {
+                        WingsContractsMod.LOGGER.warn("Found invalid contract $contract in $resourceLocation")
+                    }
+                }
                 buildAvailableContracts.addAll(parsedContracts.filter { it.isValid })
             } catch (e: Exception) {
                 WingsContractsMod.LOGGER.error("Error while loading available contracts at $resourceLocation", e)
