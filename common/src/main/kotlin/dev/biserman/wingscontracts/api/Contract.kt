@@ -11,7 +11,9 @@ import dev.biserman.wingscontracts.tag.ContractTagHelper.int
 import dev.biserman.wingscontracts.tag.ContractTagHelper.long
 import dev.biserman.wingscontracts.tag.ContractTagHelper.string
 import dev.biserman.wingscontracts.tag.ContractTagHelper.uuid
+import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import dev.biserman.wingscontracts.util.DenominationsHelper
+import net.minecraft.ChatFormatting
 import net.minecraft.core.NonNullList
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -81,7 +83,7 @@ abstract class Contract(
         }
 
         if (targetItems.isNotEmpty()) {
-            return@lazy targetItems[0].name()
+            return@lazy targetItems[0].name().trimBrackets()
         }
 
         if (targetTags.isNotEmpty()) {
@@ -133,23 +135,31 @@ abstract class Contract(
 
     open val displayName: MutableComponent
         get() = Component.translatable(
-            "item.${WingsContractsMod.MOD_ID}.contract", name ?: targetName
+            "item.${WingsContractsMod.MOD_ID}.contract", Component.translatable(name ?: targetName).string
         )
 
-    fun listTargets(): String {
+    fun listTargets(displayShort: Boolean): String {
         val totalSize = targetItems.size + targetTags.size
+
+        val separator = if (displayShort) "|" else "\n"
+        val complexPrefix = if (displayShort) "" else " - "
+        val tagKey = if (displayShort) "items_of_tag_short" else "items_of_tag"
+
         return when (totalSize) {
             0 -> translateContract("no_targets").string
             1 -> if (targetItems.isNotEmpty()) {
-                targetItems[0].name()
+                targetItems[0].name().trimBrackets()
             } else {
-                translateContract("items_of_tag", targetTags[0].location()).string
+                translateContract(tagKey, targetTags[0].location()).string
             }
 
             else -> translateContract(
                 "matches_following",
-                targetItems.asSequence().map { it.name() }.plus(targetTags.map { it.name() })
-                    .joinToString(separator = "\n") { " - $it" }).string
+                targetItems.asSequence()
+                    .map { it.name().trimBrackets() }
+                    .plus(targetTags.map { it.name() })
+                    .joinToString(separator = separator) { "$complexPrefix$it" })
+                .string
         }
     }
 
@@ -162,7 +172,7 @@ abstract class Contract(
                 unitsDemanded,
                 unitsFulfilled * countPerUnit,
                 unitsDemanded * countPerUnit
-            )
+            ).withStyle(ChatFormatting.LIGHT_PURPLE)
         )
 
         return components
@@ -171,50 +181,67 @@ abstract class Contract(
     open fun getTimeInfo(list: MutableList<Component>?): MutableList<Component> {
         val components = mutableListOf<Component>()
         val nextCycleStart = currentCycleStart + cycleDurationMs
-        val timeRemaining = DenominationsHelper.denominateDurationToString(
-            nextCycleStart - System.currentTimeMillis()
-        )
+        val timeRemaining = nextCycleStart - System.currentTimeMillis()
+        val timeRemainingString = DenominationsHelper.denominateDurationToString(timeRemaining)
+
+        val timeRemainingColor = when {
+            timeRemaining < 1000 * 60 * 60 -> ChatFormatting.RED
+            timeRemaining < 1000 * 60 * 60 * 24 -> ChatFormatting.YELLOW
+            else -> ChatFormatting.LIGHT_PURPLE
+        }
 
         if (Date(nextCycleStart) <= Date()) {
-            components.add(translateContract("cycle_complete"))
+            components.add(translateContract("cycle_complete").withStyle(ChatFormatting.DARK_PURPLE))
         } else {
-            components.add(translateContract("cycle_remaining", Date(nextCycleStart), timeRemaining))
+            components.add(
+                translateContract(
+                    "cycle_remaining", Date(nextCycleStart), timeRemainingString
+                ).withStyle(timeRemainingColor)
+            )
         }
 
         return components
     }
 
+    open fun getShortInfo(): Component = Component.empty()
+
     open fun getExtraInfo(
-        list: MutableList<Component>?, showExtraInfo: Boolean, extraInfoMessage: String
+        list: MutableList<Component>?
     ): MutableList<Component> {
         val components = mutableListOf<Component>()
-        if (showExtraInfo) {
-            components.add(translateContract("cycle_started", Date(startTime)))
-            components.add(translateContract("total_fulfilled", unitsFulfilledEver, unitsFulfilledEver * countPerUnit))
-            components.add(
-                translateContract(
-                    "base_units_demanded", baseUnitsDemanded, baseUnitsDemanded * countPerUnit
-                )
-            )
 
-            if (author.isNotBlank()) {
-                components.add(translateContract("author", author))
-            }
-        } else {
-            components.add(Component.literal(extraInfoMessage))
+        components.addAll(getBasicInfo(null))
+        components.addAll(getTimeInfo(null))
+        components.add(translateContract("cycle_started", Date(startTime)).withStyle(ChatFormatting.LIGHT_PURPLE))
+        components.add(
+            translateContract(
+                "total_fulfilled", unitsFulfilledEver, unitsFulfilledEver * countPerUnit
+            ).withStyle(ChatFormatting.DARK_PURPLE)
+        )
+        components.add(
+            translateContract(
+                "base_units_demanded", baseUnitsDemanded, baseUnitsDemanded * countPerUnit
+            ).withStyle(ChatFormatting.LIGHT_PURPLE)
+        )
+
+        if (author.isNotBlank()) {
+            components.add(translateContract("author", author).withStyle(ChatFormatting.DARK_PURPLE))
         }
 
         return components
     }
 
     open fun getDescription(
-        showExtraInfo: Boolean, extraInfoMessage: String
+        showExtraInfo: Boolean, howExtraInfo: Component
     ): MutableList<Component> {
         val components = mutableListOf<Component>()
 
-        components.addAll(getBasicInfo(null))
-        components.addAll(getTimeInfo(null))
-        components.addAll(getExtraInfo(null, showExtraInfo, extraInfoMessage))
+        if (showExtraInfo) {
+            components.addAll(getExtraInfo(null))
+        } else {
+            components.add(getShortInfo())
+            components.add(howExtraInfo)
+        }
 
         return components
     }
@@ -292,6 +319,8 @@ abstract class Contract(
 
     abstract val details: MutableMap<String, Any?>
 
+    open val isValid get() = true
+
     companion object {
         var (ContractTag).type by int()
         var (ContractTag).id by uuid()
@@ -347,7 +376,7 @@ abstract class Contract(
                 targetItemKeys = value?.mapNotNull { it.`arch$registryName`()?.path }
             }
 
-        fun translateContract(key: String, vararg objects: Any): Component =
+        fun translateContract(key: String, vararg objects: Any): MutableComponent =
             Component.translatable("${WingsContractsMod.MOD_ID}.contract.$key", *objects)
 
         fun getDisplayItem(itemStack: ItemStack, time: Float): ItemStack {

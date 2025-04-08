@@ -94,17 +94,20 @@
   {
     "targetItems": "warped_fungus,crimson_fungus",
     "countPerUnit": 24,
-    "reward": 2
+    "reward": 2,
+    "name": "wingscontracts.data.nether_mushroom"
   },
   {
     "targetItems": "red_mushroom,brown_mushroom",
     "countPerUnit": 16,
-    "reward": 1
+    "reward": 1,
+    "name": "wingscontracts.data.mushroom"
   },
   {
     "targetItems": "mushroom_stem,brown_mushroom_block,red_mushroom_block",
     "countPerUnit": 16,
-    "reward": 2
+    "reward": 2,
+    "name": "wingscontracts.data.mushroom_block"
   },
   {
     "targetItems": "redstone",
@@ -190,15 +193,15 @@
   },
   {
     "targetItems": "glass",
-    "countPerUnit": "24"
+    "countPerUnit": 24
   },
   {
     "targetItems": "cookie",
-    "countPerUnit": "64"
+    "countPerUnit": 64
   },
   {
     "targetItems": "bread",
-    "countPerUnit": "16"
+    "countPerUnit": 16
   },
   {
     "targetItems": "dried_kelp",
@@ -228,7 +231,7 @@
     "reward": 3
   },
   {
-    "targetItems": "mangove_propagule",
+    "targetItems": "mangrove_propagule",
     "countPerUnit": 24,
     "reward": 2
   },
@@ -297,5 +300,32 @@
   {
     "targetItems": "seeds",
     "countPerUnit": 48
+  },
+  {
+    "targetItems": "bamboo",
+    "countPerUnit": 256
+  },
+  {
+    "targetItems": "cobblestone",
+    "countPerUnit": 256
+  },
+  {
+    "targetItems": "cherry_leaves",
+    "countPerUnit": 64,
+    "reward": 2
+  },
+  {
+    "targetItems": "crying_obsidian",
+    "countPerUnit": 16,
+    "reward": 3
+  },
+  {
+    "targetItems": "hanging_roots",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "#minecraft:music_discs",
+    "countPerUnit": 2,
+    "reward": 4
   }
 ]

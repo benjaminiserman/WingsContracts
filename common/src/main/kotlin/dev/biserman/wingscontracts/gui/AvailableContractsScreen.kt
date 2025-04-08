@@ -13,7 +13,7 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
     AbstractContainerScreen<AvailableContractsMenu>(menu, inventory, title) {
 
     init {
-        imageHeight = 151
+        imageHeight = 167
         inventoryLabelY = imageHeight - 94
     }
 

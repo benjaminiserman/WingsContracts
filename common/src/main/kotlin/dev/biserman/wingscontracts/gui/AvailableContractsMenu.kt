@@ -26,25 +26,25 @@ class AvailableContractsMenu(id: Int, inventory: Inventory) :
             val bottomRowCount = maxOptions / 2
             val topRowCount = maxOptions - bottomRowCount
             for (i in 0..<topRowCount) {
-                this.addSlot(Slot(container, i, 44 + 9 * (5 - topRowCount) + i * 18, 20))
+                this.addSlot(Slot(container, i, 44 + 9 * (5 - topRowCount) + i * 18, 36))
             }
             for (i in 0..<bottomRowCount) {
-                this.addSlot(Slot(container, i + topRowCount, 44 + 9 * (5 - bottomRowCount) + i * 18, 38))
+                this.addSlot(Slot(container, i + topRowCount, 44 + 9 * (5 - bottomRowCount) + i * 18, 54))
             }
         } else {
             for (i in 0..<maxOptions) {
-                this.addSlot(Slot(container, i, 44 + i * 18, 29))
+                this.addSlot(Slot(container, i, 44 + i * 18, 45))
             }
         }
 
         for (i in 0..<3) {
             for (j in 0..<9) {
-                this.addSlot(Slot(inventory, j + i * 9 + 9, 8 + j * 18, i * 18 + 69))
+                this.addSlot(Slot(inventory, j + i * 9 + 9, 8 + j * 18, i * 18 + 85))
             }
         }
 
         for (i in 0..<9) {
-            this.addSlot(Slot(inventory, i, 8 + i * 18, 127))
+            this.addSlot(Slot(inventory, i, 8 + i * 18, 143))
         }
     }
 

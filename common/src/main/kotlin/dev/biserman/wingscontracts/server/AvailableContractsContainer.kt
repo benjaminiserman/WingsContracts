@@ -25,7 +25,14 @@ class AvailableContractsContainer(val data: AvailableContractsData) : Container 
         return itemStack
     }
 
-    override fun removeItemNoUpdate(i: Int): ItemStack? = ContainerHelper.takeItem(items, i)
+    override fun removeItemNoUpdate(i: Int): ItemStack? {
+        val itemStack = ContainerHelper.takeItem(items, i)
+        if (!itemStack.isEmpty) {
+            setItem(i, data.generateContract())
+        }
+
+        return itemStack
+    }
     override fun setItem(i: Int, itemStack: ItemStack) {
         items[i] = itemStack
     }

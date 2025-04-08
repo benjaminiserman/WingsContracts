@@ -1,5 +1,7 @@
 {
-    "wingscontracts.hold_shift": "Hold shift for more info",
+    "wingscontracts.hold_shift_1": "Hold [",
+    "wingscontracts.hold_shift_2": "] for more info",
+    "wingscontracts.shift": "Shift",
 
     "wingscontracts.time.ms": "Millisecond",
     "wingscontracts.time.second": "Second",
@@ -13,6 +15,7 @@
     "wingscontracts.contract.empty": "Empty",
     "wingscontracts.contract.no_targets": "Nothing",
     "wingscontracts.contract.items_of_tag": "items of tag %s",
+    "wingscontracts.contract.items_of_tag_short": "#%s",
     "wingscontracts.contract.matches_following": "of one of the following:\n%s",
     "wingscontracts.contract.units_fulfilled": "Units Fulfilled: %d/%d (%d/%d)",
     "wingscontracts.contract.cycle_complete": "Cycle Complete!\nRight-click with contract in hand or place in contract portal to start next cycle.",
@@ -23,11 +26,12 @@
     "wingscontracts.contract.author": "Author: %s",
 
     "wingscontracts.contract.abyssal.rewards": "Rewards %d %s for every %d %s",
+    "wingscontracts.contract.abyssal.short": "%d %s → %d %s (%d/%d)",
 
 
     "item.wingscontracts.contract": "%s Contract",
     "item.wingscontracts.contract.unknown": "Unknown Contract",
-    "item.wingscontracts.contract.abyssal": "Level %d %s Contract",
+    "item.wingscontracts.contract.abyssal": "%s Contract",
 
 
     "block.wingscontracts.contract_portal": "Contract Portal",
@@ -49,5 +53,10 @@
     "wingscontracts.subtitles.block.contract_portal.accept": "Contract portal accepts item",
     "wingscontracts.subtitles.block.contract_portal.reject": "Contract portal rejects item",
     "wingscontracts.subtitles.block.contract_portal.add_contract": "Contract portal activates",
-    "wingscontracts.subtitles.block.contract_portal.remove_contract": "Contract portal contract removed"
+    "wingscontracts.subtitles.block.contract_portal.remove_contract": "Contract portal contract removed",
+
+
+    "wingscontracts.data.mushroom": "Overworld Mushroom",
+    "wingscontracts.data.mushroom_block": "Overworld Mushroom Block",
+    "wingscontracts.data.nether_mushroom": "Nether Mushroom"
 }

@@ -28,7 +28,7 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
         resourceManager: ResourceManager,
         profilerFiller: ProfilerFiller
     ) {
-        WingsContractsMod.LOGGER.info("applying available contracts $$$ KOMENCI ${jsonMap.size}")
+        WingsContractsMod.LOGGER.info("Building available contracts pool...")
         val buildAvailableContracts = mutableListOf<ContractTag>()
 
         for ((resourceLocation, json) in jsonMap) {
@@ -36,14 +36,15 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
                 continue
             }
 
-            WingsContractsMod.LOGGER.info("found $resourceLocation")
-
             try {
-                if (json.isJsonObject) {
-                    buildAvailableContracts.add(AbyssalContract.fromJson(json.asJsonObject))
-                } else {
-                    buildAvailableContracts.addAll(json.asJsonArray.map { AbyssalContract.fromJson(it.asJsonObject) })
-                }
+                val parsedContracts =
+                    if (json.isJsonObject) {
+                        listOf(AbyssalContract.fromJson(json.asJsonObject))
+                    } else json.asJsonArray.map {
+                        AbyssalContract.fromJson(it.asJsonObject)
+                    }
+
+                buildAvailableContracts.addAll(parsedContracts.filter { it.isValid })
             } catch (e: Exception) {
                 WingsContractsMod.LOGGER.error("Error while loading available contracts at $resourceLocation", e)
             }

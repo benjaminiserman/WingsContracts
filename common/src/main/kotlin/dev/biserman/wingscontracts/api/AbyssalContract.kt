@@ -9,8 +9,11 @@ import dev.biserman.wingscontracts.tag.ContractTag
 import dev.biserman.wingscontracts.tag.ContractTagHelper.double
 import dev.biserman.wingscontracts.tag.ContractTagHelper.int
 import dev.biserman.wingscontracts.tag.ContractTagHelper.itemStack
+import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
+import net.minecraft.ChatFormatting
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
+import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.tags.TagKey
@@ -51,19 +54,35 @@ class AbyssalContract(
     name
 ) {
     override val displayName: MutableComponent
-        get() = Component.translatable("item.${WingsContractsMod.MOD_ID}.contract.abyssal", level, name ?: targetName)
+        get() = Component.translatable("item.${WingsContractsMod.MOD_ID}.contract.abyssal", name ?: targetName).append(
+            CommonComponents.SPACE
+        ).append(Component.translatable("enchantment.level.$level"))
 
     override fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> {
         val components = list ?: mutableListOf()
 
         components.add(
             translateContract(
-                "abyssal.rewards", reward.count, reward.displayName.string, countPerUnit, listTargets()
-            )
+                "abyssal.rewards",
+                reward.count,
+                reward.displayName.string.trimBrackets(),
+                countPerUnit,
+                listTargets(displayShort = false)
+            ).withStyle(ChatFormatting.DARK_PURPLE)
         )
 
         return super.getBasicInfo(components)
     }
+
+    override fun getShortInfo(): Component = translateContract(
+        "abyssal.short",
+        countPerUnit,
+        listTargets(displayShort = true),
+        reward.count,
+        reward.displayName.string.trimBrackets(),
+        unitsFulfilled,
+        unitsDemanded
+    ).withStyle(ChatFormatting.DARK_PURPLE)
 
     override val unitsDemanded: Int
         get() {
@@ -71,8 +90,9 @@ class AbyssalContract(
                 return 0
             }
 
-            val quantity = baseUnitsDemanded + (baseUnitsDemanded * (level - 1) * quantityGrowthFactor).toInt()
-            return quantity - quantity % countPerUnit
+            val growth = (baseUnitsDemanded * (level - 1) * quantityGrowthFactor).toInt()
+            val adjustedGrowth = growth - growth % countPerUnit
+            return baseUnitsDemanded + adjustedGrowth
         }
 
     override fun onContractFulfilled(tag: ContractTag?) {
