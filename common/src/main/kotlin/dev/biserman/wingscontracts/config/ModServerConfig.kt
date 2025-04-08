@@ -10,6 +10,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val availableContractsPoolRefreshPeriodMs: ForgeConfigSpec.LongValue
     val availableContractsPoolOptions: ForgeConfigSpec.IntValue
     val availableContractsPoolPicks: ForgeConfigSpec.IntValue
+    val disableDefaultContractOptions: ForgeConfigSpec.BooleanValue
 
     // Contract Defaults
     val defaultRewardCurrencyId: ForgeConfigSpec.ConfigValue<String>
@@ -34,7 +35,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
             The function that determines how a contract's quantity demanded increases as it levels up. 
             LINEAR: unitsDemanded = baseUnitsDemanded + baseUnitsDemanded * (growthFactor - 1) * (level - 1)
             EXPONENTIAL: unitsDemanded = baseUnitsDemanded * growthFactor ** (level - 1)
-            """
+            """.trimIndent()
         ).defineEnum("contractGrowthFunction", GrowthFunctionOptions.LINEAR)
 
         availableContractsPoolRefreshPeriodMs =
@@ -48,6 +49,14 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
         availableContractsPoolPicks =
             builder.comment("Determines how many picks each player gets from the Abyssal Contracts pool per refresh period.")
                 .defineInRange("availableContractsPoolPicks", 1, 0, Int.MAX_VALUE)
+
+        disableDefaultContractOptions =
+            builder.comment(
+                """
+                If true, skip all contract data files ending in "_default.json".
+                Use this if you want to replace the default contract options with a custom data pack.
+                """.trimIndent()
+            ).define("disableDefaultContractOptions", false)
 
         builder.pop()
         builder.push("Contract Defaults")

@@ -5,8 +5,11 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.api.AbyssalContract
+import dev.biserman.wingscontracts.api.Contract.Companion.name
+import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.tag.ContractTag
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener
@@ -18,7 +21,9 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
     private var availableContracts = listOf<ContractTag>()
 
     fun random() = if (availableContracts.isEmpty()) {
-        ContractTag(CompoundTag())
+        val contract = ContractTag(CompoundTag())
+        contract.name = Component.translatable("${WingsContractsMod.MOD_ID}.contract.unknown").string
+        contract
     } else {
         availableContracts.random()
     }
@@ -33,6 +38,14 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
 
         for ((resourceLocation, json) in jsonMap) {
             if (resourceLocation.path.startsWith("_")) {
+                continue
+            }
+
+            WingsContractsMod.LOGGER.info("test ${resourceLocation.path} ${ModConfig.SERVER.disableDefaultContractOptions.get()}")
+            if (ModConfig.SERVER.disableDefaultContractOptions.get()
+                && resourceLocation.path.endsWith("_default")
+            ) {
+                WingsContractsMod.LOGGER.info("skipping contracts file ${resourceLocation.path}")
                 continue
             }
 

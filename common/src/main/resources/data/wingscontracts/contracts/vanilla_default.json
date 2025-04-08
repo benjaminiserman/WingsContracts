@@ -1,14 +1,5 @@
 [
   {
-    "targetItems": "minecraft:iron_ingot",
-    "countPerUnit": 16,
-    "baseUnitsDemanded": 16,
-    "reward": {
-      "Count": 1,
-      "id": "wingscontracts:fake_id_that_doesnt_work"
-    }
-  },
-  {
     "targetItems": "iron_ingot",
     "countPerUnit": 16
   },
@@ -298,7 +289,7 @@
     "reward": 2
   },
   {
-    "targetItems": "seeds",
+    "targetItems": "wheat_seeds",
     "countPerUnit": 48
   },
   {
@@ -324,7 +315,7 @@
     "countPerUnit": 16
   },
   {
-    "targetItems": "#minecraft:music_discs",
+    "targetTags": "#minecraft:music_discs",
     "countPerUnit": 2,
     "reward": 4
   }
