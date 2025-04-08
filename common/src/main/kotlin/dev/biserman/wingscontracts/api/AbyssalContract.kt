@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import com.mojang.serialization.JsonOps
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
+import dev.biserman.wingscontracts.config.GrowthFunctionOptions
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.tag.ContractTag
 import dev.biserman.wingscontracts.tag.ContractTagHelper.double
@@ -21,6 +22,7 @@ import net.minecraft.util.Mth
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import java.util.*
+import kotlin.math.pow
 import kotlin.reflect.full.memberProperties
 
 @Suppress("MemberVisibilityCanBePrivate", "NullableBooleanElvis")
@@ -93,9 +95,14 @@ class AbyssalContract(
                 return 0
             }
 
-            val growth = (baseUnitsDemanded * (level - 1) * quantityGrowthFactor).toInt()
-            val adjustedGrowth = growth - growth % countPerUnit
-            return baseUnitsDemanded + adjustedGrowth
+            return when (val growthFn = ModConfig.SERVER.contractGrowthFunction.get()) {
+                GrowthFunctionOptions.LINEAR -> {
+                    val growth = (baseUnitsDemanded * (level - 1) * (quantityGrowthFactor - 1)).toInt()
+                    baseUnitsDemanded + growth
+                }
+                GrowthFunctionOptions.EXPONENTIAL -> (baseUnitsDemanded * quantityGrowthFactor.pow(level - 1)).toInt()
+                else -> throw Error("Unrecognized contract growth function: $growthFn")
+            }
         }
 
     override fun onContractFulfilled(tag: ContractTag?) {

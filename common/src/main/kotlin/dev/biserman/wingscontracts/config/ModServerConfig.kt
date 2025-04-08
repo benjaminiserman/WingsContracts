@@ -6,6 +6,7 @@ import net.minecraftforge.common.ForgeConfigSpec
 
 class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val denominations: ForgeConfigSpec.ConfigValue<String>
+    val contractGrowthFunction: ForgeConfigSpec.EnumValue<GrowthFunctionOptions>
     val availableContractsPoolRefreshPeriodMs: ForgeConfigSpec.LongValue
     val availableContractsPoolOptions: ForgeConfigSpec.IntValue
     val availableContractsPoolPicks: ForgeConfigSpec.IntValue
@@ -27,6 +28,14 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
                 .define(
                     "denominations", defaultDenominations
                 )
+
+        contractGrowthFunction = builder.comment(
+            """
+            The function that determines how a contract's quantity demanded increases as it levels up. 
+            LINEAR: unitsDemanded = baseUnitsDemanded + baseUnitsDemanded * (growthFactor - 1) * (level - 1)
+            EXPONENTIAL: unitsDemanded = baseUnitsDemanded * growthFactor ** (level - 1)
+            """
+        ).defineEnum("contractGrowthFunction", GrowthFunctionOptions.LINEAR)
 
         availableContractsPoolRefreshPeriodMs =
             builder.comment("The default time for the available Abyssal Contracts pool to refresh, in milliseconds. E.g.: 86400000 for one day, 604800000 for one week")
@@ -69,9 +78,9 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
         defaultGrowthFactor = builder.comment(
             """
             The default growth factor for Abyssal Contracts.
-            The number of units demanded for an Abyssal Contract = baseUnitsDemanded + floor(baseUnitsDemanded * (level - 1) * quantityGrowthFactor)
+            See contractGrowthFunction above to see how this is used.
             """.trimIndent()
-        ).defineInRange("defaultGrowthFactor", 1.0, 0.00001, 100.0)
+        ).defineInRange("defaultGrowthFactor", 2.0, 0.00001, 100.0)
 
         builder.pop()
     }
