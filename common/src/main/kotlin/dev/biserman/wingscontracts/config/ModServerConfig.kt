@@ -61,7 +61,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
 
         defaultAuthor =
             builder.comment("The default author name for Abyssal Contracts")
-                .define("defaultAuthor", "§kThe Abyss")
+                .define("defaultAuthor", "§kThe Abyss§r")
 
         defaultMaxLevel = builder.comment("The default max level for Abyssal Contracts")
             .defineInRange("defaultMaxLevel", 10, 1, Int.MAX_VALUE)

@@ -3,6 +3,7 @@ package dev.biserman.wingscontracts.gui
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.registry.ModMenuRegistry
 import dev.biserman.wingscontracts.server.AvailableContractsContainer
+import dev.biserman.wingscontracts.server.AvailableContractsContainerSlot
 import dev.biserman.wingscontracts.server.AvailableContractsData
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
@@ -26,14 +27,14 @@ class AvailableContractsMenu(id: Int, inventory: Inventory) :
             val bottomRowCount = maxOptions / 2
             val topRowCount = maxOptions - bottomRowCount
             for (i in 0..<topRowCount) {
-                this.addSlot(Slot(container, i, 44 + 9 * (5 - topRowCount) + i * 18, 36))
+                this.addSlot(AvailableContractsContainerSlot(container, i, 44 + 9 * (5 - topRowCount) + i * 18, 36))
             }
             for (i in 0..<bottomRowCount) {
-                this.addSlot(Slot(container, i + topRowCount, 44 + 9 * (5 - bottomRowCount) + i * 18, 54))
+                this.addSlot(AvailableContractsContainerSlot(container, i + topRowCount, 44 + 9 * (5 - bottomRowCount) + i * 18, 54))
             }
         } else {
             for (i in 0..<maxOptions) {
-                this.addSlot(Slot(container, i, 44 + i * 18, 45))
+                this.addSlot(AvailableContractsContainerSlot(container, i, 44 + i * 18, 45))
             }
         }
 
@@ -53,7 +54,7 @@ class AvailableContractsMenu(id: Int, inventory: Inventory) :
         i: Int
     ): ItemStack? {
         val slot = slots[i]
-        if (!slot.hasItem()) {
+        if (!slot.hasItem() || !slot.mayPickup(player)) {
             return ItemStack.EMPTY
         }
 
@@ -69,6 +70,7 @@ class AvailableContractsMenu(id: Int, inventory: Inventory) :
 
         if (slotItemStack.isEmpty) {
             slot.setByPlayer(ItemStack.EMPTY)
+            slot.onTake(player, itemStack)
         } else {
             slot.setChanged()
         }

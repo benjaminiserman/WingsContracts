@@ -144,6 +144,7 @@ abstract class Contract(
         val separator = if (displayShort) "|" else "\n"
         val complexPrefix = if (displayShort) "" else " - "
         val tagKey = if (displayShort) "items_of_tag_short" else "items_of_tag"
+        val complexKey = if (displayShort) "matches_following_short" else "matches_following"
 
         return when (totalSize) {
             0 -> translateContract("no_targets").string
@@ -187,7 +188,7 @@ abstract class Contract(
         val timeRemainingColor = when {
             timeRemaining < 1000 * 60 * 60 -> ChatFormatting.RED
             timeRemaining < 1000 * 60 * 60 * 24 -> ChatFormatting.YELLOW
-            else -> ChatFormatting.LIGHT_PURPLE
+            else -> ChatFormatting.DARK_PURPLE
         }
 
         if (Date(nextCycleStart) <= Date()) {

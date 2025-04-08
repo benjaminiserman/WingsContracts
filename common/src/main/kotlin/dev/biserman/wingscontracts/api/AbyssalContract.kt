@@ -54,9 +54,12 @@ class AbyssalContract(
     name
 ) {
     override val displayName: MutableComponent
-        get() = Component.translatable("item.${WingsContractsMod.MOD_ID}.contract.abyssal", name ?: targetName).append(
-            CommonComponents.SPACE
-        ).append(Component.translatable("enchantment.level.$level"))
+        get() = Component.translatable(
+            "item.${WingsContractsMod.MOD_ID}.contract.abyssal",
+            Component.translatable(name ?: targetName)
+        )
+            .append(CommonComponents.SPACE)
+            .append(Component.translatable("enchantment.level.$level"))
 
     override fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> {
         val components = list ?: mutableListOf()
