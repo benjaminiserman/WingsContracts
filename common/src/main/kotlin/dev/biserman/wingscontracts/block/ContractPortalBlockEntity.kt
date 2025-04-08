@@ -210,7 +210,7 @@ class ContractPortalBlockEntity(
             blockPos: BlockPos,
             amountToSpit: Int
         ) {
-            val splitStack = stackToSpit.split(min(amountToSpit, stackToSpit.count))
+            val splitStack = stackToSpit.split(min(min(amountToSpit, stackToSpit.count), stackToSpit.maxStackSize))
             spawnItem(splitStack, level, blockPos)
         }
 
