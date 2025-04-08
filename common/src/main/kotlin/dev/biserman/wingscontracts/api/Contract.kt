@@ -155,7 +155,7 @@ abstract class Contract(
             }
 
             else -> translateContract(
-                "matches_following",
+                complexKey,
                 targetItems.asSequence()
                     .map { it.name().trimBrackets() }
                     .plus(targetTags.map { it.name() })

@@ -28,7 +28,7 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
         super.renderLabels(graphics, i, j)
 
         val timeTilRefresh = DenominationsHelper.denominate(
-            System.currentTimeMillis() - AvailableContractsData.get(inventory.player.level()).nextCycleStart,
+            AvailableContractsData.get(inventory.player.level()).nextCycleStart - System.currentTimeMillis(),
             DenominationsHelper.timeDenominationsWithoutMs
         ).asSequence().map { it.second }.joinToString(":")
 
@@ -40,7 +40,7 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
         graphics.drawString(font, refreshLabel, rightTitleEdge - font.width(refreshLabel), titleLabelY, 0x404040, false)
         val remainingPicksLabel = Component.translatable(
             "${WingsContractsMod.MOD_ID}.gui.contract_portal.remaining_picks",
-            AvailableContractsData.remainingPicks(inventory.player)
+            if (inventory.player.isCreative) "∞" else AvailableContractsData.remainingPicks(inventory.player).toString()
         )
         graphics.drawString(font, remainingPicksLabel, rightTitleEdge - font.width(remainingPicksLabel), titleLabelY + font.lineHeight + 2, 0x404040, false)
     }

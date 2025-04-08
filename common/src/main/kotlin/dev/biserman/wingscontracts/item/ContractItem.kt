@@ -14,7 +14,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.level.Level
-import kotlin.math.roundToInt
+import kotlin.math.ceil
 
 class ContractItem(properties: Properties) : Item(properties) {
     // TODO: how do I localize this properly?
@@ -83,7 +83,7 @@ class ContractItem(properties: Properties) : Item(properties) {
             return 0
         }
 
-        return (unitsFulfilled * 13.0f / unitsDemanded).roundToInt()
+        return ceil(unitsFulfilled * 13.0f / unitsDemanded).toInt()
     }
 
     override fun getBarColor(itemStack: ItemStack): Int = 0xff55ff
