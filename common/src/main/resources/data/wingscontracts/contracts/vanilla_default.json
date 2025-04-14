@@ -271,7 +271,7 @@
     "countPerUnit": 32
   },
   {
-    "targetItems": "vines",
+    "targetItems": "vine",
     "countPerUnit": 32
   },
   {
@@ -315,7 +315,7 @@
     "countPerUnit": 16
   },
   {
-    "targetTags": "#minecraft:music_discs",
+    "targetTags": "#minecraft:music_discs_or_something",
     "countPerUnit": 2,
     "reward": 4
   }

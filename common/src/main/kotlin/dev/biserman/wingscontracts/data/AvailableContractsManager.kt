@@ -3,9 +3,12 @@ package dev.biserman.wingscontracts.data
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
+import dev.architectury.platform.Platform
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.api.AbyssalContract
 import dev.biserman.wingscontracts.api.Contract.Companion.name
+import dev.biserman.wingscontracts.api.Contract.Companion.targetItemKeys
+import dev.biserman.wingscontracts.api.Contract.Companion.targetTagKeys
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.tag.ContractTag
 import net.minecraft.nbt.CompoundTag
@@ -45,7 +48,7 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
             if (ModConfig.SERVER.disableDefaultContractOptions.get()
                 && resourceLocation.path.endsWith("_default")
             ) {
-                WingsContractsMod.LOGGER.info("skipping contracts file ${resourceLocation.path}")
+                WingsContractsMod.LOGGER.info("Skipping contracts file ${resourceLocation.path}")
                 continue
             }
 
@@ -58,13 +61,23 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
                     }
 
                 for (contract in parsedContracts) {
-                    if (contract.isValid) {
+                    // skip contracts that only apply to unloaded mods
+                    val allItemsFailedLoad = (contract.targetItemKeys ?: listOf())
+                        .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0]) }
+                    val allTagsFailedLoad = (contract.targetTagKeys ?: listOf())
+                        .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0].trimStart('#')) }
+                    if (allItemsFailedLoad && allTagsFailedLoad
+                    ) {
+                        WingsContractsMod.LOGGER.warn("Skipping contract $contract of unloaded mod")
+                        continue
+                    }
+
+                    if (AbyssalContract.load(contract).isValid) {
                         buildAvailableContracts.add(contract)
                     } else {
                         WingsContractsMod.LOGGER.warn("Found invalid contract $contract in $resourceLocation")
                     }
                 }
-                buildAvailableContracts.addAll(parsedContracts.filter { it.isValid })
             } catch (e: Exception) {
                 WingsContractsMod.LOGGER.error("Error while loading available contracts at $resourceLocation", e)
             }

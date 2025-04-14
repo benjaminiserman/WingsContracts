@@ -21,6 +21,7 @@ import net.minecraft.tags.TagKey
 import net.minecraft.util.Mth
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import java.util.*
 import kotlin.math.pow
 import kotlin.reflect.full.memberProperties
@@ -136,6 +137,9 @@ class AbyssalContract(
                 })
         }.toMutableMap()
 
+    val isValid
+        get() = (targetItems.any { it != Items.AIR } || targetTags.any()) && reward.item != Items.AIR
+
     companion object {
         var (ContractTag).reward by itemStack()
 
@@ -145,16 +149,12 @@ class AbyssalContract(
 
         fun load(contract: ContractTag): AbyssalContract {
             val tagReward = contract.reward
-            val reward = if (tagReward == null) {
-                WingsContractsMod.LOGGER.info("creating default reward... ${ModConfig.SERVER.defaultRewardCurrencyId.get()}")
-                ItemStack(
+            val reward = tagReward
+                ?: ItemStack(
                     ModConfig.SERVER.defaultRewardCurrency, Mth.ceil(
                         ModConfig.SERVER.defaultRewardCurrencyMultiplier.get()
                     )
                 )
-            } else {
-                tagReward
-            }
 
             return AbyssalContract(
                 id = contract.id ?: UUID.randomUUID(),

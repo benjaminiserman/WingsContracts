@@ -10,7 +10,6 @@ import kotlin.reflect.KProperty
 
 @JvmInline
 value class ContractTag(val tag: CompoundTag) {
-    val isValid get() = true // $$$ make this actually check for invalid contracts
     override fun toString() = "ContractTag($tag)"
 }
 
@@ -67,7 +66,7 @@ object ContractTagHelper {
 
     fun itemStack(key: String? = null) =
         Property(key, safeGet {
-            if (this.contains(it, 99)) {
+            if (this.contains(it, 99)) { // if the tag is just an integer, replace with default reward
                 return@safeGet ItemStack(
                     ModConfig.SERVER.defaultRewardCurrency,
                     Mth.ceil(this.getInt(it).toDouble() * ModConfig.SERVER.defaultRewardCurrencyMultiplier.get())
