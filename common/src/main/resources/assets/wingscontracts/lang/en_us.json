@@ -16,7 +16,7 @@
     "wingscontracts.contract.no_targets": "Nothing",
     "wingscontracts.contract.items_of_tag": "items of tag %s",
     "wingscontracts.contract.items_of_tag_short": "#%s",
-    "wingscontracts.contract.matches_following": "of one of the following:\n%s",
+    "wingscontracts.contract.matches_following": "of the following:\n%s",
     "wingscontracts.contract.matches_following_short": "%s",
     "wingscontracts.contract.units_fulfilled": "Units Fulfilled: %d/%d (%d/%d)",
     "wingscontracts.contract.cycle_complete": "Cycle Complete!\nRight-click with contract in hand or place in contract portal to start next cycle.",

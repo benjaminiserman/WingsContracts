@@ -49,31 +49,31 @@
   },
   {
     "targetTags": "#forge:armors/helmets",
-    "countPerUnit": 4,
+    "countPerUnit": 6,
     "reward": 2,
     "name": "wingscontracts.data.forge.helmets"
   },
   {
     "targetTags": "#forge:armors/chestplates",
-    "countPerUnit": 3,
+    "countPerUnit": 4,
     "reward": 2,
     "name": "wingscontracts.data.forge.chestplates"
   },
   {
     "targetTags": "#forge:armors/leggings",
-    "countPerUnit": 3,
+    "countPerUnit": 5,
     "reward": 2,
     "name": "wingscontracts.data.forge.leggings"
   },
   {
     "targetTags": "#forge:armors/boots",
-    "countPerUnit": 4,
+    "countPerUnit": 6,
     "reward": 2,
     "name": "wingscontracts.data.forge.boots"
   },
   {
     "targetTags": "#forge:armors",
-    "countPerUnit": 4,
+    "countPerUnit": 6,
     "reward": 2
   },
   {

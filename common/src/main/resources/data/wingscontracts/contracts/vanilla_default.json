@@ -407,8 +407,7 @@
   },
   {
     "targetTags": "#minecraft:boats",
-    "countPerUnit": 16,
-    "reward": 2
+    "countPerUnit": 16
   },
   {
     "targetTags": "#minecraft:buttons",
@@ -416,7 +415,7 @@
   },
   {
     "targetTags": "#minecraft:fences",
-    "countPerUnit": 64,
+    "countPerUnit": 96,
     "reward": 2
   },
   {

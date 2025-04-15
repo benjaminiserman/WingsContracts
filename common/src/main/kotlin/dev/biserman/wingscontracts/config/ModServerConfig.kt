@@ -36,11 +36,11 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
             LINEAR: unitsDemanded = baseUnitsDemanded + baseUnitsDemanded * (growthFactor - 1) * (level - 1)
             EXPONENTIAL: unitsDemanded = baseUnitsDemanded * growthFactor ** (level - 1)
             """.trimIndent()
-        ).defineEnum("contractGrowthFunction", GrowthFunctionOptions.LINEAR)
+        ).defineEnum("contractGrowthFunction", GrowthFunctionOptions.EXPONENTIAL)
 
         availableContractsPoolRefreshPeriodMs =
             builder.comment("The default time for the available Abyssal Contracts pool to refresh, in milliseconds. E.g.: 86400000 for one day, 604800000 for one week")
-                .defineInRange("availableContractsPoolRefreshPeriodMs", 604800000L, 60_000, Long.MAX_VALUE)
+                .defineInRange("availableContractsPoolRefreshPeriodMs", 86400000L, 60_000, Long.MAX_VALUE)
 
         availableContractsPoolOptions =
             builder.comment("Determines how many Abyssal Contracts are available in the pool at any one time.")
@@ -67,22 +67,22 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
 
         defaultRewardCurrencyMultiplier =
             builder.comment("Datapacked contracts with an unspecified or integer reward will have their reward count multiplied by this factor, then rounded up.")
-                .defineInRange("defaultRewardCurrencyMultiplier", 1.0, 0.0, Double.MAX_VALUE)
+                .defineInRange("defaultRewardCurrencyMultiplier", 2.0, 0.0, Double.MAX_VALUE)
 
         defaultUnitsDemandedMultiplier =
             builder.comment("All new Abyssal Contracts pulled from the pool will have their base units demanded multiplied by this factor, then rounded up.")
-                .defineInRange("defaultUnitsDemandedMultiplier", 1.0, 0.0, Double.MAX_VALUE)
+                .defineInRange("defaultUnitsDemandedMultiplier", 0.25, 0.0, Double.MAX_VALUE)
 
         defaultCycleDurationMs =
             builder.comment("The default length of a cycle period, in milliseconds. E.g.: 86400000 for one day, 604800000 for one week")
-                .defineInRange("defaultCycleDurationMs", 604800000L, 60_000, Long.MAX_VALUE)
+                .defineInRange("defaultCycleDurationMs", 86400000L, 60_000, Long.MAX_VALUE)
 
         defaultAuthor =
             builder.comment("The default author name for Abyssal Contracts")
                 .define("defaultAuthor", "§kThe Abyss§r")
 
         defaultMaxLevel = builder.comment("The default max level for Abyssal Contracts")
-            .defineInRange("defaultMaxLevel", 10, 1, Int.MAX_VALUE)
+            .defineInRange("defaultMaxLevel", 5, 1, Int.MAX_VALUE)
 
         defaultGrowthFactor = builder.comment(
             """

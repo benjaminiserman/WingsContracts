@@ -45,7 +45,7 @@
     "reward": 3
   },
   {
-    "targetTags": "createbigcannons:cannon_carriage",
+    "targetItems": "createbigcannons:cannon_carriage",
     "countPerUnit": 4,
     "reward": 2
   }
