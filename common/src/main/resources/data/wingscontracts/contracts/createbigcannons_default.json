@@ -1,0 +1,27 @@
+[
+  {
+    "targetItems": "createbigcannons:packed_guncotton",
+    "countPerUnit": 8,
+    "reward": 3
+  },
+  {
+    "targetItems": "createbigcannons:nitropowder",
+    "countPerUnit": 8,
+    "reward": 3
+  },
+  {
+    "targetItems": "createbigcannons:machine_gun_round",
+    "countPerUnit": 24,
+    "reward": 3
+  },
+  {
+    "targetItems": "createbigcannons:recoil_spring",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetItems": "createbigcannons:he_shell",
+    "countPerUnit": 2,
+    "reward": 4
+  }
+]

@@ -54,7 +54,8 @@ abstract class Contract(
     var isActive: Boolean = true,
     var isLoaded: Boolean = true,
     val author: String = "",
-    val name: String? = null
+    val name: String? = null,
+    val shortTargetList: String? = null
 ) {
     open val unitsDemanded = baseUnitsDemanded
 
@@ -87,7 +88,10 @@ abstract class Contract(
         }
 
         if (targetTags.isNotEmpty()) {
-            return@lazy targetTags[0].name().split("/").reversed()
+            return@lazy targetTags[0].name()
+                .split("/")
+                .reversed()
+                .flatMap { it.split("_") }
                 .joinToString(" ") { it.replaceFirstChar { it.titlecase(Locale.getDefault()) } }
         }
 
@@ -145,6 +149,10 @@ abstract class Contract(
         val complexPrefix = if (displayShort) "" else " - "
         val tagKey = if (displayShort) "items_of_tag_short" else "items_of_tag"
         val complexKey = if (displayShort) "matches_following_short" else "matches_following"
+
+        if (displayShort && shortTargetList != null) {
+            return Component.translatable(shortTargetList).string
+        }
 
         return when (totalSize) {
             0 -> translateContract("no_targets").string
@@ -305,6 +313,7 @@ abstract class Contract(
         tag.isLoaded = isLoaded
         tag.author = author
         tag.name = name
+        tag.shortTargetList = shortTargetList
 
         return tag
     }
@@ -340,6 +349,7 @@ abstract class Contract(
         var (ContractTag).isLoaded by boolean()
         var (ContractTag).author by string()
         var (ContractTag).name by string()
+        var (ContractTag).shortTargetList by string()
 
         var (ContractTag).targetTags: List<TagKey<Item>>?
             get() {

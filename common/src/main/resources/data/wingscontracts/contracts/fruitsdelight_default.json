@@ -1,0 +1,32 @@
+[
+  {
+    "targetItems": "fruitsdelight:jelly_bread",
+    "countPerUnit": 8,
+    "reward": 2
+  },
+  {
+    "targetItems": "fruitsdelight:jelly_bread",
+    "countPerUnit": 8,
+    "reward": 2
+  },
+  {
+    "targetTags": "#fruitsdelight:jelly",
+    "countPerUnit": 10,
+    "reward": 2
+  },
+  {
+    "targetTags": "#fruitsdelight:jello",
+    "countPerUnit": 10,
+    "reward": 3
+  },
+  {
+    "targetTags": "#fruitsdelight:juice",
+    "countPerUnit": 8,
+    "reward": 2
+  },
+  {
+    "targetItems": "fruitsdelight:mangosteen_cake",
+    "countPerUnit": 4,
+    "reward": 2
+  }
+]

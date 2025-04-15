@@ -59,5 +59,16 @@
 
     "wingscontracts.data.mushroom": "Overworld Mushroom",
     "wingscontracts.data.mushroom_block": "Overworld Mushroom Block",
-    "wingscontracts.data.nether_mushroom": "Nether Mushroom"
+    "wingscontracts.data.nether_mushroom": "Nether Mushroom",
+
+    "wingscontracts.data.forge.helmets": "Helmets",
+    "wingscontracts.data.forge.chestplates": "Chestplates",
+    "wingscontracts.data.forge.leggings": "Leggings",
+    "wingscontracts.data.forge.boots": "Boots",
+
+    "wingscontracts.data.botania.sin_runes": "Runes of Sin",
+    "wingscontracts.data.botania.season_runes": "Runes of the Seasons",
+    "wingscontracts.data.botania.quartz": "Botanical Quartz",
+
+    "wingscontracts.data.farmersdelight.salads": "Salad"
 }

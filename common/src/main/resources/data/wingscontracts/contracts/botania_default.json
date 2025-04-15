@@ -1,0 +1,100 @@
+[
+  {
+    "targetTags": "#botania:mystical_flowers",
+    "countPerUnit": 12,
+    "reward": 2
+  },
+  {
+    "targetTags": "#botania:petals",
+    "countPerUnit": 32,
+    "reward": 2
+  },
+  {
+    "targetTags": "#botania:lens",
+    "countPerUnit": 4,
+    "reward": 2
+  },
+  {
+    "targetTags": "#botania:runes",
+    "countPerUnit": 3,
+    "reward": 3
+  },
+  {
+    "targetItems": "botania:rune_spring,botania:rune_summer,botania:rune_autumn,botania:rune_winter",
+    "countPerUnit": 2,
+    "reward": 5,
+    "name": "wingscontracts.data.botania.season_runes"
+  },
+  {
+    "targetItems": "botania:rune_lust,botania:rune_gluttony,botania:rune_greed,botania:rune_sloth,botania:rune_wrath,botania:rune_envy,botania:rune_pride",
+    "countPerUnit": 2,
+    "reward": 8,
+    "name": "wingscontracts.data.botania.sin_runes"
+  },
+  {
+    "targetItems": "botania:manaweave_cloth",
+    "countPerUnit": 8,
+    "reward": 2
+  },
+  {
+    "targetItems": "botania:quartz_dark,botania:quartz_mana,botania:quartz_blaze,botania:quartz_lavender,botania:quartz_red,botania:quartz_elven,botania:quartz_sunny",
+    "countPerUnit": 8,
+    "reward": 2,
+    "name": "wingscontracts.data.botania.quartz"
+  },
+  {
+    "targetItems": "botania:manasteel_ingot",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetItems": "botania:mana_diamond",
+    "countPerUnit": 6,
+    "reward": 5
+  },
+  {
+    "targetTags": "#botania:elementium_ingots",
+    "countPerUnit": 16,
+    "reward": 3
+  },
+  {
+    "targetItems": "botania:dreamwood_twig",
+    "countPerUnit": 8,
+    "reward": 2
+  },
+  {
+    "targetTags": "#botania:mana_using_items",
+    "countPerUnit": 2,
+    "reward": 5
+  },
+  {
+    "targetItems": "botania:livingwood_log",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetItems": "botania:tiny_potato",
+    "countPerUnit": 1,
+    "reward": 1
+  },
+  {
+    "targetItems": "botania:brew_vial",
+    "countPerUnit": 4,
+    "reward": 2
+  },
+  {
+    "targetItems": "botania:brew_flask",
+    "countPerUnit": 4,
+    "reward": 3
+  },
+  {
+    "targetTags": "#botania:functional_special_flowers",
+    "countPerUnit": 2,
+    "reward": 5
+  },
+  {
+    "targetTags": "#botania:generating_special_flowers",
+    "countPerUnit": 2,
+    "reward": 5
+  },
+]

@@ -1,0 +1,103 @@
+[
+  {
+    "targetItems": "farmersdelight:skillet",
+    "countPerUnit": 4,
+    "reward": 2
+  },
+  {
+    "targetTags": "#farmersdelight:straw_harvesters",
+    "countPerUnit": 8,
+    "reward": 2
+  },
+  {
+    "targetItems": "farmersdelight:straw",
+    "countPerUnit": 64,
+    "reward": 1
+  },
+  {
+    "targetItems": "farmersdelight:rich_soil",
+    "countPerUnit": 32,
+    "reward": 3
+  },
+  {
+    "targetItems": "farmersdelight:tomato",
+    "countPerUnit": 32
+  },
+  {
+    "targetItems": "farmersdelight:onion",
+    "countPerUnit": 32
+  },
+  {
+    "targetItems": "farmersdelight:cabbage",
+    "countPerUnit": 32
+  },
+  {
+    "targetItems": "farmersdelight:rice",
+    "countPerUnit": 24
+  },
+  {
+    "targetItems": "farmersdelight:rotten_tomato",
+    "countPerUnit": 8,
+    "reward": 2
+  },
+  {
+    "targetItems": "farmersdelight:apple_cider",
+    "countPerUnit": 8,
+    "reward": 3
+  },
+  {
+    "targetItems": "farmersdelight:fruit_salad,farmersdelight:mixed_salad,farmersdelight:nether_salad",
+    "countPerUnit": 4,
+    "reward": 3,
+    "name": "wingscontracts.data.farmersdelight.salads"
+  },
+  {
+    "targetItems": "farmersdelight:dumplings",
+    "countPerUnit": 4,
+    "reward": 3
+  },
+  {
+    "targetItems": "farmersdelight:melon_popsicle",
+    "countPerUnit": 4,
+    "reward": 2
+  },
+  {
+    "targetItems": "farmersdelight:cabbage_rolls",
+    "countPerUnit": 6,
+    "reward": 2
+  },
+  {
+    "targetItems": "farmersdelight:kelp_roll_slice",
+    "countPerUnit": 8,
+    "reward": 3
+  },
+  {
+    "targetItems": "farmersdelight:vegetable_soup",
+    "countPerUnit": 4,
+    "reward": 3
+  },
+  {
+    "targetItems": "farmersdelight:mushroom_rice",
+    "countPerUnit": 4,
+    "reward": 3
+  },
+  {
+    "targetItems": "farmersdelight:vegetable_noodles",
+    "countPerUnit": 4,
+    "reward": 4
+  },
+  {
+    "targetItems": "farmersdelight:ratatouille",
+    "countPerUnit": 4,
+    "reward": 4
+  },
+  {
+    "targetItems": "farmersdelight:stuffed_pumpkin_block",
+    "countPerUnit": 4,
+    "reward": 4
+  },
+  {
+    "targetItems": "farmersdelight:sweet_berry_cookie",
+    "countPerUnit": 48
+  }
+]

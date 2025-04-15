@@ -9,7 +9,7 @@
   },
   {
     "targetTags": "#forge:cobblestone",
-    "countPerUnit": 128
+    "countPerUnit": 256
   },
   {
     "targetTags": "#forge:crops",
@@ -21,11 +21,11 @@
   },
   {
     "targetTags": "#forge:dyes",
-    "countPerUnit": 48
+    "countPerUnit": 32
   },
   {
     "targetTags": "#forge:gems",
-    "countPerUnit": 16
+    "countPerUnit": 12
   },
   {
     "targetTags": "#forge:gems/quartz",
@@ -36,11 +36,54 @@
     "countPerUnit": 64
   },
   {
+    "targetTags": "#forge:berries",
+    "countPerUnit": 48
+  },
+  {
     "targetTags": "#forge:slimeballs",
     "countPerUnit": 24
   },
   {
     "targetTags": "#forge:string",
     "countPerUnit": 24
+  },
+  {
+    "targetTags": "#forge:armors/helmets",
+    "countPerUnit": 4,
+    "reward": 2,
+    "name": "wingscontracts.data.forge.helmets"
+  },
+  {
+    "targetTags": "#forge:armors/chestplates",
+    "countPerUnit": 3,
+    "reward": 2,
+    "name": "wingscontracts.data.forge.chestplates"
+  },
+  {
+    "targetTags": "#forge:armors/leggings",
+    "countPerUnit": 3,
+    "reward": 2,
+    "name": "wingscontracts.data.forge.leggings"
+  },
+  {
+    "targetTags": "#forge:armors/boots",
+    "countPerUnit": 4,
+    "reward": 2,
+    "name": "wingscontracts.data.forge.boots"
+  },
+  {
+    "targetTags": "#forge:armors",
+    "countPerUnit": 4,
+    "reward": 2
+  },
+  {
+    "targetTags": "#forge:heads",
+    "countPerUnit": 4,
+    "reward": 3
+  },
+  {
+    "targetTags": "#minecraft:tools",
+    "countPerUnit": 32,
+    "reward": 2
   }
 ]

@@ -9,11 +9,13 @@
   },
   {
     "targetItems": "diamond",
-    "countPerUnit": 2
+    "countPerUnit": 6,
+    "reward": 3
   },
   {
     "targetItems": "gold_ingot",
-    "countPerUnit": 4
+    "countPerUnit": 8,
+    "reward": 2
   },
   {
     "targetItems": "copper_ingot",
@@ -45,7 +47,8 @@
   },
   {
     "targetItems": "poisonous_potato",
-    "countPerUnit": 6
+    "countPerUnit": 10,
+    "reward": 2
   },
   {
     "targetItems": "beetroot",
@@ -75,7 +78,7 @@
   },
   {
     "targetItems": "carved_pumpkin",
-    "countPerUnit": 24,
+    "countPerUnit": 13,
     "reward": 2
   },
   {
@@ -106,12 +109,13 @@
   },
   {
     "targetItems": "glowstone_dust",
-    "countPerUnit": 16,
+    "countPerUnit": 24,
     "reward": 2
   },
   {
     "targetItems": "lapis_lazuli",
-    "countPerUnit": 8
+    "countPerUnit": 16,
+    "reward": 2
   },
   {
     "targetItems": "quartz",
@@ -147,7 +151,8 @@
   },
   {
     "targetItems": "blaze_rod",
-    "countPerUnit": 16
+    "countPerUnit": 16,
+    "reward": 2
   },
   {
     "targetItems": "apple",
@@ -169,18 +174,9 @@
     "reward": 2
   },
   {
-    "targetItems": "fermented_spider_eye",
-    "countPerUnit": 12,
-    "reward": 2
-  },
-  {
-    "targetItems": "string",
-    "countPerUnit": 16
-  },
-  {
     "targetItems": "ghast_tear",
     "countPerUnit": 6,
-    "reward": 3
+    "reward": 4
   },
   {
     "targetItems": "glass",
@@ -188,15 +184,15 @@
   },
   {
     "targetItems": "cookie",
-    "countPerUnit": 64
+    "countPerUnit": 48
   },
   {
     "targetItems": "bread",
-    "countPerUnit": 16
+    "countPerUnit": 12
   },
   {
     "targetItems": "dried_kelp",
-    "countPerUnit": 128
+    "countPerUnit": 64
   },
   {
     "targetItems": "amethyst_shard",
@@ -229,11 +225,12 @@
   {
     "targetItems": "lava_bucket",
     "countPerUnit": 4,
-    "reward": 2
+    "reward": 3
   },
   {
     "targetItems": "lily_of_the_valley",
-    "countPerUnit": 16
+    "countPerUnit": 16,
+    "reward": 2
   },
   {
     "targetItems": "prismarine_shard",
@@ -284,6 +281,26 @@
     "reward": 2
   },
   {
+    "targetTags": "#minecraft:swords",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetTags": "#minecraft:axes",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetTags": "#minecraft:hoes",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetTags": "#minecraft:shovels",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
     "targetItems": "beetroot_soup",
     "countPerUnit": 8,
     "reward": 2
@@ -315,8 +332,98 @@
     "countPerUnit": 16
   },
   {
-    "targetTags": "#minecraft:music_discs_or_something",
+    "targetItems": "decorated_pot",
+    "countPerUnit": 32,
+    "reward": 2
+  },
+  {
+    "targetItems": "splash_potion",
+    "countPerUnit": 8,
+    "reward": 2
+  },
+  {
+    "targetItems": "smooth_stone",
+    "countPerUnit": 192,
+    "baseUnitsDemanded": 128
+  },
+  {
+    "targetItems": "bowl",
+    "countPerUnit": 32
+  },
+  {
+    "targetTags": "#minecraft:doors",
+    "countPerUnit": 32
+  },
+  {
+    "targetItems": "lily_pad",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "sculk",
+    "countPerUnit": 32,
+    "reward": 2
+  },
+  {
+    "targetItems": "flint",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "experience_bottle",
     "countPerUnit": 2,
-    "reward": 4
+    "reward": 2
+  },
+  {
+    "targetItems": "nether_brick",
+    "countPerUnit": 64,
+    "reward": 2
+  },
+  {
+    "targetItems": "grass",
+    "countPerUnit": 32
+  },
+  {
+    "targetTags": "#minecraft:boats",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetTags": "#minecraft:buttons",
+    "countPerUnit": 32
+  },
+  {
+    "targetTags": "#minecraft:fences",
+    "countPerUnit": 64,
+    "reward": 2
+  },
+  {
+    "targetTags": "#minecraft:enderman_holdable",
+    "countPerUnit": 64
+  },
+  {
+    "targetTags": "#minecraft:trim_templates",
+    "countPerUnit": 2,
+    "reward": 5
+  },
+  {
+    "targetTags": "#minecraft:tall_flowers",
+    "countPerUnit": 24
+  },
+  {
+    "targetTags": "#minecraft:flowers",
+    "countPerUnit": 32
+  },
+  {
+    "targetTags": "#minecraft:leaves",
+    "countPerUnit": 128
+  },
+  {
+    "targetTags": "#minecraft:tools",
+    "countPerUnit": 24,
+    "reward": 2
+  },
+  {
+    "targetTags": "#minecraft:decorated_pot_sherds",
+    "countPerUnit": 4,
+    "reward": 3
   }
 ]

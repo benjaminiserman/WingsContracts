@@ -1,0 +1,57 @@
+[
+  {
+    "targetItems": "create:polished_rose_quartz",
+    "countPerUnit": 8,
+    "reward": 2
+  },
+  {
+    "targetItems": "create:sturdy_sheet",
+    "countPerUnit": 16,
+    "reward": 4
+  },
+  {
+    "targetItems": "create:propeller",
+    "countPerUnit": 8,
+    "reward": 2
+  },
+  {
+    "targetItems": "create:brass_hand",
+    "countPerUnit": 5,
+    "reward": 2
+  },
+  {
+    "targetItems": "create:precision_mechanism",
+    "countPerUnit": 8,
+    "reward": 3
+  },
+  {
+    "targetItems": "create:super_glue",
+    "countPerUnit": 6,
+    "reward": 2
+  },
+  {
+    "targetItems": "create:goggles",
+    "countPerUnit": 4,
+    "reward": 2
+  },
+  {
+    "targetItems": "create:belt_connector",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetItems": "create:flywheel",
+    "countPerUnit": 2,
+    "reward": 4
+  },
+  {
+    "targetItems": "create:steam_whistle",
+    "countPerUnit": 3,
+    "reward": 2
+  },
+  {
+    "targetItems": "create:experience_nugget",
+    "countPerUnit": 12,
+    "reward": 2
+  }
+]
