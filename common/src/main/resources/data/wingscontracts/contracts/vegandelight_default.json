@@ -1,0 +1,31 @@
+[
+  {
+    "targetItems": "vegandelight:tofu",
+    "countPerUnit": 32,
+    "reward": 2
+  },
+  {
+    "targetItems": "vegandelight:silken_tofu",
+    "countPerUnit": 28,
+    "reward": 2
+  },
+  {
+    "targetItems": "vegandelight:soybean",
+    "countPerUnit": 48
+  },
+  {
+    "targetItems": "vegandelight:smoked_tofish_roll",
+    "countPerUnit": 24,
+    "reward": 2
+  },
+  {
+    "targetItems": "vegandelight:leather_substitute",
+    "countPerUnit": 32,
+    "reward": 2
+  },
+  {
+    "targetItems": "vegandelight:applesauce",
+    "countPerUnit": 24,
+    "reward": 2
+  }
+]

@@ -23,5 +23,30 @@
     "targetItems": "createbigcannons:he_shell",
     "countPerUnit": 2,
     "reward": 4
+  },
+  {
+    "targetTags": "#createbigcannons:big_cannon_projectiles",
+    "countPerUnit": 3,
+    "reward": 3
+  },
+  {
+    "targetTags": "#createbigcannons:autocannon_rounds",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetTags": "#createbigcannons:fuzes",
+    "countPerUnit": 64,
+    "reward": 2
+  },
+  {
+    "targetTags": "#createbigcannons:big_cannon_propellant",
+    "countPerUnit": 3,
+    "reward": 3
+  },
+  {
+    "targetTags": "createbigcannons:cannon_carriage",
+    "countPerUnit": 4,
+    "reward": 2
   }
 ]

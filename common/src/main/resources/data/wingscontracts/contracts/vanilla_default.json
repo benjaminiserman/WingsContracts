@@ -38,11 +38,27 @@
     "countPerUnit": 32
   },
   {
+    "targetTags": "#minecraft:birch_logs",
+    "countPerUnit": 24
+  },
+  {
+    "targetTags": "#minecraft:acacia_logs",
+    "countPerUnit": 24
+  },
+  {
     "targetItems": "paper",
     "countPerUnit": 32
   },
   {
     "targetItems": "wheat",
+    "countPerUnit": 48
+  },
+  {
+    "targetItems": "potato",
+    "countPerUnit": 48
+  },
+  {
+    "targetItems": "carrot",
     "countPerUnit": 48
   },
   {
@@ -53,6 +69,14 @@
   {
     "targetItems": "beetroot",
     "countPerUnit": 32
+  },
+  {
+    "targetItems": "pumpkin",
+    "countPerUnit": 32
+  },
+  {
+    "targetItems": "melon_slice",
+    "countPerUnit": 64
   },
   {
     "targetItems": "sweet_berries",
@@ -396,10 +420,6 @@
     "reward": 2
   },
   {
-    "targetTags": "#minecraft:enderman_holdable",
-    "countPerUnit": 64
-  },
-  {
     "targetTags": "#minecraft:trim_templates",
     "countPerUnit": 2,
     "reward": 5
@@ -425,5 +445,37 @@
     "targetTags": "#minecraft:decorated_pot_sherds",
     "countPerUnit": 4,
     "reward": 3
+  },
+  {
+    "targetItems": "suspicious_stew",
+    "countPerUnit": 8,
+    "reward": 2
+  },
+  {
+    "targetTags": "#minecraft:piglin_loved",
+    "countPerUnit": 1,
+    "reward": 2
+  },
+  {
+    "targetTags": "#minecraft:piglin_repellents",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetTags": "#minecraft:sand",
+    "countPerUnit": 48
+  },
+  {
+    "targetTags": "#minecraft:stairs",
+    "countPerUnit": 48
+  },
+  {
+    "targetTags": "#minecraft:slabs",
+    "countPerUnit": 64
+  },
+  {
+    "targetTags": "#minecraft:walls",
+    "countPerUnit": 64,
+    "reward": 2
   }
 ]

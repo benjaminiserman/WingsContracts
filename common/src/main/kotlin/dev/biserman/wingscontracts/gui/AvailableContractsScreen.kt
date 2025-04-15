@@ -30,7 +30,7 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
         val timeTilRefresh = DenominationsHelper.denominate(
             AvailableContractsData.get(inventory.player.level()).nextCycleStart - System.currentTimeMillis(),
             DenominationsHelper.timeDenominationsWithoutMs
-        ).asSequence().map { it.second }.joinToString(":")
+        ).asSequence().map { it.second.toString() }.joinToString(":")
 
         val rightTitleEdge = imageWidth - titleLabelY
         val refreshLabel = Component.translatable(

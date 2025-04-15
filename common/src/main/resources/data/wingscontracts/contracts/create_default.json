@@ -53,5 +53,13 @@
     "targetItems": "create:experience_nugget",
     "countPerUnit": 12,
     "reward": 2
+  },
+  {
+    "targetItems": "create:zinc_ingot",
+    "countPerUnit": 12
+  },
+  {
+    "targetItems": "create:andesite_alloy",
+    "countPerUnit": 16
   }
 ]
