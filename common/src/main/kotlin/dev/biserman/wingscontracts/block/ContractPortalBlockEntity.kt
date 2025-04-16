@@ -18,7 +18,9 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
+import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundSource
+import net.minecraft.tags.BlockTags
 import net.minecraft.util.Mth.*
 import net.minecraft.world.ContainerHelper
 import net.minecraft.world.MenuProvider
@@ -192,7 +194,7 @@ class ContractPortalBlockEntity(
                         spitItemStack(stackToSpit, level, blockPos, amountToSpit = max(4, stackToSpit.count / 2))
                     }
 
-                    level.playSound(null, blockPos, ModSoundRegistry.PORTAL_SPIT.get(), SoundSource.BLOCKS)
+                    playSound(level, blockPos, ModSoundRegistry.PORTAL_SPIT.get())
 
                     portal.setCooldown(10)
                     return true
@@ -202,6 +204,12 @@ class ContractPortalBlockEntity(
             }
 
             return false
+        }
+
+        private fun playSound(level: Level, blockPos: BlockPos, sound: SoundEvent) {
+            if (!level.getBlockState(blockPos.below()).`is`(BlockTags.WOOL)) {
+                level.playSound(null, blockPos, sound, SoundSource.BLOCKS)
+            }
         }
 
         private fun spitItemStack(
@@ -247,12 +255,12 @@ class ContractPortalBlockEntity(
 
             if (contract.matches(itemEntity.item)) {
                 if (addInputItem(itemEntity)) {
-                    level.playSound(null, blockPos, ModSoundRegistry.PORTAL_ACCEPT.get(), SoundSource.BLOCKS)
+                    playSound(level, blockPos, ModSoundRegistry.PORTAL_ACCEPT.get())
                     return true
                 }
             } else {
                 spitItemStack(itemEntity.item, level, blockPos, itemEntity.item.count)
-                level.playSound(null, blockPos, ModSoundRegistry.PORTAL_REJECT.get(), SoundSource.BLOCKS)
+                playSound(level, blockPos, ModSoundRegistry.PORTAL_REJECT.get())
             }
         }
 
