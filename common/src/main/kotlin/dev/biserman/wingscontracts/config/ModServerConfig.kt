@@ -17,6 +17,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val defaultRewardCurrency get() = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(defaultRewardCurrencyId.get()))
     val defaultRewardCurrencyMultiplier: ForgeConfigSpec.DoubleValue
     val defaultUnitsDemandedMultiplier: ForgeConfigSpec.DoubleValue
+    val defaultCountPerUnitMultiplier: ForgeConfigSpec.DoubleValue
     val defaultCycleDurationMs: ForgeConfigSpec.LongValue
     val defaultAuthor: ForgeConfigSpec.ConfigValue<String>
     val defaultMaxLevel: ForgeConfigSpec.IntValue
@@ -66,12 +67,16 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
                 .define("defaultRewardCurrencyId", "minecraft:emerald")
 
         defaultRewardCurrencyMultiplier =
-            builder.comment("Datapacked contracts with an unspecified or integer reward will have their reward count multiplied by this factor, then rounded up.")
+            builder.comment("Datapacked contracts with an unspecified or integer reward will have their reward count multiplied by this factor, then rounded (minimum of 1).")
                 .defineInRange("defaultRewardCurrencyMultiplier", 2.0, 0.0, Double.MAX_VALUE)
 
         defaultUnitsDemandedMultiplier =
-            builder.comment("All new Abyssal Contracts pulled from the pool will have their base units demanded multiplied by this factor, then rounded up.")
+            builder.comment("All new Abyssal Contracts pulled from the pool will have their base units demanded multiplied by this factor, then rounded (minimum of 1).")
                 .defineInRange("defaultUnitsDemandedMultiplier", 0.25, 0.0, Double.MAX_VALUE)
+
+        defaultCountPerUnitMultiplier =
+            builder.comment("All new Abyssal Contracts pulled from the pool will have their count demanded per unit multiplied by this factor, then rounded (minimum of 1).")
+                .defineInRange("defaultCountPerUnitMultiplier", 10.0, 0.0, Double.MAX_VALUE)
 
         defaultCycleDurationMs =
             builder.comment("The default length of a cycle period, in milliseconds. E.g.: 86400000 for one day, 604800000 for one week")

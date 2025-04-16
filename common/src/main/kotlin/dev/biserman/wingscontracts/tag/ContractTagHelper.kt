@@ -4,8 +4,9 @@ package dev.biserman.wingscontracts.tag
 
 import dev.biserman.wingscontracts.config.ModConfig
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.util.Mth
 import net.minecraft.world.item.ItemStack
+import kotlin.math.max
+import kotlin.math.roundToInt
 import kotlin.reflect.KProperty
 
 @JvmInline
@@ -69,7 +70,7 @@ object ContractTagHelper {
             if (this.contains(it, 99)) { // if the tag is just an integer, replace with default reward
                 return@safeGet ItemStack(
                     ModConfig.SERVER.defaultRewardCurrency,
-                    Mth.ceil(this.getInt(it).toDouble() * ModConfig.SERVER.defaultRewardCurrencyMultiplier.get())
+                    max(1, (this.getInt(it).toDouble() * ModConfig.SERVER.defaultRewardCurrencyMultiplier.get()).roundToInt())
                 )
             } else if (this.contains(it)) {
                 return@safeGet ItemStack.of(this.getCompound(it))

@@ -18,12 +18,13 @@ import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.tags.TagKey
-import net.minecraft.util.Mth
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import java.util.*
+import kotlin.math.min
 import kotlin.math.pow
+import kotlin.math.roundToInt
 import kotlin.reflect.full.memberProperties
 
 @Suppress("MemberVisibilityCanBePrivate", "NullableBooleanElvis")
@@ -151,8 +152,9 @@ class AbyssalContract(
             val tagReward = contract.reward
             val reward = tagReward
                 ?: ItemStack(
-                    ModConfig.SERVER.defaultRewardCurrency, Mth.ceil(
-                        ModConfig.SERVER.defaultRewardCurrencyMultiplier.get()
+                    ModConfig.SERVER.defaultRewardCurrency, min(
+                        1,
+                        ModConfig.SERVER.defaultRewardCurrencyMultiplier.get().roundToInt()
                     )
                 )
 

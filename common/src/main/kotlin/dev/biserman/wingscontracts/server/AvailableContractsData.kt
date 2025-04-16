@@ -5,18 +5,20 @@ package dev.biserman.wingscontracts.server
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.api.AbyssalContract
 import dev.biserman.wingscontracts.api.Contract.Companion.baseUnitsDemanded
+import dev.biserman.wingscontracts.api.Contract.Companion.countPerUnit
 import dev.biserman.wingscontracts.api.Contract.Companion.currentCycleStart
 import dev.biserman.wingscontracts.api.Contract.Companion.startTime
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.data.AvailableContractsManager
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
-import net.minecraft.util.Mth
 import net.minecraft.world.ContainerHelper
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.saveddata.SavedData
+import kotlin.math.max
+import kotlin.math.roundToInt
 
 class AvailableContractsData : SavedData() {
     val container = AvailableContractsContainer(this)
@@ -60,7 +62,9 @@ class AvailableContractsData : SavedData() {
         tag.currentCycleStart = currentCycleStart
         tag.startTime = currentCycleStart
         tag.baseUnitsDemanded =
-            Mth.ceil((tag.baseUnitsDemanded ?: 64).toDouble() * ModConfig.SERVER.defaultUnitsDemandedMultiplier.get())
+            max(1, ((tag.baseUnitsDemanded ?: 64).toDouble() * ModConfig.SERVER.defaultUnitsDemandedMultiplier.get()).roundToInt())
+        tag.countPerUnit =
+            max(1, ((tag.countPerUnit ?: 16).toDouble() * ModConfig.SERVER.defaultCountPerUnitMultiplier.get()).roundToInt())
 
         return AbyssalContract.load(tag).createItem()
     }
