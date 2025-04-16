@@ -68,9 +68,10 @@ object ContractTagHelper {
     fun itemStack(key: String? = null) =
         Property(key, safeGet {
             if (this.contains(it, 99)) { // if the tag is just an integer, replace with default reward
+                val loadedValue = max(1, this.getInt(it)).toDouble()
                 return@safeGet ItemStack(
                     ModConfig.SERVER.defaultRewardCurrency,
-                    max(1, (this.getInt(it).toDouble() * ModConfig.SERVER.defaultRewardCurrencyMultiplier.get()).roundToInt())
+                    max(1, (loadedValue * ModConfig.SERVER.defaultRewardCurrencyMultiplier.get()).roundToInt())
                 )
             } else if (this.contains(it)) {
                 return@safeGet ItemStack.of(this.getCompound(it))

@@ -70,11 +70,11 @@ class AvailableContractsMenu(id: Int, inventory: Inventory) :
 
         if (slotItemStack.isEmpty) {
             slot.setByPlayer(ItemStack.EMPTY)
-            slot.onTake(player, itemStack)
         } else {
             slot.setChanged()
         }
 
+        slot.onTake(player, itemStack)
         return itemStack
     }
 

@@ -30,19 +30,40 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
         val timeTilRefresh = DenominationsHelper.denominate(
             AvailableContractsData.get(inventory.player.level()).nextCycleStart - System.currentTimeMillis(),
             DenominationsHelper.timeDenominationsWithoutMs
-        ).asSequence().map { it.second.toString() }.joinToString(":")
+        ).asSequence().mapIndexed { i, pair ->
+            if (i == 0) {
+                pair.second.toString()
+            } else {
+                pair.second.toString().padStart(2, '0')
+            }
+        }.joinToString(":")
 
         val rightTitleEdge = imageWidth - titleLabelY
         val refreshLabel = Component.translatable(
             "${WingsContractsMod.MOD_ID}.gui.contract_portal.refreshes_in",
             timeTilRefresh
         ).string
-        graphics.drawString(font, refreshLabel, rightTitleEdge - font.width(refreshLabel), titleLabelY, 0x404040, false)
+        graphics.drawString(
+            font,
+            refreshLabel,
+            rightTitleEdge - font.width(refreshLabel),
+            titleLabelY,
+            0x404040,
+            false
+        )
         val remainingPicksLabel = Component.translatable(
             "${WingsContractsMod.MOD_ID}.gui.contract_portal.remaining_picks",
-            if (inventory.player.isCreative) "∞" else AvailableContractsData.remainingPicks(inventory.player).toString()
+            if (inventory.player.isCreative) "∞" else AvailableContractsData.remainingPicks(inventory.player)
+                .toString()
         )
-        graphics.drawString(font, remainingPicksLabel, rightTitleEdge - font.width(remainingPicksLabel), titleLabelY + font.lineHeight + 2, 0x404040, false)
+        graphics.drawString(
+            font,
+            remainingPicksLabel,
+            rightTitleEdge - font.width(remainingPicksLabel),
+            titleLabelY + font.lineHeight + 2,
+            0x404040,
+            false
+        )
     }
 
     override fun renderBg(graphics: GuiGraphics, f: Float, i: Int, j: Int) {
@@ -52,6 +73,7 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
     }
 
     companion object {
-        val TEXTURE: ResourceLocation = ResourceLocation(WingsContractsMod.MOD_ID, "textures/gui/contract_portal.png")
+        val TEXTURE: ResourceLocation =
+            ResourceLocation(WingsContractsMod.MOD_ID, "textures/gui/contract_portal.png")
     }
 }

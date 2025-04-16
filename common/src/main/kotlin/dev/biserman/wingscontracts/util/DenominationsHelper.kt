@@ -5,7 +5,7 @@ import net.minecraft.network.chat.Component
 import kotlin.math.floor
 
 object DenominationsHelper {
-    private fun translateTime(key: String) = Component.translatable("${WingsContractsMod.MOD_ID}.time.$key").string
+    fun translateTime(key: String): String = Component.translatable("${WingsContractsMod.MOD_ID}.time.$key").string
 
     @Suppress("MemberVisibilityCanBePrivate")
     val timeDenominations = mapOf(

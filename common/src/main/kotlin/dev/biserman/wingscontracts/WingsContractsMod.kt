@@ -10,6 +10,7 @@ import dev.biserman.wingscontracts.compat.CompatMods
 import dev.biserman.wingscontracts.compat.computercraft.ModItemDetailProvider
 import dev.biserman.wingscontracts.registry.*
 import dev.biserman.wingscontracts.server.AvailableContractsData
+import dev.biserman.wingscontracts.server.WingsContractsNetHandler
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
@@ -26,11 +27,13 @@ object WingsContractsMod {
         ModMenuRegistry.register()
         ModReloadListenerRegistry.register()
 
+        WingsContractsNetHandler.init()
+
         if (Platform.isModLoaded(CompatMods.COMPUTERCRAFT)) {
             ModItemDetailProvider.register()
         }
 
-        TickEvent.Server.SERVER_LEVEL_POST.register { level -> AvailableContractsData.get(level).serverTick() }
+        TickEvent.Server.SERVER_LEVEL_POST.register { level -> AvailableContractsData.get(level).serverTick(level) }
 
         EnvExecutor.runInEnv(Env.CLIENT) {
             Runnable {

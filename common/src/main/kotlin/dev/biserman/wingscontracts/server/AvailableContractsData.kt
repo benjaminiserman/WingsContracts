@@ -10,6 +10,8 @@ import dev.biserman.wingscontracts.api.Contract.Companion.currentCycleStart
 import dev.biserman.wingscontracts.api.Contract.Companion.startTime
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.data.AvailableContractsManager
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.ContainerHelper
@@ -26,7 +28,7 @@ class AvailableContractsData : SavedData() {
     var currentCycleStart: Long = 0
     val nextCycleStart get() = currentCycleStart + ModConfig.SERVER.availableContractsPoolRefreshPeriodMs.get()
 
-    override fun save(compoundTag: CompoundTag): CompoundTag? {
+    override fun save(compoundTag: CompoundTag): CompoundTag {
         val contractListTag = CompoundTag()
         ContainerHelper.saveAllItems(contractListTag, container.items)
         val remainingPicksTag = CompoundTag()
@@ -40,7 +42,7 @@ class AvailableContractsData : SavedData() {
         return compoundTag
     }
 
-    fun serverTick() {
+    fun serverTick(level: ServerLevel) {
         val cyclesPassed =
             (System.currentTimeMillis() - currentCycleStart) / ModConfig.SERVER.availableContractsPoolRefreshPeriodMs.get()
 
@@ -48,6 +50,7 @@ class AvailableContractsData : SavedData() {
             return
         }
 
+        WingsContractsMod.LOGGER.info("starting new cycle $currentCycleStart")
         currentCycleStart += cyclesPassed * ModConfig.SERVER.availableContractsPoolRefreshPeriodMs.get()
         remainingPicks.keys.forEach { remainingPicks[it] = ModConfig.SERVER.availableContractsPoolPicks.get() }
 
@@ -55,6 +58,8 @@ class AvailableContractsData : SavedData() {
         for (i in 0..<container.containerSize) {
             container.items[i] = generateContract()
         }
+
+        SyncAvailableContractsMessage(level).sendToAll(level.server)
     }
 
     fun generateContract(): ItemStack {
@@ -62,9 +67,17 @@ class AvailableContractsData : SavedData() {
         tag.currentCycleStart = currentCycleStart
         tag.startTime = currentCycleStart
         tag.baseUnitsDemanded =
-            max(1, ((tag.baseUnitsDemanded ?: 64).toDouble() * ModConfig.SERVER.defaultUnitsDemandedMultiplier.get()).roundToInt())
+            max(
+                1,
+                ((tag.baseUnitsDemanded
+                    ?: 64).toDouble() * ModConfig.SERVER.defaultUnitsDemandedMultiplier.get()).roundToInt()
+            )
         tag.countPerUnit =
-            max(1, ((tag.countPerUnit ?: 16).toDouble() * ModConfig.SERVER.defaultCountPerUnitMultiplier.get()).roundToInt())
+            max(
+                1,
+                ((tag.countPerUnit
+                    ?: 16).toDouble() * ModConfig.SERVER.defaultCountPerUnitMultiplier.get()).roundToInt()
+            )
 
         return AbyssalContract.load(tag).createItem()
     }
@@ -74,6 +87,9 @@ class AvailableContractsData : SavedData() {
         const val REMAINING_PICKS = "remainingPicks"
         const val CURRENT_CYCLE_START = "currentCycleStart"
         const val IDENTIFIER = "${WingsContractsMod.MOD_ID}_world_data"
+
+        @Environment(EnvType.CLIENT)
+        var clientData = AvailableContractsData()
 
         fun load(nbt: CompoundTag): AvailableContractsData {
             val availableContracts = AvailableContractsData()
@@ -86,9 +102,20 @@ class AvailableContractsData : SavedData() {
             return availableContracts
         }
 
+        fun set(world: Level, data: AvailableContractsData) {
+            if (world !is ServerLevel) {
+                clientData = data
+                return
+            }
+
+            world.server.getLevel(Level.OVERWORLD)!!.dataStorage.set(
+                IDENTIFIER, data
+            )
+        }
+
         fun get(world: Level): AvailableContractsData {
             if (world !is ServerLevel) {
-                return AvailableContractsData()
+                return clientData
             }
 
             val data = world.server.getLevel(Level.OVERWORLD)!!.dataStorage.computeIfAbsent(
@@ -100,13 +127,13 @@ class AvailableContractsData : SavedData() {
 
         fun remainingPicks(player: Player): Int {
             val remainingPicksMap = get(player.level()).remainingPicks
-            val id = player.id.toString()
+            val id = player.uuid.toString()
             return remainingPicksMap.computeIfAbsent(id) { ModConfig.SERVER.availableContractsPoolPicks.get() }
         }
 
         fun setRemainingPicks(player: Player, picks: Int) {
             val remainingPicksMap = get(player.level()).remainingPicks
-            val id = player.id.toString()
+            val id = player.uuid.toString()
             remainingPicksMap[id] = picks
         }
     }
