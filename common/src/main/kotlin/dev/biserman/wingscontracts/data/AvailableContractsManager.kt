@@ -21,14 +21,22 @@ import net.minecraft.util.profiling.ProfilerFiller
 val GSON: Gson = (GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create()
 
 object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contracts") {
-    private var availableContracts = listOf<ContractTag>()
+    private var allAvailableContracts = listOf<ContractTag>()
+    private var nonDefaultAvailableContracts = listOf<ContractTag>()
+    private val availableContracts
+        get() = if (ModConfig.SERVER.disableDefaultContractOptions.get()) {
+            nonDefaultAvailableContracts
+        } else {
+            allAvailableContracts
+        }
 
     fun random() = if (availableContracts.isEmpty()) {
+        WingsContractsMod.LOGGER.warn("Available contracts pool is empty, returning unknown contract.")
         val contract = ContractTag(CompoundTag())
         contract.name = Component.translatable("${WingsContractsMod.MOD_ID}.contract.unknown").string
         contract
     } else {
-        availableContracts.random()
+        ContractTag(availableContracts.random().tag.copy())
     }
 
     override fun apply(
@@ -38,6 +46,7 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
     ) {
         WingsContractsMod.LOGGER.info("Building available contracts pool...")
         val buildAvailableContracts = mutableListOf<ContractTag>()
+        val buildNonDefaultAvailableContracts = mutableListOf<ContractTag>()
 
         for ((resourceLocation, json) in jsonMap) {
             if (resourceLocation.path.startsWith("_")) {
@@ -45,12 +54,7 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
             }
 
             WingsContractsMod.LOGGER.info("test ${resourceLocation.path} ${ModConfig.SERVER.disableDefaultContractOptions.get()}")
-            if (ModConfig.SERVER.disableDefaultContractOptions.get()
-                && resourceLocation.path.endsWith("_default")
-            ) {
-                WingsContractsMod.LOGGER.info("Skipping contracts file ${resourceLocation.path}")
-                continue
-            }
+            val isDefault = resourceLocation.path.endsWith("_default")
 
             try {
                 val parsedContracts =
@@ -74,6 +78,9 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
 
                     if (AbyssalContract.load(contract).isValid) {
                         buildAvailableContracts.add(contract)
+                        if (!isDefault) {
+                            buildNonDefaultAvailableContracts.add(contract)
+                        }
                     } else {
                         WingsContractsMod.LOGGER.warn("Found invalid contract $contract in $resourceLocation")
                     }
@@ -83,6 +90,7 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
             }
         }
 
-        availableContracts = buildAvailableContracts.toList()
+        allAvailableContracts = buildAvailableContracts.toList()
+        nonDefaultAvailableContracts = buildNonDefaultAvailableContracts.toList()
     }
 }
