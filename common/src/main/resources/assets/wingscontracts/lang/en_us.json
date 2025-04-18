@@ -10,6 +10,12 @@
     "wingscontracts.time.day": "Day",
 
 
+    "wingscontracts.rarity.0": "Common",
+    "wingscontracts.rarity.1": "Uncommon",
+    "wingscontracts.rarity.2": "Rare",
+    "wingscontracts.rarity.3": "Epic",
+
+
     "wingscontracts.contract.complex": "Complex",
     "wingscontracts.contract.unknown": "Unknown",
     "wingscontracts.contract.empty": "Empty",
@@ -20,19 +26,22 @@
     "wingscontracts.contract.matches_following_short": "%s",
     "wingscontracts.contract.units_fulfilled": "Units Fulfilled: %d/%d (%d/%d)",
     "wingscontracts.contract.cycle_complete": "Cycle Complete!\nRight-click with contract in hand or place in contract portal to start next cycle.",
-    "wingscontracts.contract.cycle_remaining": "Current Cycle Ends at %s\nCurrent Cycle Remaining Time:\n    %s",
+    "wingscontracts.contract.next_cycle": "Refreshes at %s",
+    "wingscontracts.contract.cycle_remaining": "Remaining Time:\n    %s",
     "wingscontracts.contract.cycle_started": "Started On: %s",
     "wingscontracts.contract.total_fulfilled": "Total Units Fulfilled Ever: %d (%d)",
     "wingscontracts.contract.base_units_demanded": "Base Units Demanded: %d (%d)",
     "wingscontracts.contract.author": "Author: %s",
 
     "wingscontracts.contract.abyssal.rewards": "Rewards %d %s for every %d %s",
+    "wingscontracts.contract.abyssal.max_reward_cycle": "Max Reward this Cycle: %d %s",
+    "wingscontracts.contract.abyssal.max_reward": "Max Reward at Level %d: %d %s",
     "wingscontracts.contract.abyssal.short": "%d %s → %d %s (%d/%d)",
 
 
-    "item.wingscontracts.contract": "%s Contract",
+    "item.wingscontracts.contract": "%sContract",
     "item.wingscontracts.contract.unknown": "Unknown Contract",
-    "item.wingscontracts.contract.abyssal": "%s Contract",
+    "item.wingscontracts.contract.abyssal": "%s %s Contract %s",
 
 
     "block.wingscontracts.contract_portal": "Contract Portal",

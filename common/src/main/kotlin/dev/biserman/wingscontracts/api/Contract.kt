@@ -55,7 +55,8 @@ abstract class Contract(
     var isLoaded: Boolean = true,
     val author: String = "",
     val name: String? = null,
-    val shortTargetList: String? = null
+    val shortTargetList: String? = null,
+    val rarity: Int? = null
 ) {
     open val unitsDemanded = baseUnitsDemanded
 
@@ -221,17 +222,17 @@ abstract class Contract(
 
         components.addAll(getBasicInfo(null))
         components.addAll(getTimeInfo(null))
-        components.add(translateContract("cycle_started", Date(startTime)).withStyle(ChatFormatting.LIGHT_PURPLE))
+//        components.add(translateContract("cycle_started", Date(startTime)).withStyle(ChatFormatting.LIGHT_PURPLE))
         components.add(
             translateContract(
                 "total_fulfilled", unitsFulfilledEver, unitsFulfilledEver * countPerUnit
-            ).withStyle(ChatFormatting.DARK_PURPLE)
-        )
-        components.add(
-            translateContract(
-                "base_units_demanded", baseUnitsDemanded, baseUnitsDemanded * countPerUnit
             ).withStyle(ChatFormatting.LIGHT_PURPLE)
         )
+//        components.add(
+//            translateContract(
+//                "base_units_demanded", baseUnitsDemanded, baseUnitsDemanded * countPerUnit
+//            ).withStyle(ChatFormatting.LIGHT_PURPLE)
+//        )
 
         if (author.isNotBlank()) {
             components.add(translateContract("author", author).withStyle(ChatFormatting.DARK_PURPLE))
@@ -295,6 +296,8 @@ abstract class Contract(
 
     abstract fun getRewardsForUnits(units: Int): ItemStack
 
+    open fun getRarity() = rarity ?: 0
+
     open fun save(nbt: CompoundTag? = null): ContractTag {
         val tag = ContractTag(nbt ?: CompoundTag())
 
@@ -314,6 +317,7 @@ abstract class Contract(
         tag.author = author
         tag.name = name
         tag.shortTargetList = shortTargetList
+        tag.rarity = rarity
 
         return tag
     }
@@ -350,6 +354,7 @@ abstract class Contract(
         var (ContractTag).author by string()
         var (ContractTag).name by string()
         var (ContractTag).shortTargetList by string()
+        var (ContractTag).rarity by int()
 
         var (ContractTag).targetTags: List<TagKey<Item>>?
             get() {
@@ -381,7 +386,7 @@ abstract class Contract(
                 return null
             }
             set(value) {
-                targetItemKeys = value?.mapNotNull { it.`arch$registryName`()?.path }
+                targetItemKeys = value?.mapNotNull { it.`arch$registryName`()?.toString() }
             }
 
         fun translateContract(key: String, vararg objects: Any): MutableComponent =

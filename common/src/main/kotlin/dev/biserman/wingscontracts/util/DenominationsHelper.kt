@@ -37,8 +37,10 @@ object DenominationsHelper {
 
         var runningValue = value
         while (true) {
-            val denomination =
-                denominations.asSequence().filter { x -> x.value <= runningValue }.maxByOrNull { x -> x.value } ?: break
+            val denomination = denominations
+                .asSequence()
+                .filter { x -> x.value <= runningValue }
+                .maxByOrNull { x -> x.value } ?: break
             val unitsToTake = floor(runningValue / denomination.value).toInt()
             runningValue -= unitsToTake * denomination.value
             yield(Pair(denomination.key, unitsToTake))
@@ -46,7 +48,9 @@ object DenominationsHelper {
     }
 
     fun <T> getLargestDenomination(value: Double, denominations: Map<T, Double>): Pair<T, Int>? {
-        val denomination = denominations.filter { x -> x.value <= value }.maxByOrNull { x -> x.value } ?: return null
+        val denomination = denominations
+            .filter { x -> x.value <= value }
+            .maxByOrNull { x -> x.value } ?: return null
         val unitsToTake = (value / denomination.value).toInt()
         return Pair(denomination.key, unitsToTake)
     }

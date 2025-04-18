@@ -4,11 +4,11 @@ package dev.biserman.wingscontracts.block
 
 import dev.architectury.registry.menu.MenuRegistry
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
-import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.item.ContractItem
 import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
+import dev.biserman.wingscontracts.server.AvailableContractsData
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerPlayer
@@ -169,7 +169,7 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
                 )
                 while (blockEntity.cachedRewards.count > 0) {
                     val rewardStackToSpit =
-                        DenominatedCurrenciesHandler.splitHighestDenomination(blockEntity.cachedRewards)
+                        AvailableContractsData.get(level).currencyHandler.splitHighestDenomination(blockEntity.cachedRewards)
                     while (rewardStackToSpit.count > 0) {
                         val splitStack = rewardStackToSpit.split(
                             min(

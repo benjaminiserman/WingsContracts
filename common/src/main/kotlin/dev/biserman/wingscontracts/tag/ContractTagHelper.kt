@@ -6,7 +6,6 @@ import dev.biserman.wingscontracts.config.ModConfig
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.ItemStack
 import kotlin.math.max
-import kotlin.math.roundToInt
 import kotlin.reflect.KProperty
 
 @JvmInline
@@ -68,11 +67,10 @@ object ContractTagHelper {
     fun itemStack(key: String? = null) =
         Property(key, safeGet {
             if (this.contains(it, 99)) { // if the tag is just an integer, replace with default reward
-                val loadedValue = max(1, this.getInt(it)).toDouble()
+                val loadedValue = max(1, this.getInt(it))
                 return@safeGet ItemStack(
                     ModConfig.SERVER.defaultRewardCurrency,
-                    max(1, (loadedValue * ModConfig.SERVER.defaultRewardCurrencyMultiplier.get()).roundToInt())
-                )
+                    loadedValue)
             } else if (this.contains(it)) {
                 return@safeGet ItemStack.of(this.getCompound(it))
             } else {

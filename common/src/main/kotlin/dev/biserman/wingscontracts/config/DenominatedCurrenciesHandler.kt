@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import kotlin.math.min
 
-object DenominatedCurrenciesHandler {
+class DenominatedCurrenciesHandler() {
     private val denominatedCurrencies by lazy {
         ModConfig.SERVER.denominations.get().split(";").map {
             it.split(",")

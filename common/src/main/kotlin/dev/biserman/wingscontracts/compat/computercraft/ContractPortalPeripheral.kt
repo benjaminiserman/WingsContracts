@@ -5,8 +5,8 @@ import dan200.computercraft.api.peripheral.IPeripheral
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
-import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.data.LoadedContracts
+import dev.biserman.wingscontracts.server.AvailableContractsData
 
 class ContractPortalPeripheral(private val portal: ContractPortalBlockEntity) : IPeripheral {
     @Suppress("CovariantEquals")
@@ -37,7 +37,7 @@ class ContractPortalPeripheral(private val portal: ContractPortalBlockEntity) : 
 
     @LuaFunction
     fun getCachedRewardsDenominationDetails(): List<Map<String, Any>> =
-        DenominatedCurrenciesHandler
+        AvailableContractsData.get(portal.level!!).currencyHandler
             .denominateCurrency(portal.cachedRewards)
             .asSequence()
             .filter { !it.isEmpty }

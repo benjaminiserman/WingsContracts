@@ -11,6 +11,8 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val availableContractsPoolOptions: ForgeConfigSpec.IntValue
     val availableContractsPoolPicks: ForgeConfigSpec.IntValue
     val disableDefaultContractOptions: ForgeConfigSpec.BooleanValue
+    val variance: ForgeConfigSpec.DoubleValue
+    val rarityThresholdsString: ForgeConfigSpec.ConfigValue<String>
 
     // Contract Defaults
     val defaultRewardCurrencyId: ForgeConfigSpec.ConfigValue<String>
@@ -59,6 +61,25 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
                 """.trimIndent()
             ).define("disableDefaultContractOptions", false)
 
+        variance =
+            builder.comment(
+                """
+                The maximum distance a value of an Abyssal Contract from the pool can generate from its default values for countPerUnit, baseUnitsDemanded, and reward.
+                Example: if variance is set to 0.2 and you have a contract in the pool configured to convert 10 iron ingots → 5 emeralds, then you might generate any of the following contracts:
+                 - 8 iron ingots → 4 emeralds
+                 - 8 iron ingots → 6 emeralds
+                 - 12 iron ingots → 4 emeralds
+                 - 12 iron ingots → 6 emeralds
+                 - 11 iron ingots → 5 emeralds
+                 - ... or anything else in-between
+                """.trimIndent()
+            )
+                .defineInRange("variance", 0.33, 0.0, Double.MAX_VALUE)
+
+        rarityThresholdsString =
+            builder.comment("The minimum max reward to reach rarities Uncommon, Rare, and Epic respectively as a comma-separated list of integers.")
+                .define("rarityThresholds", "20000,50000,100000")
+
         builder.pop()
         builder.push("Contract Defaults")
 
@@ -98,6 +119,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
 
         builder.pop()
     }
+
 
     companion object {
         val defaultDenominations = """

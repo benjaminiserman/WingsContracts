@@ -108,6 +108,8 @@ object ContractCommand {
                                                                             isLoaded = false,
                                                                             author = author,
                                                                             name = null,
+                                                                            shortTargetList = null,
+                                                                            rarity = null,
                                                                             reward = ItemStack(rewardItem, unitPrice),
                                                                             level = 1,
                                                                             quantityGrowthFactor = quantityGrowthFactor,

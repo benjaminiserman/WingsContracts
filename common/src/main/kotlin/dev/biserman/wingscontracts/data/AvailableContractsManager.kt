@@ -30,14 +30,16 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
             allAvailableContracts
         }
 
-    fun random() = if (availableContracts.isEmpty()) {
-        WingsContractsMod.LOGGER.warn("Available contracts pool is empty, returning unknown contract.")
-        val contract = ContractTag(CompoundTag())
-        contract.name = Component.translatable("${WingsContractsMod.MOD_ID}.contract.unknown").string
-        contract
-    } else {
-        ContractTag(availableContracts.random().tag.copy())
-    }
+    fun randomTag() =
+        if (availableContracts.isEmpty()) {
+            WingsContractsMod.LOGGER.warn("Available contracts pool is empty, returning unknown contract.")
+            val contract = ContractTag(CompoundTag())
+            contract.name = Component.translatable("${WingsContractsMod.MOD_ID}.contract.unknown").string
+            contract
+        } else {
+            ContractTag(availableContracts.random().tag.copy())
+        }
+
 
     override fun apply(
         jsonMap: Map<ResourceLocation, JsonElement>,

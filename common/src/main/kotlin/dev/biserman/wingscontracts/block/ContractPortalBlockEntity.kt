@@ -3,12 +3,12 @@ package dev.biserman.wingscontracts.block
 import dev.biserman.wingscontracts.api.Contract
 import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
-import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
 import dev.biserman.wingscontracts.registry.ModBlockRegistry
 import dev.biserman.wingscontracts.registry.ModMenuRegistry
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
+import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.tag.ContractTag
 import dev.biserman.wingscontracts.tag.ContractTagHelper
 import net.minecraft.core.BlockPos
@@ -187,8 +187,9 @@ class ContractPortalBlockEntity(
                         return true
                     }
 
-                    if (DenominatedCurrenciesHandler.isCurrency(stackToSpit)) {
-                        val denominatedStack = DenominatedCurrenciesHandler.splitHighestDenomination(stackToSpit)
+                    val currencyHandler = AvailableContractsData.get(level).currencyHandler
+                    if (currencyHandler.isCurrency(stackToSpit)) {
+                        val denominatedStack = currencyHandler.splitHighestDenomination(stackToSpit)
                         spitItemStack(denominatedStack, level, blockPos, amountToSpit = denominatedStack.count)
                     } else {
                         spitItemStack(stackToSpit, level, blockPos, amountToSpit = max(4, stackToSpit.count / 2))

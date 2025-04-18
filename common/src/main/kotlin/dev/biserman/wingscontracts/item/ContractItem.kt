@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Rarity
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.level.Level
 import kotlin.math.ceil
@@ -49,6 +50,11 @@ class ContractItem(properties: Properties) : Item(properties) {
                 )
 
         components.addAll(contract.getDescription(Screen.hasShiftDown(), holdShift))
+    }
+
+    override fun getRarity(itemStack: ItemStack): Rarity {
+        val contract = LoadedContracts[itemStack] ?: return super.getRarity(itemStack)
+        return Rarity.values()[contract.getRarity()]
     }
 
     override fun use(

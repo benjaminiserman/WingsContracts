@@ -34,6 +34,10 @@ object WingsContractsMod {
         }
 
         TickEvent.Server.SERVER_LEVEL_POST.register { level -> AvailableContractsData.get(level).serverTick(level) }
+        ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register { level ->
+            AvailableContractsData.clientData =
+                AvailableContractsData()
+        }
 
         EnvExecutor.runInEnv(Env.CLIENT) {
             Runnable {

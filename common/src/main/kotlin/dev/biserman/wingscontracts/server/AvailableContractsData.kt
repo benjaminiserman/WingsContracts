@@ -4,10 +4,12 @@ package dev.biserman.wingscontracts.server
 
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.api.AbyssalContract
+import dev.biserman.wingscontracts.api.AbyssalContract.Companion.reward
 import dev.biserman.wingscontracts.api.Contract.Companion.baseUnitsDemanded
 import dev.biserman.wingscontracts.api.Contract.Companion.countPerUnit
 import dev.biserman.wingscontracts.api.Contract.Companion.currentCycleStart
 import dev.biserman.wingscontracts.api.Contract.Companion.startTime
+import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.data.AvailableContractsManager
 import net.fabricmc.api.EnvType
@@ -19,6 +21,7 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.saveddata.SavedData
+import java.util.*
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -27,6 +30,9 @@ class AvailableContractsData : SavedData() {
     val remainingPicks = mutableMapOf<String, Int>()
     var currentCycleStart: Long = 0
     val nextCycleStart get() = currentCycleStart + ModConfig.SERVER.availableContractsPoolRefreshPeriodMs.get()
+
+    val rarityThresholds by lazy { ModConfig.SERVER.rarityThresholdsString.get().split(",").map { it.toInt() }}
+    val currencyHandler by lazy { DenominatedCurrenciesHandler() }
 
     override fun save(compoundTag: CompoundTag): CompoundTag {
         val contractListTag = CompoundTag()
@@ -62,22 +68,21 @@ class AvailableContractsData : SavedData() {
         SyncAvailableContractsMessage(level).sendToAll(level.server)
     }
 
+    private fun vary(value: Int, multiplier: Double): Int {
+        val variance = ModConfig.SERVER.variance.get()
+        val randomFactor = random.nextDouble()
+        val varianceFactor = 1.0 + (randomFactor * 2.0 - 1.0) * variance
+
+        return max(1.0, value.toDouble() * multiplier * varianceFactor).roundToInt()
+    }
+
     fun generateContract(): ItemStack {
-        val tag = AvailableContractsManager.random()
+        val tag = AvailableContractsManager.randomTag()
         tag.currentCycleStart = currentCycleStart
         tag.startTime = currentCycleStart
-        tag.baseUnitsDemanded =
-            max(
-                1,
-                ((tag.baseUnitsDemanded
-                    ?: 64).toDouble() * ModConfig.SERVER.defaultUnitsDemandedMultiplier.get()).roundToInt()
-            )
-        tag.countPerUnit =
-            max(
-                1,
-                ((tag.countPerUnit
-                    ?: 16).toDouble() * ModConfig.SERVER.defaultCountPerUnitMultiplier.get()).roundToInt()
-            )
+        tag.baseUnitsDemanded = vary(tag.baseUnitsDemanded ?: 64, ModConfig.SERVER.defaultUnitsDemandedMultiplier.get())
+        tag.countPerUnit = vary(tag.countPerUnit ?: 16, ModConfig.SERVER.defaultCountPerUnitMultiplier.get())
+        tag.reward?.count = vary(tag.reward?.count ?: 1, ModConfig.SERVER.defaultRewardCurrencyMultiplier.get())
 
         return AbyssalContract.load(tag).createItem()
     }
@@ -87,6 +92,8 @@ class AvailableContractsData : SavedData() {
         const val REMAINING_PICKS = "remainingPicks"
         const val CURRENT_CYCLE_START = "currentCycleStart"
         const val IDENTIFIER = "${WingsContractsMod.MOD_ID}_world_data"
+
+        val random = Random()
 
         @Environment(EnvType.CLIENT)
         var clientData = AvailableContractsData()
