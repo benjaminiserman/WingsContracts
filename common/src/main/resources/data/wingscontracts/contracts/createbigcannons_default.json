@@ -16,8 +16,8 @@
   },
   {
     "targetItems": "createbigcannons:recoil_spring",
-    "countPerUnit": 16,
-    "reward": 2
+    "countPerUnit": 8,
+    "reward": 1
   },
   {
     "targetItems": "createbigcannons:he_shell",

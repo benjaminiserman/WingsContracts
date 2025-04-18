@@ -1,28 +1,29 @@
 [
   {
     "targetItems": "iron_ingot",
-    "countPerUnit": 16
+    "countPerUnit": 32,
+    "reward": 2
   },
   {
     "targetTags": "#minecraft:coals",
-    "countPerUnit": 24
+    "countPerUnit": 16
   },
   {
     "targetItems": "diamond",
-    "countPerUnit": 6,
-    "reward": 3
+    "countPerUnit": 8,
+    "reward": 4
   },
   {
     "targetItems": "gold_ingot",
     "countPerUnit": 8,
-    "reward": 2
+    "reward": 3
   },
   {
     "targetItems": "copper_ingot",
     "countPerUnit": 16
   },
   {
-    "targetItems": "arrow",
+    "targetTags": "#minecraft:arrows",
     "countPerUnit": 16
   },
   {
@@ -84,24 +85,25 @@
   },
   {
     "targetItems": "glow_berries",
-    "countPerUnit": 24
+    "countPerUnit": 32,
+    "reward": 2
   },
   {
     "targetItems": "chorus_flower",
     "countPerUnit": 9,
-    "reward": 3
+    "reward": 5
   },
   {
     "targetItems": "popped_chorus_fruit",
     "countPerUnit": 16,
-    "reward": 2
+    "reward": 3
   },
   {
     "targetItems": "melon",
     "countPerUnit": 16
   },
   {
-    "targetItems": "carved_pumpkin",
+    "targetItems": "jack_o_lantern",
     "countPerUnit": 13,
     "reward": 2
   },
@@ -118,13 +120,12 @@
   {
     "targetItems": "red_mushroom,brown_mushroom",
     "countPerUnit": 16,
-    "reward": 1,
     "name": "wingscontracts.data.mushroom"
   },
   {
     "targetItems": "mushroom_stem,brown_mushroom_block,red_mushroom_block",
     "countPerUnit": 16,
-    "reward": 2,
+    "reward": 3,
     "name": "wingscontracts.data.mushroom_block"
   },
   {
@@ -139,7 +140,7 @@
   {
     "targetItems": "lapis_lazuli",
     "countPerUnit": 16,
-    "reward": 2
+    "reward": 3
   },
   {
     "targetItems": "quartz",
@@ -152,7 +153,7 @@
   {
     "targetItems": "ender_pearl",
     "countPerUnit": 16,
-    "reward": 3
+    "reward": 4
   },
   {
     "targetItems": "clay",
@@ -166,12 +167,12 @@
   },
   {
     "targetItems": "slime_ball",
-    "countPerUnit": 16
+    "countPerUnit": 16,
+    "reward": 2
   },
   {
     "targetItems": "nether_wart",
-    "countPerUnit": 64,
-    "reward": 2
+    "countPerUnit": 16
   },
   {
     "targetItems": "blaze_rod",
@@ -230,7 +231,7 @@
   {
     "targetItems": "netherite_ingot",
     "countPerUnit": 1,
-    "reward": 8
+    "reward": 10
   },
   {
     "targetItems": "sea_pickle",
@@ -257,13 +258,19 @@
     "reward": 2
   },
   {
+    "targetItems": "wither_rose",
+    "countPerUnit": 32,
+    "reward": 5
+  },
+  {
     "targetItems": "prismarine_shard",
-    "countPerUnit": 16,
-    "reward": 3
+    "countPerUnit": 20,
+    "reward": 4
   },
   {
     "targetItems": "dirt",
-    "countPerUnit": 64
+    "countPerUnit": 64,
+    "baseUnitsDemanded": 32
   },
   {
     "targetItems": "gravel",
@@ -289,7 +296,8 @@
   },
   {
     "targetItems": "moss_block",
-    "countPerUnit": 32
+    "countPerUnit": 48,
+    "reward": 2
   },
   {
     "targetItems": "vine",
@@ -298,6 +306,11 @@
   {
     "targetTags": "#minecraft:saplings",
     "countPerUnit": 32
+  },
+  {
+    "targetItems": "minecraft:diamond_pickaxe",
+    "countPerUnit": 4,
+    "reward": 8
   },
   {
     "targetTags": "#minecraft:pickaxes",
@@ -353,12 +366,12 @@
   },
   {
     "targetItems": "hanging_roots",
-    "countPerUnit": 16
+    "countPerUnit": 24,
+    "reward": 2
   },
   {
     "targetItems": "decorated_pot",
-    "countPerUnit": 32,
-    "reward": 2
+    "countPerUnit": 12
   },
   {
     "targetItems": "splash_potion",
@@ -385,7 +398,7 @@
   {
     "targetItems": "sculk",
     "countPerUnit": 32,
-    "reward": 2
+    "reward": 3
   },
   {
     "targetItems": "flint",
@@ -394,11 +407,11 @@
   {
     "targetItems": "experience_bottle",
     "countPerUnit": 2,
-    "reward": 2
+    "reward": 4
   },
   {
     "targetItems": "nether_brick",
-    "countPerUnit": 64,
+    "countPerUnit": 128,
     "reward": 2
   },
   {
@@ -415,8 +428,7 @@
   },
   {
     "targetTags": "#minecraft:fences",
-    "countPerUnit": 96,
-    "reward": 2
+    "countPerUnit": 32
   },
   {
     "targetTags": "#minecraft:trim_templates",
@@ -437,8 +449,7 @@
   },
   {
     "targetTags": "#minecraft:tools",
-    "countPerUnit": 24,
-    "reward": 2
+    "countPerUnit": 12
   },
   {
     "targetTags": "#minecraft:decorated_pot_sherds",
@@ -452,12 +463,12 @@
   },
   {
     "targetTags": "#minecraft:piglin_loved",
-    "countPerUnit": 1,
+    "countPerUnit": 8,
     "reward": 2
   },
   {
     "targetTags": "#minecraft:piglin_repellents",
-    "countPerUnit": 16,
+    "countPerUnit": 24,
     "reward": 2
   },
   {
@@ -474,7 +485,100 @@
   },
   {
     "targetTags": "#minecraft:walls",
+    "countPerUnit": 48
+  },
+  {
+    "targetItems": "ice",
     "countPerUnit": 64,
     "reward": 2
+  },
+  {
+    "targetItems": "sugar_cane",
+    "countPerUnit": 64
+  },
+  {
+    "targetItems": "sugar",
+    "countPerUnit": 48
+  },
+  {
+    "targetItems": "wither_skeleton_skull",
+    "countPerUnit": 8,
+    "reward": 4
+  },
+  {
+    "targetItems": "mossy_cobblestone",
+    "countPerUnit": 256,
+    "reward": 3
+  },
+  {
+    "targetItems": "tnt",
+    "countPerUnit": 16,
+    "reward": 4
+  },
+  {
+    "targetItems": "firework_rocket",
+    "countPerUnit": 32,
+    "reward": 3
+  },
+  {
+    "targetItems": "mangrove_planks",
+    "countPerUnit": 96,
+    "reward": 2
+  },
+  {
+    "targetTags": "#minecraft:planks",
+    "countPerUnit": 96
+  },
+  {
+    "targetItems": "cobbled_deepslate",
+    "countPerUnit": 256,
+    "reward": 2
+  },
+  {
+    "targetItems": "mud_bricks",
+    "countPerUnit": 64
+  },
+  {
+    "targetItems": "oxidized_copper",
+    "countPerUnit": 3,
+    "reward": 2
+  },
+  {
+    "targetTags": "#minecraft:terracotta",
+    "countPerUnit": 32
+  },
+  {
+    "targetItems": "blue_ice",
+    "countPerUnit": 16,
+    "reward": 3
+  },
+  {
+    "targetItems": "magma_block",
+    "countPerUnit": 16,
+    "reward": 3
+  },
+  {
+    "targetItems": "soul_sand",
+    "countPerUnit": 32,
+    "reward": 2
+  },
+  {
+    "targetItems": "anvil",
+    "countPerUnit": 1,
+    "reward": 3
+  },
+  {
+    "targetTags": "#minecraft:rails",
+    "countPerUnit": 64,
+    "reward": 2
+  },
+  {
+    "targetItems": "glass_bottle",
+    "countPerUnit": 32,
+    "reward": 2
+  },
+  {
+    "targetTags": "#minecraft:stone_bricks",
+    "countPerUnit": 64
   }
 ]

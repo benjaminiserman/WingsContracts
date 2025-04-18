@@ -81,5 +81,10 @@
     "wingscontracts.data.botania.brew_vial": "Brew Vial",
     "wingscontracts.data.botania.brew_flask": "Brew Flask",
 
-    "wingscontracts.data.farmersdelight.salads": "Salad"
+    "wingscontracts.data.farmersdelight.salads": "Salad",
+
+    "wingscontracts.data.fruitsdelight.fruit_cookies": "Fruit Cookies",
+    "wingscontracts.data.fruitsdelight.sliced_fruits": "Sliced Fruits",
+
+    "wingscontracts.data.miners_delight.vegan_deluxe": "Vegan Deluxe"
 }

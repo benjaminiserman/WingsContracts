@@ -1,18 +1,24 @@
 [
   {
     "targetItems": "farmersdelight:skillet",
-    "countPerUnit": 4,
-    "reward": 2
+    "countPerUnit": 2
   },
   {
     "targetTags": "#farmersdelight:straw_harvesters",
-    "countPerUnit": 8,
-    "reward": 2
+    "countPerUnit": 6
   },
   {
     "targetItems": "farmersdelight:straw",
-    "countPerUnit": 64,
-    "reward": 1
+    "countPerUnit": 64
+  },
+  {
+    "targetItems": "farmersdelight:tree_bark",
+    "countPerUnit": 64
+  },
+  {
+    "targetItems": "farmersdelight:canvas",
+    "countPerUnit": 48,
+    "reward": 2
   },
   {
     "targetItems": "farmersdelight:rich_soil",
@@ -46,7 +52,7 @@
     "reward": 3
   },
   {
-    "targetItems": "farmersdelight:fruit_salad,farmersdelight:mixed_salad,farmersdelight:nether_salad",
+    "targetItems": "farmersdelight:fruit_salad,farmersdelight:mixed_salad,farmersdelight:nether_salad,fruitsdelight:mango_salad",
     "countPerUnit": 4,
     "reward": 3,
     "name": "wingscontracts.data.farmersdelight.salads"
@@ -95,9 +101,5 @@
     "targetItems": "farmersdelight:stuffed_pumpkin_block",
     "countPerUnit": 4,
     "reward": 4
-  },
-  {
-    "targetItems": "farmersdelight:sweet_berry_cookie",
-    "countPerUnit": 48
   }
 ]

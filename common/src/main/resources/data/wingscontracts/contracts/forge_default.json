@@ -12,6 +12,14 @@
     "countPerUnit": 256
   },
   {
+    "targetTags": "#forge:stone",
+    "countPerUnit": 256
+  },
+  {
+    "targetTags": "#forge:sandstone",
+    "countPerUnit": 192
+  },
+  {
     "targetTags": "#forge:crops",
     "countPerUnit": 64
   },
@@ -82,8 +90,26 @@
     "reward": 3
   },
   {
-    "targetTags": "#minecraft:tools",
-    "countPerUnit": 32,
+    "targetTags": "#forge:tools",
+    "countPerUnit": 8,
+    "reward": 1
+  },
+  {
+    "targetTags": "#forge:raw_materials",
+    "countPerUnit": 12,
     "reward": 2
+  },
+  {
+    "targetTags": "#forge:nuggets",
+    "countPerUnit": 64
+  },
+  {
+    "targetTags": "#forge:concrete",
+    "countPerUnit": 64,
+    "reward": 2
+  },
+  {
+    "targetTags": "#forge:barrel",
+    "countPerUnit": 12
   }
 ]

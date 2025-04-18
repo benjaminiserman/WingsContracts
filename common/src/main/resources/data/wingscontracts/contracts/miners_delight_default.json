@@ -1,0 +1,17 @@
+[
+  {
+    "targetItems": "miners_delight:copper_cup",
+    "countPerUnit": 8,
+    "reward": 2
+  },
+  {
+    "targetItems": "miners_delight:cave_carrot",
+    "countPerUnit": 24
+  },
+  {
+    "targetItems": "miners_delight:pasta_with_veggieballs,miners_delight:cave_soup,miners_delight:vegan_hamburger,miners_delight:vegan_steak_and_potatoes",
+    "countPerUnit": 4,
+    "reward": 3,
+    "name": "wingscontracts.data.miners_delight.vegan_deluxe"
+  }
+]

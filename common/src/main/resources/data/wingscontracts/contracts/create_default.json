@@ -1,12 +1,14 @@
 [
   {
     "targetItems": "create:polished_rose_quartz",
-    "countPerUnit": 8,
+    "countPerUnit": 12,
+    "baseUnitsDemanded": 32,
     "reward": 2
   },
   {
     "targetItems": "create:sturdy_sheet",
     "countPerUnit": 16,
+    "baseUnitsDemanded": 32,
     "reward": 4
   },
   {
@@ -42,7 +44,7 @@
   {
     "targetItems": "create:flywheel",
     "countPerUnit": 2,
-    "reward": 4
+    "reward": 5
   },
   {
     "targetItems": "create:steam_whistle",
@@ -56,15 +58,32 @@
   },
   {
     "targetItems": "create:zinc_ingot",
+    "baseUnitsDemanded": 32,
     "countPerUnit": 12
   },
   {
+    "targetItems": "create:brass_ingot",
+    "baseUnitsDemanded": 32,
+    "countPerUnit": 12,
+    "reward": 2
+  },
+  {
     "targetItems": "create:andesite_alloy",
+    "baseUnitsDemanded": 32,
     "countPerUnit": 16
   },
   {
     "targetItems": "create:potato_cannon",
+    "countPerUnit": 3,
+    "reward": 5
+  },
+  {
+    "targetItems": "create:cogwheel",
+    "countPerUnit": 8
+  },
+  {
+    "targetItems": "create:crushing_wheel",
     "countPerUnit": 4,
-    "reward": 6
+    "reward": 4
   }
 ]
