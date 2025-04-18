@@ -106,5 +106,10 @@
     "targetTags": "#botania:generating_special_flowers",
     "countPerUnit": 2,
     "reward": 5
+  },
+  {
+    "targetItems": "botania:corporea_index",
+    "countPerUnit": 2,
+    "reward": 8
   }
 ]

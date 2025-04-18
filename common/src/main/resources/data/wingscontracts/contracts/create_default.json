@@ -61,5 +61,10 @@
   {
     "targetItems": "create:andesite_alloy",
     "countPerUnit": 16
+  },
+  {
+    "targetItems": "create:potato_cannon",
+    "countPerUnit": 4,
+    "reward": 6
   }
 ]

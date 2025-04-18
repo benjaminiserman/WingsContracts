@@ -78,7 +78,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
 
         rarityThresholdsString =
             builder.comment("The max-level reward necessary to reach rarities Uncommon, Rare, and Epic respectively as a comma-separated list of integers.")
-                .define("rarityThresholds", "20000,50000,100000")
+                .define("rarityThresholds", "16000,48000,64000")
 
         builder.pop()
         builder.push("Contract Defaults")
