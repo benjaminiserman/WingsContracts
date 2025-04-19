@@ -5,6 +5,7 @@ package dev.biserman.wingscontracts.server
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.api.AbyssalContract
 import dev.biserman.wingscontracts.api.AbyssalContract.Companion.reward
+import dev.biserman.wingscontracts.api.Contract
 import dev.biserman.wingscontracts.api.Contract.Companion.baseUnitsDemanded
 import dev.biserman.wingscontracts.api.Contract.Companion.countPerUnit
 import dev.biserman.wingscontracts.api.Contract.Companion.currentCycleStart
@@ -18,7 +19,6 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.ContainerHelper
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.saveddata.SavedData
 import java.util.*
@@ -62,7 +62,7 @@ class AvailableContractsData : SavedData() {
 
         container.clearContent()
         for (i in 0..<container.containerSize) {
-            container.items[i] = generateContract()
+            container.items[i] = generateContract().createItem()
         }
 
         SyncAvailableContractsMessage(level).sendToAll(level.server)
@@ -76,7 +76,7 @@ class AvailableContractsData : SavedData() {
         return max(1.0, value.toDouble() * multiplier * varianceFactor).roundToInt()
     }
 
-    fun generateContract(): ItemStack {
+    fun generateContract(): Contract {
         val tag = AvailableContractsManager.randomTag()
         tag.currentCycleStart = currentCycleStart
         tag.startTime = currentCycleStart
@@ -84,7 +84,7 @@ class AvailableContractsData : SavedData() {
         tag.countPerUnit = vary(tag.countPerUnit ?: 16, ModConfig.SERVER.defaultCountPerUnitMultiplier.get())
         tag.reward?.count = vary(tag.reward?.count ?: 1, ModConfig.SERVER.defaultRewardCurrencyMultiplier.get())
 
-        return AbyssalContract.load(tag).createItem()
+        return AbyssalContract.load(tag)
     }
 
     companion object {
