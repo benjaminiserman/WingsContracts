@@ -14,6 +14,7 @@ object ModCommand {
             .requires { sourceStack: CommandSourceStack -> sourceStack.hasPermission(2) }
             .then(LoadContractCommand.register())
             .then(RandomContractCommand.register())
+            .then(CopyContractCommand.register())
 
     fun giveContract(sourceStack: CommandSourceStack, contract: Contract?, players: Collection<ServerPlayer>): Int {
         if (contract == null) {
