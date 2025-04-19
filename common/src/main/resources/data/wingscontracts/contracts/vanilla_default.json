@@ -314,28 +314,23 @@
   },
   {
     "targetTags": "#minecraft:pickaxes",
-    "countPerUnit": 16,
-    "reward": 2
+    "countPerUnit": 8
   },
   {
     "targetTags": "#minecraft:swords",
-    "countPerUnit": 16,
-    "reward": 2
+    "countPerUnit": 8
   },
   {
     "targetTags": "#minecraft:axes",
-    "countPerUnit": 16,
-    "reward": 2
+    "countPerUnit": 8
   },
   {
     "targetTags": "#minecraft:hoes",
-    "countPerUnit": 16,
-    "reward": 2
+    "countPerUnit": 8
   },
   {
     "targetTags": "#minecraft:shovels",
-    "countPerUnit": 16,
-    "reward": 2
+    "countPerUnit": 8
   },
   {
     "targetItems": "beetroot_soup",

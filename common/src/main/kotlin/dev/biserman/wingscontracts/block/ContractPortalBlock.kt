@@ -4,7 +4,6 @@ package dev.biserman.wingscontracts.block
 
 import dev.architectury.registry.menu.MenuRegistry
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
-import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.item.ContractItem
 import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
@@ -198,8 +197,7 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
         if (blockState.getValue(MODE) == ContractPortalMode.LIT) {
             val portal = level.getBlockEntity(blockPos) as? ContractPortalBlockEntity
                 ?: return 0
-            val contract = LoadedContracts[portal.contractSlot] ?: return 0
-            return min(((contract.unitsFulfilled.toFloat() / contract.unitsDemanded.toFloat()) * 15).toInt(), 15)
+            return min(15, portal.cachedRewards.count / portal.cachedRewards.maxStackSize)
         }
 
         return 0

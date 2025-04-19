@@ -30,7 +30,14 @@ class AvailableContractsMenu(id: Int, inventory: Inventory) :
                 this.addSlot(AvailableContractsContainerSlot(container, i, 44 + 9 * (5 - topRowCount) + i * 18, 36))
             }
             for (i in 0..<bottomRowCount) {
-                this.addSlot(AvailableContractsContainerSlot(container, i + topRowCount, 44 + 9 * (5 - bottomRowCount) + i * 18, 54))
+                this.addSlot(
+                    AvailableContractsContainerSlot(
+                        container,
+                        i + topRowCount,
+                        44 + 9 * (5 - bottomRowCount) + i * 18,
+                        54
+                    )
+                )
             }
         } else {
             for (i in 0..<maxOptions) {
@@ -53,29 +60,7 @@ class AvailableContractsMenu(id: Int, inventory: Inventory) :
         player: Player,
         i: Int
     ): ItemStack? {
-        val slot = slots[i]
-        if (!slot.hasItem() || !slot.mayPickup(player)) {
-            return ItemStack.EMPTY
-        }
-
-        val slotItemStack = slot.item
-        val itemStack = slotItemStack.copy()
-        if (i < container.containerSize) {
-            if (!this.moveItemStackTo(slotItemStack, container.containerSize, slots.size, true)) {
-                return ItemStack.EMPTY
-            }
-        } else {
-            return ItemStack.EMPTY
-        }
-
-        if (slotItemStack.isEmpty) {
-            slot.setByPlayer(ItemStack.EMPTY)
-        } else {
-            slot.setChanged()
-        }
-
-        slot.onTake(player, itemStack)
-        return itemStack
+        return ItemStack.EMPTY
     }
 
     override fun stillValid(player: Player): Boolean = container.stillValid(player)

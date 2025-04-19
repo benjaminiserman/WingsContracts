@@ -16,18 +16,18 @@
   },
   {
     "targetTags": "#botania:runes",
-    "countPerUnit": 3,
+    "countPerUnit": 6,
     "reward": 2
   },
   {
     "targetItems": "botania:rune_spring,botania:rune_summer,botania:rune_autumn,botania:rune_winter",
-    "countPerUnit": 2,
+    "countPerUnit": 4,
     "reward": 4,
     "name": "wingscontracts.data.botania.season_runes"
   },
   {
     "targetItems": "botania:rune_lust,botania:rune_gluttony,botania:rune_greed,botania:rune_sloth,botania:rune_wrath,botania:rune_envy,botania:rune_pride",
-    "countPerUnit": 2,
+    "countPerUnit": 3,
     "reward": 7,
     "name": "wingscontracts.data.botania.sin_runes"
   },
@@ -83,7 +83,11 @@
   {
     "targetItems": "botania:tiny_potato",
     "countPerUnit": 1,
-    "reward": 1
+    "reward": 1,
+    "baseUnitsDemanded": 1,
+    "rarity": 3,
+    "maxLevel": -1,
+    "description": "wingscontracts.data.botania.tiny_potato_desc"
   },
   {
     "targetItems": "botania:brew_vial",

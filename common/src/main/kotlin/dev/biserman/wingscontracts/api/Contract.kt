@@ -55,6 +55,7 @@ abstract class Contract(
     var isLoaded: Boolean = true,
     val author: String = "",
     val name: String? = null,
+    val description: String? = null,
     val shortTargetList: String? = null,
     val rarity: Int? = null
 ) {
@@ -250,6 +251,9 @@ abstract class Contract(
             components.addAll(getExtraInfo(null))
         } else {
             components.add(getShortInfo())
+            if (!description.isNullOrBlank()) {
+                components.add(Component.translatable(description).withStyle(ChatFormatting.GRAY))
+            }
             components.add(howExtraInfo)
         }
 
@@ -316,6 +320,7 @@ abstract class Contract(
         tag.isLoaded = isLoaded
         tag.author = author
         tag.name = name
+        tag.description = description
         tag.shortTargetList = shortTargetList
         tag.rarity = rarity
 
@@ -353,6 +358,7 @@ abstract class Contract(
         var (ContractTag).isLoaded by boolean()
         var (ContractTag).author by string()
         var (ContractTag).name by string()
+        var (ContractTag).description by string()
         var (ContractTag).shortTargetList by string()
         var (ContractTag).rarity by int()
 

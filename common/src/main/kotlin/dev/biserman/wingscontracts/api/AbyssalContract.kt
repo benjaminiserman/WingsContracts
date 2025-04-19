@@ -28,17 +28,32 @@ import kotlin.reflect.full.memberProperties
 
 @Suppress("MemberVisibilityCanBePrivate", "NullableBooleanElvis")
 class AbyssalContract(
-    id: UUID, targetItems: List<Item>, targetTags: List<TagKey<Item>>,
+    id: UUID,
+    targetItems: List<Item>,
+    targetTags: List<TagKey<Item>>,
 
-    startTime: Long, currentCycleStart: Long, cycleDurationMs: Long,
+    startTime: Long,
+    currentCycleStart: Long,
+    cycleDurationMs: Long,
 
-    countPerUnit: Int, baseUnitsDemanded: Int, unitsFulfilled: Int, unitsFulfilledEver: Long,
+    countPerUnit: Int,
+    baseUnitsDemanded: Int,
+    unitsFulfilled: Int,
+    unitsFulfilledEver: Long,
 
-    isActive: Boolean, isLoaded: Boolean, author: String, name: String?, shortTargetList: String?, rarity: Int?,
+    isActive: Boolean,
+    isLoaded: Boolean,
+    author: String,
+    name: String?,
+    description: String?,
+    shortTargetList: String?,
+    rarity: Int?,
 
     val reward: ItemStack,
 
-    var level: Int, val quantityGrowthFactor: Double, val maxLevel: Int
+    var level: Int,
+    val quantityGrowthFactor: Double,
+    val maxLevel: Int
 ) : Contract(
     1,
     id,
@@ -55,6 +70,7 @@ class AbyssalContract(
     isLoaded,
     author,
     name,
+    description,
     shortTargetList,
     rarity
 ) {
@@ -96,7 +112,7 @@ class AbyssalContract(
         components.add(
             translateContract(
                 "abyssal.max_reward",
-                maxLevel,
+                if (maxLevel == -1) "∞" else maxLevel.toString(),
                 maxPossibleReward,
                 reward.displayName.string.trimBrackets(),
             ).withStyle(ChatFormatting.DARK_PURPLE)
@@ -144,6 +160,14 @@ class AbyssalContract(
 
     val maxPossibleReward: Int
         get() {
+            if (maxLevel == -1) {
+                val compare = unitsDemandedAtLevel(1).compareTo(unitsDemandedAtLevel(2))
+                return when {
+                    compare < 0 -> Int.MAX_VALUE
+                    compare == 0 -> unitsDemandedAtLevel(1) * reward.count
+                    else -> reward.count
+                }
+            }
             val maxUnitsDemanded = max(unitsDemandedAtLevel(1), unitsDemandedAtLevel(maxLevel))
             return maxUnitsDemanded * reward.count
         }
@@ -205,6 +229,7 @@ class AbyssalContract(
                 isLoaded = contract.isLoaded ?: true,
                 author = contract.author ?: ModConfig.SERVER.defaultAuthor.get(),
                 name = contract.name,
+                description = contract.description,
                 shortTargetList = contract.shortTargetList,
                 rarity = contract.rarity,
                 reward = contract.reward ?: ItemStack(ModConfig.SERVER.defaultRewardCurrency, 1),

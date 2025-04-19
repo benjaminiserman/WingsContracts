@@ -35,11 +35,11 @@
 
     "wingscontracts.contract.abyssal.rewards": "Rewards %d %s for every %d %s",
     "wingscontracts.contract.abyssal.max_reward_cycle": "Max Reward this Cycle: %d %s",
-    "wingscontracts.contract.abyssal.max_reward": "Max Reward at Level %d: %d %s",
+    "wingscontracts.contract.abyssal.max_reward": "Max Reward at Level %s: %d %s",
     "wingscontracts.contract.abyssal.short": "%d %s → %d %s (%d/%d)",
 
 
-    "item.wingscontracts.contract": "%sContract",
+    "item.wingscontracts.contract": "%s Contract",
     "item.wingscontracts.contract.unknown": "Unknown Contract",
     "item.wingscontracts.contract.abyssal": "%s %s Contract %s",
 
@@ -75,6 +75,7 @@
     "wingscontracts.data.forge.leggings": "Leggings",
     "wingscontracts.data.forge.boots": "Boots",
 
+    "wingscontracts.data.botania.tiny_potato_desc": "you monster...",
     "wingscontracts.data.botania.sin_runes": "Runes of Sin",
     "wingscontracts.data.botania.season_runes": "Runes of the Seasons",
     "wingscontracts.data.botania.quartz": "Botanical Quartz",

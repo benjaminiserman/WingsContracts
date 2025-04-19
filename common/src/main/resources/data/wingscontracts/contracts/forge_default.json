@@ -109,7 +109,7 @@
     "reward": 2
   },
   {
-    "targetTags": "#forge:barrel",
+    "targetTags": "#forge:barrels",
     "countPerUnit": 12
   }
 ]

@@ -33,6 +33,7 @@ class AvailableContractsContainer(val data: AvailableContractsData) : Container 
 
         return itemStack
     }
+
     override fun setItem(i: Int, itemStack: ItemStack) {
         items[i] = itemStack
     }
