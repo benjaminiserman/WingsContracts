@@ -13,8 +13,8 @@ object ModItemRegistry {
         Registries.ITEM
     )
 
-    val CONTRACT: RegistrySupplier<Item?> = ITEMS.register(
-        "contract"
+    val ABYSSAL_CONTRACT: RegistrySupplier<Item?> = ITEMS.register(
+        "abyssal_contract"
     ) { ContractItem(Item.Properties().stacksTo(1)) }
 
     @JvmStatic

@@ -39,6 +39,11 @@
     "wingscontracts.contract.abyssal.short": "%d %s → %d %s (%d/%d)",
 
 
+    "commands.wingscontracts.give_contract": "Successfully gave contract.",
+    "commands.wingscontracts.failed.load": "Error: failed to load contract.",
+    "commands.wingscontracts.failed.not_in_hand": "Error: no contract in hand",
+
+
     "item.wingscontracts.contract": "%s Contract",
     "item.wingscontracts.contract.unknown": "Unknown Contract",
     "item.wingscontracts.contract.abyssal": "%s %s Contract %s",

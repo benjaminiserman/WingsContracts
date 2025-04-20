@@ -1,11 +1,14 @@
 package dev.biserman.wingscontracts.item
 
 import dev.biserman.wingscontracts.WingsContractsMod
+import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.data.LoadedContracts
+import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.tag.ContractTagHelper
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.entity.Entity
@@ -90,6 +93,17 @@ class ContractItem(properties: Properties) : Item(properties) {
         }
 
         return ceil(unitsFulfilled * 13.0f / unitsDemanded).toInt()
+    }
+
+    override fun onCraftedBy(itemStack: ItemStack, level: Level, player: Player) {
+        if (level is ServerLevel
+            && ContractTagHelper.getContractTag(itemStack) == null
+            && ModConfig.SERVER.randomizeCraftedContracts.get()
+        ) {
+            val contract = AvailableContractsData.get(level).generateContract()
+            val item = contract.createItem()
+            ContractTagHelper.setContractTag(itemStack, ContractTagHelper.getContractTag(item)!!)
+        }
     }
 
     override fun getBarColor(itemStack: ItemStack): Int = 0xff55ff

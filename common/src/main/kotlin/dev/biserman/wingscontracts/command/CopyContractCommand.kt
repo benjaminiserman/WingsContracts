@@ -22,7 +22,7 @@ object CopyContractCommand {
     fun copyContract(sourceStack: CommandSourceStack): Int {
         val tag = ContractTagHelper.getContractTag(sourceStack.player!!.mainHandItem)?.tag?.copy()
         if (tag == null) {
-            sourceStack.sendFailure(Component.translatable("commands.${WingsContractsMod.MOD_ID}.failed.load"))
+            sourceStack.sendFailure(Component.translatable("commands.${WingsContractsMod.MOD_ID}.failed.not_in_hand"))
             return 0
         }
 

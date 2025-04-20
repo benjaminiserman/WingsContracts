@@ -4,6 +4,7 @@ package dev.biserman.wingscontracts.block
 
 import dev.architectury.registry.menu.MenuRegistry
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
+import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.item.ContractItem
 import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
@@ -67,7 +68,10 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
         if (contractSlotItem.isEmpty) {
             if (itemInHand.item !is ContractItem) {
                 val blockEntity = level.getBlockEntity(blockPos)
-                if (player is ServerPlayer && blockEntity is ContractPortalBlockEntity) {
+                if (player is ServerPlayer
+                    && blockEntity is ContractPortalBlockEntity
+                    && ModConfig.SERVER.availableContractsPoolOptions.get() != 0
+                ) {
                     MenuRegistry.openMenu(player, blockEntity)
                     return InteractionResult.CONSUME
                 } else {

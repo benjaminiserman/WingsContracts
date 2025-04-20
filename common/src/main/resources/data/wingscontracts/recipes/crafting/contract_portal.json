@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "pattern": [
+    "O",
+    "G",
+    "O"
+  ],
+  "result": {
+    "item": "wingscontracts:abyssal_contract"
+  },
+  "show_notification": true
+}

@@ -328,7 +328,7 @@ abstract class Contract(
     }
 
     fun createItem(): ItemStack {
-        val itemStack = ItemStack(ModItemRegistry.CONTRACT.get() ?: throw Error())
+        val itemStack = ItemStack(ModItemRegistry.ABYSSAL_CONTRACT.get() ?: throw Error())
         val tag = save(null)
         ContractTagHelper.setContractTag(itemStack, tag)
         LoadedContracts.update(this)
