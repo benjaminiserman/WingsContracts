@@ -2,6 +2,7 @@ repositories {
     maven("https://maven.shedaniel.me/")
     maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/")
     maven("https://squiddev.cc/maven/")
+    maven("https://maven.createmod.net")
 }
 
 architectury {
@@ -19,11 +20,16 @@ dependencies {
     // Remove the next line if you don't want to depend on the API
     modApi("dev.architectury:architectury:${rootProject.property("architectury_version")}")
     modApi("fuzs.forgeconfigapiport:forgeconfigapiport-common:${rootProject.property("forgeconfigapiport_version")}")
-    //if (rootProject.property("cc_tweaked_enable") == "true") {
-        val ccTweakedMinecraftVersion = rootProject.property("cc_tweaked_minecraft_version")
+    val minecraftVersion = rootProject.property("minecraft_version")
+    if (rootProject.property("cc_tweaked_enable") == "true") {
         val ccTweakedVersion = rootProject.property("cc_tweaked_version")
-        compileOnly("cc.tweaked:cc-tweaked-$ccTweakedMinecraftVersion-core-api:$ccTweakedVersion")
-        compileOnly("cc.tweaked:cc-tweaked-$ccTweakedMinecraftVersion-common-api:$ccTweakedVersion")
-    //}
+        compileOnly("cc.tweaked:cc-tweaked-$minecraftVersion-core-api:$ccTweakedVersion")
+        compileOnly("cc.tweaked:cc-tweaked-$minecraftVersion-common-api:$ccTweakedVersion")
+    }
+    if (rootProject.property("create_enable") == "true") {
+        val createVersion = rootProject.property("create_version")
+        compileOnly("com.simibubi.create:create-$minecraftVersion:$createVersion:slim")
+    }
+
     implementation(kotlin("reflect"))
 }

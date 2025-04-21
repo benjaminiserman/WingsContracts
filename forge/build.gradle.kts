@@ -33,6 +33,7 @@ repositories {
         setUrl("https://thedarkcolour.github.io/KotlinForForge/")
     }
     maven("https://squiddev.cc/maven/")
+    maven("https://maven.createmod.net")
 }
 
 dependencies {
@@ -46,9 +47,12 @@ dependencies {
     // Kotlin For Forge
     implementation("thedarkcolour:kotlinforforge:${rootProject.property("kotlin_for_forge_version")}")
 
-    val ccTweakedMinecraftVersion = rootProject.property("cc_tweaked_minecraft_version")
+    val minecraftVersion = rootProject.property("minecraft_version")
     val ccTweakedVersion = rootProject.property("cc_tweaked_version")
-    compileOnly("cc.tweaked:cc-tweaked-$ccTweakedMinecraftVersion-forge-api:$ccTweakedVersion")
+    compileOnly("cc.tweaked:cc-tweaked-$minecraftVersion-forge-api:$ccTweakedVersion")
+
+    val createVersion = rootProject.property("create_version")
+    compileOnly("com.simibubi.create:create-$minecraftVersion:$createVersion:slim")
 }
 
 tasks.processResources {

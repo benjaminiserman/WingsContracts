@@ -1,7 +1,6 @@
 package dev.biserman.wingscontracts.forge
 
 import dev.biserman.wingscontracts.api.Contract
-import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.registry.ModItemRegistry
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
@@ -21,13 +20,6 @@ class ContractItemDecorator : IItemDecorator {
         if (showItem.isEmpty) {
             return false
         }
-
-        val contract = LoadedContracts[itemStack]
-//        val yOffset = if (contract?.unitsFulfilled == 0) {
-//            8
-//        } else {
-//            5
-//        }
 
         val poseStack = graphics.pose()
         poseStack.pushPose()

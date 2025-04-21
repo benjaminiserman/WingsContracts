@@ -71,6 +71,10 @@
     "wingscontracts.subtitles.block.contract_portal.remove_contract": "Contract portal contract removed",
 
 
+    "wingscontracts.gui.goggles.contract_portal.progress": "Progress for this cycle: %d / %d",
+    "wingscontracts.gui.goggles.contract_portal.remaining_time": "Remaining time: %s",
+
+
     "wingscontracts.data.mushroom": "Overworld Mushroom",
     "wingscontracts.data.mushroom_block": "Overworld Mushroom Block",
     "wingscontracts.data.nether_mushroom": "Nether Mushroom",

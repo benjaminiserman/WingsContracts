@@ -119,7 +119,8 @@
   },
   {
     "targetItems": "red_mushroom,brown_mushroom",
-    "countPerUnit": 16,
+    "countPerUnit": 32,
+    "reward": 2,
     "name": "wingscontracts.data.mushroom"
   },
   {
@@ -270,7 +271,7 @@
   {
     "targetItems": "dirt",
     "countPerUnit": 64,
-    "baseUnitsDemanded": 32
+    "baseUnitsDemanded": 48
   },
   {
     "targetItems": "gravel",

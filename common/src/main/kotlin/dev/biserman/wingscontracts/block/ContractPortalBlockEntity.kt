@@ -1,5 +1,6 @@
 package dev.biserman.wingscontracts.block
 
+//import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation
 import dev.biserman.wingscontracts.api.Contract
 import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
@@ -47,7 +48,10 @@ class ContractPortalBlockEntity(
     blockPos: BlockPos,
     blockState: BlockState,
 ) :
-    BlockEntity(ModBlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState), MenuProvider {
+    BlockEntity(ModBlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState),
+    MenuProvider
+//    IHaveGoggleInformation
+{
     var cooldownTime: Int
     var contractSlot: ItemStack
     var cachedRewards: ItemStack
@@ -355,4 +359,27 @@ class ContractPortalBlockEntity(
         inventory: Inventory,
         player: Player
     ): AbstractContainerMenu = ModMenuRegistry.CONTRACT_PORTAL.get().create(i, inventory)!!
+
+//    override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
+//        val contract = LoadedContracts[contractSlot] ?: return false
+//        tooltip.add(
+//            Component.translatable(
+//                "${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.progress",
+//                contract.unitsFulfilled,
+//                contract.unitsDemanded
+//            )
+//        )
+//
+//        val nextCycleStart = contract.currentCycleStart + contract.cycleDurationMs
+//        val timeRemaining = nextCycleStart - System.currentTimeMillis()
+//        val timeRemainingString = DenominationsHelper.denominateDurationToString(timeRemaining)
+//        tooltip.add(
+//            Component.translatable(
+//                "${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.remaining_time",
+//                timeRemainingString
+//            )
+//        )
+//
+//        return true
+//    }
 }
