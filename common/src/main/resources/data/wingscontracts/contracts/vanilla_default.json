@@ -162,7 +162,7 @@
   {
     "targetItems": "nether_star",
     "countPerUnit": 1,
-    "baseUnitsDemanded": 8,
+    "baseUnitsDemanded": 16,
     "reward": 32
   },
   {

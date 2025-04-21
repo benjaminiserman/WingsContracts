@@ -37,7 +37,6 @@ class ContractItem(properties: Properties) : Item(properties) {
     ) {
         val contract = LoadedContracts[itemStack]
         if (contract == null) {
-            components.add(Component.translatable("item.${WingsContractsMod.MOD_ID}.contract.unknown"))
             return
         }
 
@@ -80,17 +79,14 @@ class ContractItem(properties: Properties) : Item(properties) {
     override fun isBarVisible(itemStack: ItemStack): Boolean {
         val contract = LoadedContracts[itemStack] ?: return false
         val isZeroWidth = getBarWidth(itemStack) == 0
-        val isExpired = System.currentTimeMillis() < contract.currentCycleStart + contract.cycleDurationMs
+        val isExpired = System.currentTimeMillis() > contract.currentCycleStart + contract.cycleDurationMs
         return !isZeroWidth && !isExpired
     }
 
     override fun getBarWidth(itemStack: ItemStack): Int {
-        val unitsFulfilled = LoadedContracts[itemStack]?.unitsFulfilled?.toFloat() ?: 0f
-        val unitsDemanded = LoadedContracts[itemStack]?.unitsDemanded?.toFloat() ?: 0f
-
-        if (unitsDemanded == 0f || unitsFulfilled == 0f) {
-            return 0
-        }
+        val contract = LoadedContracts[itemStack] ?: return 0
+        val unitsFulfilled = contract.unitsFulfilled.toFloat()
+        val unitsDemanded = contract.unitsDemanded.toFloat()
 
         return ceil(unitsFulfilled * 13.0f / unitsDemanded).toInt()
     }

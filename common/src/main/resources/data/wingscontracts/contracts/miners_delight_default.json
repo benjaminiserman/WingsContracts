@@ -12,6 +12,8 @@
     "targetItems": "miners_delight:pasta_with_veggieballs,miners_delight:cave_soup,miners_delight:vegan_hamburger,miners_delight:vegan_steak_and_potatoes",
     "countPerUnit": 4,
     "reward": 3,
-    "name": "wingscontracts.data.miners_delight.vegan_deluxe"
+    "name": "wingscontracts.data.miners_delight.vegan_deluxe",
+    "description": "wingscontracts.data.miners_delight.vegan_deluxe_desc",
+    "shortTargetList": "wingscontracts.data.miners_delight.vegan_deluxe_short_targets"
   }
 ]

@@ -18,12 +18,13 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     // Contract Defaults
     val defaultRewardCurrencyId: ForgeConfigSpec.ConfigValue<String>
     val defaultRewardCurrency get() = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(defaultRewardCurrencyId.get()))
+    val defaultRewardCurrencyUnit: ForgeConfigSpec.ConfigValue<String>
     val defaultRewardCurrencyMultiplier: ForgeConfigSpec.DoubleValue
     val defaultUnitsDemandedMultiplier: ForgeConfigSpec.DoubleValue
     val defaultCountPerUnitMultiplier: ForgeConfigSpec.DoubleValue
     val defaultCycleDurationMs: ForgeConfigSpec.LongValue
     val defaultAuthor: ForgeConfigSpec.ConfigValue<String>
-    val defaultMaxLevel: ForgeConfigSpec.IntValue
+    val defaultMaxLevel: ForgeConfigSpec.ConfigValue<Int>
     val defaultGrowthFactor: ForgeConfigSpec.DoubleValue
 
     init {
@@ -92,6 +93,14 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
             builder.comment("Loaded contracts with an unspecified or integer reward will have their reward ID set to this ID. Consider changing this to minecraft:diamond or numismatics:spur")
                 .define("defaultRewardCurrencyId", "minecraft:emerald")
 
+        defaultRewardCurrencyUnit =
+            builder.comment(
+                """
+                If provided, serves as the format to display rewards denominated in the default reward currency.
+                For example: \"$%d\" for dollars or \"%d¤\" for a more generic unit
+                """.trimIndent()
+            ).define("defaultRewardCurrencyUnit", "")
+
         defaultRewardCurrencyMultiplier =
             builder.comment("Datapacked contracts with an unspecified or integer reward will have their reward count multiplied by this factor, then rounded (minimum of 1).")
                 .defineInRange("defaultRewardCurrencyMultiplier", 2.0, 0.0, Double.MAX_VALUE)
@@ -112,8 +121,9 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
             builder.comment("The default author name for Abyssal Contracts")
                 .define("defaultAuthor", "§kThe Abyss§r")
 
-        defaultMaxLevel = builder.comment("The default max level for Abyssal Contracts")
-            .defineInRange("defaultMaxLevel", 5, 1, Int.MAX_VALUE)
+        defaultMaxLevel =
+            builder.comment("The default max level for Abyssal Contracts. If negative or zero, the contract will have no max level.")
+                .define("defaultMaxLevel", 5)
 
         defaultGrowthFactor = builder.comment(
             """

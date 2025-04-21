@@ -87,6 +87,7 @@
     "baseUnitsDemanded": 1,
     "rarity": 3,
     "maxLevel": -1,
+    "quantityGrowthFactor": 1.0,
     "description": "wingscontracts.data.botania.tiny_potato_desc"
   },
   {

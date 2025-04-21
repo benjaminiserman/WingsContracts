@@ -27,16 +27,16 @@
     "wingscontracts.contract.units_fulfilled": "Units Fulfilled: %d/%d (%d/%d)",
     "wingscontracts.contract.cycle_complete": "Cycle Complete!\nRight-click with contract in hand or place in contract portal to start next cycle.",
     "wingscontracts.contract.next_cycle": "Refreshes at %s",
-    "wingscontracts.contract.cycle_remaining": "Remaining Time:\n    %s",
+    "wingscontracts.contract.cycle_remaining": "Remaining Time:",
     "wingscontracts.contract.cycle_started": "Started On: %s",
     "wingscontracts.contract.total_fulfilled": "Total Units Fulfilled Ever: %d (%d)",
     "wingscontracts.contract.base_units_demanded": "Base Units Demanded: %d (%d)",
     "wingscontracts.contract.author": "Author: %s",
 
-    "wingscontracts.contract.abyssal.rewards": "Rewards %d %s for every %d %s",
-    "wingscontracts.contract.abyssal.max_reward_cycle": "Max Reward this Cycle: %d %s",
-    "wingscontracts.contract.abyssal.max_reward": "Max Reward at Level %s: %d %s",
-    "wingscontracts.contract.abyssal.short": "%d %s → %d %s (%d/%d)",
+    "wingscontracts.contract.abyssal.rewards": "Rewards %s for every %d %s",
+    "wingscontracts.contract.abyssal.max_reward_cycle": "Max Reward this Cycle: %s",
+    "wingscontracts.contract.abyssal.max_reward": "Max Reward at Level %s: %s",
+    "wingscontracts.contract.abyssal.short": "%d %s → %s (%d/%d)",
 
 
     "commands.wingscontracts.give_contract": "Successfully gave contract.",
@@ -84,6 +84,7 @@
     "wingscontracts.data.botania.sin_runes": "Runes of Sin",
     "wingscontracts.data.botania.season_runes": "Runes of the Seasons",
     "wingscontracts.data.botania.quartz": "Botanical Quartz",
+    "wingscontracts.data.botania.quartz_short_targets": "of Botania's Quartz",
     "wingscontracts.data.botania.brew_vial": "Brew Vial",
     "wingscontracts.data.botania.brew_flask": "Brew Flask",
 
@@ -92,5 +93,7 @@
     "wingscontracts.data.fruitsdelight.fruit_cookies": "Fruit Cookies",
     "wingscontracts.data.fruitsdelight.sliced_fruits": "Sliced Fruits",
 
-    "wingscontracts.data.miners_delight.vegan_deluxe": "Vegan Deluxe"
+    "wingscontracts.data.miners_delight.vegan_deluxe": "Paleovegan",
+    "wingscontracts.data.miners_delight.vegan_deluxe_short_targets": "Miner's Deluxe Meals",
+    "wingscontracts.data.miners_delight.vegan_deluxe_desc": "(may or may not actually be paleo)"
 }

@@ -41,7 +41,7 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
         val rightTitleEdge = imageWidth - titleLabelY
         val refreshLabel = Component.translatable(
             "${WingsContractsMod.MOD_ID}.gui.contract_portal.refreshes_in",
-            timeTilRefresh
+            if (timeTilRefresh.isBlank()) { "0" } else { timeTilRefresh }
         ).string
         graphics.drawString(
             font,

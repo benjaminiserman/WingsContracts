@@ -152,8 +152,12 @@ abstract class Contract(
         val tagKey = if (displayShort) "items_of_tag_short" else "items_of_tag"
         val complexKey = if (displayShort) "matches_following_short" else "matches_following"
 
-        if (displayShort && shortTargetList != null) {
-            return Component.translatable(shortTargetList).string
+        if (displayShort) {
+            if (shortTargetList != null) {
+                return Component.translatable(shortTargetList).string
+            } else if (totalSize > 3) {
+                return Component.translatable(name ?: targetName).string
+            }
         }
 
         return when (totalSize) {
@@ -163,7 +167,6 @@ abstract class Contract(
             } else {
                 translateContract(tagKey, targetTags[0].location()).string
             }
-
             else -> translateContract(
                 complexKey,
                 targetItems.asSequence()
@@ -204,11 +207,8 @@ abstract class Contract(
         if (Date(nextCycleStart) <= Date()) {
             components.add(translateContract("cycle_complete").withStyle(ChatFormatting.DARK_PURPLE))
         } else {
-            components.add(
-                translateContract(
-                    "cycle_remaining", Date(nextCycleStart), timeRemainingString
-                ).withStyle(timeRemainingColor)
-            )
+            components.add(translateContract("cycle_remaining").withStyle(timeRemainingColor))
+            components.add(Component.literal("  $timeRemainingString").withStyle(timeRemainingColor))
         }
 
         return components
@@ -223,17 +223,11 @@ abstract class Contract(
 
         components.addAll(getBasicInfo(null))
         components.addAll(getTimeInfo(null))
-//        components.add(translateContract("cycle_started", Date(startTime)).withStyle(ChatFormatting.LIGHT_PURPLE))
         components.add(
             translateContract(
                 "total_fulfilled", unitsFulfilledEver, unitsFulfilledEver * countPerUnit
             ).withStyle(ChatFormatting.LIGHT_PURPLE)
         )
-//        components.add(
-//            translateContract(
-//                "base_units_demanded", baseUnitsDemanded, baseUnitsDemanded * countPerUnit
-//            ).withStyle(ChatFormatting.LIGHT_PURPLE)
-//        )
 
         if (author.isNotBlank()) {
             components.add(translateContract("author", author).withStyle(ChatFormatting.DARK_PURPLE))

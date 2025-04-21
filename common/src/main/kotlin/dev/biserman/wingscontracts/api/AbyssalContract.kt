@@ -94,8 +94,7 @@ class AbyssalContract(
         components.add(
             translateContract(
                 "abyssal.rewards",
-                reward.count,
-                reward.displayName.string.trimBrackets(),
+                formatReward(reward.count),
                 countPerUnit,
                 listTargets(displayShort = false)
             ).withStyle(ChatFormatting.DARK_PURPLE)
@@ -104,17 +103,15 @@ class AbyssalContract(
         components.add(
             translateContract(
                 "abyssal.max_reward_cycle",
-                unitsDemanded * reward.count,
-                reward.displayName.string.trimBrackets(),
+                formatReward(unitsDemanded * reward.count),
             ).withStyle(ChatFormatting.LIGHT_PURPLE)
         )
 
         components.add(
             translateContract(
                 "abyssal.max_reward",
-                if (maxLevel == -1) "∞" else maxLevel.toString(),
-                maxPossibleReward,
-                reward.displayName.string.trimBrackets(),
+                if (maxLevel <= 0) "∞" else maxLevel.toString(),
+                formatReward(maxPossibleReward)
             ).withStyle(ChatFormatting.DARK_PURPLE)
         )
 
@@ -125,8 +122,7 @@ class AbyssalContract(
         "abyssal.short",
         countPerUnit,
         listTargets(displayShort = true),
-        reward.count,
-        reward.displayName.string.trimBrackets(),
+        formatReward(reward.count),
         unitsFulfilled,
         unitsDemanded
     ).withStyle(ChatFormatting.DARK_PURPLE)
@@ -156,11 +152,22 @@ class AbyssalContract(
         }
     }
 
+    fun formatReward(count: Int): String {
+        val defaultRewardCurrencyUnit = ModConfig.SERVER.defaultRewardCurrencyUnit.get()
+        return if (defaultRewardCurrencyUnit.isNotBlank()
+            && reward.item == ModConfig.SERVER.defaultRewardCurrency
+        ) {
+            String.format(defaultRewardCurrencyUnit, count)
+        } else {
+            "$count ${reward.displayName.string.trimBrackets()}"
+        }
+    }
+
     override fun getRewardsForUnits(units: Int) = ItemStack(reward.item, reward.count * units)
 
     val maxPossibleReward: Int
         get() {
-            if (maxLevel == -1) {
+            if (maxLevel <= 0) {
                 val compare = unitsDemandedAtLevel(1).compareTo(unitsDemandedAtLevel(2))
                 return when {
                     compare < 0 -> Int.MAX_VALUE
@@ -222,7 +229,7 @@ class AbyssalContract(
                 currentCycleStart = contract.currentCycleStart ?: System.currentTimeMillis(),
                 cycleDurationMs = contract.cycleDurationMs ?: ModConfig.SERVER.defaultCycleDurationMs.get(),
                 countPerUnit = contract.countPerUnit ?: 64,
-                baseUnitsDemanded = contract.baseUnitsDemanded ?: 16,
+                baseUnitsDemanded = contract.baseUnitsDemanded ?: 64,
                 unitsFulfilled = contract.unitsFulfilled ?: 0,
                 unitsFulfilledEver = contract.unitsFulfilledEver ?: 0,
                 isActive = contract.isActive ?: true,
