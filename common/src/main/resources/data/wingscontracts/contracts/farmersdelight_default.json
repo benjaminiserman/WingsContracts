@@ -90,7 +90,7 @@
   {
     "targetItems": "farmersdelight:vegetable_noodles",
     "countPerUnit": 4,
-    "reward": 4
+    "reward": 3
   },
   {
     "targetItems": "farmersdelight:ratatouille",
@@ -100,6 +100,6 @@
   {
     "targetItems": "farmersdelight:stuffed_pumpkin_block",
     "countPerUnit": 4,
-    "reward": 4
+    "reward": 3
   }
 ]
