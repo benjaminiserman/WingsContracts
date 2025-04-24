@@ -11,6 +11,7 @@ import dev.biserman.wingscontracts.tag.ContractTag
 import dev.biserman.wingscontracts.tag.ContractTagHelper.double
 import dev.biserman.wingscontracts.tag.ContractTagHelper.int
 import dev.biserman.wingscontracts.tag.ContractTagHelper.itemStack
+import dev.biserman.wingscontracts.tag.NbtCondition
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import net.minecraft.ChatFormatting
 import net.minecraft.nbt.CompoundTag
@@ -31,6 +32,7 @@ class AbyssalContract(
     id: UUID,
     targetItems: List<Item>,
     targetTags: List<TagKey<Item>>,
+    targetConditions: List<NbtCondition>,
 
     startTime: Long,
     currentCycleStart: Long,
@@ -48,6 +50,7 @@ class AbyssalContract(
     description: String?,
     shortTargetList: String?,
     rarity: Int?,
+    displayItem: ItemStack?,
 
     val reward: ItemStack,
 
@@ -59,6 +62,7 @@ class AbyssalContract(
     id,
     targetItems,
     targetTags,
+    targetConditions,
     startTime,
     currentCycleStart,
     cycleDurationMs,
@@ -72,7 +76,8 @@ class AbyssalContract(
     name,
     description,
     shortTargetList,
-    rarity
+    rarity,
+    displayItem
 ) {
     override val displayName: MutableComponent
         get() {
@@ -230,6 +235,7 @@ class AbyssalContract(
                 id = contract.id ?: UUID.randomUUID(),
                 targetItems = contract.targetItems ?: listOf(),
                 targetTags = contract.targetTags ?: listOf(),
+                targetConditions = contract.targetConditions ?: listOf(),
                 startTime = contract.startTime ?: System.currentTimeMillis(),
                 currentCycleStart = contract.currentCycleStart ?: System.currentTimeMillis(),
                 cycleDurationMs = contract.cycleDurationMs ?: ModConfig.SERVER.defaultCycleDurationMs.get(),
@@ -244,6 +250,7 @@ class AbyssalContract(
                 description = contract.description,
                 shortTargetList = contract.shortTargetList,
                 rarity = contract.rarity,
+                displayItem = contract.displayItem,
                 reward = contract.reward ?: ItemStack(ModConfig.SERVER.defaultRewardCurrency, 1),
                 level = contract.level ?: 1,
                 quantityGrowthFactor = contract.quantityGrowthFactor ?: ModConfig.SERVER.defaultGrowthFactor.get(),

@@ -8,9 +8,12 @@ import dev.biserman.wingscontracts.tag.ContractTagHelper
 import dev.biserman.wingscontracts.tag.ContractTagHelper.boolean
 import dev.biserman.wingscontracts.tag.ContractTagHelper.csv
 import dev.biserman.wingscontracts.tag.ContractTagHelper.int
+import dev.biserman.wingscontracts.tag.ContractTagHelper.itemStack
 import dev.biserman.wingscontracts.tag.ContractTagHelper.long
 import dev.biserman.wingscontracts.tag.ContractTagHelper.string
 import dev.biserman.wingscontracts.tag.ContractTagHelper.uuid
+import dev.biserman.wingscontracts.tag.NbtCondition
+import dev.biserman.wingscontracts.tag.NbtConditionParser
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.ChatFormatting
@@ -41,6 +44,7 @@ abstract class Contract(
     val id: UUID = UUID.randomUUID(),
     val targetItems: List<Item> = listOf(),
     val targetTags: List<TagKey<Item>> = listOf(),
+    val targetConditions: List<NbtCondition> = listOf(),
 
     val startTime: Long = System.currentTimeMillis(),
     var currentCycleStart: Long = System.currentTimeMillis(),
@@ -57,11 +61,24 @@ abstract class Contract(
     val name: String? = null,
     val description: String? = null,
     val shortTargetList: String? = null,
-    val rarity: Int? = null
+    val rarity: Int? = null,
+    val displayItem: ItemStack? = null
 ) {
     open val unitsDemanded = baseUnitsDemanded
 
     fun matches(itemStack: ItemStack): Boolean {
+        // if any targetCondition fails, return false
+        if (targetConditions.isNotEmpty()) {
+            val tag = itemStack.tag
+            if (tag == null) {
+                return false
+            }
+
+            if (targetConditions.any { !it.match(tag) }) {
+                return false
+            }
+        }
+
         if (targetTags.isNotEmpty()) {
             return targetTags.any { itemStack.`is`(it) }
         }
@@ -70,13 +87,17 @@ abstract class Contract(
             return targetItems.any { itemStack.item == it }
         }
 
-        return false
+        return targetConditions.isNotEmpty() // blank contracts return false unless they have nbt conditions
     }
 
-    val allMatchingItems by lazy {
-        targetItems.map { it.defaultInstance }.plus(targetTags.flatMap {
-            BuiltInRegistries.ITEM.getTagOrEmpty(it).map { holder -> holder.value().defaultInstance }
-        })
+    val displayItems by lazy {
+        if (displayItem == null) {
+            targetItems.map { it.defaultInstance }.plus(targetTags.flatMap {
+                BuiltInRegistries.ITEM.getTagOrEmpty(it).map { holder -> holder.value().defaultInstance }
+            })
+        } else {
+            listOf(displayItem)
+        }
     }
 
     open val targetName: String by lazy {
@@ -86,7 +107,11 @@ abstract class Contract(
         }
 
         if (targetItems.isNotEmpty()) {
-            return@lazy targetItems[0].name().trimBrackets()
+            return@lazy if (displayItem != null) {
+                displayItem.displayName.string
+            } else {
+                targetItems[0].name().trimBrackets()
+            }
         }
 
         if (targetTags.isNotEmpty()) {
@@ -163,7 +188,11 @@ abstract class Contract(
         return when (totalSize) {
             0 -> translateContract("no_targets").string
             1 -> if (targetItems.isNotEmpty()) {
-                targetItems[0].name().trimBrackets()
+                if (displayItem != null) {
+                    displayItem.displayName.string
+                } else {
+                    targetItems[0].name().trimBrackets()
+                }
             } else {
                 translateContract(tagKey, targetTags[0].location()).string
             }
@@ -303,6 +332,7 @@ abstract class Contract(
         tag.id = id
         tag.targetItems = targetItems
         tag.targetTags = targetTags
+        tag.targetConditions = targetConditions
         tag.startTime = startTime
         tag.currentCycleStart = currentCycleStart
         tag.cycleDurationMs = cycleDurationMs
@@ -317,6 +347,7 @@ abstract class Contract(
         tag.description = description
         tag.shortTargetList = shortTargetList
         tag.rarity = rarity
+        tag.displayItem = displayItem
 
         return tag
     }
@@ -338,6 +369,7 @@ abstract class Contract(
 
         var (ContractTag).targetItemKeys by csv("targetItems")
         var (ContractTag).targetTagKeys by csv("targetTags")
+        var (ContractTag).targetConditionsKeys by string("targetConditions")
 
         var (ContractTag).startTime by long()
         var (ContractTag).currentCycleStart by long()
@@ -355,6 +387,7 @@ abstract class Contract(
         var (ContractTag).description by string()
         var (ContractTag).shortTargetList by string()
         var (ContractTag).rarity by int()
+        var (ContractTag).displayItem by itemStack()
 
         var (ContractTag).targetTags: List<TagKey<Item>>?
             get() {
@@ -389,16 +422,28 @@ abstract class Contract(
                 targetItemKeys = value?.mapNotNull { it.`arch$registryName`()?.toString() }
             }
 
+        var (ContractTag).targetConditions: List<NbtCondition>?
+            get() {
+                if (targetConditionsKeys.isNullOrBlank()) {
+                    return null
+                }
+
+                return NbtConditionParser.parse(targetConditionsKeys!!)
+            }
+            set(value) {
+                targetConditionsKeys = value?.mapNotNull { it.text }?.joinToString(";")
+            }
+
         fun translateContract(key: String, vararg objects: Any): MutableComponent =
             Component.translatable("${WingsContractsMod.MOD_ID}.contract.$key", *objects)
 
         fun getDisplayItem(itemStack: ItemStack, time: Float): ItemStack {
             val contract = LoadedContracts[itemStack] ?: return ItemStack.EMPTY
 
-            return if (contract.allMatchingItems.isEmpty()) {
+            return if (contract.displayItems.isEmpty()) {
                 ItemStack.EMPTY
             } else {
-                contract.allMatchingItems[Mth.floor(time / 30.0f) % contract.allMatchingItems.size]
+                contract.displayItems[Mth.floor(time / 30.0f) % contract.displayItems.size]
             }
         }
     }

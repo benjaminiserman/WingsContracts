@@ -13,10 +13,14 @@ import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.server.WingsContractsNetHandler
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import javax.script.ScriptEngineManager
+import javax.script.SimpleScriptContext
 
 object WingsContractsMod {
     const val MOD_ID: String = "wingscontracts"
     val LOGGER: Logger = LogManager.getLogger("WingsContracts")
+    val JS = ScriptEngineManager().getEngineByName("javascript")
+    val JS_CONTEXT = SimpleScriptContext()
 
     fun init() {
         ModBlockRegistry.register()
