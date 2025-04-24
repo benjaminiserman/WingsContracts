@@ -183,6 +183,11 @@ class AbyssalContract(
         if (rarity != null) {
             return rarity
         }
+
+        if (reward.item != ModConfig.SERVER.defaultRewardCurrency) {
+            return 0
+        }
+
         return AvailableContractsData.clientData.rarityThresholds.indexOfLast { maxPossibleReward > it } + 1
     }
 
