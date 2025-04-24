@@ -2,7 +2,7 @@ package dev.biserman.wingscontracts.command
 
 import com.mojang.brigadier.builder.ArgumentBuilder
 import dev.biserman.wingscontracts.WingsContractsMod
-import dev.biserman.wingscontracts.api.Contract.Companion.id
+import dev.biserman.wingscontracts.core.Contract.Companion.id
 import dev.biserman.wingscontracts.command.ModCommand.giveContract
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.tag.ContractTag

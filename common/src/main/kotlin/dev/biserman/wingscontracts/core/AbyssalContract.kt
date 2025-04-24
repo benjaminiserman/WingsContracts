@@ -1,4 +1,4 @@
-package dev.biserman.wingscontracts.api
+package dev.biserman.wingscontracts.core
 
 import com.google.gson.JsonObject
 import com.mojang.serialization.JsonOps

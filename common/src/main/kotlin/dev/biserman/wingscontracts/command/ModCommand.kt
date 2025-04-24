@@ -2,7 +2,7 @@ package dev.biserman.wingscontracts.command
 
 import com.mojang.brigadier.builder.ArgumentBuilder
 import dev.biserman.wingscontracts.WingsContractsMod
-import dev.biserman.wingscontracts.api.Contract
+import dev.biserman.wingscontracts.core.Contract
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.network.chat.Component

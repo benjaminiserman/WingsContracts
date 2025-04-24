@@ -1,4 +1,4 @@
-package dev.biserman.wingscontracts.api
+package dev.biserman.wingscontracts.core
 
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.data.LoadedContracts

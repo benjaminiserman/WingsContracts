@@ -1,9 +1,9 @@
 package dev.biserman.wingscontracts.data
 
-import dev.biserman.wingscontracts.api.AbyssalContract
-import dev.biserman.wingscontracts.api.Contract
-import dev.biserman.wingscontracts.api.Contract.Companion.id
-import dev.biserman.wingscontracts.api.Contract.Companion.type
+import dev.biserman.wingscontracts.core.AbyssalContract
+import dev.biserman.wingscontracts.core.Contract
+import dev.biserman.wingscontracts.core.Contract.Companion.id
+import dev.biserman.wingscontracts.core.Contract.Companion.type
 import dev.biserman.wingscontracts.tag.ContractTag
 import dev.biserman.wingscontracts.tag.ContractTagHelper
 import net.minecraft.world.item.ItemStack

@@ -2,7 +2,7 @@ package dev.biserman.wingscontracts.compat.computercraft
 
 import dan200.computercraft.api.detail.DetailProvider
 import dan200.computercraft.api.detail.VanillaDetailRegistries
-import dev.biserman.wingscontracts.api.AbyssalContract
+import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.item.ContractItem
 import net.minecraft.world.item.ItemStack

@@ -5,10 +5,10 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import dev.architectury.platform.Platform
 import dev.biserman.wingscontracts.WingsContractsMod
-import dev.biserman.wingscontracts.api.AbyssalContract
-import dev.biserman.wingscontracts.api.Contract.Companion.name
-import dev.biserman.wingscontracts.api.Contract.Companion.targetItemKeys
-import dev.biserman.wingscontracts.api.Contract.Companion.targetTagKeys
+import dev.biserman.wingscontracts.core.AbyssalContract
+import dev.biserman.wingscontracts.core.Contract.Companion.name
+import dev.biserman.wingscontracts.core.Contract.Companion.targetItemKeys
+import dev.biserman.wingscontracts.core.Contract.Companion.targetTagKeys
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.tag.ContractTag
 import net.minecraft.nbt.CompoundTag

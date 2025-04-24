@@ -2,7 +2,7 @@ package dev.biserman.wingscontracts.client.renderer
 
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.math.Axis
-import dev.biserman.wingscontracts.api.Contract
+import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import net.minecraft.client.renderer.LightTexture
 import net.minecraft.client.renderer.MultiBufferSource

@@ -1,9 +1,9 @@
 package dev.biserman.wingscontracts.block
 
 //import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation
-import dev.biserman.wingscontracts.api.Contract
 import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
+import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
 import dev.biserman.wingscontracts.registry.ModBlockRegistry

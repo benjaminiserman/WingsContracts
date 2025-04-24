@@ -4,8 +4,8 @@ import com.google.gson.JsonParser
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.ArgumentBuilder
 import dev.biserman.wingscontracts.WingsContractsMod
-import dev.biserman.wingscontracts.api.AbyssalContract
-import dev.biserman.wingscontracts.api.Contract
+import dev.biserman.wingscontracts.core.AbyssalContract
+import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.command.ModCommand.giveContract
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands

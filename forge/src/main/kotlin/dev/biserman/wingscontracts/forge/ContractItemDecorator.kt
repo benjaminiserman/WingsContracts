@@ -1,6 +1,6 @@
 package dev.biserman.wingscontracts.forge
 
-import dev.biserman.wingscontracts.api.Contract
+import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.registry.ModItemRegistry
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
