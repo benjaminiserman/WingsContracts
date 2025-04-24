@@ -511,9 +511,16 @@
     "reward": 3
   },
   {
+    "targetItems": "dark_oak_planks",
+    "countPerUnit": 64
+  },
+  {
     "targetItems": "mangrove_planks",
-    "countPerUnit": 96,
-    "reward": 2
+    "countPerUnit": 48
+  },
+  {
+    "targetItems": "jungle_planks",
+    "countPerUnit": 64
   },
   {
     "targetTags": "#minecraft:planks",
