@@ -83,6 +83,8 @@
     "wingscontracts.data.forge.chestplates": "Chestplates",
     "wingscontracts.data.forge.leggings": "Leggings",
     "wingscontracts.data.forge.boots": "Boots",
+    "wingscontracts.data.forge.damaged_equipment": "Damaged Equipment",
+    "wingscontracts.data.forge.damaged_equipment_desc": "only accepts equipment at less than full durability",
 
     "wingscontracts.data.botania.tiny_potato_desc": "you monster...",
     "wingscontracts.data.botania.sin_runes": "Runes of Sin",
@@ -91,6 +93,8 @@
     "wingscontracts.data.botania.quartz_short_targets": "of Botania's Quartz",
     "wingscontracts.data.botania.brew_vial": "Brew Vial",
     "wingscontracts.data.botania.brew_flask": "Brew Flask",
+    "wingscontracts.data.botania.filled_mana_tablet": "Filled Mana Tablet",
+    "wingscontracts.data.botania.filled_mana_tablet_desc": "only accepts 100% full mana tablets",
 
     "wingscontracts.data.farmersdelight.salads": "Salad",
 

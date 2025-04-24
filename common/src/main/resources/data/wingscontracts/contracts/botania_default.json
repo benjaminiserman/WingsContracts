@@ -20,6 +20,12 @@
     "reward": 2
   },
   {
+    "targetItems": "botania:rune_water,botania:rune_fire,botania:rune_earth,botania:rune_air",
+    "countPerUnit": 6,
+    "reward": 2,
+    "name": "wingscontracts.data.botania.element_runes"
+  },
+  {
     "targetItems": "botania:rune_spring,botania:rune_summer,botania:rune_autumn,botania:rune_winter",
     "countPerUnit": 4,
     "reward": 4,
@@ -113,8 +119,22 @@
     "reward": 5
   },
   {
-    "targetItems": "botania:corporea_index",
-    "countPerUnit": 2,
-    "reward": 8
+    "targetItems": "botania:mana_tablet",
+    "targetConditions": "mana=500000",
+    "countPerUnit": 1,
+    "unitsDemanded": 16,
+    "reward": 24,
+    "name": "wingscontracts.data.botania.filled_mana_tablet",
+    "description": "wingscontracts.data.botania.filled_mana_tablet_desc"
+  },
+  {
+    "targetItems": "botania:fel_pumpkin",
+    "countPerUnit": 4,
+    "reward": 3
+  },
+  {
+    "targetItems": "botania:redstone_root",
+    "countPerUnit": 16,
+    "reward": 2
   }
 ]

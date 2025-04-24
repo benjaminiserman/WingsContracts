@@ -95,6 +95,14 @@
     "reward": 1
   },
   {
+    "targetTags": "#forge:tools,#forge:armors",
+    "targetConditions": "Damage>0",
+    "countPerUnit": 8,
+    "baseUnitsDemanded": 128,
+    "name": "wingscontracts.data.forge.damaged_equipment",
+    "description": "wingscontracts.data.forge.damaged_equipment_desc"
+  },
+  {
     "targetTags": "#forge:raw_materials",
     "countPerUnit": 12,
     "reward": 2
@@ -111,5 +119,9 @@
   {
     "targetTags": "#forge:barrels",
     "countPerUnit": 12
+  },
+  {
+    "targetTags": "#forge:ladders",
+    "countPerUnit": 64
   }
 ]

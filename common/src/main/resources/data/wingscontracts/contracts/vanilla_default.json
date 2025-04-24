@@ -15,8 +15,8 @@
   },
   {
     "targetItems": "gold_ingot",
-    "countPerUnit": 8,
-    "reward": 3
+    "countPerUnit": 6,
+    "reward": 2
   },
   {
     "targetItems": "copper_ingot",
@@ -48,7 +48,7 @@
   },
   {
     "targetItems": "paper",
-    "countPerUnit": 32
+    "countPerUnit": 48
   },
   {
     "targetItems": "wheat",
@@ -113,20 +113,18 @@
   },
   {
     "targetItems": "warped_fungus,crimson_fungus",
-    "countPerUnit": 24,
-    "reward": 2,
+    "countPerUnit": 12,
     "name": "wingscontracts.data.nether_mushroom"
   },
   {
     "targetItems": "red_mushroom,brown_mushroom",
-    "countPerUnit": 32,
-    "reward": 2,
+    "countPerUnit": 16,
     "name": "wingscontracts.data.mushroom"
   },
   {
     "targetItems": "mushroom_stem,brown_mushroom_block,red_mushroom_block",
-    "countPerUnit": 16,
-    "reward": 3,
+    "countPerUnit": 12,
+    "reward": 2,
     "name": "wingscontracts.data.mushroom_block"
   },
   {
@@ -236,7 +234,8 @@
   },
   {
     "targetItems": "sea_pickle",
-    "countPerUnit": 16
+    "countPerUnit": 24,
+    "reward": 2
   },
   {
     "targetItems": "obsidian",
@@ -368,11 +367,6 @@
   {
     "targetItems": "decorated_pot",
     "countPerUnit": 12
-  },
-  {
-    "targetItems": "splash_potion",
-    "countPerUnit": 8,
-    "reward": 2
   },
   {
     "targetItems": "smooth_stone",
@@ -576,5 +570,104 @@
   {
     "targetTags": "#minecraft:stone_bricks",
     "countPerUnit": 64
+  },
+  {
+    "targetItems": "potion",
+    "targetConditions": "Potion==minecraft:healing",
+    "displayItem": {
+      "id": "potion",
+      "Count": 1,
+      "tag": {
+        "Potion": "minecraft:healing"
+      }
+    },
+    "countPerUnit": 8,
+    "baseUnitsDemanded": 48,
+    "reward": 3
+  },
+  {
+    "targetItems": "potion",
+    "targetConditions": "Potion==minecraft:fire_resistance",
+    "displayItem": {
+      "id": "potion",
+      "Count": 1,
+      "tag": {
+        "Potion": "minecraft:fire_resistance"
+      }
+    },
+    "countPerUnit": 8,
+    "reward": 4
+  },
+  {
+    "targetItems": "potion",
+    "targetConditions": "Potion==minecraft:swiftness",
+    "displayItem": {
+      "id": "potion",
+      "Count": 1,
+      "tag": {
+        "Potion": "minecraft:swiftness"
+      }
+    },
+    "countPerUnit": 8,
+    "reward": 2
+  },
+  {
+    "targetItems": "potion",
+    "targetConditions": "Potion==minecraft:night_vision",
+    "displayItem": {
+      "id": "potion",
+      "Count": 1,
+      "tag": {
+        "Potion": "minecraft:night_vision"
+      }
+    },
+    "countPerUnit": 8,
+    "reward": 2
+  },
+  {
+    "targetItems": "green_dye",
+    "countPerUnit": 12
+  },
+  {
+    "targetItems": "brown_dye",
+    "countPerUnit": 48
+  },
+  {
+    "targetItems": "cocoa_beans",
+    "countPerUnit": 48
+  },
+  {
+    "targetItems": "brick",
+    "countPerUnit": 64
+  },
+  {
+    "targetItems": "sunflower",
+    "countPerUnit": 32
+  },
+  {
+    "targetItems": "lightning_rod",
+    "countPerUnit": 4
+  },
+  {
+    "targetItems": "dandelion",
+    "countPerUnit": 16
+  },
+  {
+    "targetItems": "torch",
+    "countPerUnit": 64
+  },
+  {
+    "targetItems": "hay_block",
+    "countPerUnit": 8,
+    "reward": 2,
+    "baseUnitsDemanded": 32
+  },
+  {
+    "targetItems": "crafting_table",
+    "countPerUnit": 24
+  },
+  {
+    "targetItems": "stick",
+    "countPerUnit": 128
   }
 ]

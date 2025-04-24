@@ -1,0 +1,11 @@
+[
+  {
+    "targetItems": "createdeco:gold_coin",
+    "countPerUnit": 32,
+    "reward": 2
+  },
+  {
+    "targetItems": "createdeco:copper_coin",
+    "countPerUnit": 128
+  }
+]

@@ -2,13 +2,12 @@
   {
     "targetItems": "create:polished_rose_quartz",
     "countPerUnit": 12,
-    "baseUnitsDemanded": 32,
+    "baseUnitsDemanded": 128,
     "reward": 2
   },
   {
     "targetItems": "create:sturdy_sheet",
     "countPerUnit": 16,
-    "baseUnitsDemanded": 32,
     "reward": 4
   },
   {
@@ -58,19 +57,19 @@
   },
   {
     "targetItems": "create:zinc_ingot",
-    "baseUnitsDemanded": 32,
+    "baseUnitsDemanded": 128,
     "countPerUnit": 12
   },
   {
     "targetItems": "create:brass_ingot",
-    "baseUnitsDemanded": 32,
+    "baseUnitsDemanded": 128,
     "countPerUnit": 12,
     "reward": 2
   },
   {
     "targetItems": "create:andesite_alloy",
-    "baseUnitsDemanded": 32,
-    "countPerUnit": 16
+    "baseUnitsDemanded": 128,
+    "countPerUnit": 32
   },
   {
     "targetItems": "create:potato_cannon",
@@ -85,5 +84,21 @@
     "targetItems": "create:crushing_wheel",
     "countPerUnit": 4,
     "reward": 4
+  },
+  {
+    "targetItems": "create:copper_sheet",
+    "countPerUnit": 16,
+    "baseUnitsDemanded": 128
+  },
+  {
+    "targetTags": "#create:casing",
+    "countPerUnit": 32,
+    "baseUnitsDemanded": 128
+  },
+  {
+    "targetItems": "redstone_link",
+    "countPerUnit": 16,
+    "baseUnitsDemanded": 96,
+    "reward": 2
   }
 ]
