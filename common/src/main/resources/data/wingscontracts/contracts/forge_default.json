@@ -107,6 +107,14 @@
     "description": "wingscontracts.data.forge.damaged_equipment_desc"
   },
   {
+    "targetTags": "#forge:armors",
+    "targetConditions": "attribute.minecraft:generic.armor_toughness.add>0.0",
+    "countPerUnit": 3,
+    "reward": 3,
+    "name": "wingscontracts.data.forge.tough_armor",
+    "description": "wingscontracts.data.forge.tough_armor_desc"
+  },
+  {
     "targetTags": "#forge:raw_materials",
     "countPerUnit": 12,
     "reward": 2

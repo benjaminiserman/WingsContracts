@@ -3,11 +3,12 @@
 package dev.biserman.wingscontracts.tag
 
 import dev.biserman.wingscontracts.WingsContractsMod
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.ai.attributes.Attribute
 import net.minecraft.world.entity.ai.attributes.AttributeModifier
-import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.item.ArmorItem
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.ItemStack
@@ -17,22 +18,6 @@ class ItemCondition(val text: String, val match: (ItemStack) -> Boolean) {
 }
 
 object ItemConditionParser {
-    val attributesMap = mapOf(
-        "armor" to Attributes.ARMOR,
-        "armorToughness" to Attributes.ARMOR_TOUGHNESS,
-        "luck" to Attributes.LUCK,
-        "maxHealth" to Attributes.MAX_HEALTH,
-        "attackSpeed" to Attributes.ATTACK_SPEED,
-        "attackDamage" to Attributes.ATTACK_DAMAGE,
-        "attackKnockback" to Attributes.ATTACK_KNOCKBACK,
-        "flyingSpeed" to Attributes.FLYING_SPEED,
-        "followRange" to Attributes.FOLLOW_RANGE,
-        "jumpStrength" to Attributes.JUMP_STRENGTH,
-        "knockbackResistance" to Attributes.KNOCKBACK_RESISTANCE,
-        "movementSpeed" to Attributes.MOVEMENT_SPEED,
-        "spawnReinforcementsChance" to Attributes.SPAWN_REINFORCEMENTS_CHANCE,
-    )
-
     val attributeOperationsMap = mapOf(
         "add" to AttributeModifier.Operation.ADDITION,
         "multBase" to AttributeModifier.Operation.MULTIPLY_BASE,
@@ -93,11 +78,17 @@ object ItemConditionParser {
             else -> EquipmentSlot.MAINHAND
         }
 
-        return this
+        val relevantModifiers = this
             .getAttributeModifiers(equipmentSlot)
             .get(attribute)
             .filter { it.operation == operation }
-            .sumOf { it.amount }
+            .map { it.amount }
+
+        return if (operation == AttributeModifier.Operation.ADDITION) {
+            relevantModifiers.sum()
+        } else {
+            relevantModifiers.reduce(Double::times)
+        }
     }
 
     val conditionRegex = Regex("^(.+?)(==|!=|<=|>=|<-|<|>)(.+)$")
@@ -125,10 +116,17 @@ object ItemConditionParser {
                 value.toDoubleOrNull() != null -> wrapNavigate("0.0")
                 else -> wrapNavigate("")
             }
-            "attribute" -> attribute@({
+            "attribute" -> attribute@ ({
                 it.getAttributeValue(
-                    attributesMap[keyComponents[1]] ?: return@attribute "0",
-                    attributeOperationsMap[keyComponents[2]] ?: return@attribute "0"
+                    BuiltInRegistries.ATTRIBUTE.get(
+                        ResourceLocation.tryParse(
+                            keyComponents.subList(
+                                1,
+                                keyComponents.size - 1
+                            ).joinToString(".")
+                        )
+                    ) ?: return@attribute "0",
+                    attributeOperationsMap[keyComponents[keyComponents.size - 1]] ?: return@attribute "0"
                 ).toString()
             })
             "mod" -> ({ it.item.`arch$registryName`()?.namespace ?: "" })
@@ -156,7 +154,7 @@ object ItemConditionParser {
 
         val compareToValue: String.() -> Int = when {
             value == "true" || value == "false" -> ({ this.compareTo(value) })
-            value.toIntOrNull() != null -> ({ this.toInt().compareTo(value.toInt()) })
+//            value.toIntOrNull() != null -> ({ this.toDouble().compareTo(value.toDouble()) })
             value.toDoubleOrNull() != null -> ({ this.toDouble().compareTo(value.toDouble()) })
             else -> ({ this.trim('"').compareTo(value.trim('"', '\'')) })
         }

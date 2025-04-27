@@ -99,6 +99,8 @@
     "wingscontracts.data.forge.boots": "Boots",
     "wingscontracts.data.forge.damaged_equipment": "Damaged Equipment",
     "wingscontracts.data.forge.damaged_equipment_desc": "accepts equipment at less than full durability",
+    "wingscontracts.data.forge.tough_armor": "Tough Armor",
+    "wingscontracts.data.forge.tough_armor_desc": "accepts armor that adds to your toughness",
 
     "wingscontracts.data.botania.tiny_potato_desc": "you monster...",
     "wingscontracts.data.botania.sin_runes": "Runes of Sin",
