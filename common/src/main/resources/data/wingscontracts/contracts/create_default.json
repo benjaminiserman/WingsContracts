@@ -2,7 +2,7 @@
   {
     "targetItems": "create:polished_rose_quartz",
     "countPerUnit": 12,
-    "baseUnitsDemanded": 128,
+    "baseUnitsDemanded": 96,
     "reward": 2
   },
   {
@@ -62,7 +62,7 @@
   },
   {
     "targetItems": "create:brass_ingot",
-    "baseUnitsDemanded": 128,
+    "baseUnitsDemanded": 96,
     "countPerUnit": 12,
     "reward": 2
   },

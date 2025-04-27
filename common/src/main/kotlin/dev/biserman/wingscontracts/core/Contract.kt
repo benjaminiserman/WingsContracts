@@ -69,7 +69,6 @@ abstract class Contract(
     fun matches(itemStack: ItemStack): Boolean {
         // if any targetCondition fails, return false
         if (targetConditions.isNotEmpty()) {
-            WingsContractsMod.LOGGER.info(itemStack.tag?.get("Enchantments") ?: "got nothing")
             if (targetConditions.any { !it.match(itemStack) }) {
                 return false
             }
@@ -88,9 +87,13 @@ abstract class Contract(
 
     val displayItems by lazy {
         if (displayItem == null) {
-            targetItems.map { it.defaultInstance }.plus(targetTags.flatMap {
-                BuiltInRegistries.ITEM.getTagOrEmpty(it).map { holder -> holder.value().defaultInstance }
-            })
+            if (targetItems.isEmpty() && targetTags.isEmpty()) {
+                listOf(ModItemRegistry.QUESTION_MARK.get()!!.defaultInstance)
+            } else {
+                targetItems.map { it.defaultInstance }.plus(targetTags.flatMap {
+                    BuiltInRegistries.ITEM.getTagOrEmpty(it).map { holder -> holder.value().defaultInstance }
+                })
+            }
         } else {
             listOf(displayItem)
         }

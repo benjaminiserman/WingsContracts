@@ -45,15 +45,14 @@ object ItemConditionParser {
     // navigate recursively down a path of CompoundTags and convert the end value into a String
     private fun navigate(
         keyComponents: List<String>,
-        finish: CompoundTag?.(String) -> String,
+        default: String,
         soFar: (CompoundTag?) -> CompoundTag? = { it }
     ): (CompoundTag?) -> String {
         if (keyComponents.size == 1) {
-//            return { soFar(it)?.get(keyComponents[0]).toString() ?: ""}
-            return { soFar(it).finish(keyComponents[0]) }
+            return { soFar(it)?.get(keyComponents[0])?.toString() ?: default }
         }
 
-        return navigate(keyComponents.drop(1), finish) { it?.getCompound(keyComponents[0]) }
+        return navigate(keyComponents.drop(1), default) { it?.getCompound(keyComponents[0]) }
     }
 
     val conditionRegex = Regex("^(.+?)(==|!=|<=|>=|<|>)(.+)$")
@@ -71,15 +70,15 @@ object ItemConditionParser {
         val navigationComponents = keyComponents.drop(1)
 
         fun wrapNavigate(
-            finish: CompoundTag?.(String) -> String
-        ): (ItemStack) -> String = ({ navigate(navigationComponents, finish)(it.tag) })
+            default: String
+        ): (ItemStack) -> String = ({ navigate(navigationComponents, default)(it.tag) })
 
         val fetchValue: (ItemStack) -> String = when (keyComponents[0]) {
             "tag" -> when {
-                value == "true" || value == "false" -> wrapNavigate { this?.getBoolean(it)?.toString() ?: "false" }
-                value.toIntOrNull() != null -> wrapNavigate { this?.getInt(it)?.toString() ?: "0" }
-                value.toDoubleOrNull() != null -> wrapNavigate { this?.getDouble(it)?.toString() ?: "0.0" }
-                else -> wrapNavigate { this?.getString(it) ?: "" }
+                value == "true" || value == "false" -> wrapNavigate("false")
+                value.toIntOrNull() != null -> wrapNavigate("0")
+                value.toDoubleOrNull() != null -> wrapNavigate("0.0")
+                else -> wrapNavigate("")
             }
             "mod" -> ({ it.item.`arch$registryName`()?.namespace ?: "" })
             "isBarVisible" -> ({ it.isBarVisible.toString() })

@@ -141,6 +141,13 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
             minecraft:emerald = 1, 
             minecraft:emerald_block = 9;
             
+            minecraft:lapis_lazuli = 1,
+            minecraft:lapis_block = 9;
+            
+            minecraft:gold_nugget = 1,
+            minecraft:gold_ingot = 9,
+            minecraft:gold_block = 81
+            
             minecraft:diamond = 1, 
             minecraft:diamond_block = 9;
             

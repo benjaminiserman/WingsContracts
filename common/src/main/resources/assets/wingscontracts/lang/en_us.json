@@ -47,6 +47,7 @@
     "item.wingscontracts.contract": "%s Contract",
     "item.wingscontracts.contract.unknown": "Unknown Contract",
     "item.wingscontracts.contract.abyssal": "%s %s Contract %s",
+    "item.wingscontracts.question_mark": "Matching",
 
 
     "block.wingscontracts.contract_portal": "Contract Portal",
@@ -89,6 +90,8 @@
     "wingscontracts.data.potion": "Effective Potions",
     "wingscontracts.data.potion_desc": "accepts potions that apply a potion effect",
     "wingscontracts.data.potion_short_targets": "Potions",
+    "wingscontracts.data.infinity_bow": "Infinity Bow",
+    "wingscontracts.data.infinity_bow_desc": "accepts bows enchanted with infinity",
 
     "wingscontracts.data.forge.helmets": "Helmets",
     "wingscontracts.data.forge.chestplates": "Chestplates",

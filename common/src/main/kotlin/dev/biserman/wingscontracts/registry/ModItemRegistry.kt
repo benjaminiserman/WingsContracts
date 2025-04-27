@@ -17,6 +17,10 @@ object ModItemRegistry {
         "abyssal_contract"
     ) { ContractItem(Item.Properties().stacksTo(1)) }
 
+    val QUESTION_MARK: RegistrySupplier<Item?> = ITEMS.register(
+        "question_mark"
+    ) { Item(Item.Properties().stacksTo(16)) }
+
     @JvmStatic
     fun register() {
         ITEMS.register()

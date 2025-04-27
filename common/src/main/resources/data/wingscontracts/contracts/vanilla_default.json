@@ -259,13 +259,13 @@
   },
   {
     "targetItems": "wither_rose",
-    "countPerUnit": 32,
-    "reward": 5
+    "countPerUnit": 16,
+    "reward": 4
   },
   {
     "targetItems": "prismarine_shard",
     "countPerUnit": 20,
-    "reward": 4
+    "reward": 3
   },
   {
     "targetItems": "dirt",
@@ -334,8 +334,8 @@
   },
   {
     "targetItems": "beetroot_soup",
-    "countPerUnit": 8,
-    "reward": 2
+    "countPerUnit": 4,
+    "baseUnitsDemanded": 96
   },
   {
     "targetItems": "wheat_seeds",
@@ -352,7 +352,7 @@
   {
     "targetItems": "cherry_leaves",
     "countPerUnit": 64,
-    "reward": 2
+    "baseUnitsDemanded": 96
   },
   {
     "targetItems": "crying_obsidian",
@@ -402,7 +402,7 @@
   {
     "targetItems": "nether_brick",
     "countPerUnit": 128,
-    "reward": 2
+    "baseUnitsDemanded": 96
   },
   {
     "targetItems": "grass",
@@ -664,9 +664,8 @@
   },
   {
     "targetItems": "hay_block",
-    "countPerUnit": 8,
-    "reward": 2,
-    "baseUnitsDemanded": 32
+    "countPerUnit": 4,
+    "baseUnitsDemanded": 96
   },
   {
     "targetItems": "crafting_table",
@@ -711,5 +710,25 @@
     "name": "wingscontracts.data.potion",
     "description": "wingscontracts.data.potion_desc",
     "shortTargetList": "wingscontracts.data.potion_short_targets"
+  },
+  {
+    "targetItems": "bow",
+    "targetConditions": "tag.Enchantments<-minecraft:infinity",
+    "countPerUnit": 1,
+    "reward": 4,
+    "name": "wingscontracts.data.infinity_bow",
+    "description": "wingscontracts.data.infinity_bow_desc",
+    "displayItem": {
+      "id": "bow",
+      "Count": 1,
+      "tag": {
+        "Enchantments": [
+          {
+            "id": "minecraft:infinity",
+            "lvl": 1
+          }
+        ]
+      }
+    }
   }
 ]
