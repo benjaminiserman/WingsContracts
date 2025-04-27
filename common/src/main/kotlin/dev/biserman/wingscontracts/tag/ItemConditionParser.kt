@@ -4,6 +4,12 @@ package dev.biserman.wingscontracts.tag
 
 import dev.biserman.wingscontracts.WingsContractsMod
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.world.entity.EquipmentSlot
+import net.minecraft.world.entity.ai.attributes.Attribute
+import net.minecraft.world.entity.ai.attributes.AttributeModifier
+import net.minecraft.world.entity.ai.attributes.Attributes
+import net.minecraft.world.item.ArmorItem
+import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.ItemStack
 
 class ItemCondition(val text: String, val match: (ItemStack) -> Boolean) {
@@ -11,6 +17,28 @@ class ItemCondition(val text: String, val match: (ItemStack) -> Boolean) {
 }
 
 object ItemConditionParser {
+    val attributesMap = mapOf(
+        "armor" to Attributes.ARMOR,
+        "armorToughness" to Attributes.ARMOR_TOUGHNESS,
+        "luck" to Attributes.LUCK,
+        "maxHealth" to Attributes.MAX_HEALTH,
+        "attackSpeed" to Attributes.ATTACK_SPEED,
+        "attackDamage" to Attributes.ATTACK_DAMAGE,
+        "attackKnockback" to Attributes.ATTACK_KNOCKBACK,
+        "flyingSpeed" to Attributes.FLYING_SPEED,
+        "followRange" to Attributes.FOLLOW_RANGE,
+        "jumpStrength" to Attributes.JUMP_STRENGTH,
+        "knockbackResistance" to Attributes.KNOCKBACK_RESISTANCE,
+        "movementSpeed" to Attributes.MOVEMENT_SPEED,
+        "spawnReinforcementsChance" to Attributes.SPAWN_REINFORCEMENTS_CHANCE,
+    )
+
+    val attributeOperationsMap = mapOf(
+        "add" to AttributeModifier.Operation.ADDITION,
+        "multBase" to AttributeModifier.Operation.MULTIPLY_BASE,
+        "multTotal" to AttributeModifier.Operation.MULTIPLY_TOTAL
+    )
+
     fun parseEntries(text: String): List<String> {
         val entries = mutableListOf<String>()
         var inQuotes = false
@@ -58,6 +86,20 @@ object ItemConditionParser {
         return navigate(keyComponents.drop(1), default) { it?.getCompound(keyComponents[0]) }
     }
 
+    private fun (ItemStack).getAttributeValue(attribute: Attribute, operation: AttributeModifier.Operation): Double {
+        val item = this.item
+        val equipmentSlot = when {
+            item is ArmorItem -> item.equipmentSlot
+            else -> EquipmentSlot.MAINHAND
+        }
+
+        return this
+            .getAttributeModifiers(equipmentSlot)
+            .get(attribute)
+            .filter { it.operation == operation }
+            .sumOf { it.amount }
+    }
+
     val conditionRegex = Regex("^(.+?)(==|!=|<=|>=|<-|<|>)(.+)$")
     fun parseCondition(condition: String): ItemCondition? {
         val match = conditionRegex.matchEntire(condition)
@@ -83,6 +125,12 @@ object ItemConditionParser {
                 value.toDoubleOrNull() != null -> wrapNavigate("0.0")
                 else -> wrapNavigate("")
             }
+            "attribute" -> attribute@({
+                it.getAttributeValue(
+                    attributesMap[keyComponents[1]] ?: return@attribute "0",
+                    attributeOperationsMap[keyComponents[2]] ?: return@attribute "0"
+                ).toString()
+            })
             "mod" -> ({ it.item.`arch$registryName`()?.namespace ?: "" })
             "isBarVisible" -> ({ it.isBarVisible.toString() })
             "barWidth" -> ({ it.barWidth.toString() })
@@ -97,11 +145,12 @@ object ItemConditionParser {
             "isEdible" -> ({ it.item.isEdible.toString() })
             "maxStackSize" -> ({ it.item.maxStackSize.toString() })
             "maxDamage" -> ({ it.item.maxDamage.toString() })
-            "nutrition" -> ({ it.item.foodProperties?.nutrition?.toString() ?: "0"})
-            "saturationModifier" -> ({ it.item.foodProperties?.saturationModifier?.toString() ?: "0.0"})
-            "isMeat" -> ({ it.item.foodProperties?.isMeat?.toString() ?: "false"})
-            "canAlwaysEat" -> ({ it.item.foodProperties?.canAlwaysEat()?.toString() ?: "false"})
-            "fastFood" -> ({ it.item.foodProperties?.isFastFood?.toString() ?: "false"})
+            "nutrition" -> ({ it.item.foodProperties?.nutrition?.toString() ?: "0" })
+            "saturationModifier" -> ({ it.item.foodProperties?.saturationModifier?.toString() ?: "0.0" })
+            "isMeat" -> ({ it.item.foodProperties?.isMeat?.toString() ?: "false" })
+            "canAlwaysEat" -> ({ it.item.foodProperties?.canAlwaysEat()?.toString() ?: "false" })
+            "fastFood" -> ({ it.item.foodProperties?.isFastFood?.toString() ?: "false" })
+            "isBlock" -> ({ (it.item is BlockItem).toString() })
             else -> throw Error("Condition key not recognized: ${keyComponents[0]}")
         }
 
