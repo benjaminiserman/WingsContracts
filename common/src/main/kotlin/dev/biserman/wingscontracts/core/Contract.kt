@@ -434,7 +434,7 @@ abstract class Contract(
                 return ItemConditionParser.parse(targetConditionsKeys!!)
             }
             set(value) {
-                targetConditionsKeys = value?.mapNotNull { it.text }?.joinToString(";")
+                targetConditionsKeys = value?.mapNotNull { it.text }?.joinToString(",")
             }
 
         fun translateContract(key: String, vararg objects: Any): MutableComponent =

@@ -6,12 +6,7 @@
   },
   {
     "targetTags": "#botania:petals",
-    "countPerUnit": 32,
-    "reward": 2
-  },
-  {
-    "targetTags": "#botania:lens",
-    "countPerUnit": 4,
+    "countPerUnit": 24,
     "reward": 2
   },
   {
@@ -61,7 +56,7 @@
   {
     "targetItems": "botania:mana_diamond",
     "countPerUnit": 6,
-    "reward": 5
+    "reward": 4
   },
   {
     "targetTags": "#botania:elementium_ingots",
@@ -76,7 +71,7 @@
   {
     "targetTags": "#botania:mana_using_items",
     "countPerUnit": 2,
-    "reward": 5
+    "reward": 4
   },
   {
     "targetItems": "botania:livingrock",
@@ -117,8 +112,8 @@
   },
   {
     "targetTags": "#botania:generating_special_flowers",
-    "countPerUnit": 2,
-    "reward": 5
+    "countPerUnit": 4,
+    "reward": 3
   },
   {
     "targetItems": "botania:mana_tablet",

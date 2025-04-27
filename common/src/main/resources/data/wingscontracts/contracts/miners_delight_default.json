@@ -1,8 +1,8 @@
 [
   {
     "targetItems": "miners_delight:copper_cup",
-    "countPerUnit": 8,
-    "reward": 2
+    "countPerUnit": 4,
+    "baseUnitsDemanded": 96
   },
   {
     "targetItems": "miners_delight:cave_carrot",

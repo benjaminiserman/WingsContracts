@@ -37,6 +37,9 @@ object ItemConditionParser {
             entries.add(currentEntry)
         }
 
+        if (entries.size > 1) {
+            WingsContractsMod.LOGGER.info("Found big one! ${entries.joinToString(", ")}")
+        }
         return entries.toList()
     }
 
@@ -55,7 +58,7 @@ object ItemConditionParser {
         return navigate(keyComponents.drop(1), default) { it?.getCompound(keyComponents[0]) }
     }
 
-    val conditionRegex = Regex("^(.+?)(==|!=|<=|>=|<|>)(.+)$")
+    val conditionRegex = Regex("^(.+?)(==|!=|<=|>=|<-|<|>)(.+)$")
     fun parseCondition(condition: String): ItemCondition? {
         val match = conditionRegex.matchEntire(condition)
         if (match == null) {
@@ -106,7 +109,7 @@ object ItemConditionParser {
             value == "true" || value == "false" -> ({ this.compareTo(value) })
             value.toIntOrNull() != null -> ({ this.toInt().compareTo(value.toInt()) })
             value.toDoubleOrNull() != null -> ({ this.toDouble().compareTo(value.toDouble()) })
-            else -> ({ this.compareTo(value.trim('\'')) })
+            else -> ({ this.trim('"').compareTo(value.trim('"', '\'')) })
         }
 
         return when (operator) {

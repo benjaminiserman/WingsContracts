@@ -10,8 +10,8 @@
   },
   {
     "targetItems": "diamond",
-    "countPerUnit": 8,
-    "reward": 4
+    "countPerUnit": 6,
+    "reward": 3
   },
   {
     "targetItems": "gold_ingot",
@@ -86,7 +86,7 @@
   {
     "targetItems": "glow_berries",
     "countPerUnit": 32,
-    "reward": 2
+    "baseUnitsDemanded": 96
   },
   {
     "targetItems": "chorus_flower",
@@ -309,8 +309,8 @@
   },
   {
     "targetItems": "minecraft:diamond_pickaxe",
-    "countPerUnit": 4,
-    "reward": 8
+    "countPerUnit": 2,
+    "reward": 4
   },
   {
     "targetTags": "#minecraft:pickaxes",
@@ -498,7 +498,7 @@
   {
     "targetItems": "mossy_cobblestone",
     "countPerUnit": 256,
-    "reward": 3
+    "reward": 2
   },
   {
     "targetItems": "tnt",
@@ -689,7 +689,7 @@
   },
   {
     "targetConditions": "isEnchanted==true",
-    "countPerUnit": 8,
+    "countPerUnit": 3,
     "reward": 3,
     "name": "wingscontracts.data.enchanted",
     "description": "wingscontracts.data.enchanted_desc"
@@ -730,5 +730,10 @@
         ]
       }
     }
+  },
+  {
+    "targetItems": "shield",
+    "countPerUnit": 4,
+    "baseUnitsDemanded": 96
   }
 ]

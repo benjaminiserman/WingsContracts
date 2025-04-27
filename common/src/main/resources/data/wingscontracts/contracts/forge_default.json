@@ -24,6 +24,10 @@
     "countPerUnit": 64
   },
   {
+    "targetTags": "#forge:vegetables",
+    "countPerUnit": 48
+  },
+  {
     "targetTags": "#forge:dusts",
     "countPerUnit": 48
   },
