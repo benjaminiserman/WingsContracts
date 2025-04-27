@@ -100,13 +100,15 @@
     "targetItems": "botania:brew_vial",
     "countPerUnit": 4,
     "reward": 2,
-    "name": "wingscontracts.data.botania.brew_vial"
+    "name": "wingscontracts.data.botania.brew_vial",
+    "description": "wingscontracts.data.botania.brew_vial_desc"
   },
   {
     "targetItems": "botania:brew_flask",
     "countPerUnit": 4,
     "reward": 3,
-    "name": "wingscontracts.data.botania.brew_flask"
+    "name": "wingscontracts.data.botania.brew_flask",
+    "description": "wingscontracts.data.botania.brew_flask_desc"
   },
   {
     "targetTags": "#botania:functional_special_flowers",
@@ -120,12 +122,19 @@
   },
   {
     "targetItems": "botania:mana_tablet",
-    "targetConditions": "mana=500000",
+    "targetConditions": "tag.mana==500000",
     "countPerUnit": 1,
-    "unitsDemanded": 16,
+    "baseUnitsDemanded": 32,
     "reward": 24,
     "name": "wingscontracts.data.botania.filled_mana_tablet",
-    "description": "wingscontracts.data.botania.filled_mana_tablet_desc"
+    "description": "wingscontracts.data.botania.filled_mana_tablet_desc",
+    "displayItem": {
+      "id": "botania:mana_tablet",
+      "Count": 1,
+      "tag": {
+        "mana": 500000
+      }
+    }
   },
   {
     "targetItems": "botania:fel_pumpkin",

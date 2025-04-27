@@ -11,7 +11,7 @@ import dev.biserman.wingscontracts.tag.ContractTag
 import dev.biserman.wingscontracts.tag.ContractTagHelper.double
 import dev.biserman.wingscontracts.tag.ContractTagHelper.int
 import dev.biserman.wingscontracts.tag.ContractTagHelper.itemStack
-import dev.biserman.wingscontracts.tag.NbtCondition
+import dev.biserman.wingscontracts.tag.ItemCondition
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import net.minecraft.ChatFormatting
 import net.minecraft.nbt.CompoundTag
@@ -32,7 +32,7 @@ class AbyssalContract(
     id: UUID,
     targetItems: List<Item>,
     targetTags: List<TagKey<Item>>,
-    targetConditions: List<NbtCondition>,
+    targetConditions: List<ItemCondition>,
 
     startTime: Long,
     currentCycleStart: Long,
@@ -221,7 +221,7 @@ class AbyssalContract(
             }.toMutableMap()
 
     val isValid
-        get() = (targetItems.any { it != Items.AIR } || targetTags.any()) && reward.item != Items.AIR
+        get() = (targetItems.any { it != Items.AIR } || targetTags.any() || targetConditions.any()) && reward.item != Items.AIR
 
     companion object {
         var (ContractTag).reward by itemStack()

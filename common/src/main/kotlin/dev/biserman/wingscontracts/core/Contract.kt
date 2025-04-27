@@ -12,8 +12,8 @@ import dev.biserman.wingscontracts.tag.ContractTagHelper.itemStack
 import dev.biserman.wingscontracts.tag.ContractTagHelper.long
 import dev.biserman.wingscontracts.tag.ContractTagHelper.string
 import dev.biserman.wingscontracts.tag.ContractTagHelper.uuid
-import dev.biserman.wingscontracts.tag.NbtCondition
-import dev.biserman.wingscontracts.tag.NbtConditionParser
+import dev.biserman.wingscontracts.tag.ItemCondition
+import dev.biserman.wingscontracts.tag.ItemConditionParser
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.ChatFormatting
@@ -44,7 +44,7 @@ abstract class Contract(
     val id: UUID = UUID.randomUUID(),
     val targetItems: List<Item> = listOf(),
     val targetTags: List<TagKey<Item>> = listOf(),
-    val targetConditions: List<NbtCondition> = listOf(),
+    val targetConditions: List<ItemCondition> = listOf(),
 
     val startTime: Long = System.currentTimeMillis(),
     var currentCycleStart: Long = System.currentTimeMillis(),
@@ -69,12 +69,8 @@ abstract class Contract(
     fun matches(itemStack: ItemStack): Boolean {
         // if any targetCondition fails, return false
         if (targetConditions.isNotEmpty()) {
-            val tag = itemStack.tag
-            if (tag == null) {
-                return false
-            }
-
-            if (targetConditions.any { !it.match(tag) }) {
+            WingsContractsMod.LOGGER.info(itemStack.tag?.get("Enchantments") ?: "got nothing")
+            if (targetConditions.any { !it.match(itemStack) }) {
                 return false
             }
         }
@@ -108,7 +104,7 @@ abstract class Contract(
 
         if (targetItems.isNotEmpty()) {
             return@lazy if (displayItem != null) {
-                displayItem.displayName.string
+                displayItem.displayName.string.trimBrackets()
             } else {
                 targetItems[0].name().trimBrackets()
             }
@@ -189,7 +185,7 @@ abstract class Contract(
             0 -> translateContract("no_targets").string
             1 -> if (targetItems.isNotEmpty()) {
                 if (displayItem != null) {
-                    displayItem.displayName.string
+                    displayItem.displayName.string.trimBrackets()
                 } else {
                     targetItems[0].name().trimBrackets()
                 }
@@ -389,6 +385,10 @@ abstract class Contract(
         var (ContractTag).rarity by int()
         var (ContractTag).displayItem by itemStack()
 
+        val (ContractTag).requiresAll by string() // only needed at gen-time
+        val (ContractTag).requiresAny by string() // only needed at gen-time
+        val (ContractTag).requiresNot by string() // only needed at gen-time
+
         var (ContractTag).targetTags: List<TagKey<Item>>?
             get() {
                 val tagKeys = targetTagKeys ?: return null
@@ -422,13 +422,13 @@ abstract class Contract(
                 targetItemKeys = value?.mapNotNull { it.`arch$registryName`()?.toString() }
             }
 
-        var (ContractTag).targetConditions: List<NbtCondition>?
+        var (ContractTag).targetConditions: List<ItemCondition>?
             get() {
                 if (targetConditionsKeys.isNullOrBlank()) {
                     return null
                 }
 
-                return NbtConditionParser.parse(targetConditionsKeys!!)
+                return ItemConditionParser.parse(targetConditionsKeys!!)
             }
             set(value) {
                 targetConditionsKeys = value?.mapNotNull { it.text }?.joinToString(";")

@@ -27,5 +27,25 @@
     "targetItems": "vegandelight:applesauce",
     "countPerUnit": 24,
     "reward": 2
+  },
+  {
+    "targetItems": "cake",
+    "countPerUnit": 3,
+    "reward": 4,
+    "requiresAny": "vegandelight"
+  },
+  {
+    "targetItems": "pumpkin_pie",
+    "countPerUnit": 3,
+    "reward": 3,
+    "requiresAny": "vegandelight"
+  },
+  {
+    "targetConditions": "nutrition>=14",
+    "countPerUnit": 3,
+    "reward": 4,
+    "name": "wingscontracts.data.vegandelight.feast",
+    "description": "wingscontracts.data.vegandelight.feast_desc",
+    "requiresAny": "vegandelight"
   }
 ]

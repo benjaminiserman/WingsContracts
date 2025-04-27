@@ -19,7 +19,7 @@
     "wingscontracts.contract.complex": "Complex",
     "wingscontracts.contract.unknown": "Unknown",
     "wingscontracts.contract.empty": "Empty",
-    "wingscontracts.contract.no_targets": "Nothing",
+    "wingscontracts.contract.no_targets": "Matching",
     "wingscontracts.contract.items_of_tag": "items of tag %s",
     "wingscontracts.contract.items_of_tag_short": "#%s",
     "wingscontracts.contract.matches_following": "of the following:\n%s",
@@ -78,23 +78,37 @@
     "wingscontracts.data.mushroom": "Overworld Mushroom",
     "wingscontracts.data.mushroom_block": "Overworld Mushroom Block",
     "wingscontracts.data.nether_mushroom": "Nether Mushroom",
+    "wingscontracts.data.food": "Food",
+    "wingscontracts.data.food_desc": "accepts edible food",
+    "wingscontracts.data.stack_16": "Stack 16",
+    "wingscontracts.data.stack_16_desc": "accepts items that stack to 16",
+    "wingscontracts.data.enchanted": "Enchanted",
+    "wingscontracts.data.enchanted_desc": "accepts items that are enchanted",
+    "wingscontracts.data.always_edible": "Always Room for Dessert",
+    "wingscontracts.data.always_edible_desc": "accepts foods you can eat while at full hunger",
+    "wingscontracts.data.potion": "Effective Potions",
+    "wingscontracts.data.potion_desc": "accepts potions that apply a potion effect",
+    "wingscontracts.data.potion_short_targets": "Potions",
 
     "wingscontracts.data.forge.helmets": "Helmets",
     "wingscontracts.data.forge.chestplates": "Chestplates",
     "wingscontracts.data.forge.leggings": "Leggings",
     "wingscontracts.data.forge.boots": "Boots",
     "wingscontracts.data.forge.damaged_equipment": "Damaged Equipment",
-    "wingscontracts.data.forge.damaged_equipment_desc": "only accepts equipment at less than full durability",
+    "wingscontracts.data.forge.damaged_equipment_desc": "accepts equipment at less than full durability",
 
     "wingscontracts.data.botania.tiny_potato_desc": "you monster...",
     "wingscontracts.data.botania.sin_runes": "Runes of Sin",
     "wingscontracts.data.botania.season_runes": "Runes of the Seasons",
+    "wingscontracts.data.botania.element_runes": "Runes of the Elements",
     "wingscontracts.data.botania.quartz": "Botanical Quartz",
     "wingscontracts.data.botania.quartz_short_targets": "of Botania's Quartz",
     "wingscontracts.data.botania.brew_vial": "Brew Vial",
+    "wingscontracts.data.botania.brew_vial_desc": "accepts finished Brew Vials",
     "wingscontracts.data.botania.brew_flask": "Brew Flask",
+    "wingscontracts.data.botania.brew_flask_desc": "accepts finished Brew Flasks",
     "wingscontracts.data.botania.filled_mana_tablet": "Filled Mana Tablet",
-    "wingscontracts.data.botania.filled_mana_tablet_desc": "only accepts 100% full mana tablets",
+    "wingscontracts.data.botania.filled_mana_tablet_desc": "accepts 100% full mana tablets",
 
     "wingscontracts.data.farmersdelight.salads": "Salad",
 
@@ -103,5 +117,8 @@
 
     "wingscontracts.data.miners_delight.vegan_deluxe": "Paleovegan",
     "wingscontracts.data.miners_delight.vegan_deluxe_short_targets": "Miner's Deluxe Meals",
-    "wingscontracts.data.miners_delight.vegan_deluxe_desc": "(may or may not actually be paleo)"
+    "wingscontracts.data.miners_delight.vegan_deluxe_desc": "(may or may not actually be paleo)",
+
+    "wingscontracts.data.vegandelight.feast": "Feasts",
+    "wingscontracts.data.vegandelight.feast_desc": "accepts foods that restore at least 7 shanks of hunger"
 }

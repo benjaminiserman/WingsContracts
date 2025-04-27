@@ -96,7 +96,7 @@
     "baseUnitsDemanded": 128
   },
   {
-    "targetItems": "redstone_link",
+    "targetItems": "create:redstone_link",
     "countPerUnit": 16,
     "baseUnitsDemanded": 96,
     "reward": 2

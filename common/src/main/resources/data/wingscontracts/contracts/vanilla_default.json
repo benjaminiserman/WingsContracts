@@ -161,7 +161,7 @@
   {
     "targetItems": "nether_star",
     "countPerUnit": 1,
-    "baseUnitsDemanded": 16,
+    "baseUnitsDemanded": 32,
     "reward": 32
   },
   {
@@ -580,7 +580,7 @@
   },
   {
     "targetItems": "potion",
-    "targetConditions": "Potion==minecraft:healing",
+    "targetConditions": "tag.Potion==minecraft:healing",
     "displayItem": {
       "id": "potion",
       "Count": 1,
@@ -589,12 +589,11 @@
       }
     },
     "countPerUnit": 8,
-    "baseUnitsDemanded": 48,
-    "reward": 3
+    "reward": 4
   },
   {
     "targetItems": "potion",
-    "targetConditions": "Potion==minecraft:fire_resistance",
+    "targetConditions": "tag.Potion==minecraft:fire_resistance",
     "displayItem": {
       "id": "potion",
       "Count": 1,
@@ -607,7 +606,7 @@
   },
   {
     "targetItems": "potion",
-    "targetConditions": "Potion==minecraft:swiftness",
+    "targetConditions": "tag.Potion==minecraft:swiftness",
     "displayItem": {
       "id": "potion",
       "Count": 1,
@@ -616,11 +615,11 @@
       }
     },
     "countPerUnit": 8,
-    "reward": 2
+    "reward": 3
   },
   {
     "targetItems": "potion",
-    "targetConditions": "Potion==minecraft:night_vision",
+    "targetConditions": "tag.Potion==minecraft:night_vision",
     "displayItem": {
       "id": "potion",
       "Count": 1,
@@ -629,7 +628,7 @@
       }
     },
     "countPerUnit": 8,
-    "reward": 2
+    "reward": 3
   },
   {
     "targetItems": "green_dye",
@@ -676,5 +675,41 @@
   {
     "targetItems": "stick",
     "countPerUnit": 128
+  },
+  {
+    "targetConditions": "isEdible==true",
+    "countPerUnit": 32,
+    "name": "wingscontracts.data.food",
+    "description": "wingscontracts.data.food_desc"
+  },
+  {
+    "targetConditions": "maxStackSize==16",
+    "countPerUnit": 32,
+    "name": "wingscontracts.data.stack_16",
+    "description": "wingscontracts.data.stack_16_desc"
+  },
+  {
+    "targetConditions": "isEnchanted==true",
+    "countPerUnit": 8,
+    "reward": 3,
+    "name": "wingscontracts.data.enchanted",
+    "description": "wingscontracts.data.enchanted_desc"
+  },
+  {
+    "targetConditions": "canAlwaysEat==true",
+    "countPerUnit": 8,
+    "reward": 3,
+    "name": "wingscontracts.data.always_edible",
+    "description": "wingscontracts.data.always_edible_desc"
+  },
+  {
+    "targetItems": "potion",
+    "targetConditions": "tag.Potion!=minecraft:water,tag.Potion!=minecraft:awkward,tag.Potion!=minecraft:thick,tag.Potion!=minecraft:mundane",
+    "countPerUnit": 8,
+    "reward": 2,
+    "baseUnitsDemanded": 96,
+    "name": "wingscontracts.data.potion",
+    "description": "wingscontracts.data.potion_desc",
+    "shortTargetList": "wingscontracts.data.potion_short_targets"
   }
 ]

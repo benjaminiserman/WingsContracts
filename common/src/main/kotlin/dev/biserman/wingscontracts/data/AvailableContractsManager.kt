@@ -5,11 +5,14 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import dev.architectury.platform.Platform
 import dev.biserman.wingscontracts.WingsContractsMod
+import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.Contract.Companion.name
+import dev.biserman.wingscontracts.core.Contract.Companion.requiresAll
+import dev.biserman.wingscontracts.core.Contract.Companion.requiresAny
+import dev.biserman.wingscontracts.core.Contract.Companion.requiresNot
 import dev.biserman.wingscontracts.core.Contract.Companion.targetItemKeys
 import dev.biserman.wingscontracts.core.Contract.Companion.targetTagKeys
-import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.tag.ContractTag
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
@@ -50,6 +53,7 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
         val buildAvailableContracts = mutableListOf<ContractTag>()
         val buildNonDefaultAvailableContracts = mutableListOf<ContractTag>()
 
+        var skippedBecauseUnloaded = 0
         for ((resourceLocation, json) in jsonMap) {
             if (resourceLocation.path.startsWith("_")) {
                 continue
@@ -67,13 +71,30 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
 
                 for (contract in parsedContracts) {
                     // skip contracts that only apply to unloaded mods
-                    val allItemsFailedLoad = (contract.targetItemKeys ?: listOf())
+                    val allItemsFailedLoad = contract.targetItemKeys != null && (contract.targetItemKeys ?: listOf())
                         .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0]) }
-                    val allTagsFailedLoad = (contract.targetTagKeys ?: listOf())
+                    val allTagsFailedLoad = contract.targetTagKeys != null && (contract.targetTagKeys ?: listOf())
                         .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0].trimStart('#')) }
-                    if (allItemsFailedLoad && allTagsFailedLoad
-                    ) {
-                        WingsContractsMod.LOGGER.warn("Skipping contract $contract of unloaded mod")
+                    val allFailedLoad = allItemsFailedLoad && allTagsFailedLoad
+                    val allRequiredModsLoaded = contract.requiresAll.isNullOrBlank()
+                            || contract.requiresAll!!.split(',').all { Platform.isModLoaded(it) }
+                    val anyRequiredModsLoaded = contract.requiresAny.isNullOrBlank()
+                            || contract.requiresAny!!.split(',').any { Platform.isModLoaded(it) }
+
+                    if (allFailedLoad || !allRequiredModsLoaded || !anyRequiredModsLoaded) {
+                        if (!isDefault) {
+                            WingsContractsMod.LOGGER.warn("Skipped custom contract $contract because required mod was not found.")
+                        }
+                        skippedBecauseUnloaded++
+                        continue
+                    }
+
+                    val blockedModFound = !contract.requiresNot.isNullOrBlank()
+                            && contract.requiresNot!!.split(',').any { Platform.isModLoaded(it) }
+                    if (blockedModFound) {
+                        if (!isDefault) {
+                            WingsContractsMod.LOGGER.warn("Skipped custom contract $contract because blocked mod was found.")
+                        }
                         continue
                     }
 
@@ -86,9 +107,15 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
                         WingsContractsMod.LOGGER.warn("Found invalid contract $contract in $resourceLocation")
                     }
                 }
+
+
             } catch (e: Exception) {
                 WingsContractsMod.LOGGER.error("Error while loading available contracts at $resourceLocation", e)
             }
+        }
+
+        if (skippedBecauseUnloaded != 0) {
+            WingsContractsMod.LOGGER.info("Skipped $skippedBecauseUnloaded contracts from unloaded mods.")
         }
 
         allAvailableContracts = buildAvailableContracts.toList()

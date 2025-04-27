@@ -53,7 +53,8 @@
   },
   {
     "targetTags": "#forge:string",
-    "countPerUnit": 24
+    "countPerUnit": 24,
+    "requiresAny": "supplementaries"
   },
   {
     "targetTags": "#forge:armors/helmets",
@@ -81,8 +82,7 @@
   },
   {
     "targetTags": "#forge:armors",
-    "countPerUnit": 6,
-    "reward": 2
+    "countPerUnit": 4
   },
   {
     "targetTags": "#forge:heads",
@@ -96,7 +96,7 @@
   },
   {
     "targetTags": "#forge:tools,#forge:armors",
-    "targetConditions": "Damage>0",
+    "targetConditions": "tag.Damage>0",
     "countPerUnit": 8,
     "baseUnitsDemanded": 128,
     "name": "wingscontracts.data.forge.damaged_equipment",
