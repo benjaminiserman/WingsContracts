@@ -26,7 +26,7 @@ val GSON: Gson = (GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().creat
 object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contracts") {
     private var allAvailableContracts = listOf<ContractTag>()
     private var nonDefaultAvailableContracts = listOf<ContractTag>()
-    private val availableContracts
+    val availableContracts
         get() = if (ModConfig.SERVER.disableDefaultContractOptions.get()) {
             nonDefaultAvailableContracts
         } else {
@@ -42,7 +42,6 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
         } else {
             ContractTag(availableContracts.random().tag.copy())
         }
-
 
     override fun apply(
         jsonMap: Map<ResourceLocation, JsonElement>,

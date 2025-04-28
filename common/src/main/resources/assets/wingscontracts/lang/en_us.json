@@ -41,7 +41,8 @@
 
     "commands.wingscontracts.give_contract": "Successfully gave contract.",
     "commands.wingscontracts.failed.load": "Error: failed to load contract.",
-    "commands.wingscontracts.failed.not_in_hand": "Error: no contract in hand",
+    "commands.wingscontracts.failed.not_in_hand": "Error: no contract in hand.",
+    "commands.wingscontracts.failed.unavailable_page": "Error: page %d does not exist. Last page is %d.",
 
 
     "item.wingscontracts.contract": "%s Contract",
@@ -55,14 +56,6 @@
 
     "wingscontracts.gui.contract_portal.refreshes_in": "Refreshes in: %s",
     "wingscontracts.gui.contract_portal.remaining_picks": "Remaining picks: %s",
-
-
-    "wingscontracts.command.contract.unit_price_greater_than_zero": "unitPrice must be greater than 0",
-    "wingscontracts.command.contract.count_per_unit_greater_than_zero": "countPerUnit must be greater than 0",
-    "wingscontracts.command.contract.base_units_demanded_greater_than_zero": "baseUnitsDemanded must be greater than 0",
-    "wingscontracts.command.contract.quantity_growth_non_negative": "quantityGrowthFactor must be non-negative",
-    "wingscontracts.command.contract.max_level_negative_one_or_positive": "maxLevel must be -1 or greater than 0",
-    "wingscontracts.command.contract.unknown_author": "Unknown",
 
 
     "wingscontracts.subtitles.block.contract_portal.spit": "Contract portal spits reward",
@@ -92,6 +85,10 @@
     "wingscontracts.data.potion_short_targets": "Potions",
     "wingscontracts.data.infinity_bow": "Infinity Bow",
     "wingscontracts.data.infinity_bow_desc": "accepts bows enchanted with infinity",
+    "wingscontracts.data.z": "Z",
+    "wingscontracts.data.z_desc": "accepts items that have the letter Z in their item ID",
+    "wingscontracts.data.modded": "Modded",
+    "wingscontracts.data.modded_desc": "accepts items that don't exist in Vanilla",
 
     "wingscontracts.data.forge.helmets": "Helmets",
     "wingscontracts.data.forge.chestplates": "Chestplates",

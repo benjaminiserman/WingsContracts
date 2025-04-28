@@ -130,6 +130,8 @@ object ItemConditionParser {
                 ).toString()
             })
             "mod" -> ({ it.item.`arch$registryName`()?.namespace ?: "" })
+            "path" -> ({ it.item.`arch$registryName`()?.path ?: "" })
+            "id" -> ({ it.item.`arch$registryName`()?.toString() ?: "" })
             "isBarVisible" -> ({ it.isBarVisible.toString() })
             "barWidth" -> ({ it.barWidth.toString() })
             "barColor" -> ({ it.barColor.toString() })
@@ -154,7 +156,6 @@ object ItemConditionParser {
 
         val compareToValue: String.() -> Int = when {
             value == "true" || value == "false" -> ({ this.compareTo(value) })
-//            value.toIntOrNull() != null -> ({ this.toDouble().compareTo(value.toDouble()) })
             value.toDoubleOrNull() != null -> ({ this.toDouble().compareTo(value.toDouble()) })
             else -> ({ this.trim('"').compareTo(value.trim('"', '\'')) })
         }

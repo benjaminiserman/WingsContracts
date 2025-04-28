@@ -12,6 +12,7 @@ object ModCommand {
     fun register(): ArgumentBuilder<CommandSourceStack, *> =
         Commands.literal("contract")
             .requires { sourceStack: CommandSourceStack -> sourceStack.hasPermission(2) }
+            .then(DebugContractCommand.register())
             .then(LoadContractCommand.register())
             .then(RandomContractCommand.register())
             .then(CopyContractCommand.register())

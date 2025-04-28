@@ -2,6 +2,7 @@ package dev.biserman.wingscontracts.item
 
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.config.ModConfig
+import dev.biserman.wingscontracts.data.AvailableContractsManager
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.tag.ContractTagHelper
@@ -96,7 +97,7 @@ class ContractItem(properties: Properties) : Item(properties) {
             && ContractTagHelper.getContractTag(itemStack) == null
             && ModConfig.SERVER.randomizeCraftedContracts.get()
         ) {
-            val contract = AvailableContractsData.get(level).generateContract()
+            val contract = AvailableContractsData.get(level).generateContract(AvailableContractsManager.randomTag())
             val item = contract.createItem()
             ContractTagHelper.setContractTag(itemStack, ContractTagHelper.getContractTag(item)!!)
         }

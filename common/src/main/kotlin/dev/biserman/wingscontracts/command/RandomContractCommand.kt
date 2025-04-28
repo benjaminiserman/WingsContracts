@@ -2,6 +2,7 @@ package dev.biserman.wingscontracts.command
 
 import com.mojang.brigadier.builder.ArgumentBuilder
 import dev.biserman.wingscontracts.command.ModCommand.giveContract
+import dev.biserman.wingscontracts.data.AvailableContractsManager
 import dev.biserman.wingscontracts.server.AvailableContractsData
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
@@ -15,7 +16,8 @@ object RandomContractCommand {
                     .executes { context ->
                         giveContract(
                             context.source,
-                            AvailableContractsData.get(context.source.level).generateContract(),
+                            AvailableContractsData.get(context.source.level)
+                                .generateContract(AvailableContractsManager.randomTag()),
                             EntityArgument.getPlayers(context, "targets")
                         )
                     })

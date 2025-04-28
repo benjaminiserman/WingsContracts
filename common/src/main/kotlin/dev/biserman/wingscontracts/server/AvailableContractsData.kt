@@ -3,6 +3,8 @@
 package dev.biserman.wingscontracts.server
 
 import dev.biserman.wingscontracts.WingsContractsMod
+import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
+import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.AbyssalContract.Companion.reward
 import dev.biserman.wingscontracts.core.Contract
@@ -10,9 +12,8 @@ import dev.biserman.wingscontracts.core.Contract.Companion.baseUnitsDemanded
 import dev.biserman.wingscontracts.core.Contract.Companion.countPerUnit
 import dev.biserman.wingscontracts.core.Contract.Companion.currentCycleStart
 import dev.biserman.wingscontracts.core.Contract.Companion.startTime
-import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
-import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.data.AvailableContractsManager
+import dev.biserman.wingscontracts.tag.ContractTag
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.nbt.CompoundTag
@@ -62,7 +63,7 @@ class AvailableContractsData : SavedData() {
 
         container.clearContent()
         for (i in 0..<container.containerSize) {
-            container.items[i] = generateContract().createItem()
+            container.items[i] = generateContract(AvailableContractsManager.randomTag()).createItem()
         }
 
         SyncAvailableContractsMessage(level).sendToAll(level.server)
@@ -76,8 +77,7 @@ class AvailableContractsData : SavedData() {
         return max(1.0, value.toDouble() * multiplier * varianceFactor).roundToInt()
     }
 
-    fun generateContract(): Contract {
-        val tag = AvailableContractsManager.randomTag()
+    fun generateContract(tag: ContractTag): Contract {
         tag.currentCycleStart = currentCycleStart
         tag.startTime = currentCycleStart
         tag.baseUnitsDemanded = vary(tag.baseUnitsDemanded ?: 64, ModConfig.SERVER.defaultUnitsDemandedMultiplier.get())

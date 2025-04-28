@@ -735,5 +735,18 @@
     "targetItems": "shield",
     "countPerUnit": 4,
     "baseUnitsDemanded": 96
+  },
+  {
+    "targetConditions": "path<-z",
+    "countPerUnit": 16,
+    "reward": 3,
+    "name": "wingscontracts.data.z",
+    "description": "wingscontracts.data.z_desc"
+  },
+  {
+    "targetConditions": "mod!=minecraft",
+    "countPerUnit": 256,
+    "name": "wingscontracts.data.modded",
+    "description": "wingscontracts.data.modded_desc"
   }
 ]
