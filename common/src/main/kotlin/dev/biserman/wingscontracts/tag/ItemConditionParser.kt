@@ -91,7 +91,7 @@ object ItemConditionParser {
         }
     }
 
-    val conditionRegex = Regex("^(.+?)(==|!=|<=|>=|<-|<|>)(.+)$")
+    val conditionRegex = Regex("^(.+?)(!<-|==|!=|<=|>=|<-|!\\$|<|>|\\$)(.+)$")
     fun parseCondition(condition: String): ItemCondition? {
         val match = conditionRegex.matchEntire(condition)
         if (match == null) {
@@ -109,7 +109,7 @@ object ItemConditionParser {
             default: String
         ): (ItemStack) -> String = ({ navigate(navigationComponents, default)(it.tag) })
 
-        val fetchValue: (ItemStack) -> String = when (keyComponents[0]) {
+        val fetchItemValue: (ItemStack) -> String = when (keyComponents[0]) {
             "tag" -> when {
                 value == "true" || value == "false" -> wrapNavigate("false")
                 value.toIntOrNull() != null -> wrapNavigate("0")
@@ -151,6 +151,8 @@ object ItemConditionParser {
             "canAlwaysEat" -> ({ it.item.foodProperties?.canAlwaysEat()?.toString() ?: "false" })
             "fastFood" -> ({ it.item.foodProperties?.isFastFood?.toString() ?: "false" })
             "isBlock" -> ({ (it.item is BlockItem).toString() })
+            "class" -> ({ it.item.javaClass.name })
+            "displayName" -> ({ it.displayName.string })
             else -> throw Error("Condition key not recognized: ${keyComponents[0]}")
         }
 
@@ -161,13 +163,22 @@ object ItemConditionParser {
         }
 
         return when (operator) {
-            "==" -> ItemCondition(condition) { fetchValue(it).compareToValue() == 0 }
-            "!=" -> ItemCondition(condition) { fetchValue(it).compareToValue() != 0 }
-            "<" -> ItemCondition(condition) { fetchValue(it).compareToValue() < 0 }
-            ">" -> ItemCondition(condition) { fetchValue(it).compareToValue() > 0 }
-            "<=" -> ItemCondition(condition) { fetchValue(it).compareToValue() <= 0 }
-            ">=" -> ItemCondition(condition) { fetchValue(it).compareToValue() >= 0 }
-            "<-" -> ItemCondition(condition) { fetchValue(it).contains(value) }
+            "==" -> ItemCondition(condition) { fetchItemValue(it).compareToValue() == 0 }
+            "!=" -> ItemCondition(condition) { fetchItemValue(it).compareToValue() != 0 }
+            "<" -> ItemCondition(condition) { fetchItemValue(it).compareToValue() < 0 }
+            ">" -> ItemCondition(condition) { fetchItemValue(it).compareToValue() > 0 }
+            "<=" -> ItemCondition(condition) { fetchItemValue(it).compareToValue() <= 0 }
+            ">=" -> ItemCondition(condition) { fetchItemValue(it).compareToValue() >= 0 }
+            "<-" -> ItemCondition(condition) { fetchItemValue(it).contains(value) }
+            "!<-" -> ItemCondition(condition) { !fetchItemValue(it).contains(value) }
+            "$" -> {
+                val regex = Regex(value)
+                ItemCondition(condition) { regex.matches(fetchItemValue(it)) }
+            }
+            "!$" -> {
+                val regex = Regex(value)
+                ItemCondition(condition) { !regex.matches(fetchItemValue(it)) }
+            }
             else -> {
                 WingsContractsMod.LOGGER.warn("Failed to parse condition $condition: unknown operator $operator")
                 null

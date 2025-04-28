@@ -52,7 +52,7 @@
     "reward": 3
   },
   {
-    "targetItems": "farmersdelight:fruit_salad,farmersdelight:mixed_salad,farmersdelight:nether_salad,fruitsdelight:mango_salad",
+    "targetItems": "farmersdelight:fruit_salad,farmersdelight:mixed_salad,farmersdelight:nether_salad,fruitsdelight:mango_salad,garnished:salad",
     "countPerUnit": 4,
     "reward": 3,
     "name": "wingscontracts.data.farmersdelight.salads"

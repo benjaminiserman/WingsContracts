@@ -7,8 +7,9 @@
   },
   {
     "targetItems": "create:sturdy_sheet",
-    "countPerUnit": 16,
-    "reward": 4
+    "countPerUnit": 32,
+    "reward": 3,
+    "baseUnitsDemanded": 96
   },
   {
     "targetItems": "create:propeller",

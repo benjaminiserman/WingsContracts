@@ -568,7 +568,9 @@
   {
     "targetTags": "#minecraft:rails",
     "countPerUnit": 64,
-    "reward": 2
+    "reward": 2,
+    "targetConditions": "id!=minecraft:rail",
+    "description": "wingscontracts.data.rails_desc"
   },
   {
     "targetItems": "glass_bottle",
@@ -749,5 +751,17 @@
     "countPerUnit": 256,
     "name": "wingscontracts.data.modded",
     "description": "wingscontracts.data.modded_desc"
+  },
+  {
+    "targetItems": "cobweb,jack_o_lantern,cauldron,skeleton_skull,wither_skeleton_skull,neapolitan:mint_candies,neapolitan:strawberry_bean_bonbons",
+    "countPerUnit": 16,
+    "reward": 3,
+    "name": "wingscontracts.data.halloween"
+  },
+  {
+    "targetItems": "chest,cookie,snowball,spruce_sapling,nether_star,coal,alexscaves:candy_cane,createaddition:festive_spool",
+    "countPerUnit": 16,
+    "reward": 2,
+    "name": "wingscontracts.data.christmas"
   }
 ]

@@ -1,0 +1,13 @@
+[
+  {
+    "targetItems": "createaddition:capacitor",
+    "baseUnitsDemanded": 96,
+    "countPerUnit": 12,
+    "reward": 2
+  },
+  {
+    "targetTags": "#createaddition:spools",
+    "countPerUnit": 16,
+    "reward": 2
+  }
+]

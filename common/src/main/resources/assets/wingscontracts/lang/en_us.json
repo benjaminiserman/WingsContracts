@@ -74,6 +74,7 @@
     "wingscontracts.data.nether_mushroom": "Nether Mushroom",
     "wingscontracts.data.food": "Food",
     "wingscontracts.data.food_desc": "accepts any edible items",
+    "wingscontracts.data.rails_desc": "does not accept basic rails",
     "wingscontracts.data.stack_16": "Stack 16",
     "wingscontracts.data.stack_16_desc": "accepts items that stack to 16",
     "wingscontracts.data.enchanted": "Enchanted",
@@ -89,6 +90,8 @@
     "wingscontracts.data.z_desc": "accepts items that have the letter Z in their item ID",
     "wingscontracts.data.modded": "Modded",
     "wingscontracts.data.modded_desc": "accepts items that don't exist in Vanilla",
+    "wingscontracts.data.halloween": "Halloween",
+    "wingscontracts.data.christmas": "Christmas",
 
     "wingscontracts.data.forge.helmets": "Helmets",
     "wingscontracts.data.forge.chestplates": "Chestplates",
@@ -98,6 +101,8 @@
     "wingscontracts.data.forge.damaged_equipment_desc": "accepts equipment at less than full durability",
     "wingscontracts.data.forge.tough_armor": "Tough Armor",
     "wingscontracts.data.forge.tough_armor_desc": "accepts armor that adds to your toughness",
+
+    "wingscontracts.data.ae2.processors": "Energistic Processors",
 
     "wingscontracts.data.botania.tiny_potato_desc": "you monster...",
     "wingscontracts.data.botania.sin_runes": "Runes of Sin",
