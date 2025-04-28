@@ -33,5 +33,11 @@
     "targetItems": "neapolitan:adzuki_stew",
     "countPerUnit": 6,
     "reward": 2
+  },
+  {
+    "targetTags": "#neapolitan:ice_cream",
+    "countPerUnit": 8,
+    "reward": 3,
+    "requiresAny": "vegandelight"
   }
 ]

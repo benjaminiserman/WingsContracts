@@ -190,11 +190,12 @@
   {
     "targetItems": "golden_carrot",
     "countPerUnit": 16,
+    "baseUnitsDemanded": 96,
     "reward": 2
   },
   {
     "targetItems": "gunpowder",
-    "countPerUnit": 24,
+    "countPerUnit": 12,
     "reward": 2
   },
   {
@@ -502,8 +503,8 @@
   },
   {
     "targetItems": "tnt",
-    "countPerUnit": 16,
-    "reward": 4
+    "countPerUnit": 3,
+    "reward": 3
   },
   {
     "targetItems": "firework_rocket",
