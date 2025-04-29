@@ -9,5 +9,11 @@
     "targetTags": "#createaddition:spools",
     "countPerUnit": 16,
     "reward": 2
+  },
+  {
+    "targetItems": "createaddition:honey_cake",
+    "countPerUnit": 3,
+    "reward": 4,
+    "requiresAny": "vegandelight"
   }
 ]

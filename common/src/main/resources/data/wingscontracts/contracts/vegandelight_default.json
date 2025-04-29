@@ -41,6 +41,12 @@
     "requiresAny": "vegandelight"
   },
   {
+    "targetItems": "glow_ink_sac",
+    "countPerUnit": 8,
+    "reward": 3,
+    "requiresAll": "vegandelight,create"
+  },
+  {
     "targetConditions": "nutrition>=14",
     "countPerUnit": 3,
     "reward": 4,

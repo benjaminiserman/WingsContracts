@@ -1,0 +1,42 @@
+[
+  {
+    "targetTags": "#brewinandchewin:fermented_drinks",
+    "countPerUnit": 16,
+    "reward": 2
+  },
+  {
+    "targetItems": "brewinandchewin:beer",
+    "countPerUnit": 16,
+    "baseUnitsDemanded": 96,
+    "reward": 2
+  },
+  {
+    "targetItems": "brewinandchewin:kimchi",
+    "countPerUnit": 16,
+    "baseUnitsDemanded": 96,
+    "reward": 2
+  },
+  {
+    "targetItems": "brewinandchewin:vodka",
+    "countPerUnit": 16,
+    "baseUnitsDemanded": 96,
+    "reward": 2
+  },
+  {
+    "targetItems": "brewinandchewin:strongroot_ale",
+    "countPerUnit": 16,
+    "reward": 3,
+    "requiresAny": "vegandelight"
+  },
+  {
+    "targetItems": "brewinandchewin:steel_toe_stout",
+    "countPerUnit": 8,
+    "reward": 4,
+    "requiresAny": "vegandelight"
+  },
+  {
+    "targetItems": "brewinandchewin:jerky",
+    "countPerUnit": 16,
+    "reward": 2
+  }
+]
