@@ -705,6 +705,13 @@
     "description": "wingscontracts.data.always_edible_desc"
   },
   {
+    "targetConditions": "isFastFood==true",
+    "countPerUnit": 64,
+    "baseUnitsDemanded": 96,
+    "name": "wingscontracts.data.fast_food",
+    "description": "wingscontracts.data.fast_food_desc"
+  },
+  {
     "targetItems": "potion",
     "targetConditions": "tag.Potion!=minecraft:water,tag.Potion!=minecraft:awkward,tag.Potion!=minecraft:thick,tag.Potion!=minecraft:mundane",
     "countPerUnit": 8,
@@ -713,26 +720,6 @@
     "name": "wingscontracts.data.potion",
     "description": "wingscontracts.data.potion_desc",
     "shortTargetList": "wingscontracts.data.potion_short_targets"
-  },
-  {
-    "targetItems": "bow",
-    "targetConditions": "tag.Enchantments<-minecraft:infinity",
-    "countPerUnit": 1,
-    "reward": 4,
-    "name": "wingscontracts.data.infinity_bow",
-    "description": "wingscontracts.data.infinity_bow_desc",
-    "displayItem": {
-      "id": "bow",
-      "Count": 1,
-      "tag": {
-        "Enchantments": [
-          {
-            "id": "minecraft:infinity",
-            "lvl": 1
-          }
-        ]
-      }
-    }
   },
   {
     "targetItems": "shield",
@@ -759,9 +746,16 @@
     "name": "wingscontracts.data.halloween"
   },
   {
-    "targetItems": "chest,cookie,snowball,spruce_sapling,nether_star,coal,alexscaves:candy_cane,createaddition:festive_spool",
+    "targetItems": "chest,cookie,snow_block,spruce_sapling,nether_star,coal,alexscaves:candy_cane,createaddition:festive_spool",
     "countPerUnit": 16,
     "reward": 2,
     "name": "wingscontracts.data.christmas"
+  },
+  {
+    "targetConditions": "burnTicks>1600",
+    "countPerUnit": 16,
+    "reward": 2,
+    "name": "wingscontracts.data.better_than_coal",
+    "description": "wingscontracts.data.better_than_coal_desc"
   }
 ]

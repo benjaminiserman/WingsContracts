@@ -81,17 +81,19 @@
     "wingscontracts.data.enchanted_desc": "accepts items that are enchanted",
     "wingscontracts.data.always_edible": "Always Room for Dessert",
     "wingscontracts.data.always_edible_desc": "accepts foods you can eat while at full hunger",
+    "wingscontracts.data.fast_food": "Fast Food",
+    "wingscontracts.data.fast_food_desc": "accepts foods you can eat more quickly than usual",
     "wingscontracts.data.potion": "Effective Potions",
     "wingscontracts.data.potion_desc": "accepts potions that apply a potion effect",
     "wingscontracts.data.potion_short_targets": "Potions",
-    "wingscontracts.data.infinity_bow": "Infinity Bow",
-    "wingscontracts.data.infinity_bow_desc": "accepts bows enchanted with infinity",
     "wingscontracts.data.z": "Z",
     "wingscontracts.data.z_desc": "accepts items that have the letter Z in their item ID",
     "wingscontracts.data.modded": "Modded",
     "wingscontracts.data.modded_desc": "accepts items that don't exist in Vanilla",
     "wingscontracts.data.halloween": "Halloween",
     "wingscontracts.data.christmas": "Christmas",
+    "wingscontracts.data.better_than_coal": "Better than Coal",
+    "wingscontracts.data.better_than_coal_desc": "accepts items that have a longer burn time than coal",
 
     "wingscontracts.data.forge.helmets": "Helmets",
     "wingscontracts.data.forge.chestplates": "Chestplates",
@@ -116,6 +118,16 @@
     "wingscontracts.data.botania.brew_flask_desc": "accepts non-empty Brew Flasks",
     "wingscontracts.data.botania.filled_mana_tablet": "Filled Mana Tablet",
     "wingscontracts.data.botania.filled_mana_tablet_desc": "accepts 100% full mana tablets",
+
+    "wingscontracts.data.create_enchantment_industry.infinity_bow": "Infinity Bow",
+    "wingscontracts.data.create_enchantment_industry.infinity_bow_desc": "accepts bows enchanted with infinity",
+    "wingscontracts.data.create_enchantment_industry.two_enchantments": "Two Enchantments",
+    "wingscontracts.data.create_enchantment_industry.two_enchantments_desc": "accepts items that have two different enchantments",
+    "wingscontracts.data.create_enchantment_industry.lvl_five": "V",
+    "wingscontracts.data.create_enchantment_industry.lvl_five_desc": "accepts items that have a level 5 enchantment",
+    "wingscontracts.data.create_enchantment_industry.lvl_six": "Ancient Enchantment",
+    "wingscontracts.data.create_enchantment_industry.lvl_six_desc": "accepts items that have a level 6 enchantment",
+
 
     "wingscontracts.data.farmersdelight.salads": "Salad",
 

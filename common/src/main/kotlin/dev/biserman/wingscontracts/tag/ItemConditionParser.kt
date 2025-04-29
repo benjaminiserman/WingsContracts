@@ -2,6 +2,7 @@
 
 package dev.biserman.wingscontracts.tag
 
+import dev.architectury.registry.fuel.FuelRegistry
 import dev.biserman.wingscontracts.WingsContractsMod
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
@@ -50,9 +51,6 @@ object ItemConditionParser {
             entries.add(currentEntry)
         }
 
-        if (entries.size > 1) {
-            WingsContractsMod.LOGGER.info("Found big one! ${entries.joinToString(", ")}")
-        }
         return entries.toList()
     }
 
@@ -149,10 +147,11 @@ object ItemConditionParser {
             "saturationModifier" -> ({ it.item.foodProperties?.saturationModifier?.toString() ?: "0.0" })
             "isMeat" -> ({ it.item.foodProperties?.isMeat?.toString() ?: "false" })
             "canAlwaysEat" -> ({ it.item.foodProperties?.canAlwaysEat()?.toString() ?: "false" })
-            "fastFood" -> ({ it.item.foodProperties?.isFastFood?.toString() ?: "false" })
+            "isFastFood" -> ({ it.item.foodProperties?.isFastFood?.toString() ?: "false" })
             "isBlock" -> ({ (it.item is BlockItem).toString() })
             "class" -> ({ it.item.javaClass.name })
             "displayName" -> ({ it.displayName.string })
+            "burnTicks" -> ({ FuelRegistry.get(it).toString() })
             else -> throw Error("Condition key not recognized: ${keyComponents[0]}")
         }
 

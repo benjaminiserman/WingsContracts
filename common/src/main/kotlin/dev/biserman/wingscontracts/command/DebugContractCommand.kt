@@ -31,8 +31,9 @@ object DebugContractCommand {
         if (page > maxPage) {
             sourceStack.sendFailure(
                 Component.translatable(
-                    "commands.${WingsContractsMod.MOD_ID}.failed.unavailable_page", page,
-                    AvailableContractsManager.availableContracts.size / PAGE_SIZE
+                    "commands.${WingsContractsMod.MOD_ID}.failed.unavailable_page",
+                    page,
+                    maxPage
                 )
             )
             return 0
