@@ -163,5 +163,10 @@
     "requiresAny": "farmersdelight,create,garnished",
     "countPerUnit": 48,
     "baseUnitsDemanded": 96
+  },
+  {
+    "targetBlockTags": "#forge:storage_blocks",
+    "countPerUnit": 16,
+    "reward": 2
   }
 ]

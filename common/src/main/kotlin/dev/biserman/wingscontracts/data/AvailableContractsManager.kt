@@ -11,6 +11,7 @@ import dev.biserman.wingscontracts.core.Contract.Companion.name
 import dev.biserman.wingscontracts.core.Contract.Companion.requiresAll
 import dev.biserman.wingscontracts.core.Contract.Companion.requiresAny
 import dev.biserman.wingscontracts.core.Contract.Companion.requiresNot
+import dev.biserman.wingscontracts.core.Contract.Companion.targetBlockTagKeys
 import dev.biserman.wingscontracts.core.Contract.Companion.targetConditionsKeys
 import dev.biserman.wingscontracts.core.Contract.Companion.targetItemKeys
 import dev.biserman.wingscontracts.core.Contract.Companion.targetTagKeys
@@ -75,7 +76,14 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
                         .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0]) }
                     val allTagsFailedLoad = (contract.targetTagKeys ?: listOf())
                         .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0].trimStart('#')) }
-                    val allFailedLoad = allItemsFailedLoad && allTagsFailedLoad && contract.targetConditionsKeys.isNullOrBlank()
+                    val allBlockTagsFailedLoad = (contract.targetBlockTagKeys ?: listOf())
+                        .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0].trimStart('#')) }
+                    val allFailedLoad = allItemsFailedLoad
+                            && allTagsFailedLoad
+                            && allBlockTagsFailedLoad
+                            && contract.targetConditionsKeys.isNullOrBlank()
+
+                    // check for required mods
                     val allRequiredModsLoaded = contract.requiresAll.isNullOrBlank()
                             || contract.requiresAll!!.split(',').all { Platform.isModLoaded(it) }
                     val anyRequiredModsLoaded = contract.requiresAny.isNullOrBlank()

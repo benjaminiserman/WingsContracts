@@ -22,6 +22,7 @@ import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.level.block.Block
 import java.util.*
 import kotlin.math.max
 import kotlin.math.pow
@@ -32,6 +33,7 @@ class AbyssalContract(
     id: UUID,
     targetItems: List<Item>,
     targetTags: List<TagKey<Item>>,
+    targetBlockTags: List<TagKey<Block>>,
     targetConditions: List<ItemCondition>,
 
     startTime: Long,
@@ -62,6 +64,7 @@ class AbyssalContract(
     id,
     targetItems,
     targetTags,
+    targetBlockTags,
     targetConditions,
     startTime,
     currentCycleStart,
@@ -215,13 +218,18 @@ class AbyssalContract(
                     prop.name, when (prop.name) {
                         "targetItems" -> targetItems.map { it.defaultInstance.details }
                         "targetTags" -> targetTags.map { "#${it.location}" }
+                        "targetBlockTags" -> targetBlockTags.map { "#${it.location}" }
                         "reward" -> reward.details
                         else -> prop.get(this)
                     })
             }.toMutableMap()
 
     val isValid
-        get() = (targetItems.any { it != Items.AIR } || targetTags.any() || targetConditions.any()) && reward.item != Items.AIR
+        get() = reward.item != Items.AIR
+                && (targetItems.any { it != Items.AIR }
+                        || targetTags.any()
+                        || targetBlockTags.any()
+                        || targetConditions.any())
 
     companion object {
         var (ContractTag).reward by itemStack()
@@ -235,6 +243,7 @@ class AbyssalContract(
                 id = contract.id ?: UUID.randomUUID(),
                 targetItems = contract.targetItems ?: listOf(),
                 targetTags = contract.targetTags ?: listOf(),
+                targetBlockTags = contract.targetBlockTags ?: listOf(),
                 targetConditions = contract.targetConditions ?: listOf(),
                 startTime = contract.startTime ?: System.currentTimeMillis(),
                 currentCycleStart = contract.currentCycleStart ?: System.currentTimeMillis(),

@@ -757,5 +757,34 @@
     "reward": 2,
     "name": "wingscontracts.data.better_than_coal",
     "description": "wingscontracts.data.better_than_coal_desc"
+  },
+  {
+    "targetBlockTags": "#minecraft:enderman_holdable",
+    "countPerUnit": 32
+  },
+  {
+    "targetBlockTags": "#minecraft:climbable",
+    "countPerUnit": 48
+  },
+  {
+    "targetBlockTags": "#minecraft:infiniburn_overworld",
+    "countPerUnit": 32,
+    "reward": 2
+  },
+  {
+    "targetBlockTags": "#minecraft:mineable/hoe",
+    "countPerUnit": 64,
+    "baseUnitsDemanded": 96
+  },
+  {
+    "targetBlockTags": "#minecraft:inside_step_sound_blocks",
+    "countPerUnit": 32,
+    "reward": 2
+  },
+  {
+    "targetBlockTags": "#minecraft:corals",
+    "countPerUnit": 16,
+    "reward": 2,
+    "baseUnitsDemanded": 96
   }
 ]

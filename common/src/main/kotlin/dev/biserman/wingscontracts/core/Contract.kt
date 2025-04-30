@@ -26,13 +26,15 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
 import net.minecraft.util.Mth
+import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.block.Block
 import java.util.*
 import kotlin.math.min
 
 fun (Item).name(): String = this.defaultInstance.displayName.string
-fun (TagKey<Item>).name(): String {
+fun <T> (TagKey<T>).name(): String {
     val path = this.location.path
     val firstLetterCapital = path.substring(0, 1).uppercase(Locale.getDefault())
     return "${firstLetterCapital}${path.substring(1)}"
@@ -44,6 +46,7 @@ abstract class Contract(
     val id: UUID = UUID.randomUUID(),
     val targetItems: List<Item> = listOf(),
     val targetTags: List<TagKey<Item>> = listOf(),
+    val targetBlockTags: List<TagKey<Block>> = listOf(),
     val targetConditions: List<ItemCondition> = listOf(),
 
     val startTime: Long = System.currentTimeMillis(),
@@ -78,6 +81,11 @@ abstract class Contract(
             return targetTags.any { itemStack.`is`(it) }
         }
 
+        val blockItem = itemStack.item as? BlockItem
+        if (blockItem != null && targetBlockTags.isNotEmpty()) {
+            return targetBlockTags.any { blockItem.block.defaultBlockState().`is`(it) }
+        }
+
         if (targetItems.isNotEmpty()) {
             return targetItems.any { itemStack.item == it }
         }
@@ -87,12 +95,17 @@ abstract class Contract(
 
     val displayItems by lazy {
         if (displayItem == null) {
-            if (targetItems.isEmpty() && targetTags.isEmpty()) {
+            if (targetItems.isEmpty() && targetTags.isEmpty() && targetBlockTags.isEmpty()) {
                 listOf(ModItemRegistry.QUESTION_MARK.get()!!.defaultInstance)
             } else {
                 targetItems.map { it.defaultInstance }.plus(targetTags.flatMap {
                     BuiltInRegistries.ITEM.getTagOrEmpty(it).map { holder -> holder.value().defaultInstance }
-                })
+                }).plus(
+                    targetBlockTags.flatMap {
+                        BuiltInRegistries.BLOCK.getTagOrEmpty(it)
+                            .map { holder -> holder.value().asItem().defaultInstance }
+                    }
+                )
             }
         } else {
             listOf(displayItem)
@@ -100,7 +113,7 @@ abstract class Contract(
     }
 
     open val targetName: String by lazy {
-        val targetComponentCount = targetItems.size + targetTags.size
+        val targetComponentCount = targetItems.size + targetTags.size + targetBlockTags.size
         if (targetComponentCount > 1) {
             return@lazy translateContract("complex").string
         }
@@ -115,6 +128,14 @@ abstract class Contract(
 
         if (targetTags.isNotEmpty()) {
             return@lazy targetTags[0].name()
+                .split("/")
+                .reversed()
+                .flatMap { it.split("_") }
+                .joinToString(" ") { it.replaceFirstChar { it.titlecase(Locale.getDefault()) } }
+        }
+
+        if (targetBlockTags.isNotEmpty()) {
+            return@lazy targetBlockTags[0].name()
                 .split("/")
                 .reversed()
                 .flatMap { it.split("_") }
@@ -169,7 +190,7 @@ abstract class Contract(
         )
 
     fun listTargets(displayShort: Boolean): String {
-        val totalSize = targetItems.size + targetTags.size
+        val totalSize = targetItems.size + targetTags.size + targetBlockTags.size
 
         val separator = if (displayShort) "|" else "\n"
         val complexPrefix = if (displayShort) "" else " - "
@@ -192,14 +213,19 @@ abstract class Contract(
                 } else {
                     targetItems[0].name().trimBrackets()
                 }
-            } else {
+            } else if (targetTags.isNotEmpty()) {
                 translateContract(tagKey, targetTags[0].location()).string
+            } else if (targetBlockTags.isNotEmpty()) {
+                translateContract(tagKey, targetBlockTags[0].location()).string
+            } else {
+                ""
             }
             else -> translateContract(
                 complexKey,
                 targetItems.asSequence()
                     .map { it.name().trimBrackets() }
                     .plus(targetTags.map { it.name() })
+                    .plus(targetBlockTags.map { it.name() })
                     .joinToString(separator = separator) { "$complexPrefix$it" })
                 .string
         }
@@ -331,6 +357,7 @@ abstract class Contract(
         tag.id = id
         tag.targetItems = targetItems
         tag.targetTags = targetTags
+        tag.targetBlockTags = targetBlockTags
         tag.targetConditions = targetConditions
         tag.startTime = startTime
         tag.currentCycleStart = currentCycleStart
@@ -368,6 +395,7 @@ abstract class Contract(
 
         var (ContractTag).targetItemKeys by csv("targetItems")
         var (ContractTag).targetTagKeys by csv("targetTags")
+        var (ContractTag).targetBlockTagKeys by csv("targetBlockTags")
         var (ContractTag).targetConditionsKeys by string("targetConditions")
 
         var (ContractTag).startTime by long()
@@ -392,6 +420,22 @@ abstract class Contract(
         val (ContractTag).requiresAny by string() // only needed at gen-time
         val (ContractTag).requiresNot by string() // only needed at gen-time
 
+        var (ContractTag).targetItems: List<Item>?
+            get() {
+                val targetItems = targetItemKeys ?: return null
+                if (targetItems.isNotEmpty()) {
+                    return targetItems.map {
+                        BuiltInRegistries.ITEM[ResourceLocation.tryParse(it)]
+                    }
+                }
+
+                return null
+            }
+            set(value) {
+                targetItemKeys = value?.mapNotNull { it.`arch$registryName`()?.toString() }
+            }
+
+
         var (ContractTag).targetTags: List<TagKey<Item>>?
             get() {
                 val tagKeys = targetTagKeys ?: return null
@@ -410,19 +454,22 @@ abstract class Contract(
                 targetTagKeys = value?.map { it.location().toString() }
             }
 
-        var (ContractTag).targetItems: List<Item>?
+        var (ContractTag).targetBlockTags: List<TagKey<Block>>?
             get() {
-                val targetItems = targetItemKeys ?: return null
-                if (targetItems.isNotEmpty()) {
-                    return targetItems.map {
-                        BuiltInRegistries.ITEM[ResourceLocation.tryParse(it)]
+                val blockTagKeys = targetBlockTagKeys ?: return null
+
+                if (blockTagKeys.isNotEmpty()) {
+                    return blockTagKeys.map { it.trimStart('#') }.mapNotNull {
+                        return@mapNotNull TagKey.create(
+                            Registries.BLOCK, ResourceLocation.tryParse(it) ?: return@mapNotNull null
+                        )
                     }
                 }
 
                 return null
             }
             set(value) {
-                targetItemKeys = value?.mapNotNull { it.`arch$registryName`()?.toString() }
+                targetBlockTagKeys = value?.map { it.location().toString() }
             }
 
         var (ContractTag).targetConditions: List<ItemCondition>?
