@@ -786,5 +786,10 @@
     "countPerUnit": 16,
     "reward": 2,
     "baseUnitsDemanded": 96
+  },
+  {
+    "targetBlockTags": "#minecraft:mushroom_hyphae",
+    "countPerUnit": 16,
+    "reward": 2
   }
 ]
