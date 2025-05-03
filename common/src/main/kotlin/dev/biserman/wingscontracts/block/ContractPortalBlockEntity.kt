@@ -25,6 +25,7 @@ import net.minecraft.tags.BlockTags
 import net.minecraft.util.Mth.*
 import net.minecraft.world.ContainerHelper
 import net.minecraft.world.MenuProvider
+import net.minecraft.world.WorldlyContainer
 import net.minecraft.world.entity.EntitySelector
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Inventory
@@ -47,9 +48,11 @@ import kotlin.math.min
 class ContractPortalBlockEntity(
     blockPos: BlockPos,
     blockState: BlockState,
+    val container: ContractPortalBlockEntityContainer
 ) :
     BlockEntity(ModBlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState),
-    MenuProvider
+    MenuProvider,
+    WorldlyContainer by container
 //    IHaveGoggleInformation
 {
     var cooldownTime: Int
@@ -243,8 +246,8 @@ class ContractPortalBlockEntity(
         private val INSIDE: VoxelShape = Block.box(2.0, 11.0, 2.0, 14.0, 16.0, 14.0)
         private val ABOVE: VoxelShape = Block.box(0.0, 16.0, 0.0, 16.0, 32.0, 16.0)
         private val SUCK: VoxelShape = Shapes.or(INSIDE, ABOVE)
-        private const val CONTAINER_SIZE = 27
-        private const val MAX_STACK_SIZE = 64
+        const val CONTAINER_SIZE = 27
+        private const val MAX_STACK_SIZE = 64 // not sure why this is needed. might delete
         private fun getSuckShape(): VoxelShape = SUCK
     }
 
@@ -382,4 +385,7 @@ class ContractPortalBlockEntity(
 //
 //        return true
 //    }
+    override fun setChanged() {
+        super.setChanged()
+    }
 }
