@@ -38,10 +38,5 @@
     "targetTags": "#createbigcannons:big_cannon_propellant",
     "countPerUnit": 3,
     "reward": 3
-  },
-  {
-    "targetItems": "createbigcannons:cannon_carriage",
-    "countPerUnit": 4,
-    "reward": 2
   }
 ]

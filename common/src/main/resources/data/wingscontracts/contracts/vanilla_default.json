@@ -261,11 +261,11 @@
   {
     "targetItems": "wither_rose",
     "countPerUnit": 16,
-    "reward": 4
+    "reward": 6
   },
   {
     "targetItems": "prismarine_shard",
-    "countPerUnit": 20,
+    "countPerUnit": 16,
     "reward": 3
   },
   {
@@ -279,7 +279,7 @@
   },
   {
     "targetItems": "mycelium",
-    "countPerUnit": 32,
+    "countPerUnit": 64,
     "reward": 3
   },
   {
@@ -493,7 +493,7 @@
   },
   {
     "targetItems": "wither_skeleton_skull",
-    "countPerUnit": 8,
+    "countPerUnit": 6,
     "reward": 4
   },
   {
@@ -791,5 +791,10 @@
     "targetBlockTags": "#minecraft:mushroom_hyphae",
     "countPerUnit": 16,
     "reward": 2
+  },
+  {
+    "targetItems": "trident",
+    "countPerUnit": 2,
+    "reward": 4
   }
 ]

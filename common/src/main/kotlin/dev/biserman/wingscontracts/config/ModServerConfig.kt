@@ -13,6 +13,9 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val randomizeCraftedContracts: ForgeConfigSpec.BooleanValue
     val disableDefaultContractOptions: ForgeConfigSpec.BooleanValue
     val variance: ForgeConfigSpec.DoubleValue
+    val replaceRewardWithRandomPercent: ForgeConfigSpec.DoubleValue
+    val replaceRewardWithRandomFactor: ForgeConfigSpec.DoubleValue
+    val replaceRewardWithRandomBlocklist: ForgeConfigSpec.ConfigValue<String>
     val rarityThresholdsString: ForgeConfigSpec.ConfigValue<String>
 
     // Contract Defaults
@@ -81,6 +84,28 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
                 """.trimIndent()
             )
                 .defineInRange("variance", 0.33, 0.0, Double.MAX_VALUE)
+
+        replaceRewardWithRandomPercent =
+            builder.comment("This percentage of Abyssal Contracts generated that are set to the default reward currency will instead have their reward switched to a random input from another contract.")
+                .defineInRange("replaceRewardWithRandomPercent", 0.8, 0.0, 1.0)
+
+        replaceRewardWithRandomFactor =
+            builder.comment("The reward from an Abyssal Contract with its reward randomly replaced will have its count multiplied by this factor.")
+                .defineInRange("replaceRewardWithRandomFactor", 0.5, 0.0, Double.MAX_VALUE)
+
+        replaceRewardWithRandomBlocklist =
+            builder.comment("Items on this comma-separated list cannot appear as randomly replaced rewards in contracts.")
+                .define(
+                    "replaceRewardWithRandomBlocklist",
+                    listOf(
+                        "minecraft:potion",
+                        "minecraft:splash_potion",
+                        "minecraft:lingering_potion",
+                        "minecraft:enchanted_book",
+                        "botania:brew_vial",
+                        "botania:brew_flask"
+                    ).joinToString(",")
+                )
 
         rarityThresholdsString =
             builder.comment("The max-level reward necessary to reach rarities Uncommon, Rare, and Epic respectively as a comma-separated list of integers.")

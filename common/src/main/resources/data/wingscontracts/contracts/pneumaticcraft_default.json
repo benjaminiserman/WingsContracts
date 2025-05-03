@@ -13,7 +13,7 @@
   {
     "targetItems": "pneumaticcraft:printed_circuit_board",
     "countPerUnit": 8,
-    "reward": 4
+    "reward": 5
   },
   {
     "targetItems": "pneumaticcraft:ingot_iron_compressed",

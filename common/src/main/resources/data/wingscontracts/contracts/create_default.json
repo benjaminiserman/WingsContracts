@@ -7,14 +7,9 @@
   },
   {
     "targetItems": "create:sturdy_sheet",
-    "countPerUnit": 32,
+    "countPerUnit": 16,
     "reward": 3,
     "baseUnitsDemanded": 96
-  },
-  {
-    "targetItems": "create:propeller",
-    "countPerUnit": 8,
-    "reward": 2
   },
   {
     "targetItems": "create:brass_hand",
@@ -34,11 +29,6 @@
   {
     "targetItems": "create:goggles",
     "countPerUnit": 4,
-    "reward": 2
-  },
-  {
-    "targetItems": "create:belt_connector",
-    "countPerUnit": 16,
     "reward": 2
   },
   {
@@ -83,7 +73,7 @@
   },
   {
     "targetItems": "create:crushing_wheel",
-    "countPerUnit": 4,
+    "countPerUnit": 3,
     "reward": 4
   },
   {
