@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalStdlibApi::class)
+
 package dev.biserman.wingscontracts.block
 
 //import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation
@@ -13,6 +15,7 @@ import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.tag.ContractTag
 import dev.biserman.wingscontracts.tag.ContractTagHelper
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.core.NonNullList
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
@@ -23,6 +26,7 @@ import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundSource
 import net.minecraft.tags.BlockTags
 import net.minecraft.util.Mth.*
+import net.minecraft.world.Container
 import net.minecraft.world.ContainerHelper
 import net.minecraft.world.MenuProvider
 import net.minecraft.world.WorldlyContainer
@@ -48,11 +52,10 @@ import kotlin.math.min
 class ContractPortalBlockEntity(
     blockPos: BlockPos,
     blockState: BlockState,
-    val container: ContractPortalBlockEntityContainer
 ) :
     BlockEntity(ModBlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState),
     MenuProvider,
-    WorldlyContainer by container
+    WorldlyContainer
 //    IHaveGoggleInformation
 {
     var cooldownTime: Int
@@ -385,7 +388,84 @@ class ContractPortalBlockEntity(
 //
 //        return true
 //    }
+
+    override fun getSlotsForFace(direction: Direction): IntArray? {
+        return when (direction) {
+            Direction.DOWN -> intArrayOf(0)
+            else -> (1..ContractPortalBlockEntity.CONTAINER_SIZE).toList().toIntArray()
+        }
+    }
+
+    override fun canPlaceItemThroughFace(
+        i: Int,
+        itemStack: ItemStack,
+        direction: Direction?
+    ): Boolean = canPlaceItem(i, itemStack)
+
+    override fun canTakeItemThroughFace(
+        i: Int,
+        itemStack: ItemStack,
+        direction: Direction
+    ): Boolean = canTakeItem(i, itemStack)
+
+    override fun canPlaceItem(i: Int, itemStack: ItemStack): Boolean =
+        i != 0 && LoadedContracts[contractSlot]?.matches(itemStack) == true
+
+    override fun canTakeItem(container: Container, i: Int, itemStack: ItemStack) = canTakeItem(i, itemStack)
+    fun canTakeItem(i: Int, itemStack: ItemStack) = i == 0
+
+    override fun getContainerSize(): Int = CONTAINER_SIZE
+
+    override fun isEmpty(): Boolean = cachedInput.all { it.isEmpty } && cachedRewards.isEmpty
+
+    override fun getItem(i: Int): ItemStack? {
+        return if (i == 0) cachedRewards else cachedInput[i - 1]
+    }
+
+    override fun removeItem(i: Int, j: Int): ItemStack? {
+        if (i < 0 || i >= containerSize || j <= 0) {
+            return ItemStack.EMPTY
+        }
+
+        return if (i == 0) {
+            cachedRewards.split(j)
+        } else {
+            cachedInput[i - 1].split(j)
+        }
+    }
+
+    override fun removeItemNoUpdate(i: Int): ItemStack? {
+        if (i < 0 || i >= containerSize) {
+            return ItemStack.EMPTY
+        }
+
+        if (i == 0) {
+            val output = cachedRewards
+            cachedRewards = ItemStack.EMPTY
+            return output
+        } else {
+            return ContainerHelper.takeItem(cachedInput, i - 1)
+        }
+    }
+
+    override fun setItem(i: Int, itemStack: ItemStack) {
+        if (i == 0) {
+            cachedRewards = itemStack
+        } else {
+            cachedInput[i - 1] = itemStack
+        }
+    }
+
     override fun setChanged() {
         super.setChanged()
+    }
+
+    override fun stillValid(player: Player): Boolean = Container.stillValidBlockEntity(this, player)
+
+    override fun clearContent() {
+        cachedRewards = ItemStack.EMPTY
+        for (i in 0..<cachedInput.size) {
+            cachedInput[i] = ItemStack.EMPTY
+        }
     }
 }
