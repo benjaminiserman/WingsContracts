@@ -29,6 +29,7 @@ import net.minecraft.util.Mth
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Block
 import java.util.*
 import kotlin.math.min
@@ -426,7 +427,7 @@ abstract class Contract(
                 if (targetItems.isNotEmpty()) {
                     return targetItems.map {
                         BuiltInRegistries.ITEM[ResourceLocation.tryParse(it)]
-                    }
+                    }.filter { it != Items.AIR }
                 }
 
                 return null
