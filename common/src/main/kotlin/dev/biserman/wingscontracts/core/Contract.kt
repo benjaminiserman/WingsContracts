@@ -190,45 +190,48 @@ abstract class Contract(
             "item.${WingsContractsMod.MOD_ID}.contract", Component.translatable(name ?: targetName).string
         )
 
-    fun listTargets(displayShort: Boolean): String {
+    fun listTargets(displayShort: Boolean): List<MutableComponent> {
         val totalSize = targetItems.size + targetTags.size + targetBlockTags.size
 
-        val separator = if (displayShort) "|" else "\n"
-        val complexPrefix = if (displayShort) "" else " - "
         val tagKey = if (displayShort) "items_of_tag_short" else "items_of_tag"
-        val complexKey = if (displayShort) "matches_following_short" else "matches_following"
+        val complexPrefix = if (displayShort) "" else " - "
 
         if (displayShort) {
             if (shortTargetList != null) {
-                return Component.translatable(shortTargetList).string
+                return listOf(Component.translatable(shortTargetList))
             } else if (totalSize > 3) {
-                return Component.translatable(name ?: targetName).string
+                return listOf(Component.translatable(name ?: targetName))
             }
         }
 
         return when (totalSize) {
-            0 -> translateContract("no_targets").string
+            0 -> listOf(translateContract("no_targets"))
             1 -> if (targetItems.isNotEmpty()) {
-                if (displayItem != null) {
-                    displayItem.displayName.string.trimBrackets()
-                } else {
-                    targetItems[0].name().trimBrackets()
-                }
+                listOf(
+                    Component.literal(
+                        if (displayItem != null) {
+                            displayItem.displayName.string.trimBrackets()
+                        } else {
+                            targetItems[0].name().trimBrackets()
+                        }
+                    )
+                )
             } else if (targetTags.isNotEmpty()) {
-                translateContract(tagKey, targetTags[0].location()).string
+                listOf(translateContract(tagKey, targetTags[0].location()))
             } else if (targetBlockTags.isNotEmpty()) {
-                translateContract(tagKey, targetBlockTags[0].location()).string
+                listOf(translateContract(tagKey, targetBlockTags[0].location()))
             } else {
-                ""
+                listOf(Component.literal(""))
             }
-            else -> translateContract(
-                complexKey,
-                targetItems.asSequence()
+            else -> {
+                val complexSequence = targetItems.asSequence()
                     .map { it.name().trimBrackets() }
                     .plus(targetTags.map { it.name() })
                     .plus(targetBlockTags.map { it.name() })
-                    .joinToString(separator = separator) { "$complexPrefix$it" })
-                .string
+
+                val start = if (displayShort) listOf() else listOf(translateContract("matches_following"))
+                start + complexSequence.map { Component.literal("$complexPrefix$it") }
+            }
         }
     }
 
@@ -261,6 +264,7 @@ abstract class Contract(
 
         if (Date(nextCycleStart) <= Date()) {
             components.add(translateContract("cycle_complete").withStyle(ChatFormatting.DARK_PURPLE))
+            components.add(translateContract("cycle_complete_desc").withStyle(ChatFormatting.DARK_PURPLE))
         } else {
             components.add(translateContract("cycle_remaining").withStyle(timeRemainingColor))
             components.add(Component.literal("  $timeRemainingString").withStyle(timeRemainingColor))

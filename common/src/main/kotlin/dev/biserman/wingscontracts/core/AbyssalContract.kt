@@ -16,6 +16,7 @@ import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import net.minecraft.ChatFormatting
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
+import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.tags.TagKey
@@ -99,14 +100,23 @@ class AbyssalContract(
     override fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> {
         val components = list ?: mutableListOf()
 
-        components.add(
-            translateContract(
-                "abyssal.rewards",
-                formatReward(reward.count),
-                countPerUnit,
-                listTargets(displayShort = false)
-            ).withStyle(ChatFormatting.DARK_PURPLE)
-        )
+        val rewardsComponent = translateContract(
+            "abyssal.rewards",
+            formatReward(reward.count),
+            countPerUnit,
+        ).withStyle(ChatFormatting.DARK_PURPLE)
+
+        val targetsList = listTargets(displayShort = false)
+        if (targetsList.size <= 2) {
+            components.add(targetsList.fold(rewardsComponent.append(CommonComponents.SPACE)) { acc, entry ->
+                acc.append(entry.withStyle(ChatFormatting.DARK_PURPLE))
+            })
+        } else {
+            components.add(rewardsComponent
+                .append(CommonComponents.SPACE)
+                .append(targetsList[0].withStyle(ChatFormatting.DARK_PURPLE)))
+            components.addAll(targetsList.drop(1).map { it.withStyle(ChatFormatting.DARK_PURPLE) })
+        }
 
         components.add(
             translateContract(
@@ -129,7 +139,7 @@ class AbyssalContract(
     override fun getShortInfo(): Component = translateContract(
         "abyssal.short",
         countPerUnit,
-        listTargets(displayShort = true),
+        listTargets(displayShort = true).joinToString("|") { it.string },
         formatReward(reward.count),
         unitsFulfilled,
         unitsDemanded
@@ -227,9 +237,9 @@ class AbyssalContract(
     val isValid
         get() = reward.item != Items.AIR
                 && (targetItems.any { it != Items.AIR }
-                        || targetTags.any()
-                        || targetBlockTags.any()
-                        || targetConditions.any())
+                || targetTags.any()
+                || targetBlockTags.any()
+                || targetConditions.any())
 
     companion object {
         var (ContractTag).reward by itemStack()
