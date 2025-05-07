@@ -51,7 +51,7 @@
     "countPerUnit": 3,
     "reward": 4,
     "name": "wingscontracts.data.vegandelight.feast",
-    "description": "wingscontracts.data.vegandelight.feast_desc",
+    "description": "wingscontracts.data.vegandelight.feast.desc",
     "requiresAny": "vegandelight"
   }
 ]

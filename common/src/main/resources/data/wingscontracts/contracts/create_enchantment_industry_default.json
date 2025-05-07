@@ -11,7 +11,7 @@
     "countPerUnit": 1,
     "requiresAny": "create_enchantment_industry",
     "name": "wingscontracts.data.create_enchantment_industry.two_enchantments",
-    "description": "wingscontracts.data.create_enchantment_industry.two_enchantments_desc"
+    "description": "wingscontracts.data.create_enchantment_industry.two_enchantments.desc"
   },
   {
     "targetConditions": "tag.Enchantments$.*lvl:5.*",
@@ -19,7 +19,7 @@
     "countPerUnit": 1,
     "requiresAny": "create_enchantment_industry",
     "name": "wingscontracts.data.create_enchantment_industry.lvl_five",
-    "description": "wingscontracts.data.create_enchantment_industry.lvl_five_desc"
+    "description": "wingscontracts.data.create_enchantment_industry.lvl_five.desc"
   },
   {
     "targetConditions": "tag.Enchantments$.*lvl:6.*",
@@ -27,7 +27,7 @@
     "countPerUnit": 1,
     "requiresAll": "create_enchantment_industry,quark",
     "name": "wingscontracts.data.create_enchantment_industry.lvl_six",
-    "description": "wingscontracts.data.create_enchantment_industry.lvl_six_desc"
+    "description": "wingscontracts.data.create_enchantment_industry.lvl_six.desc"
   },
   {
     "targetItems": "bow",
@@ -35,7 +35,7 @@
     "countPerUnit": 1,
     "reward": 4,
     "name": "wingscontracts.data.create_enchantment_industry.infinity_bow",
-    "description": "wingscontracts.data.create_enchantment_industry.infinity_bow_desc",
+    "description": "wingscontracts.data.create_enchantment_industry.infinity_bow.desc",
     "displayItem": {
       "id": "bow",
       "Count": 1,

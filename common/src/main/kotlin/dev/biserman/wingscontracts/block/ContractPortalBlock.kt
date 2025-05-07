@@ -65,6 +65,8 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
         val itemInHand = player.getItemInHand(interactionHand)
         val contractSlotItem = portal.contractSlot
 
+        portal.lastPlayer = player.uuid
+
         if (contractSlotItem.isEmpty) {
             if (itemInHand.item !is ContractItem) {
                 val blockEntity = level.getBlockEntity(blockPos)

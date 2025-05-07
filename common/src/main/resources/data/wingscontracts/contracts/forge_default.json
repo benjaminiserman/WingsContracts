@@ -104,7 +104,7 @@
     "countPerUnit": 8,
     "baseUnitsDemanded": 128,
     "name": "wingscontracts.data.forge.damaged_equipment",
-    "description": "wingscontracts.data.forge.damaged_equipment_desc"
+    "description": "wingscontracts.data.forge.damaged_equipment.desc"
   },
   {
     "targetTags": "#forge:armors",
@@ -112,7 +112,7 @@
     "countPerUnit": 3,
     "reward": 3,
     "name": "wingscontracts.data.forge.tough_armor",
-    "description": "wingscontracts.data.forge.tough_armor_desc"
+    "description": "wingscontracts.data.forge.tough_armor.desc"
   },
   {
     "targetTags": "#forge:raw_materials",

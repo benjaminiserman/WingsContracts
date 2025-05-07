@@ -5,8 +5,8 @@ import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.core.Contract.Companion.id
 import dev.biserman.wingscontracts.command.ModCommand.giveContract
 import dev.biserman.wingscontracts.data.LoadedContracts
-import dev.biserman.wingscontracts.tag.ContractTag
-import dev.biserman.wingscontracts.tag.ContractTagHelper
+import dev.biserman.wingscontracts.nbt.ContractTag
+import dev.biserman.wingscontracts.nbt.ContractTagHelper
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.network.chat.Component

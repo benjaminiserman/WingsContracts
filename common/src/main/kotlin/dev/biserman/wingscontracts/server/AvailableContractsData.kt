@@ -15,7 +15,7 @@ import dev.biserman.wingscontracts.core.Contract.Companion.rarity
 import dev.biserman.wingscontracts.core.Contract.Companion.startTime
 import dev.biserman.wingscontracts.core.Contract.Companion.targetItems
 import dev.biserman.wingscontracts.data.AvailableContractsManager
-import dev.biserman.wingscontracts.tag.ContractTag
+import dev.biserman.wingscontracts.nbt.ContractTag
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.nbt.CompoundTag

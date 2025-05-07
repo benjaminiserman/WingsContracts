@@ -1,0 +1,36 @@
+{
+  "criteria": {
+    "pickup": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "wingscontracts:contracts"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/block/obsidian.png",
+    "description": {
+      "translate": "advancement.wingscontracts.root.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "wingscontracts:abyssal_contract"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancement.wingscontracts.root"
+    }
+  },
+  "requirements": [
+    [
+      "pickup"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

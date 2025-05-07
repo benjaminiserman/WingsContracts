@@ -3,17 +3,17 @@ package dev.biserman.wingscontracts.core
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.registry.ModItemRegistry
-import dev.biserman.wingscontracts.tag.ContractTag
-import dev.biserman.wingscontracts.tag.ContractTagHelper
-import dev.biserman.wingscontracts.tag.ContractTagHelper.boolean
-import dev.biserman.wingscontracts.tag.ContractTagHelper.csv
-import dev.biserman.wingscontracts.tag.ContractTagHelper.int
-import dev.biserman.wingscontracts.tag.ContractTagHelper.itemStack
-import dev.biserman.wingscontracts.tag.ContractTagHelper.long
-import dev.biserman.wingscontracts.tag.ContractTagHelper.string
-import dev.biserman.wingscontracts.tag.ContractTagHelper.uuid
-import dev.biserman.wingscontracts.tag.ItemCondition
-import dev.biserman.wingscontracts.tag.ItemConditionParser
+import dev.biserman.wingscontracts.nbt.ContractTag
+import dev.biserman.wingscontracts.nbt.ContractTagHelper
+import dev.biserman.wingscontracts.nbt.ContractTagHelper.boolean
+import dev.biserman.wingscontracts.nbt.ContractTagHelper.csv
+import dev.biserman.wingscontracts.nbt.ContractTagHelper.int
+import dev.biserman.wingscontracts.nbt.ContractTagHelper.itemStack
+import dev.biserman.wingscontracts.nbt.ContractTagHelper.long
+import dev.biserman.wingscontracts.nbt.ContractTagHelper.string
+import dev.biserman.wingscontracts.nbt.ContractTagHelper.uuid
+import dev.biserman.wingscontracts.nbt.ItemCondition
+import dev.biserman.wingscontracts.nbt.ItemConditionParser
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.ChatFormatting
@@ -264,7 +264,7 @@ abstract class Contract(
 
         if (Date(nextCycleStart) <= Date()) {
             components.add(translateContract("cycle_complete").withStyle(ChatFormatting.DARK_PURPLE))
-            components.add(translateContract("cycle_complete_desc").withStyle(ChatFormatting.DARK_PURPLE))
+            components.add(translateContract("cycle_complete.desc").withStyle(ChatFormatting.DARK_PURPLE))
         } else {
             components.add(translateContract("cycle_remaining").withStyle(timeRemainingColor))
             components.add(Component.literal("  $timeRemainingString").withStyle(timeRemainingColor))

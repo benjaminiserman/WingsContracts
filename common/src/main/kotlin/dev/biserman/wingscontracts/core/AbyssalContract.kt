@@ -7,11 +7,11 @@ import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
 import dev.biserman.wingscontracts.config.GrowthFunctionOptions
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.server.AvailableContractsData
-import dev.biserman.wingscontracts.tag.ContractTag
-import dev.biserman.wingscontracts.tag.ContractTagHelper.double
-import dev.biserman.wingscontracts.tag.ContractTagHelper.int
-import dev.biserman.wingscontracts.tag.ContractTagHelper.itemStack
-import dev.biserman.wingscontracts.tag.ItemCondition
+import dev.biserman.wingscontracts.nbt.ContractTag
+import dev.biserman.wingscontracts.nbt.ContractTagHelper.double
+import dev.biserman.wingscontracts.nbt.ContractTagHelper.int
+import dev.biserman.wingscontracts.nbt.ContractTagHelper.itemStack
+import dev.biserman.wingscontracts.nbt.ItemCondition
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import net.minecraft.ChatFormatting
 import net.minecraft.nbt.CompoundTag
@@ -164,6 +164,7 @@ class AbyssalContract(
     }
 
     override fun onContractFulfilled(tag: ContractTag?) {
+        super.onContractFulfilled(tag)
         if (level < maxLevel) {
             level += 1
             tag?.level = level

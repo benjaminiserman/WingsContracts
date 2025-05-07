@@ -570,7 +570,7 @@
     "countPerUnit": 64,
     "reward": 2,
     "targetConditions": "id!=minecraft:rail",
-    "description": "wingscontracts.data.rails_desc"
+    "description": "wingscontracts.data.rails.desc"
   },
   {
     "targetItems": "glass_bottle",
@@ -682,34 +682,34 @@
     "targetConditions": "isEdible==true",
     "countPerUnit": 32,
     "name": "wingscontracts.data.food",
-    "description": "wingscontracts.data.food_desc"
+    "description": "wingscontracts.data.food.desc"
   },
   {
     "targetConditions": "maxStackSize==16",
     "countPerUnit": 32,
     "name": "wingscontracts.data.stack_16",
-    "description": "wingscontracts.data.stack_16_desc"
+    "description": "wingscontracts.data.stack_16.desc"
   },
   {
     "targetConditions": "isEnchanted==true",
     "countPerUnit": 3,
     "reward": 3,
     "name": "wingscontracts.data.enchanted",
-    "description": "wingscontracts.data.enchanted_desc"
+    "description": "wingscontracts.data.enchanted.desc"
   },
   {
     "targetConditions": "canAlwaysEat==true",
     "countPerUnit": 8,
     "reward": 3,
     "name": "wingscontracts.data.always_edible",
-    "description": "wingscontracts.data.always_edible_desc"
+    "description": "wingscontracts.data.always_edible.desc"
   },
   {
     "targetConditions": "isFastFood==true",
     "countPerUnit": 64,
     "baseUnitsDemanded": 96,
     "name": "wingscontracts.data.fast_food",
-    "description": "wingscontracts.data.fast_food_desc"
+    "description": "wingscontracts.data.fast_food.desc"
   },
   {
     "targetItems": "potion",
@@ -718,8 +718,8 @@
     "reward": 2,
     "baseUnitsDemanded": 96,
     "name": "wingscontracts.data.potion",
-    "description": "wingscontracts.data.potion_desc",
-    "shortTargetList": "wingscontracts.data.potion_short_targets"
+    "description": "wingscontracts.data.potion.desc",
+    "shortTargetList": "wingscontracts.data.potion.short_targets"
   },
   {
     "targetItems": "shield",
@@ -731,13 +731,13 @@
     "countPerUnit": 16,
     "reward": 3,
     "name": "wingscontracts.data.z",
-    "description": "wingscontracts.data.z_desc"
+    "description": "wingscontracts.data.z.desc"
   },
   {
     "targetConditions": "mod!=minecraft",
     "countPerUnit": 256,
     "name": "wingscontracts.data.modded",
-    "description": "wingscontracts.data.modded_desc"
+    "description": "wingscontracts.data.modded.desc"
   },
   {
     "targetItems": "cobweb,jack_o_lantern,cauldron,skeleton_skull,wither_skeleton_skull,neapolitan:mint_candies,neapolitan:strawberry_bean_bonbons",
@@ -756,7 +756,7 @@
     "countPerUnit": 16,
     "reward": 2,
     "name": "wingscontracts.data.better_than_coal",
-    "description": "wingscontracts.data.better_than_coal_desc"
+    "description": "wingscontracts.data.better_than_coal.desc"
   },
   {
     "targetBlockTags": "#minecraft:enderman_holdable",

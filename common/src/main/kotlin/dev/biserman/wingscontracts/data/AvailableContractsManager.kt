@@ -15,7 +15,7 @@ import dev.biserman.wingscontracts.core.Contract.Companion.targetBlockTagKeys
 import dev.biserman.wingscontracts.core.Contract.Companion.targetConditionsKeys
 import dev.biserman.wingscontracts.core.Contract.Companion.targetItemKeys
 import dev.biserman.wingscontracts.core.Contract.Companion.targetTagKeys
-import dev.biserman.wingscontracts.tag.ContractTag
+import dev.biserman.wingscontracts.nbt.ContractTag
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation

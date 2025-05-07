@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalStdlibApi::class)
 
-package dev.biserman.wingscontracts.tag
+package dev.biserman.wingscontracts.nbt
 
 import dev.architectury.registry.fuel.FuelRegistry
 import dev.biserman.wingscontracts.WingsContractsMod

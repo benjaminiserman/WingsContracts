@@ -4,8 +4,8 @@ import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.data.AvailableContractsManager
 import dev.biserman.wingscontracts.data.LoadedContracts
+import dev.biserman.wingscontracts.nbt.ContractTagHelper
 import dev.biserman.wingscontracts.server.AvailableContractsData
-import dev.biserman.wingscontracts.tag.ContractTagHelper
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component

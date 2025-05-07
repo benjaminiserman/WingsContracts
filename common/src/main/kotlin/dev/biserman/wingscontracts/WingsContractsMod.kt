@@ -11,6 +11,7 @@ import dev.biserman.wingscontracts.compat.computercraft.ModItemDetailProvider
 import dev.biserman.wingscontracts.registry.*
 import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.server.WingsContractsNetHandler
+import net.minecraft.resources.ResourceLocation
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import javax.script.ScriptEngineManager
@@ -52,4 +53,6 @@ object WingsContractsMod {
             }
         }
     }
+
+    fun prefix(path: String) = ResourceLocation("$MOD_ID:$path")
 }

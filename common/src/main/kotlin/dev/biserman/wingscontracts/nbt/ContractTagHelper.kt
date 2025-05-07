@@ -1,6 +1,6 @@
 @file:Suppress("MoveLambdaOutsideParentheses")
 
-package dev.biserman.wingscontracts.tag
+package dev.biserman.wingscontracts.nbt
 
 import dev.biserman.wingscontracts.config.ModConfig
 import net.minecraft.nbt.CompoundTag

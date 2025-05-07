@@ -3,6 +3,7 @@
 package dev.biserman.wingscontracts.block
 
 //import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation
+import dev.biserman.wingscontracts.advancements.ContractCompleteTrigger
 import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.core.Contract
@@ -12,8 +13,8 @@ import dev.biserman.wingscontracts.registry.ModBlockRegistry
 import dev.biserman.wingscontracts.registry.ModMenuRegistry
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
 import dev.biserman.wingscontracts.server.AvailableContractsData
-import dev.biserman.wingscontracts.tag.ContractTag
-import dev.biserman.wingscontracts.tag.ContractTagHelper
+import dev.biserman.wingscontracts.nbt.ContractTag
+import dev.biserman.wingscontracts.nbt.ContractTagHelper
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.NonNullList
@@ -22,6 +23,8 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundSource
 import net.minecraft.tags.BlockTags
@@ -45,6 +48,7 @@ import net.minecraft.world.level.gameevent.GameEvent
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
+import java.util.*
 import java.util.stream.Collectors
 import kotlin.math.max
 import kotlin.math.min
@@ -62,6 +66,7 @@ class ContractPortalBlockEntity(
     var contractSlot: ItemStack
     var cachedRewards: ItemStack
     var cachedInput: NonNullList<ItemStack>
+    var lastPlayer: UUID
 
     private fun getLevelX(): Double = worldPosition.x.toDouble() + 0.5
     private fun getLevelY(): Double = worldPosition.y.toDouble() + 0.5
@@ -72,6 +77,7 @@ class ContractPortalBlockEntity(
         this.contractSlot = ItemStack.EMPTY
         this.cachedRewards = ItemStack.EMPTY
         this.cachedInput = NonNullList.withSize(CONTAINER_SIZE, ItemStack.EMPTY)
+        this.lastPlayer = UUID(0, 0)
     }
 
     override fun load(compoundTag: CompoundTag) {
@@ -80,12 +86,14 @@ class ContractPortalBlockEntity(
         this.cooldownTime = compoundTag.getInt("SuckCooldown")
         this.contractSlot = ItemStack.of(compoundTag.getCompound("ContractSlot"))
         this.cachedRewards = ItemStack.of(compoundTag.getCompound("CachedRewards"))
+        this.lastPlayer = compoundTag.getUUID("LastPlayer")
         ContainerHelper.loadAllItems(compoundTag, cachedInput)
     }
 
     override fun saveAdditional(compoundTag: CompoundTag) {
         super.saveAdditional(compoundTag)
         compoundTag.putInt("SuckCooldown", this.cooldownTime)
+        compoundTag.putUUID("LastPlayer", this.lastPlayer)
 
         val contractSlotTag = CompoundTag()
         contractSlot.save(contractSlotTag)
@@ -343,6 +351,13 @@ class ContractPortalBlockEntity(
             cachedRewards = rewards
         } else {
             cachedRewards.grow(rewards.count)
+        }
+
+        if (contract.unitsFulfilled >= contract.unitsDemanded) {
+            val player = level?.getPlayerByUUID(lastPlayer)
+            if (player is ServerPlayer) {
+                ContractCompleteTrigger.INSTANCE.trigger(player, contractSlot, level as ServerLevel, blockPos.x, blockPos.y, blockPos.z)
+            }
         }
 
         return true

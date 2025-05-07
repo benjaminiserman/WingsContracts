@@ -89,21 +89,21 @@
     "rarity": 3,
     "maxLevel": -1,
     "quantityGrowthFactor": 1.0,
-    "description": "wingscontracts.data.botania.tiny_potato_desc"
+    "description": "wingscontracts.data.botania.tiny_potato.desc"
   },
   {
     "targetItems": "botania:brew_vial",
     "countPerUnit": 4,
     "reward": 2,
     "name": "wingscontracts.data.botania.brew_vial",
-    "description": "wingscontracts.data.botania.brew_vial_desc"
+    "description": "wingscontracts.data.botania.brew_vial.desc"
   },
   {
     "targetItems": "botania:brew_flask",
     "countPerUnit": 4,
     "reward": 3,
     "name": "wingscontracts.data.botania.brew_flask",
-    "description": "wingscontracts.data.botania.brew_flask_desc"
+    "description": "wingscontracts.data.botania.brew_flask.desc"
   },
   {
     "targetTags": "#botania:functional_special_flowers",
@@ -122,7 +122,7 @@
     "baseUnitsDemanded": 32,
     "reward": 24,
     "name": "wingscontracts.data.botania.filled_mana_tablet",
-    "description": "wingscontracts.data.botania.filled_mana_tablet_desc",
+    "description": "wingscontracts.data.botania.filled_mana_tablet.desc",
     "displayItem": {
       "id": "botania:mana_tablet",
       "Count": 1,
