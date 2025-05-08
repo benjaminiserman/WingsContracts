@@ -1,0 +1,32 @@
+{
+  "parent": "wingscontracts:main/root",
+  "criteria": {
+    "abyssal": {
+      "conditions": {
+        "item_matches": "id==wingscontracts:abyssal_contract"
+      },
+      "trigger": "wingscontracts:contract_complete"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.wingscontracts.abyssal.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "wingscontracts:abyssal_contract"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.wingscontracts.abyssal"
+    }
+  },
+  "requirements": [
+    [
+      "abyssal"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

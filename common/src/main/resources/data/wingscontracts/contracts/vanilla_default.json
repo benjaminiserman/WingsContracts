@@ -713,7 +713,7 @@
   },
   {
     "targetItems": "potion",
-    "targetConditions": "tag.Potion!=minecraft:water,tag.Potion!=minecraft:awkward,tag.Potion!=minecraft:thick,tag.Potion!=minecraft:mundane",
+    "targetConditions": "tag.Potion!=minecraft:water;tag.Potion!=minecraft:awkward;tag.Potion!=minecraft:thick;tag.Potion!=minecraft:mundane",
     "countPerUnit": 8,
     "reward": 2,
     "baseUnitsDemanded": 96,
@@ -786,11 +786,6 @@
     "countPerUnit": 16,
     "reward": 2,
     "baseUnitsDemanded": 96
-  },
-  {
-    "targetBlockTags": "#minecraft:mushroom_hyphae",
-    "countPerUnit": 16,
-    "reward": 2
   },
   {
     "targetItems": "trident",

@@ -39,16 +39,17 @@
     "wingscontracts.contract.abyssal.short": "%d %s → %s (%d/%d)",
 
 
-    "advancements.wingscontracts.root": "Novice Contractor",
-    "advancements.wingscontracts.root.desc": "Obtain your first contract",
-    "advancements.wingscontracts.abyssal": "Abyssal Contractor",
-    "advancements.wingscontracts.abyssal.desc": "Complete an abyssal contract",
-    "advancements.wingscontracts.condition": "Fine Print",
-    "advancements.wingscontracts.condition.desc": "Complete a contract that includes a special condition",
-    "advancements.wingscontracts.epic": "Golden Ticket",
-    "advancements.wingscontracts.epic.desc": "Complete a contract of Epic rarity",
-    "advancements.wingscontracts.max_level": "Expert Contractor",
-    "advancements.wingscontracts.max_level.desc": "Level-up a contract to level 5",
+    "advancement.wingscontracts.root": "Wing's Contracts",
+    "advancement.wingscontracts.root.desc": "Obtain your first contract",
+    "advancement.wingscontracts.abyssal": "Abyssal Contractor",
+    "advancement.wingscontracts.abyssal.desc": "Complete an abyssal contract",
+    "advancement.wingscontracts.condition": "Fine Print",
+    "advancement.wingscontracts.condition.desc": "Complete a contract that includes a special condition",
+    "advancement.wingscontracts.epic": "Golden Ticket",
+    "advancement.wingscontracts.epic.desc": "Complete a contract of Epic rarity",
+    "advancement.wingscontracts.max_level": "Expert Contractor",
+    "advancement.wingscontracts.max_level.desc": "Complete a max-level contract",
+
 
     "commands.wingscontracts.give_contract": "Successfully gave contract.",
     "commands.wingscontracts.failed.load": "Error: failed to load contract.",
@@ -129,6 +130,7 @@
     "wingscontracts.data.botania.brew_flask.desc": "accepts non-empty Brew Flasks",
     "wingscontracts.data.botania.filled_mana_tablet": "Filled Mana Tablet",
     "wingscontracts.data.botania.filled_mana_tablet.desc": "accepts 100% full mana tablets",
+    "wingscontracts.data.botania.tiny_potato": "Tiny Potato",
 
     "wingscontracts.data.create_enchantment_industry.infinity_bow": "Infinity Bow",
     "wingscontracts.data.create_enchantment_industry.infinity_bow.desc": "accepts bows enchanted with infinity",

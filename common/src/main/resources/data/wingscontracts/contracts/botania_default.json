@@ -82,14 +82,15 @@
     "countPerUnit": 32
   },
   {
-    "targetItems": "botania:tiny_potato",
+    "targetItems": "botania:tiny_potato,quark:tiny_potato",
     "countPerUnit": 1,
     "reward": 1,
     "baseUnitsDemanded": 1,
     "rarity": 3,
     "maxLevel": -1,
     "quantityGrowthFactor": 1.0,
-    "description": "wingscontracts.data.botania.tiny_potato.desc"
+    "description": "wingscontracts.data.botania.tiny_potato.desc",
+    "name": "wingscontracts.data.botania.tiny_potato"
   },
   {
     "targetItems": "botania:brew_vial",

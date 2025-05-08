@@ -12,7 +12,7 @@
     }
   },
   "display": {
-    "announce_to_chat": false,
+    "announce_to_chat": true,
     "background": "minecraft:textures/block/obsidian.png",
     "description": {
       "translate": "advancement.wingscontracts.root.desc"
@@ -20,9 +20,9 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "wingscontracts:abyssal_contract"
+      "item": "wingscontracts:contract_portal"
     },
-    "show_toast": false,
+    "show_toast": true,
     "title": {
       "translate": "advancement.wingscontracts.root"
     }

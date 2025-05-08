@@ -3,7 +3,6 @@ package dev.biserman.wingscontracts.advancements
 import com.google.gson.JsonObject
 import dev.biserman.wingscontracts.WingsContractsMod.prefix
 import dev.biserman.wingscontracts.nbt.ItemConditionParser
-import net.minecraft.advancements.CriteriaTriggers
 import net.minecraft.advancements.critereon.*
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
@@ -16,9 +15,8 @@ class ContractCompleteTrigger : SimpleCriterionTrigger<ContractCompleteTrigger.I
     public override fun createInstance(
         json: JsonObject, playerPred: ContextAwarePredicate, conditions: DeserializationContext
     ) = Instance(
-        playerPred, json.get("item_matches").toString(), LocationPredicate.fromJson(json.get("location"))
+        playerPred, json.get("item_matches").asString, LocationPredicate.fromJson(json.get("location"))
     )
-
 
     fun trigger(player: ServerPlayer, stack: ItemStack, world: ServerLevel, x: Int, y: Int, z: Int) {
         trigger(player, Predicate { instance: Instance -> instance.test(stack, world, x, y, z) })
@@ -53,6 +51,6 @@ class ContractCompleteTrigger : SimpleCriterionTrigger<ContractCompleteTrigger.I
 
     companion object {
         val ID = prefix("contract_complete")
-        val INSTANCE = CriteriaTriggers.register(ContractCompleteTrigger())
+        val INSTANCE = ContractCompleteTrigger()
     }
 }

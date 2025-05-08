@@ -1,0 +1,32 @@
+{
+  "parent": "wingscontracts:main/abyssal",
+  "criteria": {
+    "question_condition": {
+      "conditions": {
+        "item_matches": "tag.contractInfo.targetConditions$.{3,}"
+      },
+      "trigger": "wingscontracts:contract_complete"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.wingscontracts.condition.desc"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "wingscontracts:question_mark"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.wingscontracts.condition"
+    }
+  },
+  "requirements": [
+    [
+      "question_condition"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

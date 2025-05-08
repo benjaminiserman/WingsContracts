@@ -1,0 +1,32 @@
+{
+  "parent": "wingscontracts:main/abyssal",
+  "criteria": {
+    "epic": {
+      "conditions": {
+        "item_matches": "rarity>=3"
+      },
+      "trigger": "wingscontracts:contract_complete"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.wingscontracts.epic.desc"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:gold_ingot"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.wingscontracts.epic"
+    }
+  },
+  "requirements": [
+    [
+      "epic"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

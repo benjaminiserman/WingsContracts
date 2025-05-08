@@ -36,7 +36,7 @@ object ItemConditionParser {
                 }
             }
 
-            if (text[i] == ',') {
+            if (text[i] == ';') {
                 if (!inQuotes) {
                     entries.add(currentEntry)
                     currentEntry = ""
@@ -134,7 +134,7 @@ object ItemConditionParser {
             "barWidth" -> ({ it.barWidth.toString() })
             "barColor" -> ({ it.barColor.toString() })
             "hasFoil" -> ({ it.hasFoil().toString() })
-            "rarity" -> ({ it.rarity.toString() })
+            "rarity" -> ({ it.rarity.ordinal.toString() })
             "isDamageable" -> ({ it.isDamageableItem.toString() })
             "durabilityPercent" -> ({ (it.damageValue.toDouble() / it.maxDamage.toDouble()).toString() })
             "isEnchantable" -> ({ it.isEnchantable.toString() })

@@ -127,7 +127,6 @@ class AvailableContractsData : SavedData() {
                         continue
                     }
 
-                    WingsContractsMod.LOGGER.info("${tag.tag} -> ${otherContract.tag}")
                     tag.rarity = AbyssalContract.load(tag).getRarity()
                     tag.reward = ItemStack(otherContractItem, newRewardCount)
                     break

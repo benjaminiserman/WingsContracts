@@ -1,0 +1,32 @@
+{
+  "parent": "wingscontracts:main/abyssal",
+  "criteria": {
+    "max_level": {
+      "conditions": {
+        "item_matches": "tag.contractInfo$(?:.*\\blevel:(\\d+),.*\\bmaxLevel:\\1\\b.*)|(?:.*\\bmaxLevel:(\\d+),.*\\blevel:\\2\\b.*)"
+      },
+      "trigger": "wingscontracts:contract_complete"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.wingscontracts.max_level.desc"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:emerald"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.wingscontracts.max_level"
+    }
+  },
+  "requirements": [
+    [
+      "max_level"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
