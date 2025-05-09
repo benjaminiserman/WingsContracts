@@ -12,7 +12,7 @@ import dev.biserman.wingscontracts.server.AvailableContractsData
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.commands.arguments.EntityArgument
-import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.level.Level
 
 object LoadContractCommand {
     fun register(): ArgumentBuilder<CommandSourceStack, *> =
@@ -38,7 +38,7 @@ object LoadContractCommand {
                         )
                     })
 
-    fun loadContract(jsonString: String, level: ServerLevel): Contract {
+    fun loadContract(jsonString: String, level: Level): Contract {
         try {
             val index = jsonString.toIntOrNull()
             if (index != null) {

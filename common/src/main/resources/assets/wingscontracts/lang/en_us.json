@@ -82,6 +82,21 @@
     "wingscontracts.gui.goggles.contract_portal.remaining_time": "    Remaining time:",
 
 
+    "wingscontracts.ponder.contract_portal.intro.header": "Using the Contract Portal",
+    "wingscontracts.ponder.contract_portal.intro.text_1": "How to obtain contracts varies by server, but by default you can right-click an empty Contract Portal to get one.",
+    "wingscontracts.ponder.contract_portal.intro.text_2": "Drop matching items into the Contract Portal.",
+    "wingscontracts.ponder.contract_portal.intro.text_3": "Take out the contract and receive your rewards.",
+    "wingscontracts.ponder.contract_portal.wool.header": "Muting the Contract Portal",
+    "wingscontracts.ponder.contract_portal.wool.text_1": "Placing a wool block adjacent to the contract portal silences it.",
+    "wingscontracts.ponder.contract_portal.redstone_input.header": "Redstone Input",
+    "wingscontracts.ponder.contract_portal.redstone_input.text_1": "Upon receiving a redstone signal, the Contract Portal spits out all of its cached rewards.",
+    "wingscontracts.ponder.contract_portal.redstone_output.header": "Redstone Output",
+    "wingscontracts.ponder.contract_portal.redstone_output.text_1": "The Contract Portal emits a comparator signal that represents how many cached rewards are within it.",
+    "wingscontracts.ponder.contract_portal.redstone_output.text_2": "Contract Portals can hold a maximum of 64 stacks of rewards.",
+    "wingscontracts.ponder.tag.contract_portal": "Contracts",
+    "wingscontracts.ponder.tag.contract_portal.description": "Items and Components related to contracts",
+
+
     "wingscontracts.data.mushroom": "Overworld Mushroom",
     "wingscontracts.data.mushroom_block": "Overworld Mushroom Block",
     "wingscontracts.data.nether_mushroom": "Nether Mushroom",

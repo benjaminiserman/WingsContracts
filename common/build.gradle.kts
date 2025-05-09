@@ -28,7 +28,9 @@ dependencies {
     }
     if (rootProject.property("create_enable") == "true") {
         val createVersion = rootProject.property("create_version")
-        compileOnly("com.simibubi.create:create-$minecraftVersion:$createVersion:slim")
+        val ponderVersion = rootProject.property("ponder_version")
+        compileOnly("com.simibubi.create:create-$minecraftVersion:$createVersion:slim") { isTransitive = false }
+        compileOnly("net.createmod.ponder:Ponder-Forge-$minecraftVersion:$ponderVersion") { isTransitive = false }
     }
 
     implementation(kotlin("reflect"))

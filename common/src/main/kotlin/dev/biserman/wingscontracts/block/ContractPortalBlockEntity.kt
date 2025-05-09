@@ -229,12 +229,19 @@ class ContractPortalBlockEntity(
         }
 
         private fun playSound(level: Level, blockPos: BlockPos, sound: SoundEvent) {
-            if (!level.getBlockState(blockPos.below()).`is`(BlockTags.WOOL)) {
+            if (sequenceOf(
+                    blockPos.below(),
+                    blockPos.north(),
+                    blockPos.east(),
+                    blockPos.south(),
+                    blockPos.west()
+                ).all { !level.getBlockState(it).`is`(BlockTags.WOOL) }
+            ) {
                 level.playSound(null, blockPos, sound, SoundSource.BLOCKS)
             }
         }
 
-        private fun spitItemStack(
+        fun spitItemStack(
             stackToSpit: ItemStack,
             level: Level,
             blockPos: BlockPos,

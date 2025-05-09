@@ -7,11 +7,13 @@ import dev.architectury.utils.Env
 import dev.architectury.utils.EnvExecutor
 import dev.biserman.wingscontracts.advancements.ContractCompleteTrigger
 import dev.biserman.wingscontracts.client.WingsContractsClient
+import dev.biserman.wingscontracts.client.ponder.ModPonderPlugin
 import dev.biserman.wingscontracts.compat.CompatMods
 import dev.biserman.wingscontracts.compat.computercraft.ModItemDetailProvider
 import dev.biserman.wingscontracts.registry.*
 import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.server.WingsContractsNetHandler
+import net.createmod.ponder.foundation.PonderIndex
 import net.minecraft.advancements.CriteriaTriggers
 import net.minecraft.resources.ResourceLocation
 import org.apache.logging.log4j.LogManager
@@ -52,6 +54,9 @@ object WingsContractsMod {
                 ClientLifecycleEvent.CLIENT_SETUP.register(ClientLifecycleEvent.ClientState {
                     WingsContractsClient.init()
                     ModMenuRegistry.clientsideRegister()
+                    if (Platform.isModLoaded("create")) {
+                        PonderIndex.addPlugin(ModPonderPlugin)
+                    }
                 })
             }
         }
