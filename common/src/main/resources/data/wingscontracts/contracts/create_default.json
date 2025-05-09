@@ -12,11 +12,6 @@
     "baseUnitsDemanded": 96
   },
   {
-    "targetItems": "create:brass_hand",
-    "countPerUnit": 5,
-    "reward": 2
-  },
-  {
     "targetItems": "create:precision_mechanism",
     "countPerUnit": 8,
     "reward": 3
@@ -87,9 +82,20 @@
     "baseUnitsDemanded": 128
   },
   {
-    "targetItems": "create:redstone_link",
-    "countPerUnit": 16,
+    "targetItems": "create:transmitter",
+    "countPerUnit": 4,
     "baseUnitsDemanded": 96,
     "reward": 2
+  },
+  {
+    "targetItems": "create:cardboard",
+    "countPerUnit": 32,
+    "reward": 2
+  },
+  {
+    "targetItems": "create:bar_of_chocolate",
+    "countPerUnit": 32,
+    "reward": 2,
+    "requiresAny": "vegandelight"
   }
 ]

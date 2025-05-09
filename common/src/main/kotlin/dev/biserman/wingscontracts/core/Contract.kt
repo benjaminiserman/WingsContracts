@@ -2,7 +2,6 @@ package dev.biserman.wingscontracts.core
 
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.data.LoadedContracts
-import dev.biserman.wingscontracts.registry.ModItemRegistry
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.boolean
@@ -14,6 +13,7 @@ import dev.biserman.wingscontracts.nbt.ContractTagHelper.string
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.uuid
 import dev.biserman.wingscontracts.nbt.ItemCondition
 import dev.biserman.wingscontracts.nbt.ItemConditionParser
+import dev.biserman.wingscontracts.registry.ModItemRegistry
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.ChatFormatting
@@ -250,17 +250,15 @@ abstract class Contract(
         return components
     }
 
+
+
     open fun getTimeInfo(list: MutableList<Component>?): MutableList<Component> {
         val components = mutableListOf<Component>()
         val nextCycleStart = currentCycleStart + cycleDurationMs
         val timeRemaining = nextCycleStart - System.currentTimeMillis()
         val timeRemainingString = DenominationsHelper.denominateDurationToString(timeRemaining)
 
-        val timeRemainingColor = when {
-            timeRemaining < 1000 * 60 * 60 -> ChatFormatting.RED
-            timeRemaining < 1000 * 60 * 60 * 24 -> ChatFormatting.YELLOW
-            else -> ChatFormatting.DARK_PURPLE
-        }
+        val timeRemainingColor = getTimeRemainingColor(timeRemaining)
 
         if (Date(nextCycleStart) <= Date()) {
             components.add(translateContract("cycle_complete").withStyle(ChatFormatting.DARK_PURPLE))
@@ -500,6 +498,12 @@ abstract class Contract(
             } else {
                 contract.displayItems[Mth.floor(time / 30.0f) % contract.displayItems.size]
             }
+        }
+
+        fun getTimeRemainingColor(timeRemaining: Long) = when {
+            timeRemaining < 1000 * 60 * 60 -> ChatFormatting.RED
+            timeRemaining < 1000 * 60 * 60 * 24 -> ChatFormatting.YELLOW
+            else -> ChatFormatting.DARK_PURPLE
         }
     }
 }

@@ -2,23 +2,27 @@
 
 package dev.biserman.wingscontracts.block
 
-//import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation
+import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.advancements.ContractCompleteTrigger
 import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.data.LoadedContracts
+import dev.biserman.wingscontracts.nbt.ContractTag
+import dev.biserman.wingscontracts.nbt.ContractTagHelper
 import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
 import dev.biserman.wingscontracts.registry.ModBlockRegistry
 import dev.biserman.wingscontracts.registry.ModMenuRegistry
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
 import dev.biserman.wingscontracts.server.AvailableContractsData
-import dev.biserman.wingscontracts.nbt.ContractTag
-import dev.biserman.wingscontracts.nbt.ContractTagHelper
+import dev.biserman.wingscontracts.util.DenominationsHelper
+import net.minecraft.ChatFormatting
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.NonNullList
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
@@ -59,9 +63,8 @@ class ContractPortalBlockEntity(
 ) :
     BlockEntity(ModBlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState),
     MenuProvider,
-    WorldlyContainer
-//    IHaveGoggleInformation
-{
+    WorldlyContainer,
+    IHaveGoggleInformation {
     var cooldownTime: Int
     var contractSlot: ItemStack
     var cachedRewards: ItemStack
@@ -356,7 +359,14 @@ class ContractPortalBlockEntity(
         if (contract.unitsFulfilled >= contract.unitsDemanded) {
             val player = level?.getPlayerByUUID(lastPlayer)
             if (player is ServerPlayer) {
-                ContractCompleteTrigger.INSTANCE.trigger(player, contractSlot, level as ServerLevel, blockPos.x, blockPos.y, blockPos.z)
+                ContractCompleteTrigger.INSTANCE.trigger(
+                    player,
+                    contractSlot,
+                    level as ServerLevel,
+                    blockPos.x,
+                    blockPos.y,
+                    blockPos.z
+                )
             }
         }
 
@@ -381,33 +391,39 @@ class ContractPortalBlockEntity(
         player: Player
     ): AbstractContainerMenu = ModMenuRegistry.CONTRACT_PORTAL.get().create(i, inventory)!!
 
-//    override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
-//        val contract = LoadedContracts[contractSlot] ?: return false
-//        tooltip.add(
-//            Component.translatable(
-//                "${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.progress",
-//                contract.unitsFulfilled,
-//                contract.unitsDemanded
-//            )
-//        )
-//
-//        val nextCycleStart = contract.currentCycleStart + contract.cycleDurationMs
-//        val timeRemaining = nextCycleStart - System.currentTimeMillis()
-//        val timeRemainingString = DenominationsHelper.denominateDurationToString(timeRemaining)
-//        tooltip.add(
-//            Component.translatable(
-//                "${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.remaining_time",
-//                timeRemainingString
-//            )
-//        )
-//
-//        return true
-//    }
+    override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
+        val contract = LoadedContracts[contractSlot] ?: return false
+
+        tooltip.add(Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.header"))
+
+        tooltip.add(
+            Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.progress")
+                .withStyle(ChatFormatting.GRAY)
+                .append(CommonComponents.SPACE)
+                .append(
+                    Component.literal("${contract.unitsFulfilled} / ${contract.unitsDemanded}")
+                        .withStyle(ChatFormatting.AQUA)
+                )
+
+        )
+
+        val nextCycleStart = contract.currentCycleStart + contract.cycleDurationMs
+        val timeRemaining = nextCycleStart - System.currentTimeMillis()
+        val timeRemainingString = "     " + DenominationsHelper.denominateDurationToString(timeRemaining)
+        tooltip.add(
+            Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.remaining_time")
+                .withStyle(ChatFormatting.GRAY)
+        )
+
+        tooltip.add(Component.literal(timeRemainingString).withStyle(Contract.getTimeRemainingColor(timeRemaining)))
+
+        return true
+    }
 
     override fun getSlotsForFace(direction: Direction): IntArray? {
         return when (direction) {
             Direction.DOWN -> intArrayOf(0)
-            else -> (1..ContractPortalBlockEntity.CONTAINER_SIZE).toList().toIntArray()
+            else -> (1..CONTAINER_SIZE).toList().toIntArray()
         }
     }
 
