@@ -3,6 +3,7 @@ package dev.biserman.wingscontracts.registry
 import dev.architectury.registry.registries.DeferredRegister
 import dev.architectury.registry.registries.RegistrySupplier
 import dev.biserman.wingscontracts.WingsContractsMod
+import dev.biserman.wingscontracts.item.BlankAbyssalContract
 import dev.biserman.wingscontracts.item.ContractItem
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.Item
@@ -15,13 +16,13 @@ object ModItemRegistry {
 
     val BLANK_ABYSSAL_CONTRACT: RegistrySupplier<Item> = ITEMS.register(
         "blank_abyssal_contract"
-    ) { ContractItem(Item.Properties().stacksTo(1)) }
+    ) { BlankAbyssalContract(Item.Properties().stacksTo(1)) }
     val ABYSSAL_CONTRACT: RegistrySupplier<Item> = ITEMS.register(
         "abyssal_contract"
     ) { ContractItem(Item.Properties().stacksTo(1)) }
     val BLANK_BOUND_CONTRACT: RegistrySupplier<Item> = ITEMS.register(
         "blank_bound_contract"
-    ) { ContractItem(Item.Properties().stacksTo(1)) }
+    ) { Item(Item.Properties().stacksTo(1)) }
     val BOUND_CONTRACT: RegistrySupplier<Item> = ITEMS.register(
         "bound_contract"
     ) { ContractItem(Item.Properties().stacksTo(1)) }

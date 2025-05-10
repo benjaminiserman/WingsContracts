@@ -79,6 +79,7 @@
     "wingscontracts.subtitles.block.contract_portal.reject": "Contract portal rejects item",
     "wingscontracts.subtitles.block.contract_portal.add_contract": "Contract portal activates",
     "wingscontracts.subtitles.block.contract_portal.remove_contract": "Contract portal contract removed",
+    "wingscontracts.subtitles.write_contract": "Contract materializes",
 
 
     "wingscontracts.gui.goggles.contract_portal.header": "    Contract Info:",

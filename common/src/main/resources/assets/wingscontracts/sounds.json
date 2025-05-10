@@ -48,5 +48,11 @@
       "entity/itemframe/remove_item3",
       "entity/itemframe/remove_item4"
     ]
+  },
+  "write_contract": {
+    "subtitle": "wingscontracts.subtitles.write_contract",
+    "sounds": [
+      "random/fizz"
+    ]
   }
 }

@@ -10,7 +10,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val availableContractsPoolRefreshPeriodMs: ForgeConfigSpec.LongValue
     val availableContractsPoolOptions: ForgeConfigSpec.IntValue
     val availableContractsPoolPicks: ForgeConfigSpec.IntValue
-    val randomizeCraftedContracts: ForgeConfigSpec.BooleanValue
+    val allowBlankContractInitialization: ForgeConfigSpec.BooleanValue
     val disableDefaultContractOptions: ForgeConfigSpec.BooleanValue
     val variance: ForgeConfigSpec.DoubleValue
     val replaceRewardWithRandomPercent: ForgeConfigSpec.DoubleValue
@@ -58,9 +58,9 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
             builder.comment("Determines how many picks each player gets from the Abyssal Contracts pool per refresh period.")
                 .defineInRange("availableContractsPoolPicks", 1, 0, Int.MAX_VALUE)
 
-        randomizeCraftedContracts =
-            builder.comment("If true, crafted contracts become a randomized usable Abyssal Contract. If false, they become an unusable Unknown Contract.")
-                .define("randomizeCraftedContracts", true)
+        allowBlankContractInitialization =
+            builder.comment("If true, Blank Abyssal Contracts can be right-clicked to become a randomized usable Abyssal Contract.")
+                .define("allowBlankContractInitialization", true)
 
         disableDefaultContractOptions =
             builder.comment(

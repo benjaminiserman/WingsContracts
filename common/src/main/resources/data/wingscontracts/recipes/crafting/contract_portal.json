@@ -7,15 +7,18 @@
     },
     "O": {
       "item": "minecraft:obsidian"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
     }
   },
   "pattern": [
-    "O",
-    "G",
-    "O"
+    " E ",
+    "GOG",
+    "OOO"
   ],
   "result": {
-    "item": "wingscontracts:abyssal_contract"
+    "item": "wingscontracts:contract_portal"
   },
   "show_notification": true
 }
