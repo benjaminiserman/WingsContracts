@@ -60,6 +60,10 @@
     "item.wingscontracts.contract": "%s Contract",
     "item.wingscontracts.contract.unknown": "Unknown Contract",
     "item.wingscontracts.contract.abyssal": "%s %s Contract %s",
+    "item.wingscontracts.blank_abyssal_contract": "Blank Abyssal Contract",
+    "item.wingscontracts.blank_bound_contract": "Blank Bound Contract",
+    "item.wingscontracts.bound_contract": "Bound Contract",
+    "item.wingscontracts.abyssal_coin": "Abyssal Obol",
     "item.wingscontracts.question_mark": "Matching",
 
 
