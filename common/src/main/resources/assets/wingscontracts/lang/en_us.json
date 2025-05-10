@@ -61,6 +61,8 @@
     "item.wingscontracts.contract.unknown": "Unknown Contract",
     "item.wingscontracts.contract.abyssal": "%s %s Contract %s",
     "item.wingscontracts.blank_abyssal_contract": "Blank Abyssal Contract",
+    "item.wingscontracts.blank_abyssal_contract.desc.can": "Right-click with this in hand to materialize it into a random Abyssal Contract",
+    "item.wingscontracts.blank_abyssal_contract.desc.cannot": "Only used for crafting",
     "item.wingscontracts.blank_bound_contract": "Blank Bound Contract",
     "item.wingscontracts.bound_contract": "Bound Contract",
     "item.wingscontracts.abyssal_coin": "Abyssal Obol",

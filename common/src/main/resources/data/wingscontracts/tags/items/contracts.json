@@ -1,5 +1,8 @@
 {
   "values": [
-    "wingscontracts:abyssal_contract"
+    "wingscontracts:abyssal_contract",
+    "wingscontracts:blank_abyssal_contract",
+    "wingscontracts:bound_contract",
+    "wingscontracts:blank_bound_contract"
   ]
 }
