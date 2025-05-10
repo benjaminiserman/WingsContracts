@@ -28,6 +28,8 @@ object WoolScene {
         scene.showBasePlate()
         scene.idle(10)
         scene.world().showSection(util.select().fromTo(0, 1, 0, 2, 1, 2), Direction.DOWN)
+        scene.idle(10)
+        scene.world().showSection(util.select().fromTo(0, 2, 0, 2, 2, 2), Direction.DOWN)
 
         scene.overlay()
             .showText(100)

@@ -2,6 +2,9 @@ package dev.biserman.wingscontracts.client.ponder
 
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.client.ponder.scenes.IntroScene
+import dev.biserman.wingscontracts.client.ponder.scenes.RedstoneInputScene
+import dev.biserman.wingscontracts.client.ponder.scenes.RedstoneOutputScene
+import dev.biserman.wingscontracts.client.ponder.scenes.WoolScene
 import dev.biserman.wingscontracts.registry.ModBlockRegistry
 import net.createmod.ponder.api.registration.PonderPlugin
 import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper
@@ -15,6 +18,9 @@ object ModPonderPlugin : PonderPlugin {
 
     override fun registerScenes(helper: PonderSceneRegistrationHelper<ResourceLocation>) {
         IntroScene.register(helper)
+        WoolScene.register(helper)
+        RedstoneInputScene.register(helper)
+        RedstoneOutputScene.register(helper)
     }
 
     override fun registerTags(helper: PonderTagRegistrationHelper<ResourceLocation?>) {
