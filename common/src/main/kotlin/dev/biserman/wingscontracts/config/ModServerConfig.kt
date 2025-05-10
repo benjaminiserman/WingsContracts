@@ -115,7 +115,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
         builder.push("Contract Defaults")
 
         defaultRewardCurrencyId =
-            builder.comment("Loaded contracts with an unspecified or integer reward will have their reward ID set to this ID. Consider changing this to minecraft:diamond or numismatics:spur")
+            builder.comment("Loaded contracts with an unspecified or integer reward will have their reward ID set to this ID. Consider changing this to wingscontracts:abyssal_coin or numismatics:spur")
                 .define("defaultRewardCurrencyId", "minecraft:emerald")
 
         defaultRewardCurrencyUnit =
