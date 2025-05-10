@@ -1,7 +1,5 @@
 package dev.biserman.wingscontracts.config
 
-import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.resources.ResourceLocation
 import net.minecraftforge.common.ForgeConfigSpec
 
 class ModServerConfig(builder: ForgeConfigSpec.Builder) {
@@ -19,9 +17,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val rarityThresholdsString: ForgeConfigSpec.ConfigValue<String>
 
     // Contract Defaults
-    val defaultRewardCurrencyId: ForgeConfigSpec.ConfigValue<String>
-    val defaultRewardCurrency get() = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(defaultRewardCurrencyId.get()))
-    val defaultRewardCurrencyUnit: ForgeConfigSpec.ConfigValue<String>
+    val defaultRewards: ForgeConfigSpec.ConfigValue<String>
     val defaultRewardCurrencyMultiplier: ForgeConfigSpec.DoubleValue
     val defaultUnitsDemandedMultiplier: ForgeConfigSpec.DoubleValue
     val defaultCountPerUnitMultiplier: ForgeConfigSpec.DoubleValue
@@ -114,21 +110,25 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
         builder.pop()
         builder.push("Contract Defaults")
 
-        defaultRewardCurrencyId =
-            builder.comment("Loaded contracts with an unspecified or integer reward will have their reward ID set to this ID. Consider changing this to wingscontracts:abyssal_coin or numismatics:spur")
-                .define("defaultRewardCurrencyId", "minecraft:emerald")
-
-        defaultRewardCurrencyUnit =
+        defaultRewards =
             builder.comment(
                 """
-                If provided, serves as the format to display rewards denominated in the default reward currency.
-                For example: \"$%d\" for dollars or \"%d¤\" for a more generic unit
-                """.trimIndent()
-            ).define("defaultRewardCurrencyUnit", "")
+                Loaded contracts with an unspecified or integer reward will use one of these rewards instead. 
+                Semicolon-separated list in the format "namespace:id,value_double,weight_int,format_string(optional);"
+                Consider changing this to "wingscontracts:abyssal_coin,1,1,$%d" or "numismatics:spur,1,1,%d¤"
+                """
+            )
+                .define(
+                    "defaultRewards", listOf(
+                        "minecraft:gold_nugget,0.25,2",
+                        "minecraft:emerald,0.5,4",
+                        "minecraft:lapis_lazuli,4,1",
+                    ).joinToString(";")
+                )
 
         defaultRewardCurrencyMultiplier =
             builder.comment("Datapacked contracts with an unspecified or integer reward will have their reward count multiplied by this factor, then rounded (minimum of 1).")
-                .defineInRange("defaultRewardCurrencyMultiplier", 2.0, 0.0, Double.MAX_VALUE)
+                .defineInRange("defaultRewardCurrencyMultiplier", 1.0, 0.0, Double.MAX_VALUE)
 
         defaultUnitsDemandedMultiplier =
             builder.comment("All new Abyssal Contracts pulled from the pool will have their base units demanded multiplied by this factor, then rounded (minimum of 1).")

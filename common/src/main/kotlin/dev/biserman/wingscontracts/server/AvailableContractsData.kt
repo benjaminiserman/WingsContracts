@@ -18,10 +18,13 @@ import dev.biserman.wingscontracts.data.AvailableContractsManager
 import dev.biserman.wingscontracts.nbt.ContractTag
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.ContainerHelper
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.Level
@@ -32,6 +35,8 @@ import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
+class Reward(val item: Item, val value: Double, val weight: Int, val formatString: String? = null)
+
 class AvailableContractsData : SavedData() {
     val container = AvailableContractsContainer(this)
     val remainingPicks = mutableMapOf<String, Int>()
@@ -40,6 +45,18 @@ class AvailableContractsData : SavedData() {
 
     val rarityThresholds by lazy { ModConfig.SERVER.rarityThresholdsString.get().split(",").map { it.toInt() } }
     val currencyHandler by lazy { DenominatedCurrenciesHandler() }
+    val defaultRewards by lazy {
+        ModConfig.SERVER.defaultRewards.get().split(";").map {
+            val (item, value, weight, formatString) = it.split(",")
+            Reward(
+                BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(item)),
+                value.toDouble(),
+                weight.toInt(),
+                formatString
+            )
+        }
+    }
+    val defaultRewardBagWeightSum by lazy { defaultRewards.sumOf { it.weight } }
 
     override fun save(compoundTag: CompoundTag): CompoundTag {
         val contractListTag = CompoundTag()
@@ -88,7 +105,7 @@ class AvailableContractsData : SavedData() {
         tag.startTime = currentCycleStart
         tag.baseUnitsDemanded = vary(tag.baseUnitsDemanded ?: 64, ModConfig.SERVER.defaultUnitsDemandedMultiplier.get())
         tag.countPerUnit = vary(tag.countPerUnit ?: 16, ModConfig.SERVER.defaultCountPerUnitMultiplier.get())
-        if (tag.reward == null || tag.reward?.item == ModConfig.SERVER.defaultRewardCurrency) {
+        if (tag.reward == null || defaultRewards.any { it.item == tag.reward?.item }) {
             val rewardCount =
                 min(vary(tag.reward?.count ?: 1, ModConfig.SERVER.defaultRewardCurrencyMultiplier.get()), 127)
             tag.reward?.count = rewardCount
@@ -137,11 +154,26 @@ class AvailableContractsData : SavedData() {
         return AbyssalContract.load(tag)
     }
 
+    fun getRandomReward(): Reward {
+        val pick = random.nextInt(defaultRewardBagWeightSum)
+        var runningWeight = 0
+        for (reward in defaultRewards) {
+            runningWeight += reward.weight
+            if (pick < runningWeight) {
+                return reward
+            }
+        }
+
+        return FALLBACK_REWARD
+    }
+
     companion object {
         const val CONTRACT_LIST = "contractList"
         const val REMAINING_PICKS = "remainingPicks"
         const val CURRENT_CYCLE_START = "currentCycleStart"
         const val IDENTIFIER = "${WingsContractsMod.MOD_ID}_world_data"
+
+        val FALLBACK_REWARD = Reward(Items.EMERALD, 1.0, 1)
 
         val random = Random()
 
@@ -160,8 +192,8 @@ class AvailableContractsData : SavedData() {
         }
 
         fun set(world: Level, data: AvailableContractsData) {
+            clientData = data
             if (world !is ServerLevel) {
-                clientData = data
                 return
             }
 

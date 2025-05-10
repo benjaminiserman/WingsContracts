@@ -6,12 +6,12 @@ import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
 import dev.biserman.wingscontracts.config.GrowthFunctionOptions
 import dev.biserman.wingscontracts.config.ModConfig
-import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.double
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.int
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.itemStack
 import dev.biserman.wingscontracts.nbt.ItemCondition
+import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import net.minecraft.ChatFormatting
 import net.minecraft.nbt.CompoundTag
@@ -172,13 +172,11 @@ class AbyssalContract(
     }
 
     fun formatReward(count: Int): String {
-        val defaultRewardCurrencyUnit = ModConfig.SERVER.defaultRewardCurrencyUnit.get()
-        return if (defaultRewardCurrencyUnit.isNotBlank()
-            && reward.item == ModConfig.SERVER.defaultRewardCurrency
-        ) {
-            String.format(defaultRewardCurrencyUnit, count)
-        } else {
+        val rewardEntry = AvailableContractsData.clientData.defaultRewards.firstOrNull { it.item == reward.item }
+        return if (rewardEntry == null || rewardEntry.formatString == null) {
             "$count ${reward.displayName.string.trimBrackets()}"
+        } else {
+            String.format(rewardEntry.formatString, count)
         }
     }
 
@@ -203,11 +201,12 @@ class AbyssalContract(
             return rarity
         }
 
-        if (reward.item != ModConfig.SERVER.defaultRewardCurrency) {
+        val rewardEntry = AvailableContractsData.clientData.defaultRewards.firstOrNull { it.item == reward.item }
+        if (rewardEntry == null) {
             return 0
         }
 
-        return AvailableContractsData.clientData.rarityThresholds.indexOfLast { maxPossibleReward > it } + 1
+        return AvailableContractsData.clientData.rarityThresholds.indexOfLast { maxPossibleReward * rewardEntry.value > it } + 1
     }
 
     override fun save(nbt: CompoundTag?): ContractTag {
@@ -271,7 +270,7 @@ class AbyssalContract(
                 shortTargetList = contract.shortTargetList,
                 rarity = contract.rarity,
                 displayItem = contract.displayItem,
-                reward = contract.reward ?: ItemStack(ModConfig.SERVER.defaultRewardCurrency, 1),
+                reward = contract.reward ?: ItemStack(AvailableContractsData.FALLBACK_REWARD.item, 1),
                 level = contract.level ?: 1,
                 quantityGrowthFactor = contract.quantityGrowthFactor ?: ModConfig.SERVER.defaultGrowthFactor.get(),
                 maxLevel = contract.maxLevel ?: ModConfig.SERVER.defaultMaxLevel.get()

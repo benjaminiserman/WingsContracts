@@ -3,6 +3,7 @@
 package dev.biserman.wingscontracts.nbt
 
 import dev.biserman.wingscontracts.config.ModConfig
+import dev.biserman.wingscontracts.server.AvailableContractsData
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.ItemStack
 import kotlin.math.max
@@ -69,7 +70,7 @@ object ContractTagHelper {
             if (this.contains(it, 99)) { // if the tag is just an integer, replace with default reward
                 val loadedValue = max(1, this.getInt(it))
                 return@safeGet ItemStack(
-                    ModConfig.SERVER.defaultRewardCurrency,
+                    AvailableContractsData,
                     loadedValue)
             } else if (this.contains(it)) {
                 return@safeGet ItemStack.of(this.getCompound(it))
