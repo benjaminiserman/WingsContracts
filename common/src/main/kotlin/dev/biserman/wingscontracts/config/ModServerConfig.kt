@@ -52,7 +52,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
 
         availableContractsPoolOptions =
             builder.comment("Determines how many Abyssal Contracts are available in the pool at any one time. Set to zero to disable the Abyssal Contracts pool.")
-                .defineInRange("availableContractsPoolOptions", 0, 0, 10)
+                .defineInRange("availableContractsPoolOptions", 10, 0, 10)
 
         availableContractsPoolPicks =
             builder.comment("Determines how many picks each player gets from the Abyssal Contracts pool per refresh period.")
@@ -136,7 +136,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
 
         defaultCountPerUnitMultiplier =
             builder.comment("All new Abyssal Contracts pulled from the pool will have their count demanded per unit multiplied by this factor, then rounded (minimum of 1).")
-                .defineInRange("defaultCountPerUnitMultiplier", 10.0, 0.0, Double.MAX_VALUE)
+                .defineInRange("defaultCountPerUnitMultiplier", 1.0, 0.0, Double.MAX_VALUE)
 
         defaultCycleDurationMs =
             builder.comment("The default length of a cycle period, in milliseconds. E.g.: 86400000 for one day, 604800000 for one week")
@@ -148,7 +148,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
 
         defaultMaxLevel =
             builder.comment("The default max level for Abyssal Contracts. If negative or zero, the contract will have no max level.")
-                .define("defaultMaxLevel", 5)
+                .define("defaultMaxLevel", 10)
 
         defaultGrowthFactor = builder.comment(
             """
