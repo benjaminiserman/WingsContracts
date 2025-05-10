@@ -1,0 +1,75 @@
+[
+  {
+    "targetItems": "iron_ingot",
+    "countPerUnit": 32,
+    "reward": 2
+  },
+  {
+    "targetItems": "cobweb,jack_o_lantern,cauldron,skeleton_skull,wither_skeleton_skull,neapolitan:mint_candies,neapolitan:strawberry_bean_bonbons",
+    "countPerUnit": 16,
+    "reward": 3,
+    "name": "example_datapack.halloween",
+    "description": "example_datapack.halloween.desc"
+  },
+  {
+    "targetItems": "potion",
+    "targetConditions": "tag.Potion==minecraft:invisibility",
+    "displayItem": {
+      "id": "potion",
+      "Count": 1,
+      "tag": {
+        "Potion": "minecraft:invisibility"
+      }
+    },
+    "countPerUnit": 8,
+    "reward": 4,
+    "description": "accepts invisibility potions"
+  },
+  {
+    "targetTags": "#forge:dough",
+    "requiresAny": "farmersdelight,create,garnished",
+    "countPerUnit": 48,
+    "baseUnitsDemanded": 96
+  },
+  {
+    "targetConditions": "tag.Enchantments$.*lvl:3.*",
+    "reward": 4,
+    "countPerUnit": 2,
+    "description": "accepts items with a level 3 enchantment"
+  },
+  {
+    "targetTags": "#minecraft:swords",
+    "targetConditions": "tag.Enchantments<-minecraft:sharpness",
+    "countPerUnit": 1,
+    "reward": 4,
+    "displayItem": {
+      "id": "diamond_sword",
+      "Count": 1,
+      "tag": {
+        "Enchantments": [
+          {
+            "id": "minecraft:sharpness",
+            "lvl": 1
+          }
+        ]
+      }
+    },
+    "description": "accepts swords enchanted with sharpness"
+  },
+  {
+    "targetConditions": "burnTicks>1600",
+    "countPerUnit": 16,
+    "reward": 2,
+    "description": "accepts items with better burn time than coal"
+  },
+  {
+    "targetConditions": "mod!=minecraft",
+    "countPerUnit": 256,
+    "description": "accepts items that aren't in vanilla"
+  },
+  {
+    "targetConditions": "isEdible==true",
+    "countPerUnit": 32,
+    "description": "accepts edible items"
+  }
+]

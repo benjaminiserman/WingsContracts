@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:emerald"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "pattern": [
+    "O",
+    "G",
+    "O"
+  ],
+  "result": {
+    "item": "wingscontracts:blank_abyssal_contract"
+  },
+  "show_notification": true
+}

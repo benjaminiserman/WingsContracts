@@ -1,0 +1,6 @@
+{
+  "pack": {
+    "pack_format": 15,
+    "description": "This pack demonstrates how to (1) disable vanilla contracts, (2) add new contracts, (3) change the abyssal contract recipe, and (4) disable bound contract crafting"
+  }
+}
