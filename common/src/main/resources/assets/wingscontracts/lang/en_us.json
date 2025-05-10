@@ -92,7 +92,6 @@
     "wingscontracts.ponder.contract_portal.redstone_input.text_1": "Upon receiving a redstone signal, the Contract Portal spits out all of its cached rewards.",
     "wingscontracts.ponder.contract_portal.redstone_output.header": "Redstone Output",
     "wingscontracts.ponder.contract_portal.redstone_output.text_1": "The Contract Portal emits a comparator signal that represents how many stacks of cached rewards are within it, rounded up.",
-    "wingscontracts.ponder.contract_portal.redstone_output.text_2": "Contract Portals can hold a maximum of 64 stacks of rewards.",
     "wingscontracts.ponder.tag.contract_portal": "Contracts",
     "wingscontracts.ponder.tag.contract_portal.description": "Items and Components related to contracts",
 

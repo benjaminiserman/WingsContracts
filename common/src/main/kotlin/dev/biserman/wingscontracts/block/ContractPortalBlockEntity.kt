@@ -89,6 +89,7 @@ class ContractPortalBlockEntity(
         this.cooldownTime = compoundTag.getInt("SuckCooldown")
         this.contractSlot = ItemStack.of(compoundTag.getCompound("ContractSlot"))
         this.cachedRewards = ItemStack.of(compoundTag.getCompound("CachedRewards"))
+        cachedRewards.count = compoundTag.getCompound("CachedRewards").getInt("Count")
         this.lastPlayer = compoundTag.getUUID("LastPlayer")
         ContainerHelper.loadAllItems(compoundTag, cachedInput)
     }
@@ -104,6 +105,7 @@ class ContractPortalBlockEntity(
 
         val cachedRewardsTag = CompoundTag()
         cachedRewards.save(cachedRewardsTag)
+        cachedRewardsTag.putInt("Count", cachedRewards.count)
         compoundTag.put("CachedRewards", cachedRewardsTag)
 
         ContainerHelper.saveAllItems(compoundTag, cachedInput)
