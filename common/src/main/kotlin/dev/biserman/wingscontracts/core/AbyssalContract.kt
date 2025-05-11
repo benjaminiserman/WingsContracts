@@ -9,8 +9,9 @@ import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.double
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.int
-import dev.biserman.wingscontracts.nbt.ContractTagHelper.itemStack
+import dev.biserman.wingscontracts.nbt.ContractTagHelper.reward
 import dev.biserman.wingscontracts.nbt.ItemCondition
+import dev.biserman.wingscontracts.nbt.Reward
 import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import net.minecraft.ChatFormatting
@@ -212,7 +213,7 @@ class AbyssalContract(
     override fun save(nbt: CompoundTag?): ContractTag {
         val tag = super.save(nbt)
 
-        tag.reward = reward
+        tag.reward = Reward.Defined(reward)
         tag.level = level
         tag.quantityGrowthFactor = quantityGrowthFactor
         tag.maxLevel = maxLevel
@@ -242,13 +243,14 @@ class AbyssalContract(
                 || targetConditions.any())
 
     companion object {
-        var (ContractTag).reward by itemStack()
+        var (ContractTag).reward by reward()
 
         var (ContractTag).level by int()
         var (ContractTag).quantityGrowthFactor by double()
         var (ContractTag).maxLevel by int()
 
-        fun load(contract: ContractTag): AbyssalContract {
+        fun load(contract: ContractTag, data: AvailableContractsData? = null): AbyssalContract {
+            val reward = contract.reward
             return AbyssalContract(
                 id = contract.id ?: UUID.randomUUID(),
                 targetItems = contract.targetItems ?: listOf(),
@@ -270,7 +272,11 @@ class AbyssalContract(
                 shortTargetList = contract.shortTargetList,
                 rarity = contract.rarity,
                 displayItem = contract.displayItem,
-                reward = contract.reward ?: ItemStack(AvailableContractsData.FALLBACK_REWARD.item, 1),
+                reward = when (reward) {
+                    is Reward.Defined -> reward.itemStack
+                    is Reward.Random if data != null -> data.getRandomReward(reward.count)
+                    else -> ItemStack(AvailableContractsData.FALLBACK_REWARD.item, 1)
+                },
                 level = contract.level ?: 1,
                 quantityGrowthFactor = contract.quantityGrowthFactor ?: ModConfig.SERVER.defaultGrowthFactor.get(),
                 maxLevel = contract.maxLevel ?: ModConfig.SERVER.defaultMaxLevel.get()

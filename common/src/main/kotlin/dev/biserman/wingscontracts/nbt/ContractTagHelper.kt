@@ -2,8 +2,6 @@
 
 package dev.biserman.wingscontracts.nbt
 
-import dev.biserman.wingscontracts.config.ModConfig
-import dev.biserman.wingscontracts.server.AvailableContractsData
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.ItemStack
 import kotlin.math.max
@@ -12,6 +10,11 @@ import kotlin.reflect.KProperty
 @JvmInline
 value class ContractTag(val tag: CompoundTag) {
     override fun toString() = "ContractTag($tag)"
+}
+
+sealed class Reward {
+    class Defined(val itemStack: ItemStack) : Reward()
+    class Random(val count: Int) : Reward()
 }
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -65,20 +68,42 @@ object ContractTagHelper {
         key, safeGet(CompoundTag::getBoolean), CompoundTag::putBoolean
     )
 
-    fun itemStack(key: String? = null) =
+    fun reward(key: String? = null) =
         Property(key, safeGet {
             if (this.contains(it, 99)) { // if the tag is just an integer, replace with default reward
                 val loadedValue = max(1, this.getInt(it))
-                return@safeGet ItemStack(
-                    AvailableContractsData,
-                    loadedValue)
+                return@safeGet Reward.Random(loadedValue)
             } else if (this.contains(it)) {
-                return@safeGet ItemStack.of(this.getCompound(it))
+                val itemStack = ItemStack.of(this.getCompound(it))
+                itemStack.count = this.getCompound(it).getInt("Count")
+                return@safeGet Reward.Defined(itemStack)
+            } else {
+                return@safeGet Reward.Random(1)
+            }
+        }, { safeKey, value ->
+            when (value) {
+                is Reward.Defined -> {
+                    val tag = value.itemStack.save(CompoundTag())
+                    tag.putInt("Count", value.itemStack.count)
+                    this.put(safeKey, tag)
+                }
+                is Reward.Random -> this.putInt(safeKey, value.count)
+            }
+        })
+
+    fun itemStack(key: String? = null) =
+        Property(key, safeGet {
+            if (this.contains(it)) {
+                val itemStack = ItemStack.of(this.getCompound(it))
+                itemStack.count = this.getCompound(it).getInt("Count")
+                return@safeGet itemStack
             } else {
                 return@safeGet null
             }
         }, { safeKey, value ->
-            this.put(safeKey, value.save(CompoundTag()))
+            val tag = value.save(CompoundTag())
+            tag.putInt("Count", value.count)
+            this.put(safeKey, tag)
         })
 
     fun (String).parseCsv() = this.split(",").map { it.trim() }.filter { it.isNotEmpty() }

@@ -6,6 +6,7 @@ import dev.biserman.wingscontracts.core.Contract.Companion.id
 import dev.biserman.wingscontracts.core.Contract.Companion.type
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
+import dev.biserman.wingscontracts.server.AvailableContractsData
 import net.minecraft.world.item.ItemStack
 import java.util.*
 

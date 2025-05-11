@@ -16,6 +16,7 @@ import dev.biserman.wingscontracts.core.Contract.Companion.startTime
 import dev.biserman.wingscontracts.core.Contract.Companion.targetItems
 import dev.biserman.wingscontracts.data.AvailableContractsManager
 import dev.biserman.wingscontracts.nbt.ContractTag
+import dev.biserman.wingscontracts.nbt.Reward
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.core.registries.BuiltInRegistries
@@ -31,11 +32,11 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.saveddata.SavedData
 import java.util.*
 import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.pow
+import kotlin.math.round
 import kotlin.math.roundToInt
 
-class Reward(val item: Item, val value: Double, val weight: Int, val formatString: String? = null)
+class RewardBagEntry(val item: Item, val value: Double, val weight: Int, val formatString: String? = null)
 
 class AvailableContractsData : SavedData() {
     val container = AvailableContractsContainer(this)
@@ -48,13 +49,13 @@ class AvailableContractsData : SavedData() {
     val defaultRewards by lazy {
         ModConfig.SERVER.defaultRewards.get().split(";").map {
             val (item, value, weight, formatString) = it.split(",")
-            Reward(
+            RewardBagEntry(
                 BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(item)),
                 value.toDouble(),
                 weight.toInt(),
                 formatString
             )
-        }
+        }.sortedBy { it.value }
     }
     val defaultRewardBagWeightSum by lazy { defaultRewards.sumOf { it.weight } }
 
@@ -105,10 +106,9 @@ class AvailableContractsData : SavedData() {
         tag.startTime = currentCycleStart
         tag.baseUnitsDemanded = vary(tag.baseUnitsDemanded ?: 64, ModConfig.SERVER.defaultUnitsDemandedMultiplier.get())
         tag.countPerUnit = vary(tag.countPerUnit ?: 16, ModConfig.SERVER.defaultCountPerUnitMultiplier.get())
-        if (tag.reward == null || defaultRewards.any { it.item == tag.reward?.item }) {
-            val rewardCount =
-                min(vary(tag.reward?.count ?: 1, ModConfig.SERVER.defaultRewardCurrencyMultiplier.get()), 127)
-            tag.reward?.count = rewardCount
+        val reward = tag.reward
+        if (reward is Reward.Random) {
+            val rewardCount = vary(reward.count, ModConfig.SERVER.defaultRewardCurrencyMultiplier.get())
             if (random.nextDouble() <= ModConfig.SERVER.replaceRewardWithRandomPercent.get()) {
                 for (_try in 1..5) { // attempt 5 times to find a working item
                     val otherContract = AvailableContractsManager.randomTag()
@@ -131,8 +131,13 @@ class AvailableContractsData : SavedData() {
                         continue
                     }
 
+                    val otherContractReward = otherContract.reward
+                    if (otherContractReward !is Reward.Random) {
+                        continue
+                    }
+
                     val otherContractCountPerUnit = otherContract.countPerUnit?.toDouble() ?: 16.0
-                    val otherContractRewardCount = ((otherContract.reward?.count?.toDouble() ?: 1.0)
+                    val otherContractRewardCount = (otherContractReward.count.toDouble()
                             * ModConfig.SERVER.defaultRewardCurrencyMultiplier.get())
                     val newRewardCount = (rewardCount.toDouble().pow(2)
                             * otherContractCountPerUnit
@@ -144,27 +149,38 @@ class AvailableContractsData : SavedData() {
                         continue
                     }
 
-                    tag.rarity = AbyssalContract.load(tag).getRarity()
-                    tag.reward = ItemStack(otherContractItem, newRewardCount)
+                    tag.rarity = AbyssalContract.load(tag, this).getRarity()
+                    tag.reward = Reward.Defined(ItemStack(otherContractItem, newRewardCount))
                     break
                 }
+            } else {
+                tag.reward = Reward.Defined(getRandomReward(reward.count))
             }
         }
 
-        return AbyssalContract.load(tag)
+        return AbyssalContract.load(tag, this)
     }
 
-    fun getRandomReward(): Reward {
+    private fun getCount(reward: RewardBagEntry, value: Int) = round(value / reward.value).toInt()
+    fun getRandomReward(value: Int): ItemStack {
         val pick = random.nextInt(defaultRewardBagWeightSum)
         var runningWeight = 0
         for (reward in defaultRewards) {
             runningWeight += reward.weight
             if (pick < runningWeight) {
-                return reward
+                val count = getCount(reward, value)
+                if (count >= 1) {
+                    return ItemStack(reward.item, count)
+                }
             }
         }
 
-        return FALLBACK_REWARD
+        val lastFit = defaultRewards.lastOrNull { getCount(it, value) >= 1 }
+        return if (lastFit == null) {
+            ItemStack(FALLBACK_REWARD.item, 1)
+        } else {
+            ItemStack(lastFit.item, getCount(lastFit, value))
+        }
     }
 
     companion object {
@@ -173,7 +189,7 @@ class AvailableContractsData : SavedData() {
         const val CURRENT_CYCLE_START = "currentCycleStart"
         const val IDENTIFIER = "${WingsContractsMod.MOD_ID}_world_data"
 
-        val FALLBACK_REWARD = Reward(Items.EMERALD, 1.0, 1)
+        val FALLBACK_REWARD = RewardBagEntry(Items.EMERALD, 1.0, 1)
 
         val random = Random()
 

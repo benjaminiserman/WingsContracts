@@ -48,7 +48,7 @@ object LoadContractCommand {
 
             val tag =
                 AbyssalContract.fromJson(JsonParser.parseString(jsonString).asJsonObject) // add support for other types later
-            return AbyssalContract.load(tag)
+            return AbyssalContract.load(tag, AvailableContractsData.get(level))
         } catch (e: Error) {
             WingsContractsMod.LOGGER.error(e)
             throw e
