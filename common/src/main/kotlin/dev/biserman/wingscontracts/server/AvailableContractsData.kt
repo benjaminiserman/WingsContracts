@@ -93,22 +93,22 @@ class AvailableContractsData : SavedData() {
         SyncAvailableContractsMessage(level).sendToAll(level.server)
     }
 
-    private fun vary(value: Int, multiplier: Double): Int {
+    private fun vary(value: Double, multiplier: Double): Int {
         val variance = ModConfig.SERVER.variance.get()
         val randomFactor = random.nextDouble()
         val varianceFactor = 1.0 + (randomFactor * 2.0 - 1.0) * variance
 
-        return max(1.0, value.toDouble() * multiplier * varianceFactor).roundToInt()
+        return max(1.0, value * multiplier * varianceFactor).roundToInt()
     }
 
     fun generateContract(tag: ContractTag): Contract {
         tag.currentCycleStart = currentCycleStart
         tag.startTime = currentCycleStart
-        tag.baseUnitsDemanded = vary(tag.baseUnitsDemanded ?: 64, ModConfig.SERVER.defaultUnitsDemandedMultiplier.get())
-        tag.countPerUnit = vary(tag.countPerUnit ?: 16, ModConfig.SERVER.defaultCountPerUnitMultiplier.get())
+        tag.baseUnitsDemanded = vary(tag.baseUnitsDemanded?.toDouble() ?: 64.0, ModConfig.SERVER.defaultUnitsDemandedMultiplier.get())
+        tag.countPerUnit = vary(tag.countPerUnit?.toDouble() ?: 16.0, ModConfig.SERVER.defaultCountPerUnitMultiplier.get())
         val reward = tag.reward
         if (reward is Reward.Random) {
-            val rewardCount = vary(reward.count, ModConfig.SERVER.defaultRewardCurrencyMultiplier.get())
+            val rewardCount = vary(reward.value, ModConfig.SERVER.defaultRewardCurrencyMultiplier.get())
             if (random.nextDouble() <= ModConfig.SERVER.replaceRewardWithRandomPercent.get()) {
                 for (_try in 1..5) { // attempt 5 times to find a working item
                     val otherContract = AvailableContractsManager.randomTag()
@@ -137,7 +137,7 @@ class AvailableContractsData : SavedData() {
                     }
 
                     val otherContractCountPerUnit = otherContract.countPerUnit?.toDouble() ?: 16.0
-                    val otherContractRewardCount = (otherContractReward.count.toDouble()
+                    val otherContractRewardCount = (otherContractReward.value.toDouble()
                             * ModConfig.SERVER.defaultRewardCurrencyMultiplier.get())
                     val newRewardCount = (rewardCount.toDouble().pow(2)
                             * otherContractCountPerUnit
@@ -154,15 +154,15 @@ class AvailableContractsData : SavedData() {
                     break
                 }
             } else {
-                tag.reward = Reward.Defined(getRandomReward(reward.count))
+                tag.reward = Reward.Defined(getRandomReward(reward.value))
             }
         }
 
         return AbyssalContract.load(tag, this)
     }
 
-    private fun getCount(reward: RewardBagEntry, value: Int) = round(value / reward.value).toInt()
-    fun getRandomReward(value: Int): ItemStack {
+    private fun getCount(reward: RewardBagEntry, value: Double) = round(value / reward.value).toInt()
+    fun getRandomReward(value: Double): ItemStack {
         val pick = random.nextInt(defaultRewardBagWeightSum)
         var runningWeight = 0
         for (reward in defaultRewards) {

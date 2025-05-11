@@ -277,7 +277,7 @@ class AbyssalContract(
                 reward = when (reward) {
                     is Reward.Defined -> reward.itemStack
                     is Reward.Random ->
-                        data?.getRandomReward(reward.count) ?: ItemStack(AvailableContractsData.FALLBACK_REWARD.item, 1)
+                        data?.getRandomReward(reward.value) ?: ItemStack(AvailableContractsData.FALLBACK_REWARD.item, 1)
                     else -> ItemStack(AvailableContractsData.FALLBACK_REWARD.item, 1)
                 },
                 level = contract.level ?: 1,

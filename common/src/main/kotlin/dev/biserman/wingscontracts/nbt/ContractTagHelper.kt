@@ -14,7 +14,7 @@ value class ContractTag(val tag: CompoundTag) {
 
 sealed class Reward {
     class Defined(val itemStack: ItemStack) : Reward()
-    class Random(val count: Int) : Reward()
+    class Random(val value: Double) : Reward()
 }
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -71,14 +71,14 @@ object ContractTagHelper {
     fun reward(key: String? = null) =
         Property(key, safeGet {
             if (this.contains(it, 99)) { // if the tag is just an integer, replace with default reward
-                val loadedValue = max(1, this.getInt(it))
+                val loadedValue = max(1.0, this.getDouble(it))
                 return@safeGet Reward.Random(loadedValue)
             } else if (this.contains(it)) {
                 val itemStack = ItemStack.of(this.getCompound(it))
                 itemStack.count = this.getCompound(it).getInt("Count")
                 return@safeGet Reward.Defined(itemStack)
             } else {
-                return@safeGet Reward.Random(1)
+                return@safeGet Reward.Random(1.0)
             }
         }, { safeKey, value ->
             when (value) {
@@ -87,7 +87,7 @@ object ContractTagHelper {
                     tag.putInt("Count", value.itemStack.count)
                     this.put(safeKey, tag)
                 }
-                is Reward.Random -> this.putInt(safeKey, value.count)
+                is Reward.Random -> this.putDouble(safeKey, value.value)
             }
         })
 
