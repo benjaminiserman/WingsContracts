@@ -113,9 +113,11 @@ class AbyssalContract(
                 acc.append(entry.withStyle(ChatFormatting.DARK_PURPLE))
             })
         } else {
-            components.add(rewardsComponent
-                .append(CommonComponents.SPACE)
-                .append(targetsList[0].withStyle(ChatFormatting.DARK_PURPLE)))
+            components.add(
+                rewardsComponent
+                    .append(CommonComponents.SPACE)
+                    .append(targetsList[0].withStyle(ChatFormatting.DARK_PURPLE))
+            )
             components.addAll(targetsList.drop(1).map { it.withStyle(ChatFormatting.DARK_PURPLE) })
         }
 
@@ -274,7 +276,8 @@ class AbyssalContract(
                 displayItem = contract.displayItem,
                 reward = when (reward) {
                     is Reward.Defined -> reward.itemStack
-                    is Reward.Random if data != null -> data.getRandomReward(reward.count)
+                    is Reward.Random ->
+                        data?.getRandomReward(reward.count) ?: ItemStack(AvailableContractsData.FALLBACK_REWARD.item, 1)
                     else -> ItemStack(AvailableContractsData.FALLBACK_REWARD.item, 1)
                 },
                 level = contract.level ?: 1,

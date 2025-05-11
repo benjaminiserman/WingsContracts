@@ -6,7 +6,6 @@ import dev.biserman.wingscontracts.core.Contract.Companion.id
 import dev.biserman.wingscontracts.core.Contract.Companion.type
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
-import dev.biserman.wingscontracts.server.AvailableContractsData
 import net.minecraft.world.item.ItemStack
 import java.util.*
 
@@ -27,7 +26,8 @@ object LoadedContracts {
         val cachedContract = contracts[contractTag.id]
 
         if (cachedContract == null) {
-            val contract = CONTRACT_LOAD_BY_TYPE[contractTag.type ?: return null]?.invoke(contractTag) ?: return null
+            val contract = CONTRACT_LOAD_BY_TYPE[contractTag.type ?: return null]
+                ?.invoke(contractTag, null) ?: return null
             contracts[id] = contract
             return contract
         }

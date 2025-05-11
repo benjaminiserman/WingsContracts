@@ -14,7 +14,6 @@ import dev.biserman.wingscontracts.nbt.ContractTagHelper.uuid
 import dev.biserman.wingscontracts.nbt.ItemCondition
 import dev.biserman.wingscontracts.nbt.ItemConditionParser
 import dev.biserman.wingscontracts.registry.ModItemRegistry
-import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.ChatFormatting
@@ -492,7 +491,7 @@ abstract class Contract(
             Component.translatable("${WingsContractsMod.MOD_ID}.contract.$key", *objects)
 
         fun getDisplayItem(itemStack: ItemStack, time: Float): ItemStack {
-            val contract = LoadedContracts[itemStack, AvailableContractsData.clientData] ?: return ItemStack.EMPTY
+            val contract = LoadedContracts[itemStack] ?: return ItemStack.EMPTY
 
             return if (contract.displayItems.isEmpty()) {
                 ItemStack.EMPTY
