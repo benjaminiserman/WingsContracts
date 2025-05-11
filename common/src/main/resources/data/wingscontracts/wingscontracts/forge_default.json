@@ -1,0 +1,174 @@
+{
+  "contracts": [
+    {
+      "targetTags": "#forge:mushrooms",
+      "countPerUnit": 24
+    },
+    {
+      "targetTags": "#forge:ingots",
+      "countPerUnit": 32
+    },
+    {
+      "targetTags": "#forge:cobblestone",
+      "countPerUnit": 256
+    },
+    {
+      "targetTags": "#forge:stone",
+      "countPerUnit": 256
+    },
+    {
+      "targetTags": "#forge:sandstone",
+      "countPerUnit": 192
+    },
+    {
+      "targetTags": "#forge:crops",
+      "countPerUnit": 64
+    },
+    {
+      "targetTags": "#forge:vegetables",
+      "countPerUnit": 48
+    },
+    {
+      "targetTags": "#forge:dusts",
+      "countPerUnit": 48
+    },
+    {
+      "targetTags": "#forge:dyes",
+      "countPerUnit": 32
+    },
+    {
+      "targetTags": "#forge:gems",
+      "countPerUnit": 12
+    },
+    {
+      "targetTags": "#forge:gems/quartz",
+      "countPerUnit": 24
+    },
+    {
+      "targetTags": "#forge:seeds",
+      "countPerUnit": 64
+    },
+    {
+      "targetTags": "#forge:berries",
+      "countPerUnit": 48
+    },
+    {
+      "targetTags": "#forge:slimeballs",
+      "countPerUnit": 24
+    },
+    {
+      "targetTags": "#forge:string",
+      "countPerUnit": 24,
+      "requiresAny": "supplementaries"
+    },
+    {
+      "targetTags": "#forge:armors/helmets",
+      "countPerUnit": 6,
+      "reward": 2,
+      "name": "wingscontracts.data.forge.helmets"
+    },
+    {
+      "targetTags": "#forge:armors/chestplates",
+      "countPerUnit": 4,
+      "reward": 2,
+      "name": "wingscontracts.data.forge.chestplates"
+    },
+    {
+      "targetTags": "#forge:armors/leggings",
+      "countPerUnit": 5,
+      "reward": 2,
+      "name": "wingscontracts.data.forge.leggings"
+    },
+    {
+      "targetTags": "#forge:armors/boots",
+      "countPerUnit": 6,
+      "reward": 2,
+      "name": "wingscontracts.data.forge.boots"
+    },
+    {
+      "targetTags": "#forge:armors",
+      "countPerUnit": 4
+    },
+    {
+      "targetTags": "#forge:heads",
+      "countPerUnit": 4,
+      "reward": 3
+    },
+    {
+      "targetTags": "#forge:tools",
+      "countPerUnit": 8,
+      "reward": 1
+    },
+    {
+      "targetTags": "#forge:tools,#forge:armors",
+      "targetConditions": "tag.Damage>0",
+      "countPerUnit": 8,
+      "baseUnitsDemanded": 128,
+      "name": "wingscontracts.data.forge.damaged_equipment",
+      "description": "wingscontracts.data.forge.damaged_equipment.desc"
+    },
+    {
+      "targetTags": "#forge:armors",
+      "targetConditions": "attribute.minecraft:generic.armor_toughness.add>0.0",
+      "countPerUnit": 3,
+      "reward": 3,
+      "name": "wingscontracts.data.forge.tough_armor",
+      "description": "wingscontracts.data.forge.tough_armor.desc"
+    },
+    {
+      "targetTags": "#forge:raw_materials",
+      "countPerUnit": 12,
+      "reward": 2
+    },
+    {
+      "targetTags": "#forge:nuggets",
+      "countPerUnit": 64
+    },
+    {
+      "targetTags": "#forge:concrete",
+      "countPerUnit": 64,
+      "reward": 2
+    },
+    {
+      "targetTags": "#forge:barrels",
+      "countPerUnit": 12
+    },
+    {
+      "targetTags": "#forge:ladders",
+      "countPerUnit": 64
+    },
+    {
+      "targetTags": "#forge:fruits",
+      "countPerUnit": 32,
+      "requiresAny": "neapolitan,fruitsdelight"
+    },
+    {
+      "targetTags": "#forge:plates/steel",
+      "requiresAny": "tfmg,immersiveengineering",
+      "countPerUnit": 16,
+      "reward": 2
+    },
+    {
+      "targetTags": "#forge:wires",
+      "requiresAny": "tfmg,immersiveengineering,createaddition",
+      "countPerUnit": 32,
+      "baseUnitsDemanded": 96
+    },
+    {
+      "targetTags": "#forge:salt",
+      "requiresAny": "vegandelight,mekanism,garnished",
+      "countPerUnit": 64
+    },
+    {
+      "targetTags": "#forge:dough",
+      "requiresAny": "farmersdelight,create,garnished",
+      "countPerUnit": 48,
+      "baseUnitsDemanded": 96
+    },
+    {
+      "targetBlockTags": "#forge:storage_blocks",
+      "countPerUnit": 16,
+      "reward": 2
+    }
+  ]
+}

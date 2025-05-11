@@ -1,0 +1,103 @@
+{
+  "contracts": [
+    {
+      "targetItems": "create:polished_rose_quartz",
+      "countPerUnit": 12,
+      "baseUnitsDemanded": 96,
+      "reward": 2
+    },
+    {
+      "targetItems": "create:sturdy_sheet",
+      "countPerUnit": 16,
+      "reward": 3,
+      "baseUnitsDemanded": 96
+    },
+    {
+      "targetItems": "create:precision_mechanism",
+      "countPerUnit": 8,
+      "reward": 3
+    },
+    {
+      "targetItems": "create:super_glue",
+      "countPerUnit": 6,
+      "reward": 2
+    },
+    {
+      "targetItems": "create:goggles",
+      "countPerUnit": 4,
+      "reward": 2
+    },
+    {
+      "targetItems": "create:flywheel",
+      "countPerUnit": 2,
+      "reward": 5
+    },
+    {
+      "targetItems": "create:steam_whistle",
+      "countPerUnit": 3,
+      "reward": 2
+    },
+    {
+      "targetItems": "create:experience_nugget",
+      "countPerUnit": 12,
+      "reward": 2
+    },
+    {
+      "targetItems": "create:zinc_ingot",
+      "baseUnitsDemanded": 128,
+      "countPerUnit": 12
+    },
+    {
+      "targetItems": "create:brass_ingot",
+      "baseUnitsDemanded": 96,
+      "countPerUnit": 12,
+      "reward": 2
+    },
+    {
+      "targetItems": "create:andesite_alloy",
+      "baseUnitsDemanded": 128,
+      "countPerUnit": 32
+    },
+    {
+      "targetItems": "create:potato_cannon",
+      "countPerUnit": 3,
+      "reward": 5
+    },
+    {
+      "targetItems": "create:cogwheel",
+      "countPerUnit": 8
+    },
+    {
+      "targetItems": "create:crushing_wheel",
+      "countPerUnit": 3,
+      "reward": 4
+    },
+    {
+      "targetItems": "create:copper_sheet",
+      "countPerUnit": 16,
+      "baseUnitsDemanded": 128
+    },
+    {
+      "targetTags": "#create:casing",
+      "countPerUnit": 32,
+      "baseUnitsDemanded": 128
+    },
+    {
+      "targetItems": "create:transmitter",
+      "countPerUnit": 4,
+      "baseUnitsDemanded": 96,
+      "reward": 2
+    },
+    {
+      "targetItems": "create:cardboard",
+      "countPerUnit": 32,
+      "reward": 2
+    },
+    {
+      "targetItems": "create:bar_of_chocolate",
+      "countPerUnit": 32,
+      "reward": 2,
+      "requiresAny": "vegandelight"
+    }
+  ]
+}

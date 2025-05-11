@@ -1,0 +1,45 @@
+{
+  "contracts": [
+    {
+      "targetItems": "neapolitan:white_strawberries",
+      "countPerUnit": 16,
+      "reward": 2
+    },
+    {
+      "targetItems": "neapolitan:banana_bread",
+      "countPerUnit": 20,
+      "reward": 2
+    },
+    {
+      "targetItems": "neapolitan:strawberry_scones",
+      "countPerUnit": 20,
+      "reward": 2
+    },
+    {
+      "targetItems": "neapolitan:mint_candies",
+      "countPerUnit": 32,
+      "reward": 2
+    },
+    {
+      "targetItems": "neapolitan:dried_vanilla_pods",
+      "countPerUnit": 32,
+      "reward": 2
+    },
+    {
+      "targetItems": "neapolitan:strawberry_bean_bonbons",
+      "countPerUnit": 16,
+      "reward": 2
+    },
+    {
+      "targetItems": "neapolitan:adzuki_stew",
+      "countPerUnit": 6,
+      "reward": 2
+    },
+    {
+      "targetTags": "#neapolitan:ice_cream",
+      "countPerUnit": 8,
+      "reward": 3,
+      "requiresAny": "vegandelight"
+    }
+  ]
+}

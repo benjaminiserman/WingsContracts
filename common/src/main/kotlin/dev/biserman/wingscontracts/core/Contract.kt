@@ -250,8 +250,6 @@ abstract class Contract(
         return components
     }
 
-
-
     open fun getTimeInfo(list: MutableList<Component>?): MutableList<Component> {
         val components = mutableListOf<Component>()
         val nextCycleStart = currentCycleStart + cycleDurationMs

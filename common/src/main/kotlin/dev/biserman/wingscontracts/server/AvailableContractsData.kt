@@ -13,19 +13,20 @@ import dev.biserman.wingscontracts.core.Contract.Companion.countPerUnit
 import dev.biserman.wingscontracts.core.Contract.Companion.currentCycleStart
 import dev.biserman.wingscontracts.core.Contract.Companion.rarity
 import dev.biserman.wingscontracts.core.Contract.Companion.startTime
+import dev.biserman.wingscontracts.core.Contract.Companion.targetConditions
 import dev.biserman.wingscontracts.core.Contract.Companion.targetItems
 import dev.biserman.wingscontracts.data.AvailableContractsManager
+import dev.biserman.wingscontracts.data.AvailableContractsManager.defaultRewardBagWeightSum
+import dev.biserman.wingscontracts.data.AvailableContractsManager.defaultRewards
+import dev.biserman.wingscontracts.data.RewardBagEntry
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.Reward
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.ContainerHelper
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.Level
@@ -36,8 +37,6 @@ import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.roundToInt
 
-class RewardBagEntry(val item: Item, val value: Double, val weight: Int, val formatString: String? = null)
-
 class AvailableContractsData : SavedData() {
     val container = AvailableContractsContainer(this)
     val remainingPicks = mutableMapOf<String, Int>()
@@ -46,18 +45,6 @@ class AvailableContractsData : SavedData() {
 
     val rarityThresholds by lazy { ModConfig.SERVER.rarityThresholdsString.get().split(",").map { it.toInt() } }
     val currencyHandler by lazy { DenominatedCurrenciesHandler() }
-    val defaultRewards by lazy {
-        ModConfig.SERVER.defaultRewards.get().split(";").map {
-            val (item, value, weight, formatString) = it.split(",")
-            RewardBagEntry(
-                BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(item)),
-                value.toDouble(),
-                weight.toInt(),
-                formatString
-            )
-        }.sortedBy { it.value }
-    }
-    val defaultRewardBagWeightSum by lazy { defaultRewards.sumOf { it.weight } }
 
     override fun save(compoundTag: CompoundTag): CompoundTag {
         val contractListTag = CompoundTag()
@@ -104,16 +91,22 @@ class AvailableContractsData : SavedData() {
     fun generateContract(tag: ContractTag): Contract {
         tag.currentCycleStart = currentCycleStart
         tag.startTime = currentCycleStart
-        tag.baseUnitsDemanded = vary(tag.baseUnitsDemanded?.toDouble() ?: 64.0, ModConfig.SERVER.defaultUnitsDemandedMultiplier.get())
-        tag.countPerUnit = vary(tag.countPerUnit?.toDouble() ?: 16.0, ModConfig.SERVER.defaultCountPerUnitMultiplier.get())
+        tag.baseUnitsDemanded =
+            vary(tag.baseUnitsDemanded?.toDouble() ?: 64.0, ModConfig.SERVER.defaultUnitsDemandedMultiplier.get())
+        tag.countPerUnit =
+            vary(tag.countPerUnit?.toDouble() ?: 16.0, ModConfig.SERVER.defaultCountPerUnitMultiplier.get())
         val reward = tag.reward
         if (reward is Reward.Random) {
-            val rewardCount = vary(reward.value, ModConfig.SERVER.defaultRewardCurrencyMultiplier.get())
+            val rewardCount = vary(reward.value, ModConfig.SERVER.defaultRewardMultiplier.get())
             if (random.nextDouble() <= ModConfig.SERVER.replaceRewardWithRandomPercent.get()) {
                 for (_try in 1..5) { // attempt 5 times to find a working item
                     val otherContract = AvailableContractsManager.randomTag()
                     val otherContractItem = otherContract.targetItems?.get(0) ?: continue
                     if (otherContract.targetItems?.size != 1) { // only use contracts that accept exactly one item
+                        continue
+                    }
+
+                    if ((otherContract.targetConditions?.size ?: 0) != 0) {
                         continue
                     }
 
@@ -138,7 +131,7 @@ class AvailableContractsData : SavedData() {
 
                     val otherContractCountPerUnit = otherContract.countPerUnit?.toDouble() ?: 16.0
                     val otherContractRewardCount = (otherContractReward.value.toDouble()
-                            * ModConfig.SERVER.defaultRewardCurrencyMultiplier.get())
+                            * ModConfig.SERVER.defaultRewardMultiplier.get())
                     val newRewardCount = (rewardCount.toDouble().pow(2)
                             * otherContractCountPerUnit
                             * ModConfig.SERVER.replaceRewardWithRandomFactor.get()
@@ -170,16 +163,16 @@ class AvailableContractsData : SavedData() {
             if (pick < runningWeight) {
                 val count = getCount(reward, value)
                 if (count >= 1) {
-                    return ItemStack(reward.item, count)
+                    return reward.item.copyWithCount(reward.item.count * count)
                 }
             }
         }
 
         val lastFit = defaultRewards.lastOrNull { getCount(it, value) >= 1 }
         return if (lastFit == null) {
-            ItemStack(FALLBACK_REWARD.item, 1)
+            FALLBACK_REWARD.item.copy()
         } else {
-            ItemStack(lastFit.item, getCount(lastFit, value))
+            return lastFit.item.copyWithCount(lastFit.item.count * getCount(lastFit, value))
         }
     }
 
@@ -189,7 +182,7 @@ class AvailableContractsData : SavedData() {
         const val CURRENT_CYCLE_START = "currentCycleStart"
         const val IDENTIFIER = "${WingsContractsMod.MOD_ID}_world_data"
 
-        val FALLBACK_REWARD = RewardBagEntry(Items.EMERALD, 1.0, 1)
+        val FALLBACK_REWARD = RewardBagEntry(ItemStack(Items.EMERALD, 1), 1.0, 1)
 
         val random = Random()
 

@@ -1,0 +1,25 @@
+{
+  "contracts": [
+    {
+      "targetItems": "supplementaries:ash",
+      "countPerUnit": 32,
+      "reward": 2
+    },
+    {
+      "targetItems": "supplementaries:flax",
+      "countPerUnit": 48
+    },
+    {
+      "targetItems": "supplementaries:rope",
+      "countPerUnit": 32,
+      "baseUnitsDemanded": 96
+    },
+    {
+      "targetItems": "supplementaries:candy",
+      "countPerUnit": 256,
+      "reward": 2,
+      "baseUnitsDemanded": 96,
+      "requiresAny": "vegandelight"
+    }
+  ]
+}

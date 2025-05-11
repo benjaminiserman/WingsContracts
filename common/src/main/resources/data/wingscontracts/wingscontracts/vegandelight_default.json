@@ -1,0 +1,59 @@
+{
+  "contracts": [
+    {
+      "targetItems": "vegandelight:tofu",
+      "countPerUnit": 32,
+      "reward": 2
+    },
+    {
+      "targetItems": "vegandelight:silken_tofu",
+      "countPerUnit": 28,
+      "reward": 2
+    },
+    {
+      "targetItems": "vegandelight:soybean",
+      "countPerUnit": 48
+    },
+    {
+      "targetItems": "vegandelight:smoked_tofish_roll",
+      "countPerUnit": 24,
+      "reward": 2
+    },
+    {
+      "targetItems": "vegandelight:leather_substitute",
+      "countPerUnit": 32,
+      "reward": 2
+    },
+    {
+      "targetItems": "vegandelight:applesauce",
+      "countPerUnit": 24,
+      "reward": 2
+    },
+    {
+      "targetItems": "cake",
+      "countPerUnit": 3,
+      "reward": 4,
+      "requiresAny": "vegandelight"
+    },
+    {
+      "targetItems": "pumpkin_pie",
+      "countPerUnit": 3,
+      "reward": 3,
+      "requiresAny": "vegandelight"
+    },
+    {
+      "targetItems": "glow_ink_sac",
+      "countPerUnit": 8,
+      "reward": 3,
+      "requiresAll": "vegandelight,create"
+    },
+    {
+      "targetConditions": "nutrition>=14",
+      "countPerUnit": 3,
+      "reward": 4,
+      "name": "wingscontracts.data.vegandelight.feast",
+      "description": "wingscontracts.data.vegandelight.feast.desc",
+      "requiresAny": "vegandelight"
+    }
+  ]
+}

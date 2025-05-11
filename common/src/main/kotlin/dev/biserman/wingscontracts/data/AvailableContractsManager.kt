@@ -3,6 +3,7 @@ package dev.biserman.wingscontracts.data
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
+import com.mojang.serialization.JsonOps
 import dev.architectury.platform.Platform
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.config.ModConfig
@@ -17,15 +18,19 @@ import dev.biserman.wingscontracts.core.Contract.Companion.targetItemKeys
 import dev.biserman.wingscontracts.core.Contract.Companion.targetTagKeys
 import dev.biserman.wingscontracts.nbt.ContractTag
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtOps
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener
 import net.minecraft.util.profiling.ProfilerFiller
+import net.minecraft.world.item.ItemStack
 
 val GSON: Gson = (GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create()
 
-object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contracts") {
+class RewardBagEntry(val item: ItemStack, val value: Double, val weight: Int, val formatString: String? = null)
+
+object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "wingscontracts") {
     private var allAvailableContracts = listOf<ContractTag>()
     private var nonDefaultAvailableContracts = listOf<ContractTag>()
     val availableContracts
@@ -34,6 +39,17 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
         } else {
             allAvailableContracts
         }
+
+    private var allDefaultRewards = listOf<RewardBagEntry>()
+    private var nonDefaultDefaultRewards =
+        listOf<RewardBagEntry>() // funny name, but it refers to custom-specified default rewards
+    val defaultRewards
+        get() = if (ModConfig.SERVER.disableDefaultContractOptions.get()) {
+            nonDefaultDefaultRewards
+        } else {
+            allDefaultRewards
+        }
+    val defaultRewardBagWeightSum by lazy { defaultRewards.sumOf { it.weight } }
 
     fun randomTag() =
         if (availableContracts.isEmpty()) {
@@ -53,6 +69,8 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
         WingsContractsMod.LOGGER.info("Building available contracts pool...")
         val buildAvailableContracts = mutableListOf<ContractTag>()
         val buildNonDefaultAvailableContracts = mutableListOf<ContractTag>()
+        val buildDefaultRewards = mutableListOf<RewardBagEntry>()
+        val buildNonDefaultDefaultRewards = mutableListOf<RewardBagEntry>()
 
         var skippedBecauseUnloaded = 0
         for ((resourceLocation, json) in jsonMap) {
@@ -65,12 +83,33 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
             val isDefault = resourceLocation.path.endsWith("_default")
 
             try {
-                val parsedContracts =
-                    if (json.isJsonObject) {
-                        listOf(AbyssalContract.fromJson(json.asJsonObject))
-                    } else json.asJsonArray.map {
-                        AbyssalContract.fromJson(it.asJsonObject)
-                    }
+                val jsonObject = json.asJsonObject
+                val parsedContracts = jsonObject.get("contracts")?.asJsonArray?.map {
+                    AbyssalContract.fromJson(it.asJsonObject)
+                } ?: listOf()
+
+                val parsedDefaultRewards = jsonObject.get("rewards")?.asJsonArray?.map {
+                    RewardBagEntry(
+                        ItemStack.of(
+                            JsonOps.INSTANCE.convertTo(
+                                NbtOps.INSTANCE,
+                                it.asJsonObject.get("item")
+                            ) as CompoundTag
+                        ),
+                        it.asJsonObject.get("value").asDouble,
+                        it.asJsonObject.get("weight").asInt,
+                        if (it.asJsonObject.has("formatString")) {
+                            it.asJsonObject.get("formatString").asString
+                        } else {
+                            null
+                        }
+                    )
+                } ?: listOf()
+
+                buildDefaultRewards.addAll(parsedDefaultRewards)
+                if (!isDefault) {
+                    buildNonDefaultDefaultRewards.addAll(parsedDefaultRewards)
+                }
 
                 for (contract in parsedContracts) {
                     // skip contracts that only apply to unloaded mods
@@ -117,8 +156,6 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
                         WingsContractsMod.LOGGER.warn("Found invalid contract $contract in $resourceLocation")
                     }
                 }
-
-
             } catch (e: Exception) {
                 WingsContractsMod.LOGGER.error("Error while loading available contracts at $resourceLocation", e)
             }
@@ -130,5 +167,7 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "contr
 
         allAvailableContracts = buildAvailableContracts.toList()
         nonDefaultAvailableContracts = buildNonDefaultAvailableContracts.toList()
+        allDefaultRewards = buildDefaultRewards.toList()
+        nonDefaultDefaultRewards = buildNonDefaultDefaultRewards.toList()
     }
 }

@@ -17,8 +17,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val rarityThresholdsString: ForgeConfigSpec.ConfigValue<String>
 
     // Contract Defaults
-    val defaultRewards: ForgeConfigSpec.ConfigValue<String>
-    val defaultRewardCurrencyMultiplier: ForgeConfigSpec.DoubleValue
+    val defaultRewardMultiplier: ForgeConfigSpec.DoubleValue
     val defaultUnitsDemandedMultiplier: ForgeConfigSpec.DoubleValue
     val defaultCountPerUnitMultiplier: ForgeConfigSpec.DoubleValue
     val defaultCycleDurationMs: ForgeConfigSpec.LongValue
@@ -110,32 +109,16 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
         builder.pop()
         builder.push("Contract Defaults")
 
-        defaultRewards =
-            builder.comment(
-                """
-                Loaded contracts with an unspecified or integer reward will use one of these rewards instead. 
-                Semicolon-separated list in the format "namespace:id,value_double,weight_int,format_string(optional);"
-                Consider changing this to "wingscontracts:abyssal_coin,1,1,$%d" or "numismatics:spur,1,1,%d¤"
-                """
-            )
-                .define(
-                    "defaultRewards", listOf(
-                        "minecraft:gold_nugget,0.25,2",
-                        "minecraft:emerald,0.5,4",
-                        "minecraft:lapis_lazuli,4,1",
-                    ).joinToString(";")
-                )
-
-        defaultRewardCurrencyMultiplier =
-            builder.comment("Datapacked contracts with an unspecified or integer reward will have their reward count multiplied by this factor, then rounded (minimum of 1).")
-                .defineInRange("defaultRewardCurrencyMultiplier", 1.0, 0.0, Double.MAX_VALUE)
+        defaultRewardMultiplier =
+            builder.comment("Datapacked contracts with an unspecified or integer reward will have their reward count multiplied by this factor, then rounded (to a minimum of 1).")
+                .defineInRange("defaultRewardMultiplier", 1.0, 0.0, Double.MAX_VALUE)
 
         defaultUnitsDemandedMultiplier =
-            builder.comment("All new Abyssal Contracts pulled from the pool will have their base units demanded multiplied by this factor, then rounded (minimum of 1).")
+            builder.comment("All new Abyssal Contracts pulled from the pool will have their base units demanded multiplied by this factor, then rounded (to a minimum of 1).")
                 .defineInRange("defaultUnitsDemandedMultiplier", 0.25, 0.0, Double.MAX_VALUE)
 
         defaultCountPerUnitMultiplier =
-            builder.comment("All new Abyssal Contracts pulled from the pool will have their count demanded per unit multiplied by this factor, then rounded (minimum of 1).")
+            builder.comment("All new Abyssal Contracts pulled from the pool will have their count demanded per unit multiplied by this factor, then rounded (to a minimum of 1).")
                 .defineInRange("defaultCountPerUnitMultiplier", 1.0, 0.0, Double.MAX_VALUE)
 
         defaultCycleDurationMs =

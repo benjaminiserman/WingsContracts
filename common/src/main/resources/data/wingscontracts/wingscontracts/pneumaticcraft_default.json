@@ -1,0 +1,41 @@
+{
+  "contracts": [
+    {
+      "targetItems": "pneumaticcraft:plastic",
+      "countPerUnit": 64,
+      "reward": 2,
+      "baseUnitsDemanded": 96
+    },
+    {
+      "targetItems": "pneumaticcraft:sourdough_bread",
+      "countPerUnit": 64,
+      "reward": 3
+    },
+    {
+      "targetItems": "pneumaticcraft:printed_circuit_board",
+      "countPerUnit": 8,
+      "reward": 5
+    },
+    {
+      "targetItems": "pneumaticcraft:ingot_iron_compressed",
+      "countPerUnit": 8,
+      "reward": 2,
+      "baseUnitsDemanded": 96
+    },
+    {
+      "targetItems": "pneumaticcraft:glycerol",
+      "countPerUnit": 64,
+      "reward": 2
+    },
+    {
+      "targetItems": "pneumaticcraft:capacitor",
+      "countPerUnit": 32,
+      "reward": 3
+    },
+    {
+      "targetItems": "pneumaticcraft:transistor",
+      "countPerUnit": 32,
+      "reward": 3
+    }
+  ]
+}

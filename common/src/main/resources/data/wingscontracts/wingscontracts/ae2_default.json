@@ -1,0 +1,32 @@
+{
+  "contracts": [
+    {
+      "targetItems": "ae2:certus_quartz_crystal",
+      "countPerUnit": 16,
+      "reward": 2
+    },
+    {
+      "targetItems": "ae2:charged_certus_quartz_crystal",
+      "countPerUnit": 16,
+      "reward": 2,
+      "baseUnitsDemanded": 96
+    },
+    {
+      "targetItems": "ae2:fluix_crystal",
+      "countPerUnit": 16,
+      "reward": 3
+    },
+    {
+      "targetItems": "ae2:singularity",
+      "countPerUnit": 1,
+      "baseUnitsDemanded": 32,
+      "reward": 32
+    },
+    {
+      "targetItems": "ae2:logic_processor,ae2:calculation_processor,ae2:engineering_processor",
+      "countPerUnit": 16,
+      "reward": 3,
+      "name": "wingscontracts.data.ae2.processors"
+    }
+  ]
+}

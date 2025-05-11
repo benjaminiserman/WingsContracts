@@ -6,6 +6,7 @@ import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
 import dev.biserman.wingscontracts.config.GrowthFunctionOptions
 import dev.biserman.wingscontracts.config.ModConfig
+import dev.biserman.wingscontracts.data.AvailableContractsManager
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.double
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.int
@@ -175,7 +176,7 @@ class AbyssalContract(
     }
 
     fun formatReward(count: Int): String {
-        val rewardEntry = AvailableContractsData.clientData.defaultRewards.firstOrNull { it.item == reward.item }
+        val rewardEntry = AvailableContractsManager.defaultRewards.firstOrNull { it.item.item == reward.item }
         return if (rewardEntry == null || rewardEntry.formatString == null) {
             "$count ${reward.displayName.string.trimBrackets()}"
         } else {
@@ -183,7 +184,7 @@ class AbyssalContract(
         }
     }
 
-    override fun getRewardsForUnits(units: Int) = ItemStack(reward.item, reward.count * units)
+    override fun getRewardsForUnits(units: Int) = reward.copyWithCount(reward.count * units)
 
     val maxPossibleReward: Int
         get() {
@@ -204,7 +205,7 @@ class AbyssalContract(
             return rarity
         }
 
-        val rewardEntry = AvailableContractsData.clientData.defaultRewards.firstOrNull { it.item == reward.item }
+        val rewardEntry = AvailableContractsManager.defaultRewards.firstOrNull { it.item.item == reward.item }
         if (rewardEntry == null) {
             return 0
         }
@@ -277,8 +278,8 @@ class AbyssalContract(
                 reward = when (reward) {
                     is Reward.Defined -> reward.itemStack
                     is Reward.Random ->
-                        data?.getRandomReward(reward.value) ?: ItemStack(AvailableContractsData.FALLBACK_REWARD.item, 1)
-                    else -> ItemStack(AvailableContractsData.FALLBACK_REWARD.item, 1)
+                        data?.getRandomReward(reward.value) ?: AvailableContractsData.FALLBACK_REWARD.item
+                    else -> AvailableContractsData.FALLBACK_REWARD.item
                 },
                 level = contract.level ?: 1,
                 quantityGrowthFactor = contract.quantityGrowthFactor ?: ModConfig.SERVER.defaultGrowthFactor.get(),

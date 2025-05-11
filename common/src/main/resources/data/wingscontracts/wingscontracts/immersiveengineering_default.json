@@ -1,0 +1,39 @@
+{
+  "contracts": [
+    {
+      "targetItems": "immersiveengineering:coal_coke",
+      "countPerUnit": 32,
+      "reward": 2
+    },
+    {
+      "targetItems": "immersiveengineering:hemp_fabric",
+      "countPerUnit": 32,
+      "reward": 2
+    },
+    {
+      "targetItems": "immersiveengineering:light_bulb",
+      "countPerUnit": 32,
+      "reward": 2
+    },
+    {
+      "targetItems": "immersiveengineering:component_electronic",
+      "countPerUnit": 16,
+      "reward": 2
+    },
+    {
+      "targetItems": "immersiveengineering:component_electronic_adv",
+      "countPerUnit": 16,
+      "reward": 3
+    },
+    {
+      "targetItems": "immersiveengineering:revolver",
+      "countPerUnit": 1,
+      "reward": 4
+    },
+    {
+      "targetItems": "immersiveengineering:treated_wood_horizontal",
+      "countPerUnit": 64,
+      "reward": 2
+    }
+  ]
+}

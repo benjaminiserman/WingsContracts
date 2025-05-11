@@ -1,0 +1,55 @@
+{
+  "contracts": [
+    {
+      "targetItems": "create_enchantment_industry:hyper_experience_bottle",
+      "reward": 4,
+      "countPerUnit": 16,
+      "requiresAny": "vegandelight"
+    },
+    {
+      "targetConditions": "tag.Enchantments$.*\\{id:.*\\{id:.*",
+      "reward": 4,
+      "countPerUnit": 1,
+      "requiresAny": "create_enchantment_industry",
+      "name": "wingscontracts.data.create_enchantment_industry.two_enchantments",
+      "description": "wingscontracts.data.create_enchantment_industry.two_enchantments.desc"
+    },
+    {
+      "targetConditions": "tag.Enchantments$.*lvl:5.*",
+      "reward": 4,
+      "countPerUnit": 1,
+      "requiresAny": "create_enchantment_industry",
+      "name": "wingscontracts.data.create_enchantment_industry.lvl_five",
+      "description": "wingscontracts.data.create_enchantment_industry.lvl_five.desc"
+    },
+    {
+      "targetConditions": "tag.Enchantments$.*lvl:6.*",
+      "reward": 6,
+      "countPerUnit": 1,
+      "requiresAll": "create_enchantment_industry,quark",
+      "name": "wingscontracts.data.create_enchantment_industry.lvl_six",
+      "description": "wingscontracts.data.create_enchantment_industry.lvl_six.desc"
+    },
+    {
+      "targetItems": "bow",
+      "targetConditions": "tag.Enchantments<-minecraft:infinity",
+      "countPerUnit": 1,
+      "reward": 4,
+      "name": "wingscontracts.data.create_enchantment_industry.infinity_bow",
+      "description": "wingscontracts.data.create_enchantment_industry.infinity_bow.desc",
+      "displayItem": {
+        "id": "bow",
+        "Count": 1,
+        "tag": {
+          "Enchantments": [
+            {
+              "id": "minecraft:infinity",
+              "lvl": 1
+            }
+          ]
+        }
+      },
+      "requiresAny": "create_enchantment_industry"
+    }
+  ]
+}
