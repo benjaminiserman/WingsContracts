@@ -4,10 +4,15 @@
     "wingscontracts.shift": "Shift",
 
     "wingscontracts.time.ms": "Millisecond",
+    "wingscontracts.time.ms.plural": "Milliseconds",
     "wingscontracts.time.second": "Second",
+    "wingscontracts.time.second.plural": "Seconds",
     "wingscontracts.time.minute": "Minute",
+    "wingscontracts.time.minute.plural": "Minutes",
     "wingscontracts.time.hour": "Hour",
+    "wingscontracts.time.hour.plural": "Hours",
     "wingscontracts.time.day": "Day",
+    "wingscontracts.time.day.plural": "Days",
 
 
     "wingscontracts.rarity.0": "Common",
