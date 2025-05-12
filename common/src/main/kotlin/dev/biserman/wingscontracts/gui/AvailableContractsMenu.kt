@@ -11,7 +11,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.Slot
 import net.minecraft.world.item.ItemStack
 
-@OptIn(ExperimentalStdlibApi::class)
 class AvailableContractsMenu(id: Int, inventory: Inventory) :
     AbstractContainerMenu(ModMenuRegistry.CONTRACT_PORTAL.get(), id) {
 
@@ -59,7 +58,7 @@ class AvailableContractsMenu(id: Int, inventory: Inventory) :
     override fun quickMoveStack(
         player: Player,
         i: Int
-    ): ItemStack? {
+    ): ItemStack {
         return ItemStack.EMPTY
     }
 

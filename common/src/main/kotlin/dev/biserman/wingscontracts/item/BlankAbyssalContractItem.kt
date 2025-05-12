@@ -16,15 +16,14 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.level.Level
 
-class BlankAbyssalContract(properties: Properties) : Item(properties) {
+class BlankAbyssalContractItem(properties: Properties) : Item(properties) {
     override fun use(
         level: Level,
         player: Player,
         interactionHand: InteractionHand
     ): InteractionResultHolder<ItemStack> {
         val itemStack = player.getItemInHand(interactionHand)
-        if (ModConfig.SERVER.allowBlankContractInitialization.get()
-        ) {
+        if (ModConfig.SERVER.allowBlankContractInitialization.get()) {
             if (level is ServerLevel) {
                 return InteractionResultHolder.success(itemStack)
             }

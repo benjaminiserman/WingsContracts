@@ -398,7 +398,7 @@ class ContractPortalBlockEntity(
         i: Int,
         inventory: Inventory,
         player: Player
-    ): AbstractContainerMenu = ModMenuRegistry.CONTRACT_PORTAL.get().create(i, inventory)!!
+    ): AbstractContainerMenu = ModMenuRegistry.CONTRACT_PORTAL.get().create(i, inventory)
 
     override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
         val contract = LoadedContracts[contractSlot] ?: return false
