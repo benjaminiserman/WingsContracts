@@ -1,11 +1,26 @@
 package dev.biserman.wingscontracts.util
 
 import dev.biserman.wingscontracts.WingsContractsMod
+import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
 import kotlin.math.floor
 
 object DenominationsHelper {
-    fun translateTime(key: String): String = Component.translatable("${WingsContractsMod.MOD_ID}.time.$key").string
+    fun translateTime(key: String): TimeKey = TimeKey(
+        key
+    ) { count ->
+        when (Minecraft.getInstance().languageManager.selected) { // can extend this with more languages
+            else -> {
+                if (count == 1) {
+                    Component.translatable("${WingsContractsMod.MOD_ID}.time.$key").string
+                } else {
+                    Component.translatable("${WingsContractsMod.MOD_ID}.time.$key.plural").string
+                }
+            }
+        }
+    }
+
+    data class TimeKey(val key: String, val pluralFn: (Number) -> String)
 
     @Suppress("MemberVisibilityCanBePrivate")
     val timeDenominations = mapOf(
@@ -16,18 +31,12 @@ object DenominationsHelper {
         translateTime("day") to 1000L * 60 * 60 * 24
     )
 
-    val timeDenominationsWithoutMs = timeDenominations.filterKeys { x -> x != "Millisecond" }
+    val timeDenominationsWithoutMs = timeDenominations.filterKeys { x -> x.key != translateTime("ms").key }
 
     fun denominateDurationToString(duration: Long) = denominate(
         duration, timeDenominationsWithoutMs
     ).asSequence().joinToString(separator = ", ") { kvp ->
-        "${kvp.second} ${kvp.first}${
-            if (kvp.second == 1) {
-                ""
-            } else {
-                "s"
-            }
-        }"
+        "${kvp.second} ${kvp.first.pluralFn(kvp.second)}"
     }
 
     fun <T> denominate(value: Double, denominations: Map<T, Double>) = iterator {
