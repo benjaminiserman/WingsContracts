@@ -15,6 +15,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val replaceRewardWithRandomFactor: ForgeConfigSpec.DoubleValue
     val replaceRewardWithRandomBlocklist: ForgeConfigSpec.ConfigValue<String>
     val rarityThresholdsString: ForgeConfigSpec.ConfigValue<String>
+    val contractPortalInputSlots: ForgeConfigSpec.IntValue
 
     // Contract Defaults
     val defaultRewardMultiplier: ForgeConfigSpec.DoubleValue
@@ -105,6 +106,10 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
         rarityThresholdsString =
             builder.comment("The max-level reward necessary to reach rarities Uncommon, Rare, and Epic respectively as a comma-separated list of integers.")
                 .define("rarityThresholds", "16000,32000,64000")
+
+        contractPortalInputSlots =
+            builder.comment("Determines how many unconverted stacks of input items a Contract Portal can hold at once.")
+                .defineInRange("contractPortalInputSlots", 27, 1, 1024)
 
         builder.pop()
         builder.push("Contract Defaults")

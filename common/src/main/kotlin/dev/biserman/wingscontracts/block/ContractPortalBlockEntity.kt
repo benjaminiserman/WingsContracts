@@ -7,6 +7,7 @@ import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.advancements.ContractCompleteTrigger
 import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
+import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.data.LoadedContracts
@@ -80,7 +81,7 @@ class ContractPortalBlockEntity(
         this.cooldownTime = -1
         this.contractSlot = ItemStack.EMPTY
         this.cachedRewards = ItemStack.EMPTY
-        this.cachedInput = NonNullList.withSize(CONTAINER_SIZE, ItemStack.EMPTY)
+        this.cachedInput = NonNullList.withSize(Companion.containerSize, ItemStack.EMPTY)
         this.lastPlayer = UUID(0, 0)
     }
 
@@ -270,7 +271,7 @@ class ContractPortalBlockEntity(
         private val INSIDE: VoxelShape = Block.box(2.0, 11.0, 2.0, 14.0, 16.0, 14.0)
         private val ABOVE: VoxelShape = Block.box(0.0, 16.0, 0.0, 16.0, 32.0, 16.0)
         private val SUCK: VoxelShape = Shapes.or(INSIDE, ABOVE)
-        const val CONTAINER_SIZE = 27
+        val containerSize = ModConfig.SERVER.contractPortalInputSlots.get() ?: 27
         private const val MAX_STACK_SIZE = 64 // not sure why this is needed. might delete
         private fun getSuckShape(): VoxelShape = SUCK
     }
@@ -315,7 +316,7 @@ class ContractPortalBlockEntity(
 
     private fun addInputItem(itemStack: ItemStack): ItemStack {
         var mutItemStack = itemStack
-        val size = CONTAINER_SIZE
+        val size = Companion.containerSize
 
         var i = 0
         while (i < size && !mutItemStack.isEmpty) {
@@ -438,7 +439,7 @@ class ContractPortalBlockEntity(
     override fun getSlotsForFace(direction: Direction): IntArray? {
         return when (direction) {
             Direction.DOWN -> intArrayOf(0)
-            else -> (1..CONTAINER_SIZE).toList().toIntArray()
+            else -> (1..Companion.containerSize).toList().toIntArray()
         }
     }
 
@@ -460,7 +461,7 @@ class ContractPortalBlockEntity(
     override fun canTakeItem(container: Container, i: Int, itemStack: ItemStack) = canTakeItem(i, itemStack)
     fun canTakeItem(i: Int, itemStack: ItemStack) = i == 0
 
-    override fun getContainerSize(): Int = CONTAINER_SIZE
+    override fun getContainerSize(): Int = Companion.containerSize
 
     override fun isEmpty(): Boolean = cachedInput.all { it.isEmpty } && cachedRewards.isEmpty
 
