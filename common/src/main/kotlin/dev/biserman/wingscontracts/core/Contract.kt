@@ -15,7 +15,6 @@ import dev.biserman.wingscontracts.nbt.ItemCondition
 import dev.biserman.wingscontracts.nbt.ItemConditionParser
 import dev.biserman.wingscontracts.registry.ModItemRegistry
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
-import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.ChatFormatting
 import net.minecraft.core.NonNullList
 import net.minecraft.core.registries.BuiltInRegistries
@@ -51,12 +50,8 @@ abstract class Contract(
     val targetConditions: List<ItemCondition> = listOf(),
 
     val startTime: Long = System.currentTimeMillis(),
-    var currentCycleStart: Long = System.currentTimeMillis(),
-    val cycleDurationMs: Long = 1000L * 60 * 5,
 
     val countPerUnit: Int = 1,
-    val baseUnitsDemanded: Int = 16,
-    var unitsFulfilled: Int = 0,
     var unitsFulfilledEver: Long = 0,
 
     var isActive: Boolean = true,
@@ -68,8 +63,6 @@ abstract class Contract(
     val rarity: Int? = null,
     val displayItem: ItemStack? = null
 ) {
-    open val unitsDemanded = baseUnitsDemanded
-
     fun matches(itemStack: ItemStack): Boolean {
         // if any targetCondition fails, return false
         if (targetConditions.isNotEmpty()) {
@@ -146,41 +139,10 @@ abstract class Contract(
         return@lazy translateContract("empty").string
     }
 
-    fun tryUpdateTick(tag: ContractTag?): Boolean {
-        if (!isActive) {
-            return false
-        }
-
-        if (cycleDurationMs <= 0) {
-            if (unitsFulfilled >= unitsDemanded) {
-                onContractFulfilled(tag)
-                isActive = false
-                tag?.isActive = isActive
-                return true
-            } else {
-                return false
-            }
-        }
-
-        val currentTime = System.currentTimeMillis()
-        val cyclesPassed = ((currentTime - currentCycleStart) / cycleDurationMs).toInt()
-        if (cyclesPassed > 0) {
-            reset(tag, currentCycleStart + cycleDurationMs * cyclesPassed)
-            return true
-        }
-
-        return false
-    }
+    open fun tryUpdateTick(tag: ContractTag?): Boolean = false
 
     open fun reset(tag: ContractTag?, newCycleStart: Long) {
-        if (unitsFulfilled >= unitsDemanded) {
-            onContractFulfilled(tag)
-        }
 
-        currentCycleStart = newCycleStart
-        tag?.currentCycleStart = currentCycleStart
-        unitsFulfilled = 0
-        tag?.unitsFulfilled = unitsFulfilled
     }
 
     open fun onContractFulfilled(tag: ContractTag?) {}
@@ -235,39 +197,7 @@ abstract class Contract(
         }
     }
 
-    open fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> {
-        val components = list ?: mutableListOf()
-        components.add(
-            translateContract(
-                "units_fulfilled",
-                unitsFulfilled,
-                unitsDemanded,
-                unitsFulfilled * countPerUnit,
-                unitsDemanded * countPerUnit
-            ).withStyle(ChatFormatting.LIGHT_PURPLE)
-        )
-
-        return components
-    }
-
-    open fun getTimeInfo(list: MutableList<Component>?): MutableList<Component> {
-        val components = mutableListOf<Component>()
-        val nextCycleStart = currentCycleStart + cycleDurationMs
-        val timeRemaining = nextCycleStart - System.currentTimeMillis()
-        val timeRemainingString = DenominationsHelper.denominateDurationToString(timeRemaining)
-
-        val timeRemainingColor = getTimeRemainingColor(timeRemaining)
-
-        if (Date(nextCycleStart) <= Date()) {
-            components.add(translateContract("cycle_complete").withStyle(ChatFormatting.DARK_PURPLE))
-            components.add(translateContract("cycle_complete.desc").withStyle(ChatFormatting.DARK_PURPLE))
-        } else {
-            components.add(translateContract("cycle_remaining").withStyle(timeRemainingColor))
-            components.add(Component.literal("  $timeRemainingString").withStyle(timeRemainingColor))
-        }
-
-        return components
-    }
+    open fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> = list ?: mutableListOf()
 
     open fun getShortInfo(): Component = Component.empty()
 
@@ -277,7 +207,11 @@ abstract class Contract(
         val components = mutableListOf<Component>()
 
         components.addAll(getBasicInfo(null))
-        components.addAll(getTimeInfo(null))
+
+        if (this is AbyssalContract) {
+            components.addAll(getCycleInfo(null))
+        }
+
         components.add(
             translateContract(
                 "total_fulfilled", unitsFulfilledEver, unitsFulfilledEver * countPerUnit
@@ -312,7 +246,7 @@ abstract class Contract(
     open fun countConsumableUnits(items: NonNullList<ItemStack>): Int {
         val matchingStacks = items.filter { !it.isEmpty && matches(it) }
         val matchingCount = matchingStacks.sumOf { it.count }
-        return min(matchingCount / countPerUnit, unitsDemanded - unitsFulfilled)
+        return matchingCount / countPerUnit
     }
 
     open fun tryConsumeFromItems(tag: ContractTag?, items: NonNullList<ItemStack>): Int {
@@ -339,8 +273,6 @@ abstract class Contract(
             }
         }
 
-        unitsFulfilled += unitCount
-        tag?.unitsFulfilled = unitsFulfilled
         unitsFulfilledEver += unitCount
         tag?.unitsFulfilledEver = unitsFulfilledEver
 
@@ -361,11 +293,7 @@ abstract class Contract(
         tag.targetBlockTags = targetBlockTags
         tag.targetConditions = targetConditions
         tag.startTime = startTime
-        tag.currentCycleStart = currentCycleStart
-        tag.cycleDurationMs = cycleDurationMs
         tag.countPerUnit = countPerUnit
-        tag.baseUnitsDemanded = baseUnitsDemanded
-        tag.unitsFulfilled = unitsFulfilled
         tag.unitsFulfilledEver = unitsFulfilledEver
         tag.isActive = isActive
         tag.isLoaded = isLoaded
@@ -400,12 +328,8 @@ abstract class Contract(
         var (ContractTag).targetConditionsKeys by string("targetConditions")
 
         var (ContractTag).startTime by long()
-        var (ContractTag).currentCycleStart by long()
-        var (ContractTag).cycleDurationMs by long()
 
         var (ContractTag).countPerUnit by int()
-        var (ContractTag).baseUnitsDemanded by int()
-        var (ContractTag).unitsFulfilled by int()
         var (ContractTag).unitsFulfilledEver by long()
 
         var (ContractTag).isActive by boolean()

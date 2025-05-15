@@ -6,11 +6,11 @@ import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.core.AbyssalContract
+import dev.biserman.wingscontracts.core.AbyssalContract.Companion.baseUnitsDemanded
+import dev.biserman.wingscontracts.core.AbyssalContract.Companion.currentCycleStart
 import dev.biserman.wingscontracts.core.AbyssalContract.Companion.reward
 import dev.biserman.wingscontracts.core.Contract
-import dev.biserman.wingscontracts.core.Contract.Companion.baseUnitsDemanded
 import dev.biserman.wingscontracts.core.Contract.Companion.countPerUnit
-import dev.biserman.wingscontracts.core.Contract.Companion.currentCycleStart
 import dev.biserman.wingscontracts.core.Contract.Companion.rarity
 import dev.biserman.wingscontracts.core.Contract.Companion.startTime
 import dev.biserman.wingscontracts.core.Contract.Companion.targetConditions

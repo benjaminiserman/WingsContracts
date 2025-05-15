@@ -1,6 +1,7 @@
 package dev.biserman.wingscontracts.item
 
 import dev.biserman.wingscontracts.WingsContractsMod
+import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
 import net.minecraft.ChatFormatting
@@ -75,17 +76,26 @@ class ContractItem(properties: Properties) : Item(properties) {
 
     override fun isBarVisible(itemStack: ItemStack): Boolean {
         val contract = LoadedContracts[itemStack] ?: return false
-        val isZeroWidth = getBarWidth(itemStack) == 0
-        val isExpired = System.currentTimeMillis() > contract.currentCycleStart + contract.cycleDurationMs
-        return !isZeroWidth && !isExpired
+
+        if (contract is AbyssalContract) {
+            val isZeroWidth = getBarWidth(itemStack) == 0
+            val isExpired = System.currentTimeMillis() > contract.currentCycleStart + contract.cycleDurationMs
+            return !isZeroWidth && !isExpired
+        } else {
+            return false
+        }
     }
 
     override fun getBarWidth(itemStack: ItemStack): Int {
         val contract = LoadedContracts[itemStack] ?: return 0
-        val unitsFulfilled = contract.unitsFulfilled.toFloat()
-        val unitsDemanded = contract.unitsDemanded.toFloat()
+        if (contract is AbyssalContract) {
+            val unitsFulfilled = contract.unitsFulfilled.toFloat()
+            val unitsDemanded = contract.unitsDemanded.toFloat()
 
-        return ceil(unitsFulfilled * 13.0f / unitsDemanded).toInt()
+            return ceil(unitsFulfilled * 13.0f / unitsDemanded).toInt()
+        } else {
+            return 0
+        }
     }
 
     override fun getBarColor(itemStack: ItemStack): Int = 0xff55ff

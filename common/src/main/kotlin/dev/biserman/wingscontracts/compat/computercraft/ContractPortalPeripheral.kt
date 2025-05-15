@@ -5,6 +5,7 @@ import dan200.computercraft.api.peripheral.IPeripheral
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
+import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.server.AvailableContractsData
 
@@ -23,7 +24,10 @@ class ContractPortalPeripheral(private val portal: ContractPortalBlockEntity) : 
     }
 
     @LuaFunction
-    fun getCompletion() = contract?.let { it.unitsFulfilled.toDouble() / it.unitsDemanded }
+    fun getCompletion() = {
+        val abyssalContract = contract as? AbyssalContract
+        abyssalContract?.let { it.unitsFulfilled.toDouble() / it.unitsDemanded } ?: -1
+    }
 
     @LuaFunction
     fun getCachedRewardsDetails(): Map<String, Any> = if (portal.cachedRewards.isEmpty) {

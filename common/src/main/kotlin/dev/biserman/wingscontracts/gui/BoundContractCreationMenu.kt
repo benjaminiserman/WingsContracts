@@ -1,7 +1,8 @@
 package dev.biserman.wingscontracts.gui
 
-import dev.biserman.wingscontracts.config.ModConfig
+import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.registry.ModMenuRegistry
+import net.minecraft.world.Container
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
@@ -17,20 +18,17 @@ class BoundContractCreationMenu(id: Int, inventory: Inventory) :
     val rightSlots: CraftingContainer = TransientCraftingContainer(this, 3, 3);
 
     init {
-        val maxOptions = ModConfig.SERVER.availableContractsPoolOptions.get()
-
         for (i in 0..2) {
             for (j in 0..2) {
-                this.addSlot(Slot(leftSlots, j + i * 3, 26 + j * 18, 18 + i * 18))
+                this.addSlot(MatchingItemSlot(leftSlots, j + i * 3, 26 + j * 18, 18 + i * 18))
             }
         }
 
         for (i in 0..2) {
             for (j in 0..2) {
-                this.addSlot(Slot(rightSlots, j + i * 3, 98 + j * 18, 18 + i * 18))
+                this.addSlot(MatchingItemSlot(rightSlots, j + i * 3, 98 + j * 18, 18 + i * 18))
             }
         }
-
 
         for (i in 0..<3) {
             for (j in 0..<9) {
@@ -46,7 +44,46 @@ class BoundContractCreationMenu(id: Int, inventory: Inventory) :
     override fun quickMoveStack(
         player: Player,
         i: Int
-    ): ItemStack = ItemStack.EMPTY
+    ): ItemStack {
+        if (i < 18) {
+            slots[i].setByPlayer(ItemStack.EMPTY)
+        }
+
+        return ItemStack.EMPTY
+    }
 
     override fun stillValid(player: Player): Boolean = true
+
+    fun isValidContract(leftCount: Int, rightCount: Int): Boolean {
+        if (leftSlots.isEmpty || rightSlots.isEmpty) {
+            return false
+        }
+
+        if (!leftSlots.items.any { !it.isEmpty && it.maxStackSize * ContractPortalBlockEntity.CONTAINER_SIZE > leftCount }) {
+            return false
+        }
+
+        if (!rightSlots.items.any { !it.isEmpty && it.maxStackSize * ContractPortalBlockEntity.CONTAINER_SIZE > rightCount }) {
+            return false
+        }
+
+        return true
+    }
+
+    class MatchingItemSlot(container: Container, i: Int, x: Int, y: Int) : Slot(container, i, x, y) {
+        override fun remove(i: Int): ItemStack {
+            super.remove(i)
+            return ItemStack.EMPTY
+        }
+
+        override fun safeTake(i: Int, j: Int, player: Player): ItemStack {
+            setByPlayer(ItemStack.EMPTY)
+            return ItemStack.EMPTY
+        }
+
+        override fun safeInsert(itemStack: ItemStack, i: Int): ItemStack {
+            setByPlayer(itemStack.copyWithCount(1))
+            return itemStack
+        }
+    }
 }

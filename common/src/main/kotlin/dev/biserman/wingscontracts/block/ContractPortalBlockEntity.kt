@@ -7,6 +7,7 @@ import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.advancements.ContractCompleteTrigger
 import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
+import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTag
@@ -365,7 +366,7 @@ class ContractPortalBlockEntity(
             cachedRewards.grow(rewards.count)
         }
 
-        if (contract.unitsFulfilled >= contract.unitsDemanded) {
+        if (contract is AbyssalContract && contract.unitsFulfilled >= contract.unitsDemanded) {
             val player = level?.getPlayerByUUID(lastPlayer)
             if (player is ServerPlayer) {
                 ContractCompleteTrigger.INSTANCE.trigger(
@@ -403,30 +404,35 @@ class ContractPortalBlockEntity(
     override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
         val contract = LoadedContracts[contractSlot] ?: return false
 
-        tooltip.add(Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.header"))
+        if (contract is AbyssalContract) {
 
-        tooltip.add(
-            Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.progress")
-                .withStyle(ChatFormatting.GRAY)
-                .append(CommonComponents.SPACE)
-                .append(
-                    Component.literal("${contract.unitsFulfilled} / ${contract.unitsDemanded}")
-                        .withStyle(ChatFormatting.AQUA)
-                )
+            tooltip.add(Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.header"))
 
-        )
+            tooltip.add(
+                Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.progress")
+                    .withStyle(ChatFormatting.GRAY)
+                    .append(CommonComponents.SPACE)
+                    .append(
+                        Component.literal("${contract.unitsFulfilled} / ${contract.unitsDemanded}")
+                            .withStyle(ChatFormatting.AQUA)
+                    )
 
-        val nextCycleStart = contract.currentCycleStart + contract.cycleDurationMs
-        val timeRemaining = nextCycleStart - System.currentTimeMillis()
-        val timeRemainingString = "     " + DenominationsHelper.denominateDurationToString(timeRemaining)
-        tooltip.add(
-            Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.remaining_time")
-                .withStyle(ChatFormatting.GRAY)
-        )
+            )
 
-        tooltip.add(Component.literal(timeRemainingString).withStyle(Contract.getTimeRemainingColor(timeRemaining)))
+            val nextCycleStart = contract.currentCycleStart + contract.cycleDurationMs
+            val timeRemaining = nextCycleStart - System.currentTimeMillis()
+            val timeRemainingString = "     " + DenominationsHelper.denominateDurationToString(timeRemaining)
+            tooltip.add(
+                Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.remaining_time")
+                    .withStyle(ChatFormatting.GRAY)
+            )
 
-        return true
+            tooltip.add(Component.literal(timeRemainingString).withStyle(Contract.getTimeRemainingColor(timeRemaining)))
+
+            return true
+        }
+
+        return false
     }
 
     override fun getSlotsForFace(direction: Direction): IntArray? {

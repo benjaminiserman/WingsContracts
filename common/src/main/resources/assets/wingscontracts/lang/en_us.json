@@ -65,6 +65,7 @@
     "item.wingscontracts.contract": "%s Contract",
     "item.wingscontracts.contract.unknown": "Unknown Contract",
     "item.wingscontracts.contract.abyssal": "%s %s Contract %s",
+    "item.wingscontracts.contract.bound": "Bound Contract",
     "item.wingscontracts.blank_abyssal_contract": "Blank Abyssal Contract",
     "item.wingscontracts.blank_abyssal_contract.desc.can": "Right-click with this in hand to materialize it into a random Abyssal Contract",
     "item.wingscontracts.blank_abyssal_contract.desc.cannot": "Only used for crafting",

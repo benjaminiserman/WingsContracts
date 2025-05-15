@@ -10,12 +10,15 @@ import dev.biserman.wingscontracts.data.AvailableContractsManager
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.double
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.int
+import dev.biserman.wingscontracts.nbt.ContractTagHelper.long
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.reward
 import dev.biserman.wingscontracts.nbt.ItemCondition
 import dev.biserman.wingscontracts.nbt.Reward
 import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
+import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.ChatFormatting
+import net.minecraft.core.NonNullList
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
 import net.minecraft.network.chat.CommonComponents
@@ -28,10 +31,11 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Block
 import java.util.*
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.pow
 import kotlin.reflect.full.memberProperties
 
-@Suppress("MemberVisibilityCanBePrivate", "NullableBooleanElvis")
+@Suppress("NullableBooleanElvis")
 class AbyssalContract(
     id: UUID,
     targetItems: List<Item>,
@@ -40,12 +44,12 @@ class AbyssalContract(
     targetConditions: List<ItemCondition>,
 
     startTime: Long,
-    currentCycleStart: Long,
-    cycleDurationMs: Long,
+    var currentCycleStart: Long,
+    val cycleDurationMs: Long,
 
     countPerUnit: Int,
-    baseUnitsDemanded: Int,
-    unitsFulfilled: Int,
+    val baseUnitsDemanded: Int,
+    var unitsFulfilled: Int,
     unitsFulfilledEver: Long,
 
     isActive: Boolean,
@@ -70,11 +74,7 @@ class AbyssalContract(
     targetBlockTags,
     targetConditions,
     startTime,
-    currentCycleStart,
-    cycleDurationMs,
     countPerUnit,
-    baseUnitsDemanded,
-    unitsFulfilled,
     unitsFulfilledEver,
     isActive,
     isLoaded,
@@ -137,6 +137,16 @@ class AbyssalContract(
             ).withStyle(ChatFormatting.DARK_PURPLE)
         )
 
+        components.add(
+            translateContract(
+                "units_fulfilled",
+                unitsFulfilled,
+                unitsDemanded,
+                unitsFulfilled * countPerUnit,
+                unitsDemanded * countPerUnit
+            ).withStyle(ChatFormatting.LIGHT_PURPLE)
+        )
+
         return super.getBasicInfo(components)
     }
 
@@ -149,8 +159,26 @@ class AbyssalContract(
         unitsDemanded
     ).withStyle(ChatFormatting.DARK_PURPLE)
 
-    override val unitsDemanded: Int
-        get() = unitsDemandedAtLevel(level)
+    fun getCycleInfo(list: MutableList<Component>?): MutableList<Component> {
+        val components = mutableListOf<Component>()
+        val nextCycleStart = currentCycleStart + cycleDurationMs
+        val timeRemaining = nextCycleStart - System.currentTimeMillis()
+        val timeRemainingString = DenominationsHelper.denominateDurationToString(timeRemaining)
+
+        val timeRemainingColor = getTimeRemainingColor(timeRemaining)
+
+        if (Date(nextCycleStart) <= Date()) {
+            components.add(translateContract("cycle_complete").withStyle(ChatFormatting.DARK_PURPLE))
+            components.add(translateContract("cycle_complete.desc").withStyle(ChatFormatting.DARK_PURPLE))
+        } else {
+            components.add(translateContract("cycle_remaining").withStyle(timeRemainingColor))
+            components.add(Component.literal("  $timeRemainingString").withStyle(timeRemainingColor))
+        }
+
+        return components
+    }
+
+    val unitsDemanded: Int get() = unitsDemandedAtLevel(level)
 
     fun unitsDemandedAtLevel(level: Int): Int {
         if (countPerUnit == 0) {
@@ -167,12 +195,50 @@ class AbyssalContract(
         }
     }
 
+    override fun tryUpdateTick(tag: ContractTag?): Boolean {
+        if (!isActive) {
+            return false
+        }
+
+        if (cycleDurationMs <= 0) {
+            if (unitsFulfilled >= unitsDemanded) {
+                onContractFulfilled(tag)
+                isActive = false
+                tag?.isActive = isActive
+                return true
+            } else {
+                return false
+            }
+        }
+
+        val currentTime = System.currentTimeMillis()
+        val cyclesPassed = ((currentTime - currentCycleStart) / cycleDurationMs).toInt()
+        if (cyclesPassed > 0) {
+            reset(tag, currentCycleStart + cycleDurationMs * cyclesPassed)
+            return true
+        }
+
+        return false
+    }
+
     override fun onContractFulfilled(tag: ContractTag?) {
         super.onContractFulfilled(tag)
         if (level < maxLevel) {
             level += 1
             tag?.level = level
         }
+    }
+
+    override fun countConsumableUnits(items: NonNullList<ItemStack>): Int =
+        min(super.countConsumableUnits(items), unitsDemanded - unitsFulfilled)
+
+    override fun tryConsumeFromItems(tag: ContractTag?, items: NonNullList<ItemStack>): Int {
+        val unitCount = super.tryConsumeFromItems(tag, items)
+
+        unitsFulfilled += unitCount
+        tag?.unitsFulfilled = unitsFulfilled
+
+        return unitCount
     }
 
     fun formatReward(count: Int): String {
@@ -184,7 +250,18 @@ class AbyssalContract(
         }
     }
 
-    override fun getRewardsForUnits(units: Int) = reward.copyWithCount(reward.count * units)
+    override fun getRewardsForUnits(units: Int): ItemStack = reward.copyWithCount(reward.count * units)
+
+    override fun reset(tag: ContractTag?, newCycleStart: Long) {
+        if (unitsFulfilled >= unitsDemanded) {
+            onContractFulfilled(tag)
+        }
+
+        currentCycleStart = newCycleStart
+        tag?.currentCycleStart = currentCycleStart
+        unitsFulfilled = 0
+        tag?.unitsFulfilled = unitsFulfilled
+    }
 
     val maxPossibleReward: Int
         get() {
@@ -216,6 +293,10 @@ class AbyssalContract(
     override fun save(nbt: CompoundTag?): ContractTag {
         val tag = super.save(nbt)
 
+        tag.currentCycleStart = currentCycleStart
+        tag.cycleDurationMs = cycleDurationMs
+        tag.baseUnitsDemanded = baseUnitsDemanded
+        tag.unitsFulfilled = unitsFulfilled
         tag.reward = Reward.Defined(reward)
         tag.level = level
         tag.quantityGrowthFactor = quantityGrowthFactor
@@ -251,6 +332,11 @@ class AbyssalContract(
         var (ContractTag).level by int()
         var (ContractTag).quantityGrowthFactor by double()
         var (ContractTag).maxLevel by int()
+
+        var (ContractTag).currentCycleStart by long()
+        var (ContractTag).cycleDurationMs by long()
+        var (ContractTag).baseUnitsDemanded by int()
+        var (ContractTag).unitsFulfilled by int()
 
         fun load(contract: ContractTag, data: AvailableContractsData? = null): AbyssalContract {
             val reward = contract.reward
