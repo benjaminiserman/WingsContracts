@@ -37,7 +37,7 @@ object ModBlockRegistry {
         val toReturn = BLOCKS.register(name, block)
         ModItemRegistry.ITEMS.register(
             name
-        ) { BlockItem(toReturn.get()!!, Item.Properties()) }
+        ) { BlockItem(toReturn.get()!!, Item.Properties().`arch$tab`(ModItemRegistry.creativeTab)) }
         return toReturn
     }
 
