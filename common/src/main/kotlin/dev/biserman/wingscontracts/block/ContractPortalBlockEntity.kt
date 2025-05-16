@@ -10,6 +10,7 @@ import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.Contract
+import dev.biserman.wingscontracts.core.PortalLinker
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
@@ -24,6 +25,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.NonNullList
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
@@ -35,10 +37,7 @@ import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundSource
 import net.minecraft.tags.BlockTags
 import net.minecraft.util.Mth.*
-import net.minecraft.world.Container
-import net.minecraft.world.ContainerHelper
-import net.minecraft.world.MenuProvider
-import net.minecraft.world.WorldlyContainer
+import net.minecraft.world.*
 import net.minecraft.world.entity.EntitySelector
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Inventory
@@ -68,9 +67,22 @@ class ContractPortalBlockEntity(
     WorldlyContainer,
     IHaveGoggleInformation {
     var cooldownTime: Int
-    var contractSlot: ItemStack
-    var cachedRewards: ItemStack
-    var cachedInput: NonNullList<ItemStack>
+    var contractSlot: ItemStack = ItemStack.EMPTY
+        set(value) {
+            val currentLevel = level
+            if (currentLevel != null) {
+                val oldContractId = LoadedContracts[field]?.id
+                val newContractId = LoadedContracts[value]?.id
+
+                PortalLinker.get(currentLevel).linkedPortals.remove(oldContractId)
+                if (newContractId != null) {
+                    PortalLinker.get(currentLevel).linkedPortals[newContractId] = this
+                }
+            }
+            field = value
+        }
+    var cachedRewards = SimpleContainer(containerSize)
+    var cachedInput = SimpleContainer(containerSize)
     var lastPlayer: UUID
 
     private fun getLevelX(): Double = worldPosition.x.toDouble() + 0.5
@@ -79,10 +91,19 @@ class ContractPortalBlockEntity(
 
     init {
         this.cooldownTime = -1
-        this.contractSlot = ItemStack.EMPTY
-        this.cachedRewards = ItemStack.EMPTY
-        this.cachedInput = NonNullList.withSize(Companion.containerSize, ItemStack.EMPTY)
         this.lastPlayer = UUID(0, 0)
+    }
+
+    override fun setLevel(level: Level) {
+        super.setLevel(level)
+        val contract = LoadedContracts[contractSlot] ?: return
+        PortalLinker.get(level).linkedPortals[contract.id] = this
+    }
+
+    override fun setRemoved() {
+        super.setRemoved()
+        val contractId = LoadedContracts[contractSlot]?.id
+        PortalLinker.get(level!!).linkedPortals.remove(contractId)
     }
 
     override fun load(compoundTag: CompoundTag) {
@@ -90,10 +111,44 @@ class ContractPortalBlockEntity(
 
         this.cooldownTime = compoundTag.getInt("SuckCooldown")
         this.contractSlot = ItemStack.of(compoundTag.getCompound("ContractSlot"))
-        this.cachedRewards = ItemStack.of(compoundTag.getCompound("CachedRewards"))
-        cachedRewards.count = compoundTag.getCompound("CachedRewards").getInt("Count")
         this.lastPlayer = compoundTag.getUUID("LastPlayer")
-        ContainerHelper.loadAllItems(compoundTag, cachedInput)
+
+        loadAllItems(compoundTag.getCompound("Items"), cachedInput.items)
+        loadAllItems(compoundTag.getCompound("Rewards"), cachedRewards.items)
+    }
+
+    @Suppress("KotlinConstantConditions")
+    fun loadAllItems(containerTag: CompoundTag, containerList: NonNullList<ItemStack>) {
+        val listTag: ListTag = containerTag.getList("Items", 10)
+
+        for (i in listTag.indices) {
+            val compoundTag2 = listTag.getCompound(i)
+            val count = compoundTag2.getByte("Slot").toInt() and 255
+            if (count >= 0 && count < containerList.size) {
+                containerList[count] = ItemStack.of(compoundTag2)
+            }
+        }
+    }
+
+    fun saveAllItems(containerList: NonNullList<ItemStack>): CompoundTag {
+        val listTag = ListTag()
+
+        for (i in containerList.indices) {
+            val itemStack = containerList[i]
+            if (!itemStack.isEmpty) {
+                val slotTag = CompoundTag()
+                slotTag.putByte("Slot", i.toByte())
+                itemStack.save(slotTag)
+                listTag.add(slotTag)
+            }
+        }
+
+        val containerTag = CompoundTag()
+        if (!listTag.isEmpty()) {
+            containerTag.put("Items", listTag)
+        }
+
+        return containerTag
     }
 
     override fun saveAdditional(compoundTag: CompoundTag) {
@@ -105,12 +160,11 @@ class ContractPortalBlockEntity(
         contractSlot.save(contractSlotTag)
         compoundTag.put("ContractSlot", contractSlotTag)
 
-        val cachedRewardsTag = CompoundTag()
-        cachedRewards.save(cachedRewardsTag)
-        cachedRewardsTag.putInt("Count", cachedRewards.count)
-        compoundTag.put("CachedRewards", cachedRewardsTag)
+        val cachedInputsTag = saveAllItems(cachedInput.items)
+        val cachedRewardsTag = saveAllItems(cachedRewards.items)
 
-        ContainerHelper.saveAllItems(compoundTag, cachedInput)
+        compoundTag.put("Items", cachedInputsTag)
+        compoundTag.put("Rewards", cachedRewardsTag)
     }
 
     private fun setCooldown(i: Int) {
@@ -122,7 +176,7 @@ class ContractPortalBlockEntity(
     override fun getUpdatePacket(): Packet<ClientGamePacketListener>? = ClientboundBlockEntityDataPacket.create(this)
 
     private fun inventoryFull(): Boolean {
-        val iterator: Iterator<ItemStack> = cachedInput.iterator()
+        val iterator: Iterator<ItemStack> = cachedInput.items.iterator()
 
         var itemStack: ItemStack
         do {
@@ -136,16 +190,16 @@ class ContractPortalBlockEntity(
         return false
     }
 
-    private fun getInputItem(i: Int): ItemStack = cachedInput[i]
+    private fun getInputItem(i: Int): ItemStack = cachedInput.getItem(i)
     private fun setInputItem(i: Int, itemStack: ItemStack) {
-        cachedInput[i] = itemStack
+        cachedInput.setItem(i, itemStack)
         if (itemStack.count > MAX_STACK_SIZE) {
             itemStack.count = MAX_STACK_SIZE
         }
         this.setChanged()
     }
 
-    val inputItemsEmpty get() = cachedInput.isEmpty() || cachedInput.all { itemStack -> itemStack.isEmpty }
+    val inputItemsEmpty get() = cachedInput.isEmpty || cachedInput.items.all { itemStack -> itemStack.isEmpty }
 
     companion object {
         fun serverTick(
@@ -186,9 +240,9 @@ class ContractPortalBlockEntity(
 
                 ContractPortalMode.COIN -> {
                     val stackToSpit = if (!portal.cachedRewards.isEmpty) {
-                        portal.cachedRewards
-                    } else if (portal.contractSlot.isEmpty && !portal.cachedInput.isEmpty()) {
-                        portal.cachedInput.firstOrNull { itemStack -> !itemStack.isEmpty }
+                        portal.cachedRewards.items.first { !it.isEmpty }
+                    } else if (portal.contractSlot.isEmpty && !portal.cachedInput.isEmpty) {
+                        portal.cachedInput.items.firstOrNull { itemStack -> !itemStack.isEmpty }
                     } else {
                         null
                     }
@@ -353,18 +407,14 @@ class ContractPortalBlockEntity(
     }
 
     private fun tryConsume(contract: Contract, contractTag: ContractTag): Boolean {
-        val unitsConsumed = contract.tryConsumeFromItems(contractTag, cachedInput)
+        val rewards = contract.tryConsumeFromItems(contractTag, this)
 
-        if (unitsConsumed == 0) {
+        if (rewards.isEmpty()) {
             return false
         }
 
-        val rewards = contract.getRewardsForUnits(unitsConsumed)
-
-        if (cachedRewards.isEmpty || rewards.item != cachedRewards.item) {
-            cachedRewards = rewards
-        } else {
-            cachedRewards.grow(rewards.count)
+        for (itemStack in rewards) {
+            cachedRewards.addItem(itemStack)
         }
 
         if (contract is AbyssalContract && contract.unitsFulfilled >= contract.unitsDemanded) {
@@ -438,8 +488,8 @@ class ContractPortalBlockEntity(
 
     override fun getSlotsForFace(direction: Direction): IntArray? {
         return when (direction) {
-            Direction.DOWN -> intArrayOf(0)
-            else -> (1..Companion.containerSize).toList().toIntArray()
+            Direction.DOWN -> (Companion.containerSize..<Companion.containerSize * 2).toList().toIntArray()
+            else -> (0..<Companion.containerSize).toList().toIntArray()
         }
     }
 
@@ -453,53 +503,51 @@ class ContractPortalBlockEntity(
         i: Int,
         itemStack: ItemStack,
         direction: Direction
-    ): Boolean = canTakeItem(i, itemStack)
+    ): Boolean = canTakeItem(i)
 
     override fun canPlaceItem(i: Int, itemStack: ItemStack): Boolean =
-        i != 0 && LoadedContracts[contractSlot]?.matches(itemStack) == true
+        i < containerSize && LoadedContracts[contractSlot]?.matches(itemStack) == true
 
-    override fun canTakeItem(container: Container, i: Int, itemStack: ItemStack) = canTakeItem(i, itemStack)
-    fun canTakeItem(i: Int, itemStack: ItemStack) = i == 0
+    override fun canTakeItem(container: Container, i: Int, itemStack: ItemStack) = canTakeItem(i)
+    fun canTakeItem(i: Int) = i >= containerSize
 
     override fun getContainerSize(): Int = Companion.containerSize
 
-    override fun isEmpty(): Boolean = cachedInput.all { it.isEmpty } && cachedRewards.isEmpty
+    override fun isEmpty(): Boolean = cachedInput.items.all { it.isEmpty } && cachedRewards.isEmpty
 
     override fun getItem(i: Int): ItemStack? {
-        return if (i == 0) cachedRewards else cachedInput[i - 1]
+        return if (i < containerSize) cachedInput.getItem(i) else cachedRewards.getItem(i - containerSize)
     }
 
     override fun removeItem(i: Int, j: Int): ItemStack? {
-        if (i < 0 || i >= containerSize || j <= 0) {
+        if (i < 0 || i >= containerSize * 2 || j <= 0) {
             return ItemStack.EMPTY
         }
 
-        return if (i == 0) {
-            cachedRewards.split(j)
+        return if (i < containerSize) {
+            cachedInput.items[i].split(j)
         } else {
-            cachedInput[i - 1].split(j)
+            cachedRewards.items[i - containerSize].split(j)
         }
     }
 
     override fun removeItemNoUpdate(i: Int): ItemStack? {
-        if (i < 0 || i >= containerSize) {
+        if (i < 0 || i >= containerSize * 2) {
             return ItemStack.EMPTY
         }
 
-        if (i == 0) {
-            val output = cachedRewards
-            cachedRewards = ItemStack.EMPTY
-            return output
+        return if (i < containerSize) {
+            ContainerHelper.takeItem(cachedInput.items, i)
         } else {
-            return ContainerHelper.takeItem(cachedInput, i - 1)
+            ContainerHelper.takeItem(cachedRewards.items, i - containerSize)
         }
     }
 
     override fun setItem(i: Int, itemStack: ItemStack) {
-        if (i == 0) {
-            cachedRewards = itemStack
+        if (i < containerSize) {
+            cachedInput.setItem(i, itemStack)
         } else {
-            cachedInput[i - 1] = itemStack
+            cachedRewards.setItem(i - containerSize, itemStack)
         }
     }
 
@@ -510,9 +558,7 @@ class ContractPortalBlockEntity(
     override fun stillValid(player: Player): Boolean = Container.stillValidBlockEntity(this, player)
 
     override fun clearContent() {
-        cachedRewards = ItemStack.EMPTY
-        for (i in 0..<cachedInput.size) {
-            cachedInput[i] = ItemStack.EMPTY
-        }
+        cachedInput.clearContent()
+        cachedRewards.clearContent()
     }
 }

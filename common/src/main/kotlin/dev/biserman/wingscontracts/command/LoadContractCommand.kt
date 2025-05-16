@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.command.ModCommand.giveContract
 import dev.biserman.wingscontracts.core.AbyssalContract
+import dev.biserman.wingscontracts.core.BoundContract
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.data.AvailableContractsManager
 import dev.biserman.wingscontracts.server.AvailableContractsData
@@ -18,27 +19,35 @@ object LoadContractCommand {
     fun register(): ArgumentBuilder<CommandSourceStack, *> =
         Commands.literal("load")
             .then(
-                Commands.argument("jsonString", StringArgumentType.string())
+                Commands.argument("type", StringArgumentType.word())
                     .then(
-                        Commands.argument("targets", EntityArgument.players())
-                            .executes { context ->
+                        Commands.argument("jsonString", StringArgumentType.string())
+                            .then(
+                                Commands.argument("targets", EntityArgument.players())
+                                    .executes { context ->
+                                        giveContract(
+                                            context.source,
+                                            loadContract(
+                                                StringArgumentType.getString(context, "jsonString"),
+                                                context.source.level,
+                                                StringArgumentType.getString(context, "type"),
+                                            ),
+                                            EntityArgument.getPlayers(context, "targets")
+                                        )
+                                    }).executes { context ->
                                 giveContract(
                                     context.source,
                                     loadContract(
                                         StringArgumentType.getString(context, "jsonString"),
-                                        context.source.level
+                                        context.source.level,
+                                        StringArgumentType.getString(context, "type"),
                                     ),
                                     EntityArgument.getPlayers(context, "targets")
                                 )
-                            }).executes { context ->
-                        giveContract(
-                            context.source,
-                            loadContract(StringArgumentType.getString(context, "jsonString"), context.source.level),
-                            EntityArgument.getPlayers(context, "targets")
-                        )
-                    })
+                            })
+            )
 
-    fun loadContract(jsonString: String, level: Level): Contract {
+    fun loadContract(jsonString: String, level: Level, type: String): Contract {
         try {
             val index = jsonString.toIntOrNull()
             if (index != null) {
@@ -47,8 +56,13 @@ object LoadContractCommand {
             }
 
             val tag =
-                AbyssalContract.fromJson(JsonParser.parseString(jsonString).asJsonObject) // add support for other types later
-            return AbyssalContract.load(tag, AvailableContractsData.get(level))
+                Contract.fromJson(JsonParser.parseString(jsonString).asJsonObject) // add support for other types later
+
+            return when (type) {
+                "abyssal" -> AbyssalContract.load(tag, AvailableContractsData.get(level))
+                "bound" -> BoundContract.load(tag)
+                else -> throw Error("Contract type not found: $type")
+            }
         } catch (e: Error) {
             WingsContractsMod.LOGGER.error(e)
             throw e

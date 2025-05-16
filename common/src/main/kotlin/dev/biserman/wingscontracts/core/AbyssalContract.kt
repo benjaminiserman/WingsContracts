@@ -1,13 +1,13 @@
 package dev.biserman.wingscontracts.core
 
-import com.google.gson.JsonObject
-import com.mojang.serialization.JsonOps
 import dev.biserman.wingscontracts.WingsContractsMod
+import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
 import dev.biserman.wingscontracts.config.GrowthFunctionOptions
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.data.AvailableContractsManager
 import dev.biserman.wingscontracts.nbt.ContractTag
+import dev.biserman.wingscontracts.nbt.ContractTagHelper.boolean
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.double
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.int
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.long
@@ -20,11 +20,11 @@ import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.ChatFormatting
 import net.minecraft.core.NonNullList
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.NbtOps
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.tags.TagKey
+import net.minecraft.util.Mth
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -52,8 +52,6 @@ class AbyssalContract(
     var unitsFulfilled: Int,
     unitsFulfilledEver: Long,
 
-    isActive: Boolean,
-    isLoaded: Boolean,
     author: String,
     name: String?,
     description: String?,
@@ -65,7 +63,9 @@ class AbyssalContract(
 
     var level: Int,
     val quantityGrowthFactor: Double,
-    val maxLevel: Int
+    val maxLevel: Int,
+
+    var isActive: Boolean
 ) : Contract(
     1,
     id,
@@ -76,8 +76,6 @@ class AbyssalContract(
     startTime,
     countPerUnit,
     unitsFulfilledEver,
-    isActive,
-    isLoaded,
     author,
     name,
     description,
@@ -232,13 +230,21 @@ class AbyssalContract(
     override fun countConsumableUnits(items: NonNullList<ItemStack>): Int =
         min(super.countConsumableUnits(items), unitsDemanded - unitsFulfilled)
 
-    override fun tryConsumeFromItems(tag: ContractTag?, items: NonNullList<ItemStack>): Int {
-        val unitCount = super.tryConsumeFromItems(tag, items)
+    override fun tryConsumeFromItems(tag: ContractTag, portal: ContractPortalBlockEntity): List<ItemStack> {
+        val unitCount = countConsumableUnits(portal.cachedInput.items)
+        if (unitCount == 0) {
+            return listOf()
+        }
+
+        consumeUnits(unitCount, portal)
+
+        unitsFulfilledEver += unitCount
+        tag.unitsFulfilledEver = unitsFulfilledEver
 
         unitsFulfilled += unitCount
-        tag?.unitsFulfilled = unitsFulfilled
+        tag.unitsFulfilled = unitsFulfilled
 
-        return unitCount
+        return getRewardsForUnits(unitCount)
     }
 
     fun formatReward(count: Int): String {
@@ -250,7 +256,18 @@ class AbyssalContract(
         }
     }
 
-    override fun getRewardsForUnits(units: Int): ItemStack = reward.copyWithCount(reward.count * units)
+    fun getRewardsForUnits(units: Int): List<ItemStack> {
+        val rewardsList = (1..Mth.floor(reward.count * units.toDouble() / reward.maxStackSize)).map {
+            reward.copyWithCount(reward.maxStackSize)
+        }.toMutableList()
+
+        val remainder = reward.count * units % reward.maxStackSize
+        if (remainder != 0) {
+            rewardsList.add(reward.copyWithCount(remainder))
+        }
+
+        return rewardsList
+    }
 
     override fun reset(tag: ContractTag?, newCycleStart: Long) {
         if (unitsFulfilled >= unitsDemanded) {
@@ -301,6 +318,7 @@ class AbyssalContract(
         tag.level = level
         tag.quantityGrowthFactor = quantityGrowthFactor
         tag.maxLevel = maxLevel
+        tag.isActive = isActive
 
         return tag
     }
@@ -333,6 +351,8 @@ class AbyssalContract(
         var (ContractTag).quantityGrowthFactor by double()
         var (ContractTag).maxLevel by int()
 
+        var (ContractTag).isActive by boolean()
+
         var (ContractTag).currentCycleStart by long()
         var (ContractTag).cycleDurationMs by long()
         var (ContractTag).baseUnitsDemanded by int()
@@ -353,8 +373,6 @@ class AbyssalContract(
                 baseUnitsDemanded = contract.baseUnitsDemanded ?: 64,
                 unitsFulfilled = contract.unitsFulfilled ?: 0,
                 unitsFulfilledEver = contract.unitsFulfilledEver ?: 0,
-                isActive = contract.isActive ?: true,
-                isLoaded = contract.isLoaded ?: true,
                 author = contract.author ?: ModConfig.SERVER.defaultAuthor.get(),
                 name = contract.name,
                 description = contract.description,
@@ -369,11 +387,9 @@ class AbyssalContract(
                 },
                 level = contract.level ?: 1,
                 quantityGrowthFactor = contract.quantityGrowthFactor ?: ModConfig.SERVER.defaultGrowthFactor.get(),
-                maxLevel = contract.maxLevel ?: ModConfig.SERVER.defaultMaxLevel.get()
+                maxLevel = contract.maxLevel ?: ModConfig.SERVER.defaultMaxLevel.get(),
+                isActive = contract.isActive ?: true
             )
         }
-
-        fun fromJson(json: JsonObject): ContractTag =
-            ContractTag(JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json) as CompoundTag)
     }
 }

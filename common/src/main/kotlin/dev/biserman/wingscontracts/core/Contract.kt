@@ -1,10 +1,12 @@
 package dev.biserman.wingscontracts.core
 
+import com.google.gson.JsonObject
+import com.mojang.serialization.JsonOps
 import dev.biserman.wingscontracts.WingsContractsMod
+import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
-import dev.biserman.wingscontracts.nbt.ContractTagHelper.boolean
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.csv
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.int
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.itemStack
@@ -20,6 +22,7 @@ import net.minecraft.core.NonNullList
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtOps
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
@@ -54,8 +57,6 @@ abstract class Contract(
     val countPerUnit: Int = 1,
     var unitsFulfilledEver: Long = 0,
 
-    var isActive: Boolean = true,
-    var isLoaded: Boolean = true,
     val author: String = "",
     val name: String? = null,
     val description: String? = null,
@@ -249,15 +250,13 @@ abstract class Contract(
         return matchingCount / countPerUnit
     }
 
-    open fun tryConsumeFromItems(tag: ContractTag?, items: NonNullList<ItemStack>): Int {
-        val unitCount = countConsumableUnits(items)
-        if (unitCount == 0) {
-            return 0
-        }
+    abstract fun tryConsumeFromItems(tag: ContractTag, portal: ContractPortalBlockEntity): List<ItemStack>
 
+    open fun consumeUnits(unitCount: Int, portal: ContractPortalBlockEntity): List<ItemStack> {
         val goalAmount = unitCount * countPerUnit
         var amountTaken = 0
-        for (itemStack in items) {
+        val consumedItems = mutableListOf<ItemStack>()
+        for (itemStack in portal.cachedInput.items) {
             if (amountTaken >= goalAmount) {
                 break
             }
@@ -269,17 +268,12 @@ abstract class Contract(
             if (matches(itemStack)) {
                 val amountToTake = min(itemStack.count, goalAmount - amountTaken)
                 amountTaken += amountToTake
-                itemStack.shrink(amountToTake)
+                consumedItems.add(itemStack.split(amountToTake))
             }
         }
 
-        unitsFulfilledEver += unitCount
-        tag?.unitsFulfilledEver = unitsFulfilledEver
-
-        return unitCount
+        return consumedItems
     }
-
-    abstract fun getRewardsForUnits(units: Int): ItemStack
 
     open fun getRarity() = rarity ?: 0
 
@@ -295,8 +289,6 @@ abstract class Contract(
         tag.startTime = startTime
         tag.countPerUnit = countPerUnit
         tag.unitsFulfilledEver = unitsFulfilledEver
-        tag.isActive = isActive
-        tag.isLoaded = isLoaded
         tag.author = author
         tag.name = name
         tag.description = description
@@ -332,8 +324,6 @@ abstract class Contract(
         var (ContractTag).countPerUnit by int()
         var (ContractTag).unitsFulfilledEver by long()
 
-        var (ContractTag).isActive by boolean()
-        var (ContractTag).isLoaded by boolean()
         var (ContractTag).author by string()
         var (ContractTag).name by string()
         var (ContractTag).description by string()
@@ -427,5 +417,8 @@ abstract class Contract(
             timeRemaining < 1000 * 60 * 60 * 24 -> ChatFormatting.YELLOW
             else -> ChatFormatting.DARK_PURPLE
         }
+
+        fun fromJson(json: JsonObject): ContractTag =
+            ContractTag(JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json) as CompoundTag)
     }
 }

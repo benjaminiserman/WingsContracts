@@ -17,6 +17,7 @@ import net.minecraft.world.Containers
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.BlockGetter
@@ -94,7 +95,7 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
             player.setItemInHand(interactionHand, contractSlotItem)
             level.setBlockAndUpdate(
                 blockPos, blockState.setValue(
-                    MODE, if (portal.cachedRewards.count > 0 || !portal.inputItemsEmpty) {
+                    MODE, if (!portal.cachedRewards.isEmpty || !portal.inputItemsEmpty) {
                         ContractPortalMode.COIN
                     } else {
                         ContractPortalMode.UNLIT
@@ -172,9 +173,9 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
                     blockPos.z.toDouble(),
                     blockEntity.contractSlot
                 )
-                while (blockEntity.cachedRewards.count > 0) {
+                while (!blockEntity.cachedRewards.isEmpty) {
                     val rewardStackToSpit =
-                        AvailableContractsData.get(level).currencyHandler.splitHighestDenomination(blockEntity.cachedRewards)
+                        AvailableContractsData.get(level).currencyHandler.splitHighestDenomination(blockEntity.cachedRewards.items.first { !it.isEmpty })
                     while (rewardStackToSpit.count > 0) {
                         val splitStack = rewardStackToSpit.split(
                             min(
@@ -203,7 +204,7 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
         if (blockState.getValue(MODE) == ContractPortalMode.LIT) {
             val portal = level.getBlockEntity(blockPos) as? ContractPortalBlockEntity
                 ?: return 0
-            return min(15, portal.cachedRewards.count / portal.cachedRewards.maxStackSize)
+            return AbstractContainerMenu.getRedstoneSignalFromContainer(portal.cachedRewards)
         }
 
         return 0

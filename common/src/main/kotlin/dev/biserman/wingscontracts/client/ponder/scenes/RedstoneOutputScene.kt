@@ -46,7 +46,7 @@ object RedstoneOutputScene {
         val nixieTubePosition = util.grid().at(3, 1, 2)
 
         val contract = LoadContractCommand.loadContract(
-            "{\"targetItems\": \"minecraft:diamond\",\"countPerUnit\": 8, \"reward\": 2}", scene.scene.world
+            "{\"targetItems\": \"minecraft:diamond\",\"countPerUnit\": 8, \"reward\": 2}", scene.scene.world, "abyssal"
         ).createItem()
         scene.overlay()
             .showControls(util.vector().topOf(portalPosition), Pointing.DOWN, 40)

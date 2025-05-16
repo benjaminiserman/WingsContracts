@@ -8,6 +8,7 @@ import dev.architectury.platform.Platform
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.core.AbyssalContract
+import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.core.Contract.Companion.name
 import dev.biserman.wingscontracts.core.Contract.Companion.requiresAll
 import dev.biserman.wingscontracts.core.Contract.Companion.requiresAny
@@ -85,7 +86,7 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "wings
             try {
                 val jsonObject = json.asJsonObject
                 val parsedContracts = jsonObject.get("contracts")?.asJsonArray?.map {
-                    AbyssalContract.fromJson(it.asJsonObject)
+                    Contract.fromJson(it.asJsonObject)
                 } ?: listOf()
 
                 val parsedDefaultRewards = jsonObject.get("rewards")?.asJsonArray?.map {

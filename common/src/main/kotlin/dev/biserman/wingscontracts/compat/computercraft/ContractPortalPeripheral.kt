@@ -7,7 +7,6 @@ import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
 import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.data.LoadedContracts
-import dev.biserman.wingscontracts.server.AvailableContractsData
 
 class ContractPortalPeripheral(private val portal: ContractPortalBlockEntity) : IPeripheral {
     @Suppress("CovariantEquals")
@@ -30,21 +29,17 @@ class ContractPortalPeripheral(private val portal: ContractPortalBlockEntity) : 
     }
 
     @LuaFunction
-    fun getCachedRewardsDetails(): Map<String, Any> = if (portal.cachedRewards.isEmpty) {
-        mapOf()
-    } else {
-        portal.cachedRewards.details
-    }
+    fun getCachedRewardsDetails(): List<Map<String, Any>> = portal.cachedRewards.items.filter { !it.isEmpty }.map { it.details }
 
     @LuaFunction
-    fun getCachedInputDetails(): List<Map<String, Any>> = portal.cachedInput.filter { !it.isEmpty }.map { it.details }
-
-    @LuaFunction
-    fun getCachedRewardsDenominationDetails(): List<Map<String, Any>> =
-        AvailableContractsData.get(portal.level!!).currencyHandler
-            .denominateCurrency(portal.cachedRewards)
-            .asSequence()
-            .filter { !it.isEmpty }
-            .map { it.details }
-            .toList()
+    fun getCachedInputDetails(): List<Map<String, Any>> = portal.cachedInput.items.filter { !it.isEmpty }.map { it.details }
+//
+//    @LuaFunction
+//    fun getCachedRewardsDenominationDetails(): List<Map<String, Any>> =
+//        AvailableContractsData.get(portal.level!!).currencyHandler
+//            .denominateCurrency(portal.cachedRewards)
+//            .asSequence()
+//            .filter { !it.isEmpty }
+//            .map { it.details }
+//            .toList()
 }

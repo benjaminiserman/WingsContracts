@@ -10,7 +10,7 @@ architectury {
 }
 
 loom {
-    accessWidenerPath.set(file("src/main/resources/wingscontracts.accesswidener"))
+    accessWidenerPath = file("src/main/resources/wingscontracts.accesswidener")
 }
 
 dependencies {

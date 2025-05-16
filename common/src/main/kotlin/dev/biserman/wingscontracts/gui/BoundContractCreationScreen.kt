@@ -101,13 +101,8 @@ class BoundContractCreationScreen(menu: BoundContractCreationMenu, inventory: In
         AbstractButton(x, y, 16, 16, CommonComponents.EMPTY) {
 
         override fun onPress() {
-//            this@BeaconScreen.minecraft.getConnection().send(
-//                ServerboundSetBeaconPacket(
-//                    Optional.ofNullable<MobEffect?>(this@BeaconScreen.primary),
-//                    Optional.ofNullable<MobEffect?>(this@BeaconScreen.secondary)
-//                )
-//            )
             if (menu.isValidContract(leftScrollField.scrollValue, rightScrollField.scrollValue)) {
+                menu.submit(leftScrollField.scrollValue, rightScrollField.scrollValue, nameBox.value)
                 Minecraft.getInstance().player?.closeContainer()
             }
         }

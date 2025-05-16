@@ -48,7 +48,7 @@ object IntroScene {
         scene.idle(100)
 
         val contract = LoadContractCommand.loadContract(
-            "{\"targetItems\": \"minecraft:diamond\",\"countPerUnit\": 8, \"reward\": 2}", scene.scene.world
+            "{\"targetItems\": \"minecraft:diamond\",\"countPerUnit\": 8, \"reward\": 2}", scene.scene.world, "abyssal"
         ).createItem()
         scene.overlay()
             .showControls(util.vector().topOf(1, 1, 1), Pointing.DOWN, 40)
