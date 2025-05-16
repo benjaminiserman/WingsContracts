@@ -41,6 +41,7 @@ class ContractItemDecorator : IItemDecorator {
         @SubscribeEvent
         fun registerItemDecorations(event: RegisterItemDecorationsEvent) {
             event.register(ModItemRegistry.ABYSSAL_CONTRACT.get()!!, instance)
+            event.register(ModItemRegistry.BOUND_CONTRACT.get()!!, instance)
         }
     }
 }

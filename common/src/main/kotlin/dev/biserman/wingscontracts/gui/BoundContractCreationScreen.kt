@@ -2,6 +2,7 @@ package dev.biserman.wingscontracts.gui
 
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.gui.BoundContractCreationScreen.ScrollField.Companion.BUTTON_IMAGE_Y
+import dev.biserman.wingscontracts.registry.ModSoundRegistry
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
@@ -104,6 +105,7 @@ class BoundContractCreationScreen(menu: BoundContractCreationMenu, inventory: In
             if (menu.isValidContract(leftScrollField.scrollValue, rightScrollField.scrollValue)) {
                 menu.submit(leftScrollField.scrollValue, rightScrollField.scrollValue, nameBox.value)
                 Minecraft.getInstance().player?.closeContainer()
+                Minecraft.getInstance().player?.playSound(ModSoundRegistry.WRITE_CONTRACT.get())
             }
         }
 

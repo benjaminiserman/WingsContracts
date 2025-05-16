@@ -1,12 +1,14 @@
 package dev.biserman.wingscontracts.gui
 
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
+import dev.biserman.wingscontracts.core.Contract.Companion.countPerUnit
+import dev.biserman.wingscontracts.core.Contract.Companion.name
+import dev.biserman.wingscontracts.core.Contract.Companion.targetItems
+import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.registry.ModMenuRegistry
 import dev.biserman.wingscontracts.server.CreateBoundContractsMessage
-import net.minecraft.core.NonNullList
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.Container
-import net.minecraft.world.ContainerHelper
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
@@ -77,17 +79,22 @@ class BoundContractCreationMenu(id: Int, inventory: Inventory) :
     fun submit(leftCount: Int, rightCount: Int, name: String) {
         val submitTag = CompoundTag()
 
-        val left = CompoundTag()
-        ContainerHelper.saveAllItems(left, NonNullList(leftSlots.items, ItemStack.EMPTY))
-        left.putInt("Count", leftCount)
-        submitTag.put("Left", left)
+        val left = ContractTag(CompoundTag())
+        val right = ContractTag(CompoundTag())
 
-        val right = CompoundTag()
-        ContainerHelper.saveAllItems(right, NonNullList(rightSlots.items, ItemStack.EMPTY))
-        right.putInt("Count", rightCount)
-        submitTag.put("Right", right)
+        left.targetItems = leftSlots.items.filter { !it.isEmpty }.map { it.item }.distinct()
+        right.targetItems = rightSlots.items.filter { !it.isEmpty }.map { it.item }.distinct()
 
-        submitTag.putString("Name", name)
+        left.countPerUnit = leftCount
+        right.countPerUnit = rightCount
+
+        if (name.isNotBlank()) {
+            left.name = name
+            right.name = name
+        }
+
+        submitTag.put("Left", left.tag)
+        submitTag.put("Right", right.tag)
 
         CreateBoundContractsMessage(submitTag).sendToServer()
     }
@@ -97,6 +104,8 @@ class BoundContractCreationMenu(id: Int, inventory: Inventory) :
             super.remove(i)
             return ItemStack.EMPTY
         }
+
+        override fun mayPlace(itemStack: ItemStack) = item.isEmpty
 
         override fun safeTake(i: Int, j: Int, player: Player): ItemStack {
             setByPlayer(ItemStack.EMPTY)

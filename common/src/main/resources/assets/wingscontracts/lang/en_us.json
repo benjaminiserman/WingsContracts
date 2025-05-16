@@ -30,7 +30,6 @@
     "wingscontracts.contract.matches_following": "of the following:",
     "wingscontracts.contract.units_fulfilled": "Units Fulfilled: %d/%d (%d/%d)",
     "wingscontracts.contract.cycle_complete": "Cycle Complete!",
-    "wingscontracts.contract.cycle_complete.desc": "Right-click with contract in hand or place in contract portal to start next cycle.",
     "wingscontracts.contract.next_cycle": "Refreshes at %s",
     "wingscontracts.contract.cycle_remaining": "Remaining Time:",
     "wingscontracts.contract.cycle_started": "Started On: %s",
@@ -42,6 +41,10 @@
     "wingscontracts.contract.abyssal.max_reward_cycle": "Max Reward this Cycle: %s",
     "wingscontracts.contract.abyssal.max_reward": "Max Reward at Level %s: %s",
     "wingscontracts.contract.abyssal.short": "%d %s → %s (%d/%d)",
+
+    "wingscontracts.contract.bound.short": "%d %s ⇔ %d %s",
+    "wingscontracts.contract.bound.exchanges": "Exchanges %d of:",
+    "wingscontracts.contract.bound.for": "For %d of:",
 
 
     "advancement.wingscontracts.root": "Wing's Contracts",
@@ -65,11 +68,12 @@
     "item.wingscontracts.contract": "%s Contract",
     "item.wingscontracts.contract.unknown": "Unknown Contract",
     "item.wingscontracts.contract.abyssal": "%s %s Contract %s",
-    "item.wingscontracts.contract.bound": "Bound Contract",
+    "item.wingscontracts.contract.bound": "%s Bound Contract",
     "item.wingscontracts.blank_abyssal_contract": "Blank Abyssal Contract",
     "item.wingscontracts.blank_abyssal_contract.desc.can": "Right-click with this in hand to materialize it into a random Abyssal Contract",
     "item.wingscontracts.blank_abyssal_contract.desc.cannot": "Only used for crafting",
     "item.wingscontracts.blank_bound_contract": "Blank Bound Contract",
+    "item.wingscontracts.blank_bound_contract.desc.loss_rate": "Note: %.0f%% of exchanged items will be destroyed.",
     "item.wingscontracts.bound_contract": "Bound Contract",
     "item.wingscontracts.abyssal_coin": "Abyssal Obol",
     "item.wingscontracts.question_mark": "Matching",

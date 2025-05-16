@@ -16,6 +16,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val replaceRewardWithRandomBlocklist: ForgeConfigSpec.ConfigValue<String>
     val rarityThresholdsString: ForgeConfigSpec.ConfigValue<String>
     val contractPortalInputSlots: ForgeConfigSpec.IntValue
+    val boundContractLossRate: ForgeConfigSpec.DoubleValue
 
     // Contract Defaults
     val defaultRewardMultiplier: ForgeConfigSpec.DoubleValue
@@ -110,6 +111,10 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
         contractPortalInputSlots =
             builder.comment("Determines how many unconverted stacks of input items a Contract Portal can hold at once.")
                 .defineInRange("contractPortalInputSlots", 27, 1, 1024)
+
+        boundContractLossRate =
+            builder.comment("What percentage of the time should bound contract item exchanges fail and destroy the swapped items?")
+                .defineInRange("boundContractLossRate", 0.05, 0.0, 1.0)
 
         builder.pop()
         builder.push("Contract Defaults")

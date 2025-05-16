@@ -19,8 +19,6 @@ import net.minecraft.world.level.Level
 import kotlin.math.ceil
 
 class ContractItem(properties: Properties) : Item(properties) {
-    // TODO: how do I localize this properly?
-    // e.g.: Contract de Niveau 10 des Diamants de winggar
     override fun getName(itemStack: ItemStack): Component {
         val contract = LoadedContracts[itemStack]
             ?: return Component.translatable("item.${WingsContractsMod.MOD_ID}.contract.unknown")
@@ -54,7 +52,7 @@ class ContractItem(properties: Properties) : Item(properties) {
 
     override fun getRarity(itemStack: ItemStack): Rarity {
         val contract = LoadedContracts[itemStack] ?: return super.getRarity(itemStack)
-        return Rarity.values()[contract.getRarity()]
+        return Rarity.entries[contract.getRarity()]
     }
 
     override fun use(

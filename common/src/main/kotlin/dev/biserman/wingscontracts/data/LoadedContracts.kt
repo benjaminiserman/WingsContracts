@@ -1,6 +1,7 @@
 package dev.biserman.wingscontracts.data
 
 import dev.biserman.wingscontracts.core.AbyssalContract
+import dev.biserman.wingscontracts.core.BoundContract
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.core.Contract.Companion.id
 import dev.biserman.wingscontracts.core.Contract.Companion.type
@@ -13,6 +14,7 @@ object LoadedContracts {
     private val contracts: MutableMap<UUID, Contract> = mutableMapOf()
     private val CONTRACT_LOAD_BY_TYPE = hashMapOf(
         1 to AbyssalContract::load,
+        2 to BoundContract::load
     )
 
     operator fun get(id: UUID) = contracts[id]

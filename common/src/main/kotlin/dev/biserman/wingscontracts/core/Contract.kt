@@ -153,7 +153,7 @@ abstract class Contract(
             "item.${WingsContractsMod.MOD_ID}.contract", Component.translatable(name ?: targetName).string
         )
 
-    fun listTargets(displayShort: Boolean): List<MutableComponent> {
+    fun getTargetListComponents(displayShort: Boolean): List<MutableComponent> {
         val totalSize = targetItems.size + targetTags.size + targetBlockTags.size
 
         val tagKey = if (displayShort) "items_of_tag_short" else "items_of_tag"
@@ -187,16 +187,18 @@ abstract class Contract(
                 listOf(Component.literal(""))
             }
             else -> {
-                val complexSequence = targetItems.asSequence()
-                    .map { it.name().trimBrackets() }
-                    .plus(targetTags.map { it.name() })
-                    .plus(targetBlockTags.map { it.name() })
-
                 val start = if (displayShort) listOf() else listOf(translateContract("matches_following"))
-                start + complexSequence.map { Component.literal("$complexPrefix$it") }
+                start + listTargets.map { Component.literal("$complexPrefix$it") }
             }
         }
     }
+
+    val listTargets: List<String> get() = targetItems
+        .asSequence()
+        .map { it.name().trimBrackets() }
+        .plus(targetTags.map { it.name() })
+        .plus(targetBlockTags.map { it.name() })
+        .toList()
 
     open fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> = list ?: mutableListOf()
 
@@ -210,7 +212,7 @@ abstract class Contract(
         components.addAll(getBasicInfo(null))
 
         if (this is AbyssalContract) {
-            components.addAll(getCycleInfo(null))
+            components.addAll(getCycleInfo())
         }
 
         components.add(
@@ -299,8 +301,9 @@ abstract class Contract(
         return tag
     }
 
+    abstract val item: Item
     fun createItem(): ItemStack {
-        val itemStack = ItemStack(ModItemRegistry.ABYSSAL_CONTRACT.get() ?: throw Error())
+        val itemStack = ItemStack(item)
         val tag = save(null)
         ContractTagHelper.setContractTag(itemStack, tag)
         LoadedContracts.update(this)

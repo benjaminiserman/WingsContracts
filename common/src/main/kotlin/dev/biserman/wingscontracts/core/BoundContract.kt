@@ -7,9 +7,16 @@ import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
+import dev.biserman.wingscontracts.nbt.ContractTagHelper.csv
+import dev.biserman.wingscontracts.nbt.ContractTagHelper.int
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.uuid
 import dev.biserman.wingscontracts.nbt.ItemCondition
+import dev.biserman.wingscontracts.registry.ModItemRegistry
+import dev.biserman.wingscontracts.server.AvailableContractsData
+import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
+import net.minecraft.ChatFormatting
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.tags.TagKey
@@ -27,6 +34,9 @@ class BoundContract(
     targetBlockTags: List<TagKey<Block>>,
     targetConditions: List<ItemCondition>,
 
+    val otherSideCountPerUnit: Int,
+    val otherSideTargets: List<String>,
+
     startTime: Long,
 
     countPerUnit: Int,
@@ -37,7 +47,7 @@ class BoundContract(
 
     val matchingContractId: UUID,
 ) : Contract(
-    1,
+    2,
     id,
     targetItems,
     targetTags,
@@ -53,6 +63,7 @@ class BoundContract(
     null,
     null
 ) {
+    override val item: Item get() = ModItemRegistry.BOUND_CONTRACT.get()
     override val displayName: MutableComponent
         get() {
             val nameString = Component.translatable(name ?: targetName).string
@@ -63,10 +74,53 @@ class BoundContract(
             )
         }
 
+    override fun getShortInfo(): Component {
+        val targets = listTargets
+        return when {
+            targets.size <= 3 && otherSideTargets.size <= 3 -> {
+                translateContract(
+                    "bound.short",
+                    countPerUnit,
+                    targets.joinToString("|"),
+                    otherSideCountPerUnit,
+                    otherSideTargets.joinToString("|") { Component.translatable(it).string.trimBrackets() }
+                ).withStyle(ChatFormatting.DARK_PURPLE)
+            }
+            else -> CommonComponents.EMPTY
+        }
+    }
+
+    override fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> {
+        val components = list ?: mutableListOf()
+
+        components.add(translateContract("bound.exchanges", countPerUnit).withStyle(ChatFormatting.DARK_PURPLE))
+        for (target in listTargets) {
+            components.add(
+                Component.literal(" - ")
+                    .withStyle(ChatFormatting.DARK_PURPLE)
+                    .append(target)
+                    .withStyle((ChatFormatting.LIGHT_PURPLE))
+            )
+        }
+
+        components.add(translateContract("bound.for", otherSideCountPerUnit).withStyle(ChatFormatting.DARK_PURPLE))
+        for (otherTarget in otherSideTargets) {
+            components.add(
+                Component.literal(" - ")
+                    .withStyle(ChatFormatting.DARK_PURPLE)
+                    .append(Component.translatable(otherTarget).string.trimBrackets())
+                    .withStyle((ChatFormatting.LIGHT_PURPLE))
+            )
+        }
+
+        return components
+    }
+
     override fun tryConsumeFromItems(tag: ContractTag, portal: ContractPortalBlockEntity): List<ItemStack> {
         val otherPortal = PortalLinker.get(portal.level!!).linkedPortals[matchingContractId] ?: return listOf()
         val otherTag = ContractTagHelper.getContractTag(otherPortal.contractSlot) ?: return listOf()
         val otherContract = LoadedContracts[otherTag] ?: return listOf()
+        val level = portal.level ?: return listOf()
 
         val unitCount = min(
             countConsumableUnits(portal.cachedInput.items),
@@ -80,7 +134,9 @@ class BoundContract(
         val otherConsumedItems = otherContract.consumeUnits(unitCount, otherPortal)
 
         for (consumedItem in consumedItems) {
-            otherPortal.cachedRewards.addItem(consumedItem)
+            if (level.random.nextDouble() >= ModConfig.SERVER.boundContractLossRate.get()) {
+                otherPortal.cachedRewards.addItem(consumedItem)
+            }
         }
 
         unitsFulfilledEver += unitCount
@@ -89,7 +145,7 @@ class BoundContract(
         otherContract.unitsFulfilledEver += unitCount
         otherTag.unitsFulfilledEver = unitsFulfilledEver
 
-        return otherConsumedItems
+        return otherConsumedItems.filter { level.random.nextDouble() >= ModConfig.SERVER.boundContractLossRate.get() }
     }
 
     override fun save(nbt: CompoundTag?): ContractTag {
@@ -113,14 +169,18 @@ class BoundContract(
 
     companion object {
         var (ContractTag).matchingContractId by uuid()
+        var (ContractTag).otherSideCountPerUnit by int()
+        var (ContractTag).otherSideTargets by csv()
 
-        fun load(contract: ContractTag): BoundContract {
+        fun load(contract: ContractTag, data: AvailableContractsData? = null): BoundContract {
             return BoundContract(
                 id = contract.id ?: UUID.randomUUID(),
                 targetItems = contract.targetItems ?: listOf(),
                 targetTags = contract.targetTags ?: listOf(),
                 targetBlockTags = contract.targetBlockTags ?: listOf(),
                 targetConditions = contract.targetConditions ?: listOf(),
+                otherSideCountPerUnit = contract.otherSideCountPerUnit ?: 1,
+                otherSideTargets = contract.otherSideTargets ?: listOf(),
                 startTime = contract.startTime ?: System.currentTimeMillis(),
                 countPerUnit = contract.countPerUnit ?: 64,
                 unitsFulfilledEver = contract.unitsFulfilledEver ?: 0,

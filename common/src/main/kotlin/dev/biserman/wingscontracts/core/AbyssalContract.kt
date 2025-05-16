@@ -14,6 +14,7 @@ import dev.biserman.wingscontracts.nbt.ContractTagHelper.long
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.reward
 import dev.biserman.wingscontracts.nbt.ItemCondition
 import dev.biserman.wingscontracts.nbt.Reward
+import dev.biserman.wingscontracts.registry.ModItemRegistry
 import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import dev.biserman.wingscontracts.util.DenominationsHelper
@@ -83,6 +84,7 @@ class AbyssalContract(
     rarity,
     displayItem
 ) {
+    override val item: Item get() = ModItemRegistry.ABYSSAL_CONTRACT.get()
     override val displayName: MutableComponent
         get() {
             val rarityString = Component.translatable("${WingsContractsMod.MOD_ID}.rarity.${getRarity()}").string
@@ -106,7 +108,7 @@ class AbyssalContract(
             countPerUnit,
         ).withStyle(ChatFormatting.DARK_PURPLE)
 
-        val targetsList = listTargets(displayShort = false)
+        val targetsList = getTargetListComponents(displayShort = false)
         if (targetsList.size <= 2) {
             components.add(targetsList.fold(rewardsComponent.append(CommonComponents.SPACE)) { acc, entry ->
                 acc.append(entry.withStyle(ChatFormatting.DARK_PURPLE))
@@ -151,13 +153,13 @@ class AbyssalContract(
     override fun getShortInfo(): Component = translateContract(
         "abyssal.short",
         countPerUnit,
-        listTargets(displayShort = true).joinToString("|") { it.string },
+        getTargetListComponents(displayShort = true).joinToString("|") { it.string },
         formatReward(reward.count),
         unitsFulfilled,
         unitsDemanded
     ).withStyle(ChatFormatting.DARK_PURPLE)
 
-    fun getCycleInfo(list: MutableList<Component>?): MutableList<Component> {
+    fun getCycleInfo(): MutableList<Component> {
         val components = mutableListOf<Component>()
         val nextCycleStart = currentCycleStart + cycleDurationMs
         val timeRemaining = nextCycleStart - System.currentTimeMillis()
@@ -167,7 +169,6 @@ class AbyssalContract(
 
         if (Date(nextCycleStart) <= Date()) {
             components.add(translateContract("cycle_complete").withStyle(ChatFormatting.DARK_PURPLE))
-            components.add(translateContract("cycle_complete.desc").withStyle(ChatFormatting.DARK_PURPLE))
         } else {
             components.add(translateContract("cycle_remaining").withStyle(timeRemainingColor))
             components.add(Component.literal("  $timeRemainingString").withStyle(timeRemainingColor))
