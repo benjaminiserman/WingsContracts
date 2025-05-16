@@ -22,8 +22,10 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import java.util.*
+import kotlin.math.floor
 import kotlin.math.min
 import kotlin.reflect.full.memberProperties
 
@@ -133,10 +135,9 @@ class BoundContract(
         val consumedItems = consumeUnits(unitCount, portal)
         val otherConsumedItems = otherContract.consumeUnits(unitCount, otherPortal)
 
+        burnSomeItems(consumedItems, level)
         for (consumedItem in consumedItems) {
-            if (level.random.nextDouble() >= ModConfig.SERVER.boundContractLossRate.get()) {
-                otherPortal.cachedRewards.addItem(consumedItem)
-            }
+            otherPortal.cachedRewards.addItem(consumedItem)
         }
 
         unitsFulfilledEver += unitCount
@@ -145,12 +146,30 @@ class BoundContract(
         otherContract.unitsFulfilledEver += unitCount
         otherTag.unitsFulfilledEver = unitsFulfilledEver
 
-        return otherConsumedItems.filter { level.random.nextDouble() >= ModConfig.SERVER.boundContractLossRate.get() }
+        burnSomeItems(otherConsumedItems, level)
+        return otherConsumedItems
+    }
+
+    fun burnSomeItems(items: List<ItemStack>, level: Level) {
+        val lossRate = ModConfig.SERVER.boundContractLossRate.get()
+        val lostItems = items.sumOf { it.count } * lossRate
+        var countToBurn = floor(lostItems).toInt()
+        if (level.random.nextDouble() <= lostItems % 1.0) {
+            countToBurn += 1
+        }
+
+        for (consumedItem in items) {
+            val toBurnFromThis = min(consumedItem.count, countToBurn)
+            countToBurn -= toBurnFromThis
+            consumedItem.split(toBurnFromThis)
+        }
     }
 
     override fun save(nbt: CompoundTag?): ContractTag {
         val tag = super.save(nbt)
         tag.matchingContractId = matchingContractId
+        tag.otherSideCountPerUnit = otherSideCountPerUnit
+        tag.otherSideTargets = otherSideTargets
         return tag
     }
 

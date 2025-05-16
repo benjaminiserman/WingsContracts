@@ -52,7 +52,10 @@ class BlankBoundContractItem(properties: Properties) : Item(properties), MenuPro
         if (lossRate != 0.0) {
             components.add(
                 Component
-                    .translatable("item.${WingsContractsMod.MOD_ID}.blank_bound_contract.desc.loss_rate", lossRate)
+                    .translatable(
+                        "item.${WingsContractsMod.MOD_ID}.blank_bound_contract.desc.loss_rate",
+                        lossRate * 100
+                    )
                     .withStyle(ChatFormatting.GRAY)
             )
         }
