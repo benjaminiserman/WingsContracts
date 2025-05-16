@@ -1,0 +1,28 @@
+{
+  "rewards": [
+    {
+      "item": {
+        "id": "minecraft:emerald",
+        "Count": 1
+      },
+      "value": 0.5,
+      "weight": 4
+    },
+    {
+      "item": {
+        "id": "minecraft:gold_nugget",
+        "Count": 1
+      },
+      "value": 0.25,
+      "weight": 2
+    },
+    {
+      "item": {
+        "id": "minecraft:lapis_lazuli",
+        "Count": 1
+      },
+      "value": 1,
+      "weight": 1
+    }
+  ]
+}
