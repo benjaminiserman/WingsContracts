@@ -145,6 +145,12 @@
     "wingscontracts.data.snack.desc": "accepts foods that restore exactly two shanks of hunger",
     "wingscontracts.data.bite_sized": "Bite-Sized",
     "wingscontracts.data.bite_sized.desc": "accepts foods that restore exactly one shank of hunger",
+    "wingscontracts.data.red": "Red",
+    "wingscontracts.data.red.desc": "accepts items that have the word \"red\" in their item ID",
+    "wingscontracts.data.blue": "Blue",
+    "wingscontracts.data.blue.desc": "accepts items that have the word \"blue\" in their item ID",
+    "wingscontracts.data.gerund": "Gerund",
+    "wingscontracts.data.gerund.desc": "accepts items that have have the letters \"ing\" in their item ID",
 
     "wingscontracts.data.forge.helmets": "Helmets",
     "wingscontracts.data.forge.chestplates": "Chestplates",

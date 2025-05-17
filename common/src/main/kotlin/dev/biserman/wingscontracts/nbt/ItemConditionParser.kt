@@ -132,7 +132,7 @@ object ItemConditionParser {
             "id" -> ({ it.item.`arch$registryName`()?.toString() ?: "" })
             "isBarVisible" -> ({ it.isBarVisible.toString() })
             "barWidth" -> ({ it.barWidth.toString() })
-            "barColor" -> ({ it.barColor.toString() })
+            "barColor" -> ({ it.barColor.toString(16) })
             "hasFoil" -> ({ it.hasFoil().toString() })
             "rarity" -> ({ it.rarity.ordinal.toString() })
             "isDamageable" -> ({ it.isDamageableItem.toString() })

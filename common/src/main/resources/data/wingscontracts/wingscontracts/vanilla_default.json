@@ -803,6 +803,27 @@
       "baseUnitsDemanded": 96,
       "name": "wingscontracts.data.bite_sized",
       "description": "wingscontracts.data.bite_sized.desc"
+    },
+    {
+      "targetConditions": "path<-red",
+      "countPerUnit": 32,
+      "reward": 2,
+      "name": "wingscontracts.data.red",
+      "description": "wingscontracts.data.red.desc"
+    },
+    {
+      "targetConditions": "path<-blue",
+      "countPerUnit": 32,
+      "reward": 2,
+      "name": "wingscontracts.data.blue",
+      "description": "wingscontracts.data.blue.desc"
+    },{
+      "targetConditions": "path<-ing",
+      "countPerUnit": 48,
+      "reward": 1,
+      "baseUnitsDemanded": 96,
+      "name": "wingscontracts.data.gerund",
+      "description": "wingscontracts.gerund.blue.desc"
     }
   ]
 }
