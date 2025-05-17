@@ -17,18 +17,19 @@
     },
     {
       "targetItems": "immersiveengineering:component_electronic",
-      "countPerUnit": 16,
+      "countPerUnit": 8,
       "reward": 2
     },
     {
       "targetItems": "immersiveengineering:component_electronic_adv",
-      "countPerUnit": 16,
+      "countPerUnit": 8,
       "reward": 3
     },
     {
       "targetItems": "immersiveengineering:revolver",
       "countPerUnit": 1,
-      "reward": 4
+      "reward": 8,
+      "baseUnitsDemanded": 32
     },
     {
       "targetItems": "immersiveengineering:treated_wood_horizontal",

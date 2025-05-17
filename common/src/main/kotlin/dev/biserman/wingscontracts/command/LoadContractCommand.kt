@@ -9,6 +9,7 @@ import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.BoundContract
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.data.AvailableContractsManager
+import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.server.AvailableContractsData
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
@@ -52,7 +53,7 @@ object LoadContractCommand {
             val index = jsonString.toIntOrNull()
             if (index != null) {
                 return AvailableContractsData.get(level)
-                    .generateContract(AvailableContractsManager.availableContracts[index])
+                    .generateContract(ContractTag(AvailableContractsManager.availableContracts[index].tag.copy()))
             }
 
             val tag =

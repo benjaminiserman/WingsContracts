@@ -2,6 +2,7 @@
 
 package dev.biserman.wingscontracts.nbt
 
+import dev.biserman.wingscontracts.config.ModConfig
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.ItemStack
 import kotlin.math.max
@@ -48,8 +49,8 @@ object ContractTagHelper {
         }
     }
 
-    fun string(key: String? = null) =
-        Property(key, safeGet(CompoundTag::getString), CompoundTag::putString)
+fun string(key: String? = null) =
+    Property(key, safeGet(CompoundTag::getString), CompoundTag::putString)
 
     fun int(key: String? = null) =
         Property(key, safeGet(CompoundTag::getInt), CompoundTag::putInt)
@@ -78,7 +79,7 @@ object ContractTagHelper {
                 itemStack.count = this.getCompound(it).getInt("Count")
                 return@safeGet Reward.Defined(itemStack)
             } else {
-                return@safeGet Reward.Random(1.0)
+                return@safeGet Reward.Random(ModConfig.SERVER.defaultRewardMultiplier.get())
             }
         }, { safeKey, value ->
             when (value) {

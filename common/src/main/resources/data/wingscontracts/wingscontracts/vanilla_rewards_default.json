@@ -10,10 +10,10 @@
     },
     {
       "item": {
-        "id": "minecraft:gold_nugget",
+        "id": "minecraft:gold_ingot",
         "Count": 1
       },
-      "value": 0.25,
+      "value": 1,
       "weight": 2
     },
     {

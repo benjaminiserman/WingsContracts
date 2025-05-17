@@ -1,7 +1,6 @@
 package dev.biserman.wingscontracts.server
 
 import dev.biserman.wingscontracts.config.ModConfig
-import dev.biserman.wingscontracts.data.AvailableContractsManager
 import net.minecraft.core.NonNullList
 import net.minecraft.world.Container
 import net.minecraft.world.ContainerHelper
@@ -18,25 +17,19 @@ class AvailableContractsContainer(val data: AvailableContractsData) : Container 
 
     override fun removeItem(i: Int, count: Int): ItemStack? {
         val itemStack = ContainerHelper.removeItem(items, i, count)
-        if (!itemStack.isEmpty) {
-            setItem(i, data.generateContract(AvailableContractsManager.randomTag()).createItem())
-            this.setChanged()
-        }
-
+        this.setChanged()
         return itemStack
     }
 
     override fun removeItemNoUpdate(i: Int): ItemStack? {
         val itemStack = ContainerHelper.takeItem(items, i)
-        if (!itemStack.isEmpty) {
-            setItem(i, data.generateContract(AvailableContractsManager.randomTag()).createItem())
-        }
-
+        this.setChanged()
         return itemStack
     }
 
     override fun setItem(i: Int, itemStack: ItemStack) {
         items[i] = itemStack
+        this.setChanged()
     }
 
     override fun setChanged() {

@@ -30,7 +30,6 @@
     "wingscontracts.contract.matches_following": "of the following:",
     "wingscontracts.contract.units_fulfilled": "Units Fulfilled: %d/%d (%d/%d)",
     "wingscontracts.contract.cycle_complete": "Cycle Complete!",
-    "wingscontracts.contract.next_cycle": "Refreshes at %s",
     "wingscontracts.contract.cycle_remaining": "Remaining Time:",
     "wingscontracts.contract.cycle_started": "Started On: %s",
     "wingscontracts.contract.total_fulfilled": "Total Units Fulfilled Ever: %d (%d)",
@@ -59,7 +58,10 @@
     "advancement.wingscontracts.max_level.desc": "Complete a max-level contract",
 
 
-    "commands.wingscontracts.give_contract": "Successfully gave contract.",
+    "commands.wingscontracts.refresh": "Refreshed the Abyssal Contracts Pool.",
+    "commands.wingscontracts.clear": "Cleared the Abyssal Contracts Pool.",
+    "commands.wingscontracts.add_picks": "Gave %s %d Abyssal Contracts Pool picks.",
+    "commands.wingscontracts.set_picks": "Set %s Abyssal Contracts Pool picks to %d.",
     "commands.wingscontracts.failed.load": "Error: failed to load contract.",
     "commands.wingscontracts.failed.not_in_hand": "Error: no contract in hand.",
     "commands.wingscontracts.failed.unavailable_page": "Error: page %d does not exist. Last page is %d.",
@@ -82,6 +84,7 @@
     "block.wingscontracts.contract_portal": "Contract Portal",
 
 
+    "wingscontracts.gui.contract_portal.short_title": "Portal",
     "wingscontracts.gui.contract_portal.refreshes_in": "Refreshes in: %s",
     "wingscontracts.gui.contract_portal.remaining_picks": "Remaining picks: %s",
 
@@ -138,6 +141,10 @@
     "wingscontracts.data.christmas": "Christmas",
     "wingscontracts.data.better_than_coal": "Better than Coal",
     "wingscontracts.data.better_than_coal.desc": "accepts items that have a longer burn time than coal",
+    "wingscontracts.data.snack": "Snack",
+    "wingscontracts.data.snack.desc": "accepts foods that restore exactly two shanks of hunger",
+    "wingscontracts.data.bite_sized": "Bite-Sized",
+    "wingscontracts.data.bite_sized.desc": "accepts foods that restore exactly one shank of hunger",
 
     "wingscontracts.data.forge.helmets": "Helmets",
     "wingscontracts.data.forge.chestplates": "Chestplates",

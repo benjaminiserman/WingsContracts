@@ -41,8 +41,8 @@
     {
       "targetItems": "mekanism:pellet_antimatter",
       "countPerUnit": 1,
-      "baseUnitsDemanded": 32,
-      "reward": 32
+      "baseUnitsDemanded": 16,
+      "reward": 64
     }
   ]
 }

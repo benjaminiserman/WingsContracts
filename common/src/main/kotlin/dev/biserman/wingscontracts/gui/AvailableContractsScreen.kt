@@ -24,24 +24,36 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
         this.renderTooltip(graphics, x, y)
     }
 
-    override fun renderLabels(graphics: GuiGraphics, i: Int, j: Int) {
-        super.renderLabels(graphics, i, j)
+    fun pad2(count: Int?) = (count ?: 0).toString().padStart(2, '0')
 
-        val timeTilRefresh = DenominationsHelper.denominate(
+    override fun renderLabels(graphics: GuiGraphics, i: Int, j: Int) {
+        val shortTitle = Component.translatable("${WingsContractsMod.MOD_ID}.gui.contract_portal.short_title")
+        graphics.drawString(font, shortTitle, titleLabelX, titleLabelY, 4210752, false)
+        graphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 4210752, false)
+
+        val timeTilRefreshUnits = DenominationsHelper.denominate(
             AvailableContractsData.get(inventory.player.level()).nextCycleStart - System.currentTimeMillis(),
             DenominationsHelper.timeDenominationsWithoutMs
-        ).asSequence().mapIndexed { i, pair ->
-            if (i == 0) {
-                pair.second.toString()
-            } else {
-                pair.second.toString().padStart(2, '0')
+        ).asSequence().map { it.first.key to it.second }.toMap()
+
+        val timeTilRefresh = timeTilRefreshUnits.run {
+            when {
+                "day" in timeTilRefreshUnits
+                    -> "${this["day"]}:${pad2(this["hour"])}:${pad2(this["minute"])}:${pad2(this["second"])}"
+                "hour" in timeTilRefreshUnits
+                    -> "${this["hour"]}:${pad2(this["minute"])}:${pad2(this["second"])}"
+                "minute" in timeTilRefreshUnits
+                    -> "${this["minute"]}:${pad2(this["second"])}"
+                "second" in timeTilRefreshUnits
+                    -> this["second"].toString()
+                else -> "0"
             }
-        }.joinToString(":")
+        }
 
         val rightTitleEdge = imageWidth - titleLabelY
         val refreshLabel = Component.translatable(
             "${WingsContractsMod.MOD_ID}.gui.contract_portal.refreshes_in",
-            if (timeTilRefresh.isBlank()) { "0" } else { timeTilRefresh }
+            timeTilRefresh
         ).string
         graphics.drawString(
             font,

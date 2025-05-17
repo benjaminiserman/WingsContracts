@@ -6,7 +6,6 @@ import dev.biserman.wingscontracts.block.ContractPortalBlock
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.client.ponder.ModPonderPlugin
-import dev.biserman.wingscontracts.command.LoadContractCommand
 import dev.biserman.wingscontracts.registry.ModBlockRegistry
 import net.createmod.catnip.math.Pointing
 import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper
@@ -47,9 +46,7 @@ object IntroScene {
 
         scene.idle(100)
 
-        val contract = LoadContractCommand.loadContract(
-            "{\"targetItems\": \"minecraft:diamond\",\"countPerUnit\": 8, \"reward\": 2}", scene.scene.world, "abyssal"
-        ).createItem()
+        val contract = ModPonderPlugin.getExampleContract(scene.scene.world)
         scene.overlay()
             .showControls(util.vector().topOf(1, 1, 1), Pointing.DOWN, 40)
             .rightClick()

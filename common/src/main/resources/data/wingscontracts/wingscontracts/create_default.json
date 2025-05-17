@@ -2,14 +2,13 @@
   "contracts": [
     {
       "targetItems": "create:polished_rose_quartz",
-      "countPerUnit": 12,
-      "baseUnitsDemanded": 96,
-      "reward": 2
+      "countPerUnit": 4,
+      "reward": 3
     },
     {
       "targetItems": "create:sturdy_sheet",
-      "countPerUnit": 16,
-      "reward": 3,
+      "countPerUnit": 12,
+      "reward": 2,
       "baseUnitsDemanded": 96
     },
     {
@@ -23,19 +22,16 @@
       "reward": 2
     },
     {
-      "targetItems": "create:goggles",
-      "countPerUnit": 4,
-      "reward": 2
-    },
-    {
       "targetItems": "create:flywheel",
       "countPerUnit": 2,
-      "reward": 5
+      "reward": 10,
+      "baseUnitsDemanded": 32
     },
     {
       "targetItems": "create:steam_whistle",
       "countPerUnit": 3,
-      "reward": 2
+      "reward": 4,
+      "baseUnitsDemanded": 32
     },
     {
       "targetItems": "create:experience_nugget",
@@ -45,12 +41,12 @@
     {
       "targetItems": "create:zinc_ingot",
       "baseUnitsDemanded": 128,
-      "countPerUnit": 12
+      "countPerUnit": 8
     },
     {
       "targetItems": "create:brass_ingot",
       "baseUnitsDemanded": 96,
-      "countPerUnit": 12,
+      "countPerUnit": 8,
       "reward": 2
     },
     {
@@ -60,17 +56,13 @@
     },
     {
       "targetItems": "create:potato_cannon",
-      "countPerUnit": 3,
-      "reward": 5
+      "countPerUnit": 2,
+      "reward": 7,
+      "baseUnitsDemanded": 48
     },
     {
       "targetItems": "create:cogwheel",
       "countPerUnit": 8
-    },
-    {
-      "targetItems": "create:crushing_wheel",
-      "countPerUnit": 3,
-      "reward": 4
     },
     {
       "targetItems": "create:copper_sheet",

@@ -86,8 +86,7 @@
     },
     {
       "targetItems": "glow_berries",
-      "countPerUnit": 32,
-      "baseUnitsDemanded": 96
+      "countPerUnit": 32
     },
     {
       "targetItems": "chorus_flower",
@@ -130,7 +129,8 @@
     },
     {
       "targetItems": "redstone",
-      "countPerUnit": 16
+      "countPerUnit": 16,
+      "baseUnitsDemanded": 96
     },
     {
       "targetItems": "glowstone_dust",
@@ -162,8 +162,8 @@
     {
       "targetItems": "nether_star",
       "countPerUnit": 1,
-      "baseUnitsDemanded": 32,
-      "reward": 32
+      "baseUnitsDemanded": 16,
+      "reward": 64
     },
     {
       "targetItems": "slime_ball",
@@ -241,8 +241,8 @@
     },
     {
       "targetItems": "obsidian",
-      "countPerUnit": 16,
-      "reward": 3
+      "countPerUnit": 12,
+      "reward": 2
     },
     {
       "targetItems": "mangrove_propagule",
@@ -251,7 +251,7 @@
     },
     {
       "targetItems": "lava_bucket",
-      "countPerUnit": 4,
+      "countPerUnit": 2,
       "reward": 3
     },
     {
@@ -262,7 +262,8 @@
     {
       "targetItems": "wither_rose",
       "countPerUnit": 16,
-      "reward": 6
+      "reward": 12,
+      "baseUnitsDemanded": 32
     },
     {
       "targetItems": "prismarine_shard",
@@ -281,7 +282,8 @@
     {
       "targetItems": "mycelium",
       "countPerUnit": 64,
-      "reward": 3
+      "reward": 6,
+      "baseUnitsDemanded": 32
     },
     {
       "targetItems": "podzol",
@@ -290,11 +292,12 @@
     },
     {
       "targetItems": "grass_block",
-      "countPerUnit": 24
+      "countPerUnit": 12,
+      "baseUnitsDemanded": 96
     },
     {
       "targetItems": "phantom_membrane",
-      "countPerUnit": 8
+      "countPerUnit": 4
     },
     {
       "targetItems": "moss_block",
@@ -315,23 +318,7 @@
       "reward": 4
     },
     {
-      "targetTags": "#minecraft:pickaxes",
-      "countPerUnit": 8
-    },
-    {
       "targetTags": "#minecraft:swords",
-      "countPerUnit": 8
-    },
-    {
-      "targetTags": "#minecraft:axes",
-      "countPerUnit": 8
-    },
-    {
-      "targetTags": "#minecraft:hoes",
-      "countPerUnit": 8
-    },
-    {
-      "targetTags": "#minecraft:shovels",
       "countPerUnit": 8
     },
     {
@@ -358,7 +345,7 @@
     },
     {
       "targetItems": "crying_obsidian",
-      "countPerUnit": 16,
+      "countPerUnit": 5,
       "reward": 3
     },
     {
@@ -394,12 +381,13 @@
     },
     {
       "targetItems": "flint",
-      "countPerUnit": 16
+      "countPerUnit": 12
     },
     {
       "targetItems": "experience_bottle",
       "countPerUnit": 2,
-      "reward": 4
+      "reward": 16,
+      "baseUnitsDemanded": 16
     },
     {
       "targetItems": "nether_brick",
@@ -441,12 +429,14 @@
     },
     {
       "targetTags": "#minecraft:tools",
-      "countPerUnit": 12
+      "countPerUnit": 8,
+      "baseUnitsDemanded": 96
     },
     {
       "targetTags": "#minecraft:decorated_pot_sherds",
       "countPerUnit": 4,
-      "reward": 3
+      "reward": 12,
+      "baseUnitsDemanded": 16
     },
     {
       "targetItems": "suspicious_stew",
@@ -495,21 +485,22 @@
     {
       "targetItems": "wither_skeleton_skull",
       "countPerUnit": 6,
-      "reward": 4
+      "reward": 8,
+      "baseUnitsDemanded": 32
     },
     {
       "targetItems": "mossy_cobblestone",
-      "countPerUnit": 256,
+      "countPerUnit": 128,
       "reward": 2
     },
     {
       "targetItems": "tnt",
-      "countPerUnit": 3,
+      "countPerUnit": 2,
       "reward": 3
     },
     {
       "targetItems": "firework_rocket",
-      "countPerUnit": 32,
+      "countPerUnit": 24,
       "reward": 3
     },
     {
@@ -540,7 +531,8 @@
     {
       "targetItems": "oxidized_copper",
       "countPerUnit": 3,
-      "reward": 2
+      "reward": 2,
+      "baseUnitsDemanded": 96
     },
     {
       "targetTags": "#minecraft:terracotta",
@@ -593,7 +585,8 @@
         }
       },
       "countPerUnit": 8,
-      "reward": 4
+      "reward": 16,
+      "baseUnitsDemanded": 16
     },
     {
       "targetItems": "potion",
@@ -606,7 +599,8 @@
         }
       },
       "countPerUnit": 8,
-      "reward": 4
+      "reward": 16,
+      "baseUnitsDemanded": 16
     },
     {
       "targetItems": "potion",
@@ -619,7 +613,8 @@
         }
       },
       "countPerUnit": 8,
-      "reward": 3
+      "reward": 12,
+      "baseUnitsDemanded": 16
     },
     {
       "targetItems": "potion",
@@ -632,7 +627,8 @@
         }
       },
       "countPerUnit": 8,
-      "reward": 3
+      "reward": 12,
+      "baseUnitsDemanded": 16
     },
     {
       "targetItems": "green_dye",
@@ -716,8 +712,8 @@
       "targetItems": "potion",
       "targetConditions": "tag.Potion!=minecraft:water;tag.Potion!=minecraft:awkward;tag.Potion!=minecraft:thick;tag.Potion!=minecraft:mundane",
       "countPerUnit": 8,
-      "reward": 2,
-      "baseUnitsDemanded": 96,
+      "reward": 8,
+      "baseUnitsDemanded": 16,
       "name": "wingscontracts.data.potion",
       "description": "wingscontracts.data.potion.desc",
       "shortTargetList": "wingscontracts.data.potion.short_targets"
@@ -790,8 +786,23 @@
     },
     {
       "targetItems": "trident",
-      "countPerUnit": 2,
-      "reward": 4
+      "countPerUnit": 1,
+      "reward": 8,
+      "baseUnitsDemanded": 32
+    },
+    {
+      "targetConditions": "nutrition==4",
+      "countPerUnit": 16,
+      "reward": 2,
+      "name": "wingscontracts.data.snack",
+      "description": "wingscontracts.data.snack.desc"
+    },
+    {
+      "targetConditions": "nutrition==2",
+      "countPerUnit": 48,
+      "baseUnitsDemanded": 96,
+      "name": "wingscontracts.data.bite_sized",
+      "description": "wingscontracts.data.bite_sized.desc"
     }
   ]
 }

@@ -51,17 +51,17 @@
     },
     {
       "targetItems": "botania:manasteel_ingot",
-      "countPerUnit": 16,
+      "countPerUnit": 12,
       "reward": 2
     },
     {
       "targetItems": "botania:mana_diamond",
-      "countPerUnit": 6,
+      "countPerUnit": 4,
       "reward": 4
     },
     {
       "targetTags": "#botania:elementium_ingots",
-      "countPerUnit": 12,
+      "countPerUnit": 8,
       "reward": 3
     },
     {
@@ -96,14 +96,16 @@
     {
       "targetItems": "botania:brew_vial",
       "countPerUnit": 4,
-      "reward": 2,
+      "reward": 16,
+      "baseUnitsDemanded": 16,
       "name": "wingscontracts.data.botania.brew_vial",
       "description": "wingscontracts.data.botania.brew_vial.desc"
     },
     {
       "targetItems": "botania:brew_flask",
       "countPerUnit": 4,
-      "reward": 3,
+      "reward": 24,
+      "baseUnitsDemanded": 16,
       "name": "wingscontracts.data.botania.brew_flask",
       "description": "wingscontracts.data.botania.brew_flask.desc"
     },
@@ -121,8 +123,8 @@
       "targetItems": "botania:mana_tablet",
       "targetConditions": "tag.mana==500000",
       "countPerUnit": 1,
-      "baseUnitsDemanded": 32,
-      "reward": 24,
+      "baseUnitsDemanded": 16,
+      "reward": 48,
       "name": "wingscontracts.data.botania.filled_mana_tablet",
       "description": "wingscontracts.data.botania.filled_mana_tablet.desc",
       "displayItem": {

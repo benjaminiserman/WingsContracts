@@ -99,6 +99,8 @@ class BoundContractCreationMenu(id: Int, inventory: Inventory) :
         CreateBoundContractsMessage(submitTag).sendToServer()
     }
 
+    override fun canDragTo(slot: Slot): Boolean = slot !is MatchingItemSlot
+
     class MatchingItemSlot(container: Container, i: Int, x: Int, y: Int) : Slot(container, i, x, y) {
         override fun remove(i: Int): ItemStack {
             super.remove(i)

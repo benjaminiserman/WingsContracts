@@ -5,14 +5,22 @@ import dev.biserman.wingscontracts.client.ponder.scenes.IntroScene
 import dev.biserman.wingscontracts.client.ponder.scenes.RedstoneInputScene
 import dev.biserman.wingscontracts.client.ponder.scenes.RedstoneOutputScene
 import dev.biserman.wingscontracts.client.ponder.scenes.WoolScene
+import dev.biserman.wingscontracts.command.LoadContractCommand
 import dev.biserman.wingscontracts.registry.ModBlockRegistry
 import net.createmod.ponder.api.registration.PonderPlugin
 import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper
 import net.createmod.ponder.api.registration.PonderTagRegistrationHelper
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.level.Level
 
 object ModPonderPlugin : PonderPlugin {
     val CONTRACT_CATEGORY = WingsContractsMod.prefix("contract_portal")
+
+    fun getExampleContract(level: Level) = LoadContractCommand.loadContract(
+        "{\"targetItems\":\"minecraft:diamond\",\"countPerUnit\": 8,\"reward\":{\"Count\": 1,\"id\":\"minecraft:emerald\"}}",
+        level,
+        "abyssal"
+    ).createItem()
 
     override fun getModId() = WingsContractsMod.MOD_ID
 

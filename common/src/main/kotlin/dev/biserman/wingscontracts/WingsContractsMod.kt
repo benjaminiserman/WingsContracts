@@ -43,14 +43,17 @@ object WingsContractsMod {
             ModItemDetailProvider.register()
         }
 
-        TickEvent.Server.SERVER_LEVEL_POST.register { level -> AvailableContractsData.get(level).serverTick(level) }
-        ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register { level ->
-            AvailableContractsData.clientData =
-                AvailableContractsData()
+        TickEvent.Server.SERVER_LEVEL_POST.register { level ->
+            AvailableContractsData.get(level).serverTick(level)
         }
 
         EnvExecutor.runInEnv(Env.CLIENT) {
             Runnable {
+                ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register { level ->
+                    AvailableContractsData.fakeData =
+                        AvailableContractsData()
+                }
+
                 ClientLifecycleEvent.CLIENT_SETUP.register(ClientLifecycleEvent.ClientState {
                     WingsContractsClient.init()
                     ModMenuRegistry.clientsideRegister()

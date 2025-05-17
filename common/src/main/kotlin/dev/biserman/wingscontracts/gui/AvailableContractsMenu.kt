@@ -2,7 +2,6 @@ package dev.biserman.wingscontracts.gui
 
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.registry.ModMenuRegistry
-import dev.biserman.wingscontracts.server.AvailableContractsContainer
 import dev.biserman.wingscontracts.server.AvailableContractsContainerSlot
 import dev.biserman.wingscontracts.server.AvailableContractsData
 import net.minecraft.world.entity.player.Inventory
@@ -14,8 +13,8 @@ import net.minecraft.world.item.ItemStack
 class AvailableContractsMenu(id: Int, inventory: Inventory) :
     AbstractContainerMenu(ModMenuRegistry.CONTRACT_PORTAL.get(), id) {
 
-    val container: AvailableContractsContainer =
-        AvailableContractsData.get(inventory.player.level()).container
+    val data = AvailableContractsData.get(inventory.player.level())
+    val container = data.container
 
     init {
         val maxOptions = ModConfig.SERVER.availableContractsPoolOptions.get()
@@ -59,6 +58,27 @@ class AvailableContractsMenu(id: Int, inventory: Inventory) :
         player: Player,
         i: Int
     ): ItemStack {
+        if (i >= slots.size) {
+            return ItemStack.EMPTY
+        }
+
+        val slot = slots[i]
+        if (slot.hasItem() && slot is AvailableContractsContainerSlot && slot.mayPickup(player)) {
+            val itemStack = slot.item
+            if (!this.moveItemStackTo(
+                    itemStack,
+                    ModConfig.SERVER.availableContractsPoolOptions.get(),
+                    this.slots.size,
+                    true
+                )
+            ) {
+                return ItemStack.EMPTY
+            }
+
+            slot.onTake(player, itemStack)
+            return itemStack
+        }
+
         return ItemStack.EMPTY
     }
 

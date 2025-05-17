@@ -1,0 +1,12 @@
+{
+  "rewards": [
+    {
+      "item": {
+        "id": "wingscontracts:abyssal_coin",
+        "Count": 1
+      },
+      "value": 0.5,
+      "weight": 1
+    }
+  ]
+}

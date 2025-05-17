@@ -19,13 +19,14 @@
     {
       "targetItems": "ae2:singularity",
       "countPerUnit": 1,
-      "baseUnitsDemanded": 32,
-      "reward": 32
+      "baseUnitsDemanded": 16,
+      "reward": 64
     },
     {
       "targetItems": "ae2:logic_processor,ae2:calculation_processor,ae2:engineering_processor",
       "countPerUnit": 16,
-      "reward": 3,
+      "reward": 6,
+      "baseUnitsDemanded": 32,
       "name": "wingscontracts.data.ae2.processors"
     }
   ]

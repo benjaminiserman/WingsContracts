@@ -24,14 +24,14 @@ class BlankAbyssalContractItem(properties: Properties) : Item(properties) {
     ): InteractionResultHolder<ItemStack> {
         val itemStack = player.getItemInHand(interactionHand)
         if (ModConfig.SERVER.allowBlankContractInitialization.get()) {
-            if (level is ServerLevel) {
+            if (level !is ServerLevel) {
+                player.playSound(ModSoundRegistry.WRITE_CONTRACT.get())
                 return InteractionResultHolder.success(itemStack)
             }
 
             val contract = AvailableContractsData.get(level).generateContract(AvailableContractsManager.randomTag())
             val newContractStack = contract.createItem()
             player.setItemInHand(interactionHand, newContractStack)
-            player.playSound(ModSoundRegistry.WRITE_CONTRACT.get())
 
             return InteractionResultHolder.success(newContractStack)
         }

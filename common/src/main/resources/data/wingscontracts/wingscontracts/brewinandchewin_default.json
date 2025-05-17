@@ -25,13 +25,13 @@
     },
     {
       "targetItems": "brewinandchewin:strongroot_ale",
-      "countPerUnit": 16,
+      "countPerUnit": 8,
       "reward": 3,
       "requiresAny": "vegandelight"
     },
     {
       "targetItems": "brewinandchewin:steel_toe_stout",
-      "countPerUnit": 8,
+      "countPerUnit": 4,
       "reward": 4,
       "requiresAny": "vegandelight"
     },

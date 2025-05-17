@@ -21,8 +21,6 @@ import dev.biserman.wingscontracts.data.AvailableContractsManager.defaultRewards
 import dev.biserman.wingscontracts.data.RewardBagEntry
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.Reward
-import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.ContainerHelper
@@ -72,32 +70,46 @@ class AvailableContractsData : SavedData() {
         currentCycleStart += cyclesPassed * ModConfig.SERVER.availableContractsPoolRefreshPeriodMs.get()
         remainingPicks.keys.forEach { remainingPicks[it] = ModConfig.SERVER.availableContractsPoolPicks.get() }
 
+        refresh(level)
+    }
+
+    fun clear(level: ServerLevel) {
+        container.clearContent()
+        SyncAvailableContractsMessage(level).sendToAll(level.server)
+    }
+
+    fun refresh(level: ServerLevel) {
         container.clearContent()
         for (i in 0..<container.containerSize) {
             container.items[i] = generateContract(AvailableContractsManager.randomTag()).createItem()
         }
-
         SyncAvailableContractsMessage(level).sendToAll(level.server)
     }
 
-    private fun vary(value: Double, multiplier: Double): Int {
+    private fun vary(value: Double, multiplier: Double): Double {
         val variance = ModConfig.SERVER.variance.get()
         val randomFactor = random.nextDouble()
         val varianceFactor = 1.0 + (randomFactor * 2.0 - 1.0) * variance
 
-        return max(1.0, value * multiplier * varianceFactor).roundToInt()
+        return max(1.0, value * multiplier * varianceFactor)
     }
 
     fun generateContract(tag: ContractTag): Contract {
         tag.currentCycleStart = currentCycleStart
         tag.startTime = currentCycleStart
         tag.baseUnitsDemanded =
-            vary(tag.baseUnitsDemanded?.toDouble() ?: 64.0, ModConfig.SERVER.defaultUnitsDemandedMultiplier.get())
+            vary(
+                tag.baseUnitsDemanded?.toDouble() ?: 64.0,
+                ModConfig.SERVER.defaultUnitsDemandedMultiplier.get()
+            ).roundToInt()
         tag.countPerUnit =
-            vary(tag.countPerUnit?.toDouble() ?: 16.0, ModConfig.SERVER.defaultCountPerUnitMultiplier.get())
-        val reward = tag.reward
+            vary(
+                tag.countPerUnit?.toDouble() ?: 16.0,
+                ModConfig.SERVER.defaultCountPerUnitMultiplier.get()
+            ).roundToInt()
+        val reward = tag.reward ?: Reward.Random(1.0)
         if (reward is Reward.Random) {
-            val rewardCount = vary(reward.value, ModConfig.SERVER.defaultRewardMultiplier.get())
+            val rewardValue = vary(reward.value, ModConfig.SERVER.defaultRewardMultiplier.get())
             if (random.nextDouble() <= ModConfig.SERVER.replaceRewardWithRandomPercent.get()) {
                 for (_try in 1..5) { // attempt 5 times to find a working item
                     val otherContract = AvailableContractsManager.randomTag()
@@ -130,12 +142,12 @@ class AvailableContractsData : SavedData() {
                     }
 
                     val otherContractCountPerUnit = otherContract.countPerUnit?.toDouble() ?: 16.0
-                    val otherContractRewardCount = (otherContractReward.value.toDouble()
+                    val otherContractRewardValue = (otherContractReward.value
                             * ModConfig.SERVER.defaultRewardMultiplier.get())
-                    val newRewardCount = (rewardCount.toDouble().pow(2)
+                    val newRewardCount = (rewardValue.pow(2)
                             * otherContractCountPerUnit
                             * ModConfig.SERVER.replaceRewardWithRandomFactor.get()
-                            / otherContractRewardCount.pow(2)
+                            / otherContractRewardValue.pow(2)
                             ).roundToInt()
 
                     if (newRewardCount <= 0 || newRewardCount >= 128) { // skip contracts that are too far off from a fair reward
@@ -146,8 +158,10 @@ class AvailableContractsData : SavedData() {
                     tag.reward = Reward.Defined(ItemStack(otherContractItem, newRewardCount))
                     break
                 }
-            } else {
-                tag.reward = Reward.Defined(getRandomReward(reward.value))
+            }
+
+            if (tag.reward is Reward.Random) {
+                tag.reward = Reward.Defined(getRandomReward(rewardValue))
             }
         }
 
@@ -156,6 +170,11 @@ class AvailableContractsData : SavedData() {
 
     private fun getCount(reward: RewardBagEntry, value: Double) = round(value / reward.value).toInt()
     fun getRandomReward(value: Double): ItemStack {
+        if (defaultRewardBagWeightSum <= 0) {
+            WingsContractsMod.LOGGER.warn("Default rewards bag weight sum is $defaultRewardBagWeightSum. Should be positive.")
+            return FALLBACK_REWARD.item.copy()
+        }
+
         val pick = random.nextInt(defaultRewardBagWeightSum)
         var runningWeight = 0
         for (reward in defaultRewards) {
@@ -170,7 +189,7 @@ class AvailableContractsData : SavedData() {
 
         val lastFit = defaultRewards.lastOrNull { getCount(it, value) >= 1 }
         return if (lastFit == null) {
-            FALLBACK_REWARD.item.copy()
+            defaultRewards.minBy { it.value }.item.copy()
         } else {
             return lastFit.item.copyWithCount(lastFit.item.count * getCount(lastFit, value))
         }
@@ -186,8 +205,7 @@ class AvailableContractsData : SavedData() {
 
         val random = Random()
 
-        @Environment(EnvType.CLIENT)
-        var clientData = AvailableContractsData()
+        var fakeData = AvailableContractsData()
 
         fun load(nbt: CompoundTag): AvailableContractsData {
             val availableContracts = AvailableContractsData()
@@ -201,7 +219,7 @@ class AvailableContractsData : SavedData() {
         }
 
         fun set(world: Level, data: AvailableContractsData) {
-            clientData = data
+            fakeData = data
             if (world !is ServerLevel) {
                 return
             }
@@ -213,7 +231,7 @@ class AvailableContractsData : SavedData() {
 
         fun get(world: Level): AvailableContractsData {
             if (world !is ServerLevel) {
-                return clientData
+                return fakeData
             }
 
             val data = world.server.getLevel(Level.OVERWORLD)!!.dataStorage.computeIfAbsent(
@@ -229,10 +247,26 @@ class AvailableContractsData : SavedData() {
             return remainingPicksMap.computeIfAbsent(id) { ModConfig.SERVER.availableContractsPoolPicks.get() }
         }
 
-        fun setRemainingPicks(player: Player, picks: Int) {
+        fun setRemainingPicks(player: Player, picks: Int, update: Boolean = false) {
             val remainingPicksMap = get(player.level()).remainingPicks
             val id = player.uuid.toString()
             remainingPicksMap[id] = picks
+
+            val level = player.level()
+            if (update && level is ServerLevel) {
+                SyncAvailableContractsMessage(level).sendToAll(level.server)
+            }
+        }
+
+        fun addRemainingPicks(player: Player, picks: Int, update: Boolean = false) {
+            val remainingPicksMap = get(player.level()).remainingPicks
+            val id = player.uuid.toString()
+            remainingPicksMap[id] = (remainingPicksMap[id] ?: 0) + picks
+
+            val level = player.level()
+            if (update && level is ServerLevel) {
+                SyncAvailableContractsMessage(level).sendToAll(level.server)
+            }
         }
     }
 }

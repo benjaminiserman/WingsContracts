@@ -305,7 +305,7 @@ class AbyssalContract(
             return 0
         }
 
-        return AvailableContractsData.clientData.rarityThresholds.indexOfLast { maxPossibleReward * rewardEntry.value > it } + 1
+        return AvailableContractsData.fakeData.rarityThresholds.indexOfLast { maxPossibleReward * rewardEntry.value > it } + 1
     }
 
     override fun save(nbt: CompoundTag?): ContractTag {
@@ -360,7 +360,7 @@ class AbyssalContract(
         var (ContractTag).unitsFulfilled by int()
 
         fun load(contract: ContractTag, data: AvailableContractsData? = null): AbyssalContract {
-            val reward = contract.reward
+            val reward = contract.reward ?: Reward.Random(1.0)
             return AbyssalContract(
                 id = contract.id ?: UUID.randomUUID(),
                 targetItems = contract.targetItems ?: listOf(),
@@ -384,7 +384,6 @@ class AbyssalContract(
                     is Reward.Defined -> reward.itemStack
                     is Reward.Random ->
                         data?.getRandomReward(reward.value) ?: AvailableContractsData.FALLBACK_REWARD.item
-                    else -> AvailableContractsData.FALLBACK_REWARD.item
                 },
                 level = contract.level ?: 1,
                 quantityGrowthFactor = contract.quantityGrowthFactor ?: ModConfig.SERVER.defaultGrowthFactor.get(),

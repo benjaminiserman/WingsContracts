@@ -8,33 +8,36 @@
     },
     {
       "targetConditions": "tag.Enchantments$.*\\{id:.*\\{id:.*",
-      "reward": 4,
+      "reward": 16,
       "countPerUnit": 1,
       "requiresAny": "create_enchantment_industry",
       "name": "wingscontracts.data.create_enchantment_industry.two_enchantments",
-      "description": "wingscontracts.data.create_enchantment_industry.two_enchantments.desc"
+      "description": "wingscontracts.data.create_enchantment_industry.two_enchantments.desc",
+      "baseUnitsDemanded": 16
     },
     {
       "targetConditions": "tag.Enchantments$.*lvl:5.*",
-      "reward": 4,
+      "reward": 16,
       "countPerUnit": 1,
       "requiresAny": "create_enchantment_industry",
       "name": "wingscontracts.data.create_enchantment_industry.lvl_five",
-      "description": "wingscontracts.data.create_enchantment_industry.lvl_five.desc"
+      "description": "wingscontracts.data.create_enchantment_industry.lvl_five.desc",
+      "baseUnitsDemanded": 16
     },
     {
       "targetConditions": "tag.Enchantments$.*lvl:6.*",
-      "reward": 6,
+      "reward": 24,
       "countPerUnit": 1,
       "requiresAll": "create_enchantment_industry,quark",
       "name": "wingscontracts.data.create_enchantment_industry.lvl_six",
-      "description": "wingscontracts.data.create_enchantment_industry.lvl_six.desc"
+      "description": "wingscontracts.data.create_enchantment_industry.lvl_six.desc",
+      "baseUnitsDemanded": 16
     },
     {
       "targetItems": "bow",
       "targetConditions": "tag.Enchantments<-minecraft:infinity",
       "countPerUnit": 1,
-      "reward": 4,
+      "reward": 16,
       "name": "wingscontracts.data.create_enchantment_industry.infinity_bow",
       "description": "wingscontracts.data.create_enchantment_industry.infinity_bow.desc",
       "displayItem": {
@@ -49,7 +52,8 @@
           ]
         }
       },
-      "requiresAny": "create_enchantment_industry"
+      "requiresAny": "create_enchantment_industry",
+      "baseUnitsDemanded": 16
     }
   ]
 }
