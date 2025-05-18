@@ -2,12 +2,12 @@
   "contracts": [
     {
       "targetTags": "#botania:mystical_flowers",
-      "countPerUnit": 12,
+      "countPerUnit": 16,
       "reward": 2
     },
     {
       "targetTags": "#botania:petals",
-      "countPerUnit": 24,
+      "countPerUnit": 32,
       "reward": 2
     },
     {
@@ -46,7 +46,7 @@
     },
     {
       "targetItems": "botania:mana_powder",
-      "countPerUnit": 48,
+      "countPerUnit": 64,
       "reward": 2
     },
     {
@@ -95,8 +95,8 @@
     },
     {
       "targetItems": "botania:brew_vial",
-      "countPerUnit": 4,
-      "reward": 16,
+      "countPerUnit": 6,
+      "reward": 20,
       "baseUnitsDemanded": 16,
       "name": "wingscontracts.data.botania.brew_vial",
       "description": "wingscontracts.data.botania.brew_vial.desc"
@@ -144,6 +144,13 @@
       "targetItems": "botania:redstone_root",
       "countPerUnit": 16,
       "reward": 2
+    },
+
+    {
+      "targetItems": "gunpowder",
+      "countPerUnit": 64,
+      "reward": 2,
+      "requiresAny": "botania"
     }
   ]
 }

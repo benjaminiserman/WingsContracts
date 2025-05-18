@@ -10,7 +10,7 @@
     },
     {
       "targetTags": "#forge:cobblestone",
-      "countPerUnit": 256
+      "countPerUnit": 512
     },
     {
       "targetTags": "#forge:stone",
@@ -92,12 +92,12 @@
     {
       "targetTags": "#forge:heads",
       "countPerUnit": 4,
-      "reward": 3
+      "reward": 6,
+      "baseUnitsDemanded": 32
     },
     {
       "targetTags": "#forge:tools",
-      "countPerUnit": 8,
-      "reward": 1
+      "countPerUnit": 12
     },
     {
       "targetTags": "#forge:tools,#forge:armors",
@@ -117,7 +117,7 @@
     },
     {
       "targetTags": "#forge:raw_materials",
-      "countPerUnit": 12,
+      "countPerUnit": 24,
       "reward": 2
     },
     {

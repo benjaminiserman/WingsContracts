@@ -22,7 +22,7 @@
     },
     {
       "targetItems": "fruitsdelight:persimmon_cookie,fruitsdelight:lemon_cookie,fruitsdelight:cranberry_cookie,fruitsdelight:bayberry_cookie,farmersdelight:sweet_berry_cookie",
-      "countPerUnit": 64,
+      "countPerUnit": 128,
       "reward": 2,
       "name": "wingscontracts.data.fruitsdelight.fruit_cookies"
     },

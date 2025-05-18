@@ -90,6 +90,32 @@
       "countPerUnit": 32,
       "reward": 2,
       "requiresAny": "vegandelight"
+    },
+    {
+      "targetItems": "soul_sand",
+      "countPerUnit": 128,
+      "reward": 2,
+      "requiresAny": "create"
+    },
+    {
+      "targetItems": "gravel",
+      "countPerUnit": 128,
+      "requiresAny": "create"
+    },
+    {
+      "targetTags": "#minecraft:sand",
+      "countPerUnit": 128,
+      "requiresAny": "create"
+    },
+    {
+      "targetItems": "cobblestone",
+      "countPerUnit": 512,
+      "requiresAny": "create"
+    },
+    {
+      "targetItems": "flint",
+      "countPerUnit": 48,
+      "requiresAny": "create"
     }
   ]
 }

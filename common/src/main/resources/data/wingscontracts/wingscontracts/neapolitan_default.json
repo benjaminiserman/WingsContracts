@@ -40,6 +40,10 @@
       "countPerUnit": 8,
       "reward": 3,
       "requiresAny": "vegandelight"
+    },
+    {
+      "targetItems": "neapolitan:banana",
+      "countPerUnit": 32
     }
   ]
 }

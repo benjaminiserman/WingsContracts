@@ -21,11 +21,13 @@
     },
     {
       "targetItems": "copper_ingot",
-      "countPerUnit": 16
+      "countPerUnit": 16,
+      "baseUnitsDemanded": 96
     },
     {
       "targetTags": "#minecraft:arrows",
-      "countPerUnit": 16
+      "countPerUnit": 32,
+      "reward": 2
     },
     {
       "targetItems": "bone",
@@ -109,7 +111,7 @@
     },
     {
       "targetItems": "cactus",
-      "countPerUnit": 16
+      "countPerUnit": 24
     },
     {
       "targetItems": "warped_fungus,crimson_fungus",
@@ -129,12 +131,12 @@
     },
     {
       "targetItems": "redstone",
-      "countPerUnit": 16,
-      "baseUnitsDemanded": 96
+      "countPerUnit": 64,
+      "reward": 2
     },
     {
       "targetItems": "glowstone_dust",
-      "countPerUnit": 24,
+      "countPerUnit": 48,
       "reward": 2
     },
     {
@@ -148,11 +150,11 @@
     },
     {
       "targetItems": "snow_block",
-      "countPerUnit": 64
+      "countPerUnit": 128
     },
     {
       "targetItems": "ender_pearl",
-      "countPerUnit": 16,
+      "countPerUnit": 8,
       "reward": 4
     },
     {
@@ -197,7 +199,8 @@
     {
       "targetItems": "gunpowder",
       "countPerUnit": 12,
-      "reward": 2
+      "reward": 2,
+      "requiresNot": "botania"
     },
     {
       "targetItems": "ghast_tear",
@@ -206,11 +209,11 @@
     },
     {
       "targetItems": "glass",
-      "countPerUnit": 24
+      "countPerUnit": 32
     },
     {
       "targetItems": "cookie",
-      "countPerUnit": 48
+      "countPerUnit": 96
     },
     {
       "targetItems": "bread",
@@ -222,7 +225,7 @@
     },
     {
       "targetItems": "amethyst_shard",
-      "countPerUnit": 16,
+      "countPerUnit": 32,
       "reward": 2
     },
     {
@@ -232,7 +235,7 @@
     {
       "targetItems": "netherite_ingot",
       "countPerUnit": 1,
-      "reward": 10
+      "reward": 12
     },
     {
       "targetItems": "sea_pickle",
@@ -242,11 +245,6 @@
     {
       "targetItems": "obsidian",
       "countPerUnit": 12,
-      "reward": 2
-    },
-    {
-      "targetItems": "mangrove_propagule",
-      "countPerUnit": 24,
       "reward": 2
     },
     {
@@ -272,12 +270,12 @@
     },
     {
       "targetItems": "dirt",
-      "countPerUnit": 64,
-      "baseUnitsDemanded": 48
+      "countPerUnit": 64
     },
     {
       "targetItems": "gravel",
-      "countPerUnit": 32
+      "countPerUnit": 32,
+      "requiresNot": "create"
     },
     {
       "targetItems": "mycelium",
@@ -287,7 +285,7 @@
     },
     {
       "targetItems": "podzol",
-      "countPerUnit": 32,
+      "countPerUnit": 64,
       "reward": 2
     },
     {
@@ -301,8 +299,9 @@
     },
     {
       "targetItems": "moss_block",
-      "countPerUnit": 48,
-      "reward": 2
+      "countPerUnit": 64,
+      "reward": 2,
+      "baseUnitsDemanded": 48
     },
     {
       "targetItems": "vine",
@@ -315,11 +314,16 @@
     {
       "targetItems": "minecraft:diamond_pickaxe",
       "countPerUnit": 2,
-      "reward": 4
+      "reward": 6
     },
     {
       "targetTags": "#minecraft:swords",
-      "countPerUnit": 8
+      "targetConditions": "attribute.minecraft:generic.attack_damage.add>=6.0",
+      "countPerUnit": 4,
+      "reward": 2,
+      "baseUnitsDemanded": 96,
+      "name": "wingscontracts.data.sharp_swords",
+      "description": "wingscontracts.data.sharp_swords.desc"
     },
     {
       "targetItems": "beetroot_soup",
@@ -336,7 +340,8 @@
     },
     {
       "targetItems": "cobblestone",
-      "countPerUnit": 256
+      "countPerUnit": 256,
+      "requiresNot": "create"
     },
     {
       "targetItems": "cherry_leaves",
@@ -376,12 +381,13 @@
     },
     {
       "targetItems": "sculk",
-      "countPerUnit": 32,
+      "countPerUnit": 64,
       "reward": 3
     },
     {
       "targetItems": "flint",
-      "countPerUnit": 12
+      "countPerUnit": 12,
+      "requiresNot": "create"
     },
     {
       "targetItems": "experience_bottle",
@@ -403,12 +409,8 @@
       "countPerUnit": 16
     },
     {
-      "targetTags": "#minecraft:buttons",
-      "countPerUnit": 32
-    },
-    {
       "targetTags": "#minecraft:fences",
-      "countPerUnit": 32
+      "countPerUnit": 48
     },
     {
       "targetTags": "#minecraft:trim_templates",
@@ -434,7 +436,7 @@
     },
     {
       "targetTags": "#minecraft:decorated_pot_sherds",
-      "countPerUnit": 4,
+      "countPerUnit": 1,
       "reward": 12,
       "baseUnitsDemanded": 16
     },
@@ -450,24 +452,19 @@
     },
     {
       "targetTags": "#minecraft:piglin_repellents",
-      "countPerUnit": 24,
+      "countPerUnit": 96,
       "reward": 2
     },
     {
       "targetTags": "#minecraft:sand",
-      "countPerUnit": 48
-    },
-    {
-      "targetTags": "#minecraft:stairs",
-      "countPerUnit": 48
-    },
-    {
-      "targetTags": "#minecraft:slabs",
-      "countPerUnit": 64
+      "countPerUnit": 48,
+      "requiresNot": "create"
     },
     {
       "targetTags": "#minecraft:walls",
-      "countPerUnit": 48
+      "countPerUnit": 64,
+      "targetConditions": "id!=minecraft:cobblestone_wall",
+      "description": "wingscontracts.data.walls.desc"
     },
     {
       "targetItems": "ice",
@@ -480,7 +477,7 @@
     },
     {
       "targetItems": "sugar",
-      "countPerUnit": 48
+      "countPerUnit": 52
     },
     {
       "targetItems": "wither_skeleton_skull",
@@ -505,28 +502,29 @@
     },
     {
       "targetItems": "dark_oak_planks",
-      "countPerUnit": 64
-    },
-    {
-      "targetItems": "mangrove_planks",
-      "countPerUnit": 48
-    },
-    {
-      "targetItems": "jungle_planks",
-      "countPerUnit": 64
-    },
-    {
-      "targetTags": "#minecraft:planks",
       "countPerUnit": 96
     },
     {
+      "targetItems": "mangrove_planks",
+      "countPerUnit": 96,
+      "baseUnitsDemanded": 96
+    },
+    {
+      "targetItems": "jungle_planks",
+      "countPerUnit": 96
+    },
+    {
+      "targetTags": "#minecraft:planks",
+      "countPerUnit": 128
+    },
+    {
       "targetItems": "cobbled_deepslate",
-      "countPerUnit": 256,
-      "reward": 2
+      "countPerUnit": 128
     },
     {
       "targetItems": "mud_bricks",
-      "countPerUnit": 64
+      "countPerUnit": 48,
+      "baseUnitsDemanded": 96
     },
     {
       "targetItems": "oxidized_copper",
@@ -536,7 +534,8 @@
     },
     {
       "targetTags": "#minecraft:terracotta",
-      "countPerUnit": 32
+      "countPerUnit": 32,
+      "baseUnitsDemanded": 96
     },
     {
       "targetItems": "blue_ice",
@@ -550,8 +549,9 @@
     },
     {
       "targetItems": "soul_sand",
-      "countPerUnit": 32,
-      "reward": 2
+      "countPerUnit": 64,
+      "reward": 2,
+      "requiresNot": "create"
     },
     {
       "targetItems": "anvil",
@@ -567,7 +567,7 @@
     },
     {
       "targetItems": "glass_bottle",
-      "countPerUnit": 32,
+      "countPerUnit": 64,
       "reward": 2
     },
     {
@@ -604,20 +604,6 @@
     },
     {
       "targetItems": "potion",
-      "targetConditions": "tag.Potion==minecraft:swiftness",
-      "displayItem": {
-        "id": "potion",
-        "Count": 1,
-        "tag": {
-          "Potion": "minecraft:swiftness"
-        }
-      },
-      "countPerUnit": 8,
-      "reward": 12,
-      "baseUnitsDemanded": 16
-    },
-    {
-      "targetItems": "potion",
       "targetConditions": "tag.Potion==minecraft:night_vision",
       "displayItem": {
         "id": "potion",
@@ -632,11 +618,7 @@
     },
     {
       "targetItems": "green_dye",
-      "countPerUnit": 12
-    },
-    {
-      "targetItems": "brown_dye",
-      "countPerUnit": 48
+      "countPerUnit": 24
     },
     {
       "targetItems": "cocoa_beans",
@@ -644,7 +626,8 @@
     },
     {
       "targetItems": "brick",
-      "countPerUnit": 64
+      "countPerUnit": 32,
+      "baseUnitsDemanded": 96
     },
     {
       "targetItems": "sunflower",
@@ -660,7 +643,8 @@
     },
     {
       "targetItems": "torch",
-      "countPerUnit": 64
+      "countPerUnit": 256,
+      "reward": 2
     },
     {
       "targetItems": "hay_block",
@@ -669,7 +653,7 @@
     },
     {
       "targetItems": "crafting_table",
-      "countPerUnit": 24
+      "countPerUnit": 32
     },
     {
       "targetItems": "stick",
@@ -677,7 +661,7 @@
     },
     {
       "targetConditions": "isEdible==true",
-      "countPerUnit": 32,
+      "countPerUnit": 64,
       "name": "wingscontracts.data.food",
       "description": "wingscontracts.data.food.desc"
     },
@@ -720,13 +704,13 @@
     },
     {
       "targetItems": "shield",
-      "countPerUnit": 4,
+      "countPerUnit": 8,
       "baseUnitsDemanded": 96
     },
     {
       "targetConditions": "path<-z",
-      "countPerUnit": 16,
-      "reward": 3,
+      "countPerUnit": 64,
+      "reward": 2,
       "name": "wingscontracts.data.z",
       "description": "wingscontracts.data.z.desc"
     },
@@ -738,14 +722,16 @@
     },
     {
       "targetItems": "cobweb,jack_o_lantern,cauldron,skeleton_skull,wither_skeleton_skull,neapolitan:mint_candies,neapolitan:strawberry_bean_bonbons",
-      "countPerUnit": 16,
-      "reward": 3,
+      "countPerUnit": 64,
+      "reward": 2,
+      "baseUnitsDemanded": 32,
       "name": "wingscontracts.data.halloween"
     },
     {
       "targetItems": "chest,cookie,snow_block,spruce_sapling,nether_star,coal,alexscaves:candy_cane,createaddition:festive_spool",
-      "countPerUnit": 16,
+      "countPerUnit": 64,
       "reward": 2,
+      "baseUnitsDemanded": 32,
       "name": "wingscontracts.data.christmas"
     },
     {
@@ -775,7 +761,7 @@
     },
     {
       "targetBlockTags": "#minecraft:inside_step_sound_blocks",
-      "countPerUnit": 32,
+      "countPerUnit": 64,
       "reward": 2
     },
     {
@@ -792,7 +778,7 @@
     },
     {
       "targetConditions": "nutrition==4",
-      "countPerUnit": 16,
+      "countPerUnit": 32,
       "reward": 2,
       "name": "wingscontracts.data.snack",
       "description": "wingscontracts.data.snack.desc"
@@ -806,24 +792,25 @@
     },
     {
       "targetConditions": "path<-red",
-      "countPerUnit": 32,
+      "countPerUnit": 128,
       "reward": 2,
       "name": "wingscontracts.data.red",
       "description": "wingscontracts.data.red.desc"
     },
     {
       "targetConditions": "path<-blue",
-      "countPerUnit": 32,
+      "countPerUnit": 128,
       "reward": 2,
       "name": "wingscontracts.data.blue",
       "description": "wingscontracts.data.blue.desc"
-    },{
+    },
+    {
       "targetConditions": "path<-ing",
-      "countPerUnit": 48,
+      "countPerUnit": 64,
       "reward": 1,
       "baseUnitsDemanded": 96,
       "name": "wingscontracts.data.gerund",
-      "description": "wingscontracts.gerund.blue.desc"
+      "description": "wingscontracts.gerund.desc"
     }
   ]
 }

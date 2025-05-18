@@ -79,7 +79,7 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "wings
                 continue
             }
 
-            WingsContractsMod.LOGGER.info(resourceLocation)
+            WingsContractsMod.LOGGER.info("...$resourceLocation")
 
             val isDefault = resourceLocation.path.endsWith("_default")
 

@@ -10,7 +10,7 @@
       "countPerUnit": 48
     },
     {
-      "targetItems": "supplementaries:rope,farmersdelight:rope",
+      "targetTags": "#supplementaries:ropes",
       "countPerUnit": 32,
       "baseUnitsDemanded": 96
     },

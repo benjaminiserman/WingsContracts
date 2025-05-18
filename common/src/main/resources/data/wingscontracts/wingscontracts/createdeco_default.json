@@ -3,11 +3,13 @@
     {
       "targetItems": "createdeco:gold_coin",
       "countPerUnit": 32,
-      "reward": 2
+      "reward": 2,
+      "baseUnitsDemanded": 96
     },
     {
       "targetItems": "createdeco:copper_coin",
-      "countPerUnit": 128
+      "countPerUnit": 128,
+      "reward": 2
     }
   ]
 }
