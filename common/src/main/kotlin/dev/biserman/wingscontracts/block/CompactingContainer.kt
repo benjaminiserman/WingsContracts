@@ -9,9 +9,11 @@ class CompactingContainer(containerSize: Int) : SimpleContainer(containerSize) {
     private val currencyHandler get() = AvailableContractsData.fakeData.currencyHandler
 
     override fun setChanged() { // avoid calling anything that calls setChanged
-        val currencyItems = items
-            .filter { it.count <= it.maxStackSize } // to maintain invariant that compacting never increases slots used
-            .groupBy { currencyHandler.itemToCurrencyMap[it.item] }
+        // compare count to maxStackSize to maintain invariant that compacting never increases slots used
+        val allItems = items.groupBy { it.count <= it.maxStackSize && currencyHandler.isCurrency(it) }
+        val currencyItems = allItems[true]
+            ?.groupBy { currencyHandler.itemToCurrencyMap[it.item] }
+            ?: mapOf()
 
         var i = 0
         for (currencyGroup in currencyItems) {
@@ -28,11 +30,7 @@ class CompactingContainer(containerSize: Int) : SimpleContainer(containerSize) {
         }
 
         // add back in the above-max-stack-size items
-        for (otherItem in items.filter {
-            !it.isEmpty
-                    && (it.count > it.maxStackSize
-                    || !currencyHandler.isCurrency(it))
-        }) {
+        for (otherItem in allItems[false]?.filter { !it.isEmpty } ?: listOf()) {
             items[i] = otherItem
             i += 1
         }

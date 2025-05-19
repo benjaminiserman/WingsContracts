@@ -33,10 +33,7 @@ import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundSource
 import net.minecraft.tags.BlockTags
 import net.minecraft.util.Mth.*
-import net.minecraft.world.Container
-import net.minecraft.world.ContainerHelper
-import net.minecraft.world.MenuProvider
-import net.minecraft.world.WorldlyContainer
+import net.minecraft.world.*
 import net.minecraft.world.entity.EntitySelector
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Inventory
@@ -80,7 +77,7 @@ class ContractPortalBlockEntity(
             }
             field = value
         }
-    var cachedRewards = CompactingContainer(containerSize)
+    var cachedRewards = SimpleContainer(containerSize)
     var cachedInput = CompactingContainer(containerSize)
     var lastPlayer: UUID
 
