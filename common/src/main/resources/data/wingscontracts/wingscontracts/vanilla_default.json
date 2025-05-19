@@ -378,7 +378,7 @@
     },
     {
       "targetItems": "lily_pad",
-      "countPerUnit": 16
+      "countPerUnit": 32
     },
     {
       "targetItems": "sculk",

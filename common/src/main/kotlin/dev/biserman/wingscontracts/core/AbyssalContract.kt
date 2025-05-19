@@ -175,9 +175,9 @@ class AbyssalContract(
             components.add(translateContract("cycle_complete").withStyle(ChatFormatting.DARK_PURPLE))
         } else {
             val cycleRemainingComponent =
-                if (isComplete) translateContract("cycle_remaining_level_up")
-                else translateContract("cycle_remaining")
-            components.add(cycleRemainingComponent.withStyle(timeRemainingColor))
+                if (isComplete) translateContract("cycle_remaining_level_up").withStyle(ChatFormatting.AQUA)
+                else translateContract("cycle_remaining").withStyle(timeRemainingColor)
+            components.add(cycleRemainingComponent)
             components.add(Component.literal("  $timeRemainingString").withStyle(timeRemainingColor))
         }
 
