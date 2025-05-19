@@ -3,7 +3,6 @@
 package dev.biserman.wingscontracts.block
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation
-import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.advancements.ContractCompleteTrigger
 import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
@@ -19,14 +18,11 @@ import dev.biserman.wingscontracts.registry.ModBlockRegistry
 import dev.biserman.wingscontracts.registry.ModMenuRegistry
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
 import dev.biserman.wingscontracts.server.AvailableContractsData
-import dev.biserman.wingscontracts.util.DenominationsHelper
-import net.minecraft.ChatFormatting
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.NonNullList
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
-import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
@@ -270,6 +266,9 @@ class ContractPortalBlockEntity(
                     if (currencyHandler.isCurrency(stackToSpit)) {
                         val denominatedStack = currencyHandler.splitHighestDenomination(stackToSpit)
                         spitItemStack(denominatedStack, level, blockPos, amountToSpit = denominatedStack.count)
+                    } else if (portal.cachedRewards.items.sumOf { it.count } > stackToSpit.maxStackSize
+                        || portal.cachedInput.items.sumOf { it.count } > stackToSpit.maxStackSize) {
+                        spitItemStack(stackToSpit, level, blockPos, amountToSpit = stackToSpit.count)
                     } else {
                         spitItemStack(stackToSpit, level, blockPos, amountToSpit = max(4, stackToSpit.count / 2))
                     }
@@ -454,36 +453,7 @@ class ContractPortalBlockEntity(
 
     override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
         val contract = LoadedContracts[contractSlot] ?: return false
-
-        if (contract is AbyssalContract) {
-
-            tooltip.add(Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.header"))
-
-            tooltip.add(
-                Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.progress")
-                    .withStyle(ChatFormatting.GRAY)
-                    .append(CommonComponents.SPACE)
-                    .append(
-                        Component.literal("${contract.unitsFulfilled} / ${contract.unitsDemanded}")
-                            .withStyle(ChatFormatting.AQUA)
-                    )
-
-            )
-
-            val nextCycleStart = contract.currentCycleStart + contract.cycleDurationMs
-            val timeRemaining = nextCycleStart - System.currentTimeMillis()
-            val timeRemainingString = "     " + DenominationsHelper.denominateDurationToString(timeRemaining)
-            tooltip.add(
-                Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.remaining_time")
-                    .withStyle(ChatFormatting.GRAY)
-            )
-
-            tooltip.add(Component.literal(timeRemainingString).withStyle(Contract.getTimeRemainingColor(timeRemaining)))
-
-            return true
-        }
-
-        return false
+        return contract.addToGoggleTooltip(tooltip, isPlayerSneaking)
     }
 
     override fun getSlotsForFace(direction: Direction): IntArray? {

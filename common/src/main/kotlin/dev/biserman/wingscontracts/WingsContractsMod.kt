@@ -10,6 +10,7 @@ import dev.biserman.wingscontracts.client.WingsContractsClient
 import dev.biserman.wingscontracts.client.ponder.ModPonderPlugin
 import dev.biserman.wingscontracts.compat.CompatMods
 import dev.biserman.wingscontracts.compat.computercraft.ModItemDetailProvider
+import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.registry.*
 import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.server.WingsContractsNetHandler
@@ -50,6 +51,7 @@ object WingsContractsMod {
         EnvExecutor.runInEnv(Env.CLIENT) {
             Runnable {
                 ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register { level ->
+                    LoadedContracts.clear()
                     AvailableContractsData.fakeData =
                         AvailableContractsData()
                 }

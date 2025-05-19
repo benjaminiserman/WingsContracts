@@ -8,7 +8,7 @@ import net.minecraft.world.inventory.Slot
 import net.minecraft.world.item.ItemStack
 
 class AvailableContractsContainerSlot(
-    val availableContractsContainer: AvailableContractsContainer,
+    availableContractsContainer: AvailableContractsContainer,
     index: Int,
     x: Int,
     y: Int
@@ -21,7 +21,8 @@ class AvailableContractsContainerSlot(
         if (player is ServerPlayer) {
             if (item.isEmpty) {
                 set(
-                    availableContractsContainer.data.generateContract(AvailableContractsManager.randomTag())
+                    AvailableContractsData.get(player.level())
+                        .generateContract(AvailableContractsManager.randomTag())
                         .createItem()
                 )
             }

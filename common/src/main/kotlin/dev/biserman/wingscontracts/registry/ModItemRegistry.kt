@@ -16,7 +16,7 @@ object ModItemRegistry {
         Registries.ITEM
     )
 
-    val creativeTab = CreativeModeTabs.REDSTONE_BLOCKS
+    val creativeTab = CreativeModeTabs.REDSTONE_BLOCKS!!
 
     val BLANK_ABYSSAL_CONTRACT: RegistrySupplier<Item> = ITEMS.register(
         "blank_abyssal_contract"
@@ -37,6 +37,9 @@ object ModItemRegistry {
     ) { Item(Item.Properties().stacksTo(64).`arch$tab`(creativeTab)) }
     val QUESTION_MARK: RegistrySupplier<Item> = ITEMS.register(
         "question_mark"
+    ) { Item(Item.Properties().stacksTo(16)) }
+    val STAR: RegistrySupplier<Item> = ITEMS.register(
+        "star"
     ) { Item(Item.Properties().stacksTo(16)) }
 
     @JvmStatic

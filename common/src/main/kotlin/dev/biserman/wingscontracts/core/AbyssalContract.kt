@@ -87,7 +87,7 @@ class AbyssalContract(
     override val item: Item get() = ModItemRegistry.ABYSSAL_CONTRACT.get()
     override val displayName: MutableComponent
         get() {
-            val rarityString = Component.translatable("${WingsContractsMod.MOD_ID}.rarity.${getRarity()}").string
+            val rarityString = Component.translatable("${WingsContractsMod.MOD_ID}.rarity.${rarity ?: 0}").string
             val nameString = Component.translatable(name ?: targetName).string
             val numeralString = Component.translatable("enchantment.level.$level").string
 
@@ -122,6 +122,10 @@ class AbyssalContract(
             components.addAll(targetsList.drop(1).map { it.withStyle(ChatFormatting.DARK_PURPLE) })
         }
 
+        if (!description.isNullOrBlank()) {
+            components.add(Component.translatable(description).withStyle(ChatFormatting.GRAY))
+        }
+
         components.add(
             translateContract(
                 "abyssal.max_reward_cycle",
@@ -143,7 +147,7 @@ class AbyssalContract(
                 unitsFulfilled,
                 unitsDemanded,
                 unitsFulfilled * countPerUnit,
-                unitsDemanded * countPerUnit
+                unitsDemanded * countPerUnit,
             ).withStyle(ChatFormatting.LIGHT_PURPLE)
         )
 
@@ -170,7 +174,10 @@ class AbyssalContract(
         if (Date(nextCycleStart) <= Date()) {
             components.add(translateContract("cycle_complete").withStyle(ChatFormatting.DARK_PURPLE))
         } else {
-            components.add(translateContract("cycle_remaining").withStyle(timeRemainingColor))
+            val cycleRemainingComponent =
+                if (isComplete) translateContract("cycle_remaining_level_up")
+                else translateContract("cycle_remaining")
+            components.add(cycleRemainingComponent.withStyle(timeRemainingColor))
             components.add(Component.literal("  $timeRemainingString").withStyle(timeRemainingColor))
         }
 
@@ -194,16 +201,18 @@ class AbyssalContract(
         }
     }
 
+    override val rewardPerUnit get() = reward.count
+
     override fun tryUpdateTick(tag: ContractTag?): Boolean {
-        if (!isActive) {
+        if (!isActive || tag == null) {
             return false
         }
 
         if (cycleDurationMs <= 0) {
-            if (unitsFulfilled >= unitsDemanded) {
+            if (isComplete) {
                 onContractFulfilled(tag)
                 isActive = false
-                tag?.isActive = isActive
+                tag.isActive = isActive
                 return true
             } else {
                 return false
@@ -213,18 +222,18 @@ class AbyssalContract(
         val currentTime = System.currentTimeMillis()
         val cyclesPassed = ((currentTime - currentCycleStart) / cycleDurationMs).toInt()
         if (cyclesPassed > 0) {
-            reset(tag, currentCycleStart + cycleDurationMs * cyclesPassed)
+            renew(tag, currentCycleStart + cycleDurationMs * cyclesPassed)
             return true
         }
 
         return false
     }
 
-    override fun onContractFulfilled(tag: ContractTag?) {
+    override fun onContractFulfilled(tag: ContractTag) {
         super.onContractFulfilled(tag)
         if (level < maxLevel) {
             level += 1
-            tag?.level = level
+            tag.level = level
         }
     }
 
@@ -248,6 +257,9 @@ class AbyssalContract(
         return getRewardsForUnits(unitCount)
     }
 
+    override val isComplete: Boolean
+        get() = unitsFulfilled >= unitsDemanded
+
     fun formatReward(count: Int): String {
         val rewardEntry = AvailableContractsManager.defaultRewards.firstOrNull { it.item.item == reward.item }
         return if (rewardEntry == null || rewardEntry.formatString == null) {
@@ -270,15 +282,15 @@ class AbyssalContract(
         return rewardsList
     }
 
-    override fun reset(tag: ContractTag?, newCycleStart: Long) {
-        if (unitsFulfilled >= unitsDemanded) {
+    override fun renew(tag: ContractTag, newCycleStart: Long) {
+        if (isComplete) {
             onContractFulfilled(tag)
         }
 
         currentCycleStart = newCycleStart
-        tag?.currentCycleStart = currentCycleStart
+        tag.currentCycleStart = currentCycleStart
         unitsFulfilled = 0
-        tag?.unitsFulfilled = unitsFulfilled
+        tag.unitsFulfilled = unitsFulfilled
     }
 
     val maxPossibleReward: Int
@@ -295,17 +307,35 @@ class AbyssalContract(
             return maxUnitsDemanded * reward.count
         }
 
-    override fun getRarity(): Int {
-        if (rarity != null) {
-            return rarity
-        }
+    fun calculateRarity(data: AvailableContractsData, rewardUnitValue: Double): Int {
+        return data.rarityThresholds.indexOfLast { (maxPossibleReward / reward.count) * rewardUnitValue > it } + 1
+    }
 
-        val rewardEntry = AvailableContractsManager.defaultRewards.firstOrNull { it.item.item == reward.item }
-        if (rewardEntry == null) {
-            return 0
-        }
+    override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
+        tooltip.add(Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.header"))
 
-        return AvailableContractsData.fakeData.rarityThresholds.indexOfLast { maxPossibleReward * rewardEntry.value > it } + 1
+        tooltip.add(
+            Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.progress")
+                .withStyle(ChatFormatting.GRAY)
+                .append(CommonComponents.SPACE)
+                .append(
+                    Component.literal("$unitsFulfilled / $unitsDemanded")
+                        .withStyle(ChatFormatting.AQUA)
+                )
+
+        )
+
+        val nextCycleStart = currentCycleStart + cycleDurationMs
+        val timeRemaining = nextCycleStart - System.currentTimeMillis()
+        val timeRemainingString = "     " + DenominationsHelper.denominateDurationToString(timeRemaining)
+        tooltip.add(
+            Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.remaining_time")
+                .withStyle(ChatFormatting.GRAY)
+        )
+
+        tooltip.add(Component.literal(timeRemainingString).withStyle(getTimeRemainingColor(timeRemaining)))
+
+        return true
     }
 
     override fun save(nbt: CompoundTag?): ContractTag {

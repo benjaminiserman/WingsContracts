@@ -34,9 +34,9 @@ object ModCommand {
                     itemEntity.setTarget(player.uuid)
                 }
             }
-        }
 
-        sourceStack.sendSuccess({ Component.translatable("commands.${WingsContractsMod.MOD_ID}.give_contract") }, true)
+            sourceStack.sendSuccess({ Component.translatable("commands.${WingsContractsMod.MOD_ID}.give_contract", player.name.string) }, true)
+        }
 
         return 1
     }

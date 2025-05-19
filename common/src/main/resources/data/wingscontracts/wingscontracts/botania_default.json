@@ -95,28 +95,28 @@
     },
     {
       "targetItems": "botania:brew_vial",
-      "countPerUnit": 6,
-      "reward": 20,
+      "countPerUnit": 8,
+      "reward": 18,
       "baseUnitsDemanded": 16,
       "name": "wingscontracts.data.botania.brew_vial",
       "description": "wingscontracts.data.botania.brew_vial.desc"
     },
     {
       "targetItems": "botania:brew_flask",
-      "countPerUnit": 4,
-      "reward": 24,
+      "countPerUnit": 6,
+      "reward": 20,
       "baseUnitsDemanded": 16,
       "name": "wingscontracts.data.botania.brew_flask",
       "description": "wingscontracts.data.botania.brew_flask.desc"
     },
     {
       "targetTags": "#botania:functional_special_flowers",
-      "countPerUnit": 2,
+      "countPerUnit": 8,
       "reward": 5
     },
     {
       "targetTags": "#botania:generating_special_flowers",
-      "countPerUnit": 4,
+      "countPerUnit": 12,
       "reward": 3
     },
     {

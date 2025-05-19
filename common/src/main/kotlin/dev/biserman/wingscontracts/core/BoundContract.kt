@@ -115,14 +115,24 @@ class BoundContract(
             )
         }
 
+        if (!description.isNullOrBlank()) {
+            components.add(Component.translatable(description).withStyle(ChatFormatting.GRAY))
+        }
+
         return components
     }
+
+    override val rewardPerUnit get() = otherSideCountPerUnit
 
     override fun tryConsumeFromItems(tag: ContractTag, portal: ContractPortalBlockEntity): List<ItemStack> {
         val otherPortal = PortalLinker.get(portal.level!!).linkedPortals[matchingContractId] ?: return listOf()
         val otherTag = ContractTagHelper.getContractTag(otherPortal.contractSlot) ?: return listOf()
         val otherContract = LoadedContracts[otherTag] ?: return listOf()
         val level = portal.level ?: return listOf()
+
+        if (ModConfig.SERVER.boundContractRequiresTwoPlayers.get() && portal.lastPlayer == otherPortal.lastPlayer) {
+            return listOf()
+        }
 
         val unitCount = min(
             countConsumableUnits(portal.cachedInput.items),
@@ -163,6 +173,12 @@ class BoundContract(
             countToBurn -= toBurnFromThis
             consumedItem.split(toBurnFromThis)
         }
+    }
+
+    override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
+        tooltip.add(Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.header"))
+
+        return true
     }
 
     override fun save(nbt: CompoundTag?): ContractTag {

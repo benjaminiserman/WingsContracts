@@ -30,10 +30,10 @@
     "wingscontracts.contract.matches_following": "of the following:",
     "wingscontracts.contract.units_fulfilled": "Units Fulfilled: %d/%d (%d/%d)",
     "wingscontracts.contract.cycle_complete": "Cycle Complete!",
-    "wingscontracts.contract.cycle_remaining": "Remaining Time:",
+    "wingscontracts.contract.cycle_remaining": "Remaining Time until renewal:",
+    "wingscontracts.contract.cycle_remaining_level_up": "Complete! Remaining Time until renewal & level up:",
     "wingscontracts.contract.cycle_started": "Started On: %s",
-    "wingscontracts.contract.total_fulfilled": "Total Units Fulfilled Ever: %d (%d)",
-    "wingscontracts.contract.base_units_demanded": "Base Units Demanded: %d (%d)",
+    "wingscontracts.contract.total_fulfilled": "Total Units Fulfilled Ever: %d (%d → %d)",
     "wingscontracts.contract.author": "Author: %s",
 
     "wingscontracts.contract.abyssal.rewards": "Rewards %s for every %d",
@@ -62,6 +62,7 @@
     "commands.wingscontracts.clear": "Cleared the Abyssal Contracts Pool.",
     "commands.wingscontracts.add_picks": "Gave %s %d Abyssal Contracts Pool picks.",
     "commands.wingscontracts.set_picks": "Set %s Abyssal Contracts Pool picks to %d.",
+    "commands.wingscontracts.give_contract": "Gave contract to %s.",
     "commands.wingscontracts.failed.load": "Error: failed to load contract.",
     "commands.wingscontracts.failed.not_in_hand": "Error: no contract in hand.",
     "commands.wingscontracts.failed.unavailable_page": "Error: page %d does not exist. Last page is %d.",
@@ -79,6 +80,7 @@
     "item.wingscontracts.bound_contract": "Bound Contract",
     "item.wingscontracts.abyssal_coin": "Abyssal Obol",
     "item.wingscontracts.question_mark": "Matching",
+    "item.wingscontracts.star": "Completed",
 
 
     "block.wingscontracts.contract_portal": "Contract Portal",

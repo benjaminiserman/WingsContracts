@@ -142,11 +142,9 @@ abstract class Contract(
 
     open fun tryUpdateTick(tag: ContractTag?): Boolean = false
 
-    open fun reset(tag: ContractTag?, newCycleStart: Long) {
+    open fun renew(tag: ContractTag, newCycleStart: Long) {}
 
-    }
-
-    open fun onContractFulfilled(tag: ContractTag?) {}
+    open fun onContractFulfilled(tag: ContractTag) {}
 
     open val displayName: MutableComponent
         get() = Component.translatable(
@@ -193,12 +191,13 @@ abstract class Contract(
         }
     }
 
-    val listTargets: List<String> get() = targetItems
-        .asSequence()
-        .map { it.name().trimBrackets() }
-        .plus(targetTags.map { it.name() })
-        .plus(targetBlockTags.map { it.name() })
-        .toList()
+    val listTargets: List<String>
+        get() = targetItems
+            .asSequence()
+            .map { it.name().trimBrackets() }
+            .plus(targetTags.map { it.name() })
+            .plus(targetBlockTags.map { it.name() })
+            .toList()
 
     open fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> = list ?: mutableListOf()
 
@@ -211,13 +210,17 @@ abstract class Contract(
 
         components.addAll(getBasicInfo(null))
 
+
         if (this is AbyssalContract) {
             components.addAll(getCycleInfo())
         }
 
         components.add(
             translateContract(
-                "total_fulfilled", unitsFulfilledEver, unitsFulfilledEver * countPerUnit
+                "total_fulfilled",
+                unitsFulfilledEver,
+                unitsFulfilledEver * countPerUnit,
+                unitsFulfilledEver * rewardPerUnit
             ).withStyle(ChatFormatting.LIGHT_PURPLE)
         )
 
@@ -277,7 +280,9 @@ abstract class Contract(
         return consumedItems
     }
 
-    open fun getRarity() = rarity ?: 0
+    open fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean) = false
+
+    abstract val rewardPerUnit: Int
 
     open fun save(nbt: CompoundTag? = null): ContractTag {
         val tag = ContractTag(nbt ?: CompoundTag())
@@ -300,6 +305,8 @@ abstract class Contract(
 
         return tag
     }
+
+    open val isComplete get() = false
 
     abstract val item: Item
     fun createItem(): ItemStack {

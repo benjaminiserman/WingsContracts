@@ -30,13 +30,10 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.saveddata.SavedData
 import java.util.*
-import kotlin.math.max
-import kotlin.math.pow
-import kotlin.math.round
-import kotlin.math.roundToInt
+import kotlin.math.*
 
 class AvailableContractsData : SavedData() {
-    val container = AvailableContractsContainer(this)
+    val container = AvailableContractsContainer()
     val remainingPicks = mutableMapOf<String, Int>()
     var currentCycleStart: Long = 0
     val nextCycleStart get() = currentCycleStart + ModConfig.SERVER.availableContractsPoolRefreshPeriodMs.get()
@@ -68,7 +65,12 @@ class AvailableContractsData : SavedData() {
 
         WingsContractsMod.LOGGER.info("starting new cycle $currentCycleStart")
         currentCycleStart += cyclesPassed * ModConfig.SERVER.availableContractsPoolRefreshPeriodMs.get()
-        remainingPicks.keys.forEach { remainingPicks[it] = ModConfig.SERVER.availableContractsPoolPicks.get() }
+        remainingPicks.keys.forEach {
+            remainingPicks[it] = min(
+                remainingPicks[it]!! + ModConfig.SERVER.availableContractsPoolPicks.get(),
+                ModConfig.SERVER.availableContractsPoolPicksCap.get()
+            )
+        }
 
         refresh(level)
     }
@@ -154,7 +156,6 @@ class AvailableContractsData : SavedData() {
                         continue
                     }
 
-                    tag.rarity = AbyssalContract.load(tag, this).getRarity()
                     tag.reward = Reward.Defined(ItemStack(otherContractItem, newRewardCount))
                     break
                 }
@@ -163,6 +164,8 @@ class AvailableContractsData : SavedData() {
             if (tag.reward is Reward.Random) {
                 tag.reward = Reward.Defined(getRandomReward(rewardValue))
             }
+
+            tag.rarity = tag.rarity ?: AbyssalContract.load(tag, this).calculateRarity(this, reward.value)
         }
 
         return AbyssalContract.load(tag, this)

@@ -2,8 +2,10 @@ package dev.biserman.wingscontracts.client.renderer
 
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.math.Axis
-import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
+import dev.biserman.wingscontracts.core.Contract
+import dev.biserman.wingscontracts.data.LoadedContracts
+import dev.biserman.wingscontracts.registry.ModItemRegistry
 import net.minecraft.client.renderer.LightTexture
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer
@@ -24,7 +26,13 @@ class ContractPortalBlockEntityRenderer(private val context: BlockEntityRenderer
         val relativeGameTime = level.gameTime + partialTick
         val rotation = relativeGameTime * 2
 
-        val showItem = Contract.getDisplayItem(blockEntity.contractSlot, relativeGameTime)
+
+        val contract = LoadedContracts[blockEntity.contractSlot] ?: return
+        val showItem = if (contract.isComplete) {
+            ModItemRegistry.STAR.get().defaultInstance
+        } else {
+            Contract.getDisplayItem(blockEntity.contractSlot, relativeGameTime)
+        }
         if (showItem.isEmpty) {
             return
         }

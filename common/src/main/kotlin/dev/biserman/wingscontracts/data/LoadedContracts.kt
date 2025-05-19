@@ -37,6 +37,10 @@ object LoadedContracts {
         return cachedContract
     }
 
+    fun invalidate(id: UUID) {
+        contracts.remove(id)
+    }
+
     fun update(contract: Contract) {
         contracts[contract.id] = contract
     }

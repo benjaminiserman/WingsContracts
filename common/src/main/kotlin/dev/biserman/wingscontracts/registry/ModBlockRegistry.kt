@@ -29,7 +29,7 @@ object ModBlockRegistry {
                     ContractPortalBlock.getLightLevel(
                         state
                     )
-                }
+                }.requiresCorrectToolForDrops()
         )
     }
 

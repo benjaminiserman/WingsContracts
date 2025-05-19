@@ -8,6 +8,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val availableContractsPoolRefreshPeriodMs: ForgeConfigSpec.LongValue
     val availableContractsPoolOptions: ForgeConfigSpec.IntValue
     val availableContractsPoolPicks: ForgeConfigSpec.IntValue
+    val availableContractsPoolPicksCap: ForgeConfigSpec.IntValue
     val allowBlankContractInitialization: ForgeConfigSpec.BooleanValue
     val disableDefaultContractOptions: ForgeConfigSpec.BooleanValue
     val variance: ForgeConfigSpec.DoubleValue
@@ -17,6 +18,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val rarityThresholdsString: ForgeConfigSpec.ConfigValue<String>
     val contractPortalInputSlots: ForgeConfigSpec.IntValue
     val boundContractLossRate: ForgeConfigSpec.DoubleValue
+    val boundContractRequiresTwoPlayers: ForgeConfigSpec.BooleanValue
 
     // Contract Defaults
     val defaultRewardMultiplier: ForgeConfigSpec.DoubleValue
@@ -31,9 +33,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
         builder.push("General")
         denominations =
             builder.comment("Comma-separated list of reward items that can be automatically converted by portals into other denominations. Multiple lists may be provided, separated by semicolons.")
-                .define(
-                    "denominations", defaultDenominations
-                )
+                .define("denominations", defaultDenominations)
 
         contractGrowthFunction = builder.comment(
             """
@@ -54,6 +54,10 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
         availableContractsPoolPicks =
             builder.comment("Determines how many picks each player gets from the Abyssal Contracts pool per refresh period.")
                 .defineInRange("availableContractsPoolPicks", 1, 0, Int.MAX_VALUE)
+
+        availableContractsPoolPicksCap =
+            builder.comment("Determines the maximum number of picks from the Abyssal Contracts pool each player can have saved up.")
+                .defineInRange("availableContractsPoolPicksCap", 3, 0, Int.MAX_VALUE)
 
         allowBlankContractInitialization =
             builder.comment("If true, Blank Abyssal Contracts can be right-clicked to become a randomized usable Abyssal Contract.")
@@ -115,6 +119,10 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
         boundContractLossRate =
             builder.comment("What percentage of the time should bound contract item exchanges fail and destroy the swapped items?")
                 .defineInRange("boundContractLossRate", 0.05, 0.0, 1.0)
+
+        boundContractRequiresTwoPlayers =
+            builder.comment("If true, a different player must place each end of the bound contract into its respective portal in order for the exchange to work.")
+                .define("boundContractRequiresTwoPlayers", true)
 
         builder.pop()
         builder.push("Contract Defaults")

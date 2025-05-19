@@ -235,7 +235,8 @@
     {
       "targetItems": "netherite_ingot",
       "countPerUnit": 1,
-      "reward": 12
+      "reward": 24,
+      "baseUnitsDemanded": 32
     },
     {
       "targetItems": "sea_pickle",

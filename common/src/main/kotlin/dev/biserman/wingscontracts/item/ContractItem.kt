@@ -2,15 +2,15 @@ package dev.biserman.wingscontracts.item
 
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.core.AbyssalContract
+import dev.biserman.wingscontracts.core.AbyssalContract.Companion.currentCycleStart
+import dev.biserman.wingscontracts.core.Contract.Companion.unitsFulfilledEver
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
-import net.minecraft.world.InteractionHand
-import net.minecraft.world.InteractionResultHolder
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.Entity
-import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Rarity
@@ -52,24 +52,19 @@ class ContractItem(properties: Properties) : Item(properties) {
 
     override fun getRarity(itemStack: ItemStack): Rarity {
         val contract = LoadedContracts[itemStack] ?: return super.getRarity(itemStack)
-        return Rarity.entries[contract.getRarity()]
-    }
-
-    override fun use(
-        level: Level,
-        player: Player,
-        interactionHand: InteractionHand
-    ): InteractionResultHolder<ItemStack> {
-        val itemInHand = player.getItemInHand(interactionHand)
-        if (itemInHand.item is ContractItem) {
-            LoadedContracts[itemInHand]?.tryUpdateTick(ContractTagHelper.getContractTag(itemInHand))
-        }
-
-        return super.use(level, player, interactionHand)
+        return Rarity.entries[contract.rarity ?: 0]
     }
 
     override fun inventoryTick(itemStack: ItemStack, level: Level, entity: Entity, i: Int, bl: Boolean) {
-        LoadedContracts[itemStack]?.tryUpdateTick(ContractTagHelper.getContractTag(itemStack))
+        val contract = LoadedContracts[itemStack] ?: return
+        val contractTag = ContractTagHelper.getContractTag(itemStack) ?: return
+        if (level is ServerLevel) {
+            contract.tryUpdateTick(contractTag)
+        } else if (contract.unitsFulfilledEver != contractTag.unitsFulfilledEver
+            || (contract is AbyssalContract && contract.currentCycleStart != contractTag.currentCycleStart)) {
+            // this is a cheap check to invalidate the cache and avoid certain sync issues
+            LoadedContracts.invalidate(contract.id)
+        }
     }
 
     override fun isBarVisible(itemStack: ItemStack): Boolean {

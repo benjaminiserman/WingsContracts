@@ -7,7 +7,7 @@ import net.minecraft.world.ContainerHelper
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 
-class AvailableContractsContainer(val data: AvailableContractsData) : Container {
+class AvailableContractsContainer() : Container {
     val items: NonNullList<ItemStack> =
         NonNullList.withSize(ModConfig.SERVER.availableContractsPoolOptions.get(), ItemStack.EMPTY)
 
@@ -32,9 +32,7 @@ class AvailableContractsContainer(val data: AvailableContractsData) : Container 
         this.setChanged()
     }
 
-    override fun setChanged() {
-        data.setDirty()
-    }
+    override fun setChanged() {}
 
     override fun stillValid(player: Player): Boolean = true
     override fun clearContent() = items.clear()
