@@ -16,7 +16,6 @@ import dev.biserman.wingscontracts.core.Contract.Companion.startTime
 import dev.biserman.wingscontracts.core.Contract.Companion.targetConditions
 import dev.biserman.wingscontracts.core.Contract.Companion.targetItems
 import dev.biserman.wingscontracts.data.AvailableContractsManager
-import dev.biserman.wingscontracts.data.AvailableContractsManager.defaultRewardBagWeightSum
 import dev.biserman.wingscontracts.data.AvailableContractsManager.defaultRewards
 import dev.biserman.wingscontracts.data.RewardBagEntry
 import dev.biserman.wingscontracts.nbt.ContractTag
@@ -173,19 +172,16 @@ class AvailableContractsData : SavedData() {
 
     private fun getCount(reward: RewardBagEntry, value: Double) = round(value / reward.value).toInt()
     fun getRandomReward(value: Double): ItemStack {
-        if (defaultRewardBagWeightSum <= 0) {
-            WingsContractsMod.LOGGER.warn("Default rewards bag weight sum is $defaultRewardBagWeightSum. Should be positive.")
-            return FALLBACK_REWARD.item.copy()
-        }
+        val sufficientlyCheapRewardsBag = defaultRewards.filter { getCount(it, value) >= 1 }
+        val sufficientlyCheapRewardsWeightSum = sufficientlyCheapRewardsBag.sumOf { it.weight }
 
-        val pick = random.nextInt(defaultRewardBagWeightSum)
-        var runningWeight = 0
-        for (reward in defaultRewards) {
-            runningWeight += reward.weight
-            if (pick < runningWeight) {
-                val count = getCount(reward, value)
-                if (count >= 1) {
-                    return reward.item.copyWithCount(reward.item.count * count)
+        if (sufficientlyCheapRewardsWeightSum > 0) {
+            val pick = random.nextInt(sufficientlyCheapRewardsWeightSum)
+            var runningWeight = 0
+            for (reward in sufficientlyCheapRewardsBag) {
+                runningWeight += reward.weight
+                if (pick < runningWeight) {
+                    return reward.item.copyWithCount(reward.item.count * getCount(reward, value))
                 }
             }
         }

@@ -50,7 +50,6 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "wings
         } else {
             allDefaultRewards.toList()
         }
-    val defaultRewardBagWeightSum by lazy { defaultRewards.sumOf { it.weight } }
 
     private val fullRewardBlocklist = mutableListOf<String>()
     private val nonDefaultRewardBlocklist = mutableListOf<String>()
