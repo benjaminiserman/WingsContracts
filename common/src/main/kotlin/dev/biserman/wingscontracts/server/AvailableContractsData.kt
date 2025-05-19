@@ -4,6 +4,7 @@ package dev.biserman.wingscontracts.server
 
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
+//import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.AbyssalContract.Companion.baseUnitsDemanded

@@ -31,7 +31,7 @@ object DenominationsHelper {
         translateTime("day") to 1000L * 60 * 60 * 24
     )
 
-    val timeDenominationsWithoutMs = timeDenominations.filterKeys { x -> x.key != translateTime("ms").key }
+    val timeDenominationsWithoutMs = timeDenominations.filterKeys { it.key != translateTime("ms").key }
 
     fun denominateDurationToString(duration: Long) = denominate(
         duration, timeDenominationsWithoutMs
@@ -40,7 +40,7 @@ object DenominationsHelper {
     }
 
     fun <T> denominate(value: Double, denominations: Map<T, Double>) = iterator {
-        if (denominations.values.any { x -> x <= 0 }) {
+        if (denominations.values.any { it <= 0 }) {
             throw IllegalArgumentException("all denominations must be positive")
         }
 
@@ -48,8 +48,8 @@ object DenominationsHelper {
         while (true) {
             val denomination = denominations
                 .asSequence()
-                .filter { x -> x.value <= runningValue }
-                .maxByOrNull { x -> x.value } ?: break
+                .filter { it.value <= runningValue }
+                .maxByOrNull { it.value } ?: break
             val unitsToTake = floor(runningValue / denomination.value).toInt()
             runningValue -= unitsToTake * denomination.value
             yield(Pair(denomination.key, unitsToTake))
@@ -58,21 +58,21 @@ object DenominationsHelper {
 
     fun <T> getLargestDenomination(value: Double, denominations: Map<T, Double>): Pair<T, Int>? {
         val denomination = denominations
-            .filter { x -> x.value <= value }
-            .maxByOrNull { x -> x.value } ?: return null
+            .filter { it.value <= value }
+            .maxByOrNull { it.value } ?: return null
         val unitsToTake = (value / denomination.value).toInt()
         return Pair(denomination.key, unitsToTake)
     }
 
     fun <T> denominate(value: Long, denominations: Map<T, Long>) = iterator {
-        if (denominations.values.any { x -> x <= 0 }) {
+        if (denominations.values.any { it <= 0 }) {
             throw IllegalArgumentException("all denominations must be positive")
         }
 
         var runningValue = value
         while (true) {
             val denomination =
-                denominations.filter { x -> x.value <= runningValue }.maxByOrNull { x -> x.value } ?: break
+                denominations.filter { it.value <= runningValue }.maxByOrNull { it.value } ?: break
             val unitsToTake = (runningValue / denomination.value).toInt()
             runningValue -= unitsToTake * denomination.value
             yield(Pair(denomination.key, unitsToTake))

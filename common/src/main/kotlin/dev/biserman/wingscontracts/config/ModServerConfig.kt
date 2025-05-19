@@ -32,8 +32,13 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     init {
         builder.push("General")
         denominations =
-            builder.comment("Comma-separated list of reward items that can be automatically converted by portals into other denominations. Multiple lists may be provided, separated by semicolons.")
-                .define("denominations", defaultDenominations)
+            builder.comment(
+                """
+                Comma-separated list of reward items that can be automatically converted by portals into other denominations.
+                Multiple lists may be provided, separated by semicolons.
+                DO NOT use the same item in multiple denomination lists. The game will crash when a portal attempts to use that reward.
+                """.trimIndent()
+            ).define("denominations", defaultDenominations)
 
         contractGrowthFunction = builder.comment(
             """
@@ -160,7 +165,6 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
 
         builder.pop()
     }
-
 
     companion object {
         val defaultDenominations = """

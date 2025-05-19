@@ -12,31 +12,29 @@ import kotlin.math.min
 class DenominatedCurrenciesHandler() {
     private val denominatedCurrencies by lazy {
         ModConfig.SERVER.denominations.get().split(";").map {
-            it.split(",")
-                .filter { entry -> "=" in entry }
-                .mapNotNull entry@{ entry ->
-                    val (itemId, valueString) = entry.split("=")
-                    val resourceLocation = ResourceLocation.tryParse(itemId.trim())
+            it.split(",").filter { entry -> "=" in entry }.mapNotNull entry@{ entry ->
+                val (itemId, valueString) = entry.split("=")
+                val resourceLocation = ResourceLocation.tryParse(itemId.trim())
 
-                    if (resourceLocation == null) {
-                        WingsContractsMod.LOGGER.warn("Failed to parse currency denomination ${itemId.trim()}. Skipping...")
-                        return@entry null
-                    }
-
-                    val value = valueString.trim().toInt()
-                    val item = BuiltInRegistries.ITEM.get(resourceLocation)
-                    if (item == Items.AIR) {
-                        WingsContractsMod.LOGGER.warn("Could not find item with ID ${itemId.trim()}. Skipping...")
-                        return@entry null
-                    }
-
-                    if (value <= 0) {
-                        WingsContractsMod.LOGGER.warn("Invalid denomination value for ${itemId.trim()}: denomination values must be positive. Skipping...")
-                        return@entry null
-                    }
-
-                    return@entry Pair(item, value)
+                if (resourceLocation == null) {
+                    WingsContractsMod.LOGGER.warn("Failed to parse currency denomination ${itemId.trim()}. Skipping...")
+                    return@entry null
                 }
+
+                val value = valueString.trim().toInt()
+                val item = BuiltInRegistries.ITEM.get(resourceLocation)
+                if (item == Items.AIR) {
+                    WingsContractsMod.LOGGER.warn("Could not find item with ID ${itemId.trim()}. Skipping...")
+                    return@entry null
+                }
+
+                if (value <= 0) {
+                    WingsContractsMod.LOGGER.warn("Invalid denomination value for ${itemId.trim()}: denomination values must be positive. Skipping...")
+                    return@entry null
+                }
+
+                return@entry Pair(item, value)
+            }
         }
     }
 
@@ -50,8 +48,18 @@ class DenominatedCurrenciesHandler() {
         }
     }
 
-    private val itemToCurrencyMap by lazy {
-        currencyMaps.flatMap { currencyMap -> currencyMap.entries.map { Pair(it.key, currencyMap) } }.toMap()
+    val itemToCurrencyMap by lazy {
+        val currencies = currencyMaps
+            .flatMap { currencyMap ->
+                currencyMap.entries
+                    .map { Pair(it.key, currencyMap) }
+            }
+
+        if (currencies.distinctBy { it.first }.size != currencies.size) {
+            throw Error("An item appears twice in the denominations value of ${WingsContractsMod.MOD_ID}-server.toml")
+        }
+
+        currencies.toMap()
     }
 
     fun isCurrency(itemStack: ItemStack) = itemStack.item in itemToCurrencyMap
