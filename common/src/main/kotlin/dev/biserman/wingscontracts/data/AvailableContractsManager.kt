@@ -32,25 +32,34 @@ val GSON: Gson = (GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().creat
 class RewardBagEntry(val item: ItemStack, val value: Double, val weight: Int, val formatString: String? = null)
 
 object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "wingscontracts") {
-    private var allAvailableContracts = listOf<ContractTag>()
-    private var nonDefaultAvailableContracts = listOf<ContractTag>()
+    private val allAvailableContracts = mutableListOf<ContractTag>()
+    private val nonDefaultAvailableContracts = mutableListOf<ContractTag>()
     val availableContracts
         get() = if (ModConfig.SERVER.disableDefaultContractOptions.get()) {
-            nonDefaultAvailableContracts
+            nonDefaultAvailableContracts.toList()
         } else {
-            allAvailableContracts
+            allAvailableContracts.toList()
         }
 
-    private var allDefaultRewards = listOf<RewardBagEntry>()
-    private var nonDefaultDefaultRewards =
-        listOf<RewardBagEntry>() // funny name, but it refers to custom-specified default rewards
+    private val allDefaultRewards = mutableListOf<RewardBagEntry>()
+    private val nonDefaultDefaultRewards =
+        mutableListOf<RewardBagEntry>() // funny name, but it refers to custom-specified default rewards
     val defaultRewards
         get() = if (ModConfig.SERVER.disableDefaultContractOptions.get()) {
-            nonDefaultDefaultRewards
+            nonDefaultDefaultRewards.toList()
         } else {
-            allDefaultRewards
+            allDefaultRewards.toList()
         }
     val defaultRewardBagWeightSum by lazy { defaultRewards.sumOf { it.weight } }
+
+    private val fullRewardBlocklist = mutableListOf<String>()
+    private val nonDefaultRewardBlocklist = mutableListOf<String>()
+    val rewardBlocklist
+        get() = if (ModConfig.SERVER.disableDefaultContractOptions.get()) {
+            nonDefaultRewardBlocklist.toList()
+        } else {
+            fullRewardBlocklist.toList()
+        }
 
     fun randomTag() =
         if (availableContracts.isEmpty()) {
@@ -68,11 +77,6 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "wings
         profilerFiller: ProfilerFiller
     ) {
         WingsContractsMod.LOGGER.info("Building available contracts pool...")
-        val buildAvailableContracts = mutableListOf<ContractTag>()
-        val buildNonDefaultAvailableContracts = mutableListOf<ContractTag>()
-        val buildDefaultRewards = mutableListOf<RewardBagEntry>()
-        val buildNonDefaultDefaultRewards = mutableListOf<RewardBagEntry>()
-
         var skippedBecauseUnloaded = 0
         for ((resourceLocation, json) in jsonMap) {
             if (resourceLocation.path.startsWith("_")) {
@@ -88,6 +92,7 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "wings
                 val parsedContracts = jsonObject.get("contracts")?.asJsonArray?.map {
                     Contract.fromJson(it.asJsonObject)
                 } ?: listOf()
+                skippedBecauseUnloaded += validateContracts(parsedContracts, resourceLocation, isDefault)
 
                 val parsedDefaultRewards = jsonObject.get("rewards")?.asJsonArray?.map {
                     RewardBagEntry(
@@ -107,55 +112,16 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "wings
                     )
                 } ?: listOf()
 
-                buildDefaultRewards.addAll(parsedDefaultRewards)
+                allDefaultRewards.addAll(parsedDefaultRewards)
                 if (!isDefault) {
-                    buildNonDefaultDefaultRewards.addAll(parsedDefaultRewards)
+                    nonDefaultDefaultRewards.addAll(parsedDefaultRewards)
                 }
 
-                for (contract in parsedContracts) {
-                    // skip contracts that only apply to unloaded mods
-                    val allItemsFailedLoad = (contract.targetItemKeys ?: listOf())
-                        .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0]) }
-                    val allTagsFailedLoad = (contract.targetTagKeys ?: listOf())
-                        .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0].trimStart('#')) }
-                    val allBlockTagsFailedLoad = (contract.targetBlockTagKeys ?: listOf())
-                        .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0].trimStart('#')) }
-                    val allFailedLoad = allItemsFailedLoad
-                            && allTagsFailedLoad
-                            && allBlockTagsFailedLoad
-                            && contract.targetConditionsKeys.isNullOrBlank()
-
-                    // check for required mods
-                    val allRequiredModsLoaded = contract.requiresAll.isNullOrBlank()
-                            || contract.requiresAll!!.split(',').all { Platform.isModLoaded(it) }
-                    val anyRequiredModsLoaded = contract.requiresAny.isNullOrBlank()
-                            || contract.requiresAny!!.split(',').any { Platform.isModLoaded(it) }
-
-                    if (allFailedLoad || !allRequiredModsLoaded || !anyRequiredModsLoaded) {
-                        if (!isDefault) {
-                            WingsContractsMod.LOGGER.warn("Skipped custom contract $contract because required mod was not found.")
-                        }
-                        skippedBecauseUnloaded++
-                        continue
-                    }
-
-                    val blockedModFound = !contract.requiresNot.isNullOrBlank()
-                            && contract.requiresNot!!.split(',').any { Platform.isModLoaded(it) }
-                    if (blockedModFound) {
-                        if (!isDefault) {
-                            WingsContractsMod.LOGGER.warn("Skipped custom contract $contract because blocked mod was found.")
-                        }
-                        continue
-                    }
-
-                    if (AbyssalContract.load(contract).isValid) {
-                        buildAvailableContracts.add(contract)
-                        if (!isDefault) {
-                            buildNonDefaultAvailableContracts.add(contract)
-                        }
-                    } else {
-                        WingsContractsMod.LOGGER.warn("Found invalid contract $contract in $resourceLocation")
-                    }
+                val parsedRewardBlocklist = jsonObject.get("blockedRewards")
+                    ?.asJsonArray?.map { it.asString } ?: listOf()
+                fullRewardBlocklist.addAll(parsedRewardBlocklist)
+                if (!isDefault) {
+                    nonDefaultRewardBlocklist.addAll(parsedRewardBlocklist)
                 }
             } catch (e: Exception) {
                 WingsContractsMod.LOGGER.error("Error while loading available contracts at $resourceLocation", e)
@@ -165,10 +131,60 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "wings
         if (skippedBecauseUnloaded != 0) {
             WingsContractsMod.LOGGER.info("Skipped $skippedBecauseUnloaded contracts from unloaded mods.")
         }
+    }
 
-        allAvailableContracts = buildAvailableContracts.toList()
-        nonDefaultAvailableContracts = buildNonDefaultAvailableContracts.toList()
-        allDefaultRewards = buildDefaultRewards.toList()
-        nonDefaultDefaultRewards = buildNonDefaultDefaultRewards.toList()
+    fun validateContracts(
+        parsedContracts: List<ContractTag>,
+        resourceLocation: ResourceLocation,
+        isDefault: Boolean
+    ): Int {
+        var skippedBecauseUnloaded = 0
+        for (contract in parsedContracts) {
+            // skip contracts that only apply to unloaded mods
+            val allItemsFailedLoad = (contract.targetItemKeys ?: listOf())
+                .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0]) }
+            val allTagsFailedLoad = (contract.targetTagKeys ?: listOf())
+                .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0].trimStart('#')) }
+            val allBlockTagsFailedLoad = (contract.targetBlockTagKeys ?: listOf())
+                .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0].trimStart('#')) }
+            val allFailedLoad = allItemsFailedLoad
+                    && allTagsFailedLoad
+                    && allBlockTagsFailedLoad
+                    && contract.targetConditionsKeys.isNullOrBlank()
+
+            // check for required mods
+            val allRequiredModsLoaded = contract.requiresAll.isNullOrBlank()
+                    || contract.requiresAll!!.split(',').all { Platform.isModLoaded(it) }
+            val anyRequiredModsLoaded = contract.requiresAny.isNullOrBlank()
+                    || contract.requiresAny!!.split(',').any { Platform.isModLoaded(it) }
+
+            if (allFailedLoad || !allRequiredModsLoaded || !anyRequiredModsLoaded) {
+                if (!isDefault) {
+                    WingsContractsMod.LOGGER.warn("Skipped custom contract $contract because required mod was not found.")
+                }
+                skippedBecauseUnloaded++
+                continue
+            }
+
+            val blockedModFound = !contract.requiresNot.isNullOrBlank()
+                    && contract.requiresNot!!.split(',').any { Platform.isModLoaded(it) }
+            if (blockedModFound) {
+                if (!isDefault) {
+                    WingsContractsMod.LOGGER.warn("Skipped custom contract $contract because blocked mod was found.")
+                }
+                continue
+            }
+
+            if (AbyssalContract.load(contract).isValid) {
+                allAvailableContracts.add(contract)
+                if (!isDefault) {
+                    nonDefaultAvailableContracts.add(contract)
+                }
+            } else {
+                WingsContractsMod.LOGGER.warn("Found invalid contract $contract in $resourceLocation")
+            }
+        }
+
+        return skippedBecauseUnloaded
     }
 }

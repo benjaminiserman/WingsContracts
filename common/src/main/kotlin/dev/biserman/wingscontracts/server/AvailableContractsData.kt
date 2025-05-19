@@ -124,7 +124,7 @@ class AvailableContractsData : SavedData() {
                         continue
                     }
 
-                    if (ModConfig.SERVER.replaceRewardWithRandomBlocklist.get()
+                    if (AvailableContractsManager.rewardBlocklist
                             .contains(otherContractItem.`arch$registryName`().toString())
                     ) {
                         continue

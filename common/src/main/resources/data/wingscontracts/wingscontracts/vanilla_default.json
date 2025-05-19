@@ -813,5 +813,11 @@
       "name": "wingscontracts.data.gerund",
       "description": "wingscontracts.gerund.desc"
     }
+  ],
+  "blockedRewards": [
+    "minecraft:potion",
+    "minecraft:splash_potion",
+    "minecraft:lingering_potion",
+    "minecraft:enchanted_book"
   ]
 }

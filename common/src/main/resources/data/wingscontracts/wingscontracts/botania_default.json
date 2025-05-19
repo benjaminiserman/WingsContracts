@@ -145,12 +145,15 @@
       "countPerUnit": 16,
       "reward": 2
     },
-
     {
       "targetItems": "gunpowder",
       "countPerUnit": 64,
       "reward": 2,
       "requiresAny": "botania"
     }
+  ],
+  "blockedRewards": [
+    "botania:brew_vial",
+    "botania:brew_flask"
   ]
 }
