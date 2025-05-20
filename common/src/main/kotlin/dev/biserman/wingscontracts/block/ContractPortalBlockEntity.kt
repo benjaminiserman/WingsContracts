@@ -3,6 +3,7 @@
 package dev.biserman.wingscontracts.block
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation
+import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.advancements.ContractCompleteTrigger
 import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
@@ -419,22 +420,26 @@ class ContractPortalBlockEntity(
 
         val serverLevel = level as? ServerLevel
         if (contract is AbyssalContract && serverLevel != null) {
-            val player = serverLevel.getPlayerByUUID(lastPlayer) as ServerPlayer
-            ScoreboardHandler.add(
-                serverLevel,
-                player,
-                rewards.sumOf { floor(AvailableContractsManager.valueReward(it)) }
-            )
-
-            if (contract.unitsFulfilled >= contract.unitsDemanded) {
-                ContractCompleteTrigger.INSTANCE.trigger(
-                    player,
-                    contractSlot,
+            val player = serverLevel.getPlayerByUUID(lastPlayer) as? ServerPlayer
+            if (player == null) {
+                WingsContractsMod.LOGGER.warn("Contract Portal $blockPos could not find last player with UUID $lastPlayer")
+            } else {
+                ScoreboardHandler.add(
                     serverLevel,
-                    blockPos.x,
-                    blockPos.y,
-                    blockPos.z
+                    player,
+                    rewards.sumOf { floor(AvailableContractsManager.valueReward(it)) }
                 )
+
+                if (contract.unitsFulfilled >= contract.unitsDemanded) {
+                    ContractCompleteTrigger.INSTANCE.trigger(
+                        player,
+                        contractSlot,
+                        serverLevel,
+                        blockPos.x,
+                        blockPos.y,
+                        blockPos.z
+                    )
+                }
             }
         }
 
