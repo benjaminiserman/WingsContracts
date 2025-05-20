@@ -10,7 +10,11 @@ class CompactingContainer(containerSize: Int) : SimpleContainer(containerSize) {
 
     override fun setChanged() { // avoid calling anything that calls setChanged
         // compare count to maxStackSize to maintain invariant that compacting never increases slots used
-        val allItems = items.groupBy { it.count <= it.maxStackSize && currencyHandler.isCurrency(it) }
+        val allItems = items.groupBy {
+            it.count <= it.maxStackSize
+                    && (it.tag?.isEmpty != false)
+                    && currencyHandler.isCurrency(it)
+        }
         val currencyItems = allItems[true]
             ?.groupBy { currencyHandler.itemToCurrencyMap[it.item] }
             ?: mapOf()

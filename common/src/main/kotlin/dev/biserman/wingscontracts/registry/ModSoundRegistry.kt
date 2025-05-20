@@ -33,9 +33,12 @@ object ModSoundRegistry {
         "portal_remove_contract"
     ) { SoundEvent.createVariableRangeEvent(prefix("portal_remove_contract")) }
 
-    val WRITE_CONTRACT : RegistrySupplier<SoundEvent> = SOUNDS.register(
+    val WRITE_CONTRACT: RegistrySupplier<SoundEvent> = SOUNDS.register(
         "write_contract"
     ) { SoundEvent.createVariableRangeEvent(prefix("write_contract")) }
+    val COMPLETE_CONTRACT: RegistrySupplier<SoundEvent> = SOUNDS.register(
+        "complete_contract"
+    ) { SoundEvent.createVariableRangeEvent(prefix("complete_contract")) }
 
     @JvmStatic
     fun register() {

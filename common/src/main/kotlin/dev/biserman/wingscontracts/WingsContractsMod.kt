@@ -1,6 +1,7 @@
 package dev.biserman.wingscontracts
 
 import dev.architectury.event.events.client.ClientLifecycleEvent
+import dev.architectury.event.events.common.LifecycleEvent
 import dev.architectury.event.events.common.TickEvent
 import dev.architectury.platform.Platform
 import dev.architectury.utils.Env
@@ -12,6 +13,7 @@ import dev.biserman.wingscontracts.compat.CompatMods
 import dev.biserman.wingscontracts.compat.computercraft.ModItemDetailProvider
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.registry.*
+import dev.biserman.wingscontracts.scoreboard.ScoreboardHandler
 import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.server.WingsContractsNetHandler
 import net.createmod.ponder.foundation.PonderIndex
@@ -19,14 +21,10 @@ import net.minecraft.advancements.CriteriaTriggers
 import net.minecraft.resources.ResourceLocation
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import javax.script.ScriptEngineManager
-import javax.script.SimpleScriptContext
 
 object WingsContractsMod {
     const val MOD_ID: String = "wingscontracts"
     val LOGGER: Logger = LogManager.getLogger("WingsContracts")
-    val JS = ScriptEngineManager().getEngineByName("javascript")
-    val JS_CONTEXT = SimpleScriptContext()
 
     fun init() {
         ModBlockRegistry.register()
@@ -43,6 +41,8 @@ object WingsContractsMod {
         if (Platform.isModLoaded(CompatMods.COMPUTERCRAFT)) {
             ModItemDetailProvider.register()
         }
+
+        LifecycleEvent.SERVER_LEVEL_LOAD.register(ScoreboardHandler::init)
 
         TickEvent.Server.SERVER_LEVEL_POST.register { level ->
             AvailableContractsData.get(level).serverTick(level)

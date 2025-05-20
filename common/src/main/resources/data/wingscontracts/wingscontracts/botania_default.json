@@ -57,7 +57,7 @@
     {
       "targetItems": "botania:mana_diamond",
       "countPerUnit": 4,
-      "reward": 4
+      "reward": 5
     },
     {
       "targetTags": "#botania:elementium_ingots",

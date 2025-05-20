@@ -26,7 +26,7 @@
     },
     {
       "targetTags": "#forge:vegetables",
-      "countPerUnit": 48
+      "countPerUnit": 64
     },
     {
       "targetTags": "#forge:dusts",
@@ -34,11 +34,11 @@
     },
     {
       "targetTags": "#forge:dyes",
-      "countPerUnit": 32
+      "countPerUnit": 48
     },
     {
       "targetTags": "#forge:gems",
-      "countPerUnit": 12
+      "countPerUnit": 32
     },
     {
       "targetTags": "#forge:gems/quartz",
@@ -50,7 +50,7 @@
     },
     {
       "targetTags": "#forge:berries",
-      "countPerUnit": 48
+      "countPerUnit": 64
     },
     {
       "targetTags": "#forge:slimeballs",
@@ -60,30 +60,6 @@
       "targetTags": "#forge:string",
       "countPerUnit": 24,
       "requiresAny": "supplementaries"
-    },
-    {
-      "targetTags": "#forge:armors/helmets",
-      "countPerUnit": 6,
-      "reward": 2,
-      "name": "wingscontracts.data.forge.helmets"
-    },
-    {
-      "targetTags": "#forge:armors/chestplates",
-      "countPerUnit": 4,
-      "reward": 2,
-      "name": "wingscontracts.data.forge.chestplates"
-    },
-    {
-      "targetTags": "#forge:armors/leggings",
-      "countPerUnit": 5,
-      "reward": 2,
-      "name": "wingscontracts.data.forge.leggings"
-    },
-    {
-      "targetTags": "#forge:armors/boots",
-      "countPerUnit": 6,
-      "reward": 2,
-      "name": "wingscontracts.data.forge.boots"
     },
     {
       "targetTags": "#forge:armors",
@@ -122,16 +98,16 @@
     },
     {
       "targetTags": "#forge:nuggets",
-      "countPerUnit": 64
+      "countPerUnit": 128
     },
     {
       "targetTags": "#forge:concrete",
-      "countPerUnit": 64,
+      "countPerUnit": 128,
       "reward": 2
     },
     {
       "targetTags": "#forge:barrels",
-      "countPerUnit": 12
+      "countPerUnit": 18
     },
     {
       "targetTags": "#forge:ladders",
@@ -139,7 +115,7 @@
     },
     {
       "targetTags": "#forge:fruits",
-      "countPerUnit": 32,
+      "countPerUnit": 48,
       "requiresAny": "neapolitan,fruitsdelight"
     },
     {

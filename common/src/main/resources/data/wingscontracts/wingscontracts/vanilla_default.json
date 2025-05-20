@@ -11,12 +11,12 @@
     },
     {
       "targetItems": "diamond",
-      "countPerUnit": 6,
-      "reward": 3
+      "countPerUnit": 4,
+      "reward": 4
     },
     {
       "targetItems": "gold_ingot",
-      "countPerUnit": 6,
+      "countPerUnit": 12,
       "reward": 2
     },
     {

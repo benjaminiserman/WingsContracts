@@ -207,21 +207,21 @@ class BoundContract(
         var (ContractTag).otherSideCountPerUnit by int()
         var (ContractTag).otherSideTargets by csv()
 
-        fun load(contract: ContractTag, data: AvailableContractsData? = null): BoundContract {
+        fun load(tag: ContractTag, data: AvailableContractsData? = null): BoundContract {
             return BoundContract(
-                id = contract.id ?: UUID.randomUUID(),
-                targetItems = contract.targetItems ?: listOf(),
-                targetTags = contract.targetTags ?: listOf(),
-                targetBlockTags = contract.targetBlockTags ?: listOf(),
-                targetConditions = contract.targetConditions ?: listOf(),
-                otherSideCountPerUnit = contract.otherSideCountPerUnit ?: 1,
-                otherSideTargets = contract.otherSideTargets ?: listOf(),
-                startTime = contract.startTime ?: System.currentTimeMillis(),
-                countPerUnit = contract.countPerUnit ?: 64,
-                unitsFulfilledEver = contract.unitsFulfilledEver ?: 0,
-                author = contract.author ?: ModConfig.SERVER.defaultAuthor.get(),
-                name = contract.name,
-                matchingContractId = contract.matchingContractId ?: UUID.randomUUID()
+                id = tag.id ?: UUID.randomUUID(),
+                targetItems = tag.targetItems ?: listOf(),
+                targetTags = tag.targetTags ?: listOf(),
+                targetBlockTags = tag.targetBlockTags ?: listOf(),
+                targetConditions = tag.targetConditions ?: listOf(),
+                otherSideCountPerUnit = tag.otherSideCountPerUnit ?: 1,
+                otherSideTargets = tag.otherSideTargets ?: listOf(),
+                startTime = tag.startTime ?: System.currentTimeMillis(),
+                countPerUnit = tag.countPerUnit ?: 64,
+                unitsFulfilledEver = tag.unitsFulfilledEver ?: 0,
+                author = tag.author ?: ModConfig.SERVER.defaultAuthor.get(),
+                name = tag.name,
+                matchingContractId = tag.matchingContractId ?: UUID.randomUUID()
             )
         }
     }

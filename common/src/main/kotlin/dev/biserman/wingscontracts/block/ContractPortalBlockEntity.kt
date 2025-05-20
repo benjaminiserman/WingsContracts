@@ -10,6 +10,7 @@ import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.core.PortalLinker
+import dev.biserman.wingscontracts.data.AvailableContractsManager
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
@@ -17,7 +18,7 @@ import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
 import dev.biserman.wingscontracts.registry.ModBlockRegistry
 import dev.biserman.wingscontracts.registry.ModMenuRegistry
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
-import dev.biserman.wingscontracts.server.AvailableContractsData
+import dev.biserman.wingscontracts.scoreboard.ScoreboardHandler
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.NonNullList
@@ -77,8 +78,8 @@ class ContractPortalBlockEntity(
             }
             field = value
         }
-    var cachedRewards = SimpleContainer(containerSize)
-    var cachedInput = CompactingContainer(containerSize)
+    var cachedRewards = CompactingContainer(containerSize)
+    var cachedInput = SimpleContainer(containerSize)
     var lastPlayer: UUID
 
     private fun getLevelX(): Double = worldPosition.x.toDouble() + 0.5
@@ -225,6 +226,10 @@ class ContractPortalBlockEntity(
                     val didSuck = portal.suckInItems(contract, level)
                     val didUpdate = contract.tryUpdateTick(contractTag)
 
+                    if (didConsume && contract is AbyssalContract && contract.isComplete) {
+                        playSound(level, blockPos, ModSoundRegistry.COMPLETE_CONTRACT.get())
+                    }
+
                     if (didConsume || didSuck || didUpdate) {
                         portal.setCooldown(5)
                         setChanged(level, blockPos, blockState)
@@ -262,11 +267,7 @@ class ContractPortalBlockEntity(
                         return true
                     }
 
-                    val currencyHandler = AvailableContractsData.get(level).currencyHandler
-                    if (currencyHandler.isCurrency(stackToSpit)) {
-                        val denominatedStack = currencyHandler.splitHighestDenomination(stackToSpit)
-                        spitItemStack(denominatedStack, level, blockPos, amountToSpit = denominatedStack.count)
-                    } else if (portal.cachedRewards.items.sumOf { it.count } > stackToSpit.maxStackSize
+                    if (portal.cachedRewards.items.sumOf { it.count } > stackToSpit.maxStackSize
                         || portal.cachedInput.items.sumOf { it.count } > stackToSpit.maxStackSize) {
                         spitItemStack(stackToSpit, level, blockPos, amountToSpit = stackToSpit.count)
                     } else {
@@ -416,13 +417,20 @@ class ContractPortalBlockEntity(
             cachedRewards.addItem(itemStack)
         }
 
-        if (contract is AbyssalContract && contract.unitsFulfilled >= contract.unitsDemanded) {
-            val player = level?.getPlayerByUUID(lastPlayer)
-            if (player is ServerPlayer) {
+        val serverLevel = level as? ServerLevel
+        if (contract is AbyssalContract && serverLevel != null) {
+            val player = serverLevel.getPlayerByUUID(lastPlayer) as ServerPlayer
+            ScoreboardHandler.add(
+                serverLevel,
+                player,
+                rewards.sumOf { floor(AvailableContractsManager.valueReward(it)) }
+            )
+
+            if (contract.unitsFulfilled >= contract.unitsDemanded) {
                 ContractCompleteTrigger.INSTANCE.trigger(
                     player,
                     contractSlot,
-                    level as ServerLevel,
+                    serverLevel,
                     blockPos.x,
                     blockPos.y,
                     blockPos.z

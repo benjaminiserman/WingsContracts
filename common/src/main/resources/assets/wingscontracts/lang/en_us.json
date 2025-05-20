@@ -86,6 +86,9 @@
     "block.wingscontracts.contract_portal": "Contract Portal",
 
 
+    "scoreboard.wingscontracts.contract_score": "Contract Score",
+
+
     "wingscontracts.gui.contract_portal.short_title": "Portal",
     "wingscontracts.gui.contract_portal.refreshes_in": "Refreshes in: %s",
     "wingscontracts.gui.contract_portal.remaining_picks": "Remaining picks: %s",
@@ -97,6 +100,7 @@
     "wingscontracts.subtitles.block.contract_portal.add_contract": "Contract portal activates",
     "wingscontracts.subtitles.block.contract_portal.remove_contract": "Contract portal contract removed",
     "wingscontracts.subtitles.write_contract": "Contract materializes",
+    "wingscontracts.subtitles.complete_contract": "Contract completes",
 
 
     "wingscontracts.gui.goggles.contract_portal.header": "    Contract Info:",
@@ -157,10 +161,6 @@
     "wingscontracts.data.sharp_swords": "Sharp Swords",
     "wingscontracts.data.sharp_swords.desc": "accepts swords that deal at least 6 damage",
 
-    "wingscontracts.data.forge.helmets": "Helmets",
-    "wingscontracts.data.forge.chestplates": "Chestplates",
-    "wingscontracts.data.forge.leggings": "Leggings",
-    "wingscontracts.data.forge.boots": "Boots",
     "wingscontracts.data.forge.damaged_equipment": "Damaged Equipment",
     "wingscontracts.data.forge.damaged_equipment.desc": "accepts equipment at less than full durability",
     "wingscontracts.data.forge.tough_armor": "Tough Armor",

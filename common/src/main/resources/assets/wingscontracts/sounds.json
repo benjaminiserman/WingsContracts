@@ -54,5 +54,11 @@
     "sounds": [
       "random/fizz"
     ]
+  },
+  "complete_contract": {
+    "subtitle": "wingscontracts.subtitles.complete_contract",
+    "sounds": [
+      "random/orb"
+    ]
   }
 }

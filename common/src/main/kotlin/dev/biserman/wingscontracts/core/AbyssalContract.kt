@@ -389,36 +389,36 @@ class AbyssalContract(
         var (ContractTag).baseUnitsDemanded by int()
         var (ContractTag).unitsFulfilled by int()
 
-        fun load(contract: ContractTag, data: AvailableContractsData? = null): AbyssalContract {
-            val reward = contract.reward ?: Reward.Random(1.0)
+        fun load(tag: ContractTag, data: AvailableContractsData? = null): AbyssalContract {
+            val reward = tag.reward ?: Reward.Random(1.0)
             return AbyssalContract(
-                id = contract.id ?: UUID.randomUUID(),
-                targetItems = contract.targetItems ?: listOf(),
-                targetTags = contract.targetTags ?: listOf(),
-                targetBlockTags = contract.targetBlockTags ?: listOf(),
-                targetConditions = contract.targetConditions ?: listOf(),
-                startTime = contract.startTime ?: System.currentTimeMillis(),
-                currentCycleStart = contract.currentCycleStart ?: System.currentTimeMillis(),
-                cycleDurationMs = contract.cycleDurationMs ?: ModConfig.SERVER.defaultCycleDurationMs.get(),
-                countPerUnit = contract.countPerUnit ?: 64,
-                baseUnitsDemanded = contract.baseUnitsDemanded ?: 64,
-                unitsFulfilled = contract.unitsFulfilled ?: 0,
-                unitsFulfilledEver = contract.unitsFulfilledEver ?: 0,
-                author = contract.author ?: ModConfig.SERVER.defaultAuthor.get(),
-                name = contract.name,
-                description = contract.description,
-                shortTargetList = contract.shortTargetList,
-                rarity = contract.rarity,
-                displayItem = contract.displayItem,
+                id = tag.id ?: UUID.randomUUID(),
+                targetItems = tag.targetItems ?: listOf(),
+                targetTags = tag.targetTags ?: listOf(),
+                targetBlockTags = tag.targetBlockTags ?: listOf(),
+                targetConditions = tag.targetConditions ?: listOf(),
+                startTime = tag.startTime ?: System.currentTimeMillis(),
+                currentCycleStart = tag.currentCycleStart ?: System.currentTimeMillis(),
+                cycleDurationMs = tag.cycleDurationMs ?: ModConfig.SERVER.defaultCycleDurationMs.get(),
+                countPerUnit = tag.countPerUnit ?: 64,
+                baseUnitsDemanded = tag.baseUnitsDemanded ?: 64,
+                unitsFulfilled = tag.unitsFulfilled ?: 0,
+                unitsFulfilledEver = tag.unitsFulfilledEver ?: 0,
+                author = tag.author ?: ModConfig.SERVER.defaultAuthor.get(),
+                name = tag.name,
+                description = tag.description,
+                shortTargetList = tag.shortTargetList,
+                rarity = tag.rarity,
+                displayItem = tag.displayItem,
                 reward = when (reward) {
                     is Reward.Defined -> reward.itemStack
                     is Reward.Random ->
                         data?.getRandomReward(reward.value) ?: AvailableContractsData.FALLBACK_REWARD.item
                 },
-                level = contract.level ?: 1,
-                quantityGrowthFactor = contract.quantityGrowthFactor ?: ModConfig.SERVER.defaultGrowthFactor.get(),
-                maxLevel = contract.maxLevel ?: ModConfig.SERVER.defaultMaxLevel.get(),
-                isActive = contract.isActive ?: true
+                level = tag.level ?: 1,
+                quantityGrowthFactor = tag.quantityGrowthFactor ?: ModConfig.SERVER.defaultGrowthFactor.get(),
+                maxLevel = tag.maxLevel ?: ModConfig.SERVER.defaultMaxLevel.get(),
+                isActive = tag.isActive ?: true
             )
         }
     }

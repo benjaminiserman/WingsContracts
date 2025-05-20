@@ -50,6 +50,10 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "wings
         } else {
             allDefaultRewards.toList()
         }
+    fun valueReward(itemStack: ItemStack): Double {
+        val reward = defaultRewards.find { it.item.item == itemStack.item } ?: return 0.0
+        return itemStack.count * reward.value / reward.item.count
+    }
 
     private val fullRewardBlocklist = mutableListOf<String>()
     private val nonDefaultRewardBlocklist = mutableListOf<String>()

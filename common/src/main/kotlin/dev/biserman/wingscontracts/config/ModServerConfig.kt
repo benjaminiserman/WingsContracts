@@ -134,7 +134,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
 
         defaultRewardMultiplier =
             builder.comment("Datapacked contracts with an unspecified or integer reward will have their reward count multiplied by this factor, then rounded (to a minimum of 1).")
-                .defineInRange("defaultRewardMultiplier", 1.0, 0.0, Double.MAX_VALUE)
+                .defineInRange("defaultRewardMultiplier", 2.0, 0.0, Double.MAX_VALUE)
 
         defaultUnitsDemandedMultiplier =
             builder.comment("All new Abyssal Contracts pulled from the pool will have their base units demanded multiplied by this factor, then rounded (to a minimum of 1).")

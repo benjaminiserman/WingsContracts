@@ -40,19 +40,18 @@
     },
     {
       "targetItems": "create:zinc_ingot",
-      "baseUnitsDemanded": 128,
-      "countPerUnit": 8
+      "countPerUnit": 16,
+      "reward": 2
     },
     {
       "targetItems": "create:brass_ingot",
-      "baseUnitsDemanded": 96,
-      "countPerUnit": 8,
-      "reward": 2
+      "countPerUnit": 12,
+      "reward": 3
     },
     {
       "targetItems": "create:andesite_alloy",
       "baseUnitsDemanded": 128,
-      "countPerUnit": 32
+      "countPerUnit": 24
     },
     {
       "targetItems": "create:potato_cannon",
@@ -82,13 +81,14 @@
     },
     {
       "targetItems": "create:cardboard",
-      "countPerUnit": 32,
-      "reward": 2
+      "countPerUnit": 16,
+      "baseUnitsDemanded": 96
     },
     {
       "targetItems": "create:bar_of_chocolate",
-      "countPerUnit": 32,
+      "countPerUnit": 24,
       "reward": 2,
+      "baseUnitsDemanded": 96,
       "requiresAny": "vegandelight"
     },
     {
