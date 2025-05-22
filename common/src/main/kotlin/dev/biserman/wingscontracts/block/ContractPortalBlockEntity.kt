@@ -8,6 +8,8 @@ import dev.biserman.wingscontracts.advancements.ContractCompleteTrigger
 import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.config.ModConfig
+import dev.biserman.wingscontracts.container.CompactingContainer
+import dev.biserman.wingscontracts.container.ISidedPortalItemHandler
 import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.core.PortalLinker
@@ -29,6 +31,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundEvent
@@ -79,9 +82,11 @@ class ContractPortalBlockEntity(
             }
             field = value
         }
-    var cachedRewards = CompactingContainer(containerSize)
-    var cachedInput = SimpleContainer(containerSize)
+    var cachedRewards = CompactingContainer(inputSlotsCount)
+    var cachedInput = SimpleContainer(inputSlotsCount)
     var lastPlayer: UUID
+
+    val itemHandler: ISidedPortalItemHandler by lazy { WingsContractsMod.platformHelper.getPortalItemHandler(this) }
 
     private fun getLevelX(): Double = worldPosition.x.toDouble() + 0.5
     private fun getLevelY(): Double = worldPosition.y.toDouble() + 0.5
@@ -200,6 +205,7 @@ class ContractPortalBlockEntity(
     val inputItemsEmpty get() = cachedInput.isEmpty || cachedInput.items.all { itemStack -> itemStack.isEmpty }
 
     companion object {
+        val STORAGE_ID = ResourceLocation("${ModBlockEntityRegistry.CONTRACT_PORTAL.id}_storage")
         fun serverTick(
             level: Level, blockPos: BlockPos, blockState: BlockState,
             portal: ContractPortalBlockEntity
@@ -326,7 +332,7 @@ class ContractPortalBlockEntity(
         private val INSIDE: VoxelShape = Block.box(2.0, 11.0, 2.0, 14.0, 16.0, 14.0)
         private val ABOVE: VoxelShape = Block.box(0.0, 16.0, 0.0, 16.0, 32.0, 16.0)
         private val SUCK: VoxelShape = Shapes.or(INSIDE, ABOVE)
-        val containerSize = ModConfig.SERVER.contractPortalInputSlots.get() ?: 27
+        val inputSlotsCount = ModConfig.SERVER.contractPortalInputSlots.get() ?: 27
         private const val MAX_STACK_SIZE = 64 // not sure why this is needed. might delete
         private fun getSuckShape(): VoxelShape = SUCK
     }
@@ -371,7 +377,7 @@ class ContractPortalBlockEntity(
 
     private fun addInputItem(itemStack: ItemStack): ItemStack {
         var mutItemStack = itemStack
-        val size = Companion.containerSize
+        val size = inputSlotsCount
 
         var i = 0
         while (i < size && !mutItemStack.isEmpty) {
@@ -382,23 +388,27 @@ class ContractPortalBlockEntity(
         return mutItemStack
     }
 
-    private fun tryMoveInInputItem(itemStack: ItemStack, i: Int): ItemStack {
+    fun tryMoveInInputItem(itemStack: ItemStack, i: Int, simulate: Boolean = false): ItemStack {
         var mutItemStack = itemStack
         val stackAtSlot = getInputItem(i)
         var movedItems = false
         if (stackAtSlot.isEmpty) {
-            setInputItem(i, mutItemStack)
+            if (!simulate) {
+                setInputItem(i, mutItemStack)
+            }
             mutItemStack = ItemStack.EMPTY
             movedItems = true
         } else if (canMergeItems(stackAtSlot, mutItemStack)) {
             val j = mutItemStack.maxStackSize - stackAtSlot.count
             val k = min(mutItemStack.count.toDouble(), j.toDouble()).toInt()
             mutItemStack.shrink(k)
-            stackAtSlot.grow(k)
+            if (!simulate) {
+                stackAtSlot.grow(k)
+            }
             movedItems = k > 0
         }
 
-        if (movedItems) {
+        if (movedItems && !simulate) {
             setCooldown(10)
         }
 
@@ -469,10 +479,10 @@ class ContractPortalBlockEntity(
         return contract.addToGoggleTooltip(tooltip, isPlayerSneaking)
     }
 
-    override fun getSlotsForFace(direction: Direction): IntArray? {
+    override fun getSlotsForFace(direction: Direction): IntArray {
         return when (direction) {
-            Direction.DOWN -> (Companion.containerSize..<Companion.containerSize * 2).toList().toIntArray()
-            else -> (0..<Companion.containerSize).toList().toIntArray()
+            Direction.DOWN -> (inputSlotsCount..<containerSize).toList().toIntArray()
+            else -> (0..<inputSlotsCount).toList().toIntArray()
         }
     }
 
@@ -489,48 +499,59 @@ class ContractPortalBlockEntity(
     ): Boolean = canTakeItem(i)
 
     override fun canPlaceItem(i: Int, itemStack: ItemStack): Boolean =
-        i < containerSize && LoadedContracts[contractSlot]?.matches(itemStack) == true
+        i < inputSlotsCount && LoadedContracts[contractSlot]?.matches(itemStack) == true
 
     override fun canTakeItem(container: Container, i: Int, itemStack: ItemStack) = canTakeItem(i)
-    fun canTakeItem(i: Int) = i >= containerSize
+    fun canTakeItem(i: Int) = i >= inputSlotsCount
 
-    override fun getContainerSize(): Int = Companion.containerSize
+    override fun getContainerSize(): Int = inputSlotsCount * 2
 
     override fun isEmpty(): Boolean = cachedInput.items.all { it.isEmpty } && cachedRewards.isEmpty
 
-    override fun getItem(i: Int): ItemStack? {
-        return if (i < containerSize) cachedInput.getItem(i) else cachedRewards.getItem(i - containerSize)
+    override fun getItem(i: Int): ItemStack {
+        return if (i < inputSlotsCount) cachedInput.getItem(i) else cachedRewards.getItem(i - inputSlotsCount)
     }
 
-    override fun removeItem(i: Int, j: Int): ItemStack? {
-        if (i < 0 || i >= containerSize * 2 || j <= 0) {
+    override fun removeItem(i: Int, count: Int) = removeItem(i, count, false)
+    fun removeItem(i: Int, count: Int, simulate: Boolean = false): ItemStack {
+        if (i < 0 || i >= containerSize || count <= 0) {
             return ItemStack.EMPTY
         }
 
-        return if (i < containerSize) {
-            cachedInput.items[i].split(j)
+        return if (i < inputSlotsCount) {
+            if (simulate) {
+                val itemStack = cachedInput.items[i]
+                itemStack.copyWithCount(min(itemStack.count, count))
+            } else {
+                cachedInput.items[i].split(count)
+            }
         } else {
-            cachedRewards.items[i - containerSize].split(j)
+            if (simulate) {
+                val itemStack = cachedRewards.items[i - inputSlotsCount]
+                itemStack.copyWithCount(min(itemStack.count, count))
+            } else {
+                cachedRewards.items[i - inputSlotsCount].split(count)
+            }
         }
     }
 
-    override fun removeItemNoUpdate(i: Int): ItemStack? {
-        if (i < 0 || i >= containerSize * 2) {
+    override fun removeItemNoUpdate(i: Int): ItemStack {
+        if (i < 0 || i >= containerSize) {
             return ItemStack.EMPTY
         }
 
-        return if (i < containerSize) {
+        return if (i < inputSlotsCount) {
             ContainerHelper.takeItem(cachedInput.items, i)
         } else {
-            ContainerHelper.takeItem(cachedRewards.items, i - containerSize)
+            ContainerHelper.takeItem(cachedRewards.items, i - inputSlotsCount)
         }
     }
 
     override fun setItem(i: Int, itemStack: ItemStack) {
-        if (i < containerSize) {
+        if (i < inputSlotsCount) {
             cachedInput.setItem(i, itemStack)
         } else {
-            cachedRewards.setItem(i - containerSize, itemStack)
+            cachedRewards.setItem(i - inputSlotsCount, itemStack)
         }
     }
 

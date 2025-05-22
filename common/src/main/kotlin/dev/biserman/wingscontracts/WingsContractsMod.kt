@@ -21,12 +21,16 @@ import net.minecraft.advancements.CriteriaTriggers
 import net.minecraft.resources.ResourceLocation
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import platform.IPlatformHelper
 
 object WingsContractsMod {
     const val MOD_ID: String = "wingscontracts"
     val LOGGER: Logger = LogManager.getLogger("WingsContracts")
+    lateinit var platformHelper: IPlatformHelper
 
-    fun init() {
+    fun init(platformHelper: IPlatformHelper) {
+        this.platformHelper = platformHelper
+
         ModBlockRegistry.register()
         ModItemRegistry.register()
         ModBlockEntityRegistry.register()

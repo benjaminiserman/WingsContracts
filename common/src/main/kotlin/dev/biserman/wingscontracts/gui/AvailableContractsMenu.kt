@@ -2,7 +2,7 @@ package dev.biserman.wingscontracts.gui
 
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.registry.ModMenuRegistry
-import dev.biserman.wingscontracts.server.AvailableContractsContainerSlot
+import dev.biserman.wingscontracts.container.AvailableContractsContainerSlot
 import dev.biserman.wingscontracts.server.AvailableContractsData
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player

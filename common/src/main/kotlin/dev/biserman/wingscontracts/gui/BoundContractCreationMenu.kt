@@ -65,11 +65,11 @@ class BoundContractCreationMenu(id: Int, inventory: Inventory) :
             return false
         }
 
-        if (!leftSlots.items.any { !it.isEmpty && it.maxStackSize * ContractPortalBlockEntity.containerSize >= leftCount }) {
+        if (!leftSlots.items.any { !it.isEmpty && it.maxStackSize * ContractPortalBlockEntity.inputSlotsCount >= leftCount }) {
             return false
         }
 
-        if (!rightSlots.items.any { !it.isEmpty && it.maxStackSize * ContractPortalBlockEntity.containerSize >= rightCount }) {
+        if (!rightSlots.items.any { !it.isEmpty && it.maxStackSize * ContractPortalBlockEntity.inputSlotsCount >= rightCount }) {
             return false
         }
 

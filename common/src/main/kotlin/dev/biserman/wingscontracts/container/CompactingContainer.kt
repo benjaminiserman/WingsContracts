@@ -1,4 +1,4 @@
-package dev.biserman.wingscontracts.block
+package dev.biserman.wingscontracts.container
 
 import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.util.DenominationsHelper
@@ -6,7 +6,7 @@ import net.minecraft.world.SimpleContainer
 import net.minecraft.world.item.ItemStack
 
 class CompactingContainer(containerSize: Int) : SimpleContainer(containerSize) {
-    private val currencyHandler get() = AvailableContractsData.fakeData.currencyHandler
+    private val currencyHandler get() = AvailableContractsData.Companion.fakeData.currencyHandler
 
     override fun setChanged() { // avoid calling anything that calls setChanged
         // compare count to maxStackSize to maintain invariant that compacting never increases slots used

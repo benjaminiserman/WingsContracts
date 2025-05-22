@@ -1,4 +1,4 @@
-package dev.biserman.wingscontracts.server
+package dev.biserman.wingscontracts.container
 
 import dev.biserman.wingscontracts.config.ModConfig
 import net.minecraft.core.NonNullList
