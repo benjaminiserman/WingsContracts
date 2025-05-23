@@ -28,7 +28,7 @@ class WingsContractsModForge {
 
         MinecraftForge.EVENT_BUS.addGenericListener(
             BlockEntity::class.java,
-            ForgePortalItemHandler::attachCapabilities
+            PortalItemHandlerCapabilityProvider::attachCapabilities
         )
     }
 }

@@ -9,7 +9,6 @@ import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.container.CompactingContainer
-import dev.biserman.wingscontracts.container.ISidedPortalItemHandler
 import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.core.PortalLinker
@@ -85,8 +84,6 @@ class ContractPortalBlockEntity(
     var cachedRewards = CompactingContainer(inputSlotsCount)
     var cachedInput = SimpleContainer(inputSlotsCount)
     var lastPlayer: UUID
-
-    val itemHandler: ISidedPortalItemHandler by lazy { WingsContractsMod.platformHelper.getPortalItemHandler(this) }
 
     private fun getLevelX(): Double = worldPosition.x.toDouble() + 0.5
     private fun getLevelY(): Double = worldPosition.y.toDouble() + 0.5
