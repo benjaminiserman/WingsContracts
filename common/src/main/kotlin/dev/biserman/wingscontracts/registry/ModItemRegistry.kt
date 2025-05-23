@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package dev.biserman.wingscontracts.registry
 
 import dev.architectury.registry.registries.DeferredRegister
@@ -35,6 +37,16 @@ object ModItemRegistry {
     val ABYSSAL_COIN: RegistrySupplier<Item> = ITEMS.register(
         "abyssal_coin"
     ) { Item(Item.Properties().stacksTo(64).`arch$tab`(creativeTab)) }
+
+    val EXCLAMATION_MARK: RegistrySupplier<Item> = ITEMS.register(
+        "exclamation_mark"
+    ) { Item(Item.Properties().stacksTo(16)) }
+    val YELLOW_EXCLAMATION_MARK: RegistrySupplier<Item> = ITEMS.register(
+        "yellow_exclamation_mark"
+    ) { Item(Item.Properties().stacksTo(16)) }
+    val RED_EXCLAMATION_MARK: RegistrySupplier<Item> = ITEMS.register(
+        "red_exclamation_mark"
+    ) { Item(Item.Properties().stacksTo(16)) }
     val QUESTION_MARK: RegistrySupplier<Item> = ITEMS.register(
         "question_mark"
     ) { Item(Item.Properties().stacksTo(16)) }

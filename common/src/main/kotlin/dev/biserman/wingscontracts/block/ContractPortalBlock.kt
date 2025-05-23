@@ -10,7 +10,6 @@ import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
 import dev.biserman.wingscontracts.server.AvailableContractsData
 import net.minecraft.core.BlockPos
-import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.Containers
@@ -19,16 +18,16 @@ import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
-import net.minecraft.world.level.block.*
+import net.minecraft.world.level.block.BaseEntityBlock
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.RenderShape
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityTicker
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
-import net.minecraft.world.level.block.state.properties.DirectionProperty
 import net.minecraft.world.level.block.state.properties.EnumProperty
 import net.minecraft.world.level.gameevent.GameEvent
 import net.minecraft.world.level.pathfinder.PathComputationType
@@ -43,7 +42,6 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
         this.registerDefaultState(
             getStateDefinition()
                 .any()
-                .setValue(FACING, Direction.NORTH)
                 .setValue(MODE, ContractPortalMode.UNLIT)
         )
     }
@@ -117,20 +115,7 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
         return SHAPE
     }
 
-    override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
-        return (defaultBlockState().setValue(FACING, context.horizontalDirection.opposite))
-    }
-
-    override fun rotate(state: BlockState, rotation: Rotation): BlockState {
-        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)))
-    }
-
-    override fun mirror(state: BlockState, mirror: Mirror): BlockState {
-        return state.rotate(mirror.getRotation(state.getValue(FACING)))
-    }
-
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
-        builder.add(FACING)
         builder.add(MODE)
     }
 
@@ -220,7 +205,6 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
     ) = false
 
     companion object {
-        val FACING: DirectionProperty = HorizontalDirectionalBlock.FACING
         val MODE: EnumProperty<ContractPortalMode> = EnumProperty.create(
             "mode",
             ContractPortalMode::class.java
@@ -237,5 +221,4 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
             }
         }
     }
-
 }

@@ -2,7 +2,9 @@ package dev.biserman.wingscontracts.client.renderer
 
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.math.Axis
+import dev.biserman.wingscontracts.block.ContractPortalBlock
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
+import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.registry.ModItemRegistry
@@ -17,21 +19,23 @@ import net.minecraft.world.level.LightLayer
 class ContractPortalBlockEntityRenderer(private val context: BlockEntityRendererProvider.Context) :
     BlockEntityRenderer<ContractPortalBlockEntity> {
     override fun render(
-        blockEntity: ContractPortalBlockEntity, partialTick: Float, poseStack: PoseStack,
+        portal: ContractPortalBlockEntity, partialTick: Float, poseStack: PoseStack,
         multiBufferSource: MultiBufferSource, packedLight: Int, packedOverlay: Int
     ) {
-        val level = blockEntity.level ?: return
+        val level = portal.level ?: return
 
-        val blockPos = blockEntity.blockPos.above()
+        val blockPos = portal.blockPos.above()
         val relativeGameTime = level.gameTime + partialTick
         val rotation = relativeGameTime * 2
 
-
-        val contract = LoadedContracts[blockEntity.contractSlot] ?: return
-        val showItem = if (contract.isComplete) {
-            ModItemRegistry.STAR.get().defaultInstance
-        } else {
-            Contract.getDisplayItem(blockEntity.contractSlot, relativeGameTime)
+        val contract = LoadedContracts[portal.contractSlot] ?: return
+        val mode = portal.blockState.getValue(ContractPortalBlock.MODE)
+        val showItem = when {
+            contract.isComplete -> ModItemRegistry.STAR.get().defaultInstance
+            mode == ContractPortalMode.NOT_CONNECTED -> ModItemRegistry.YELLOW_EXCLAMATION_MARK.get().defaultInstance
+            mode == ContractPortalMode.ERROR -> ModItemRegistry.RED_EXCLAMATION_MARK.get().defaultInstance
+            level.hasNeighborSignal(blockPos) -> ModItemRegistry.EXCLAMATION_MARK.get().defaultInstance
+            else -> Contract.getDisplayItem(portal.contractSlot, relativeGameTime)
         }
         if (showItem.isEmpty) {
             return

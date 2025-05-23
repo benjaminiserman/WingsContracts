@@ -10,6 +10,7 @@ import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.container.CompactingContainer
 import dev.biserman.wingscontracts.core.AbyssalContract
+import dev.biserman.wingscontracts.core.BoundContract
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.core.PortalLinker
 import dev.biserman.wingscontracts.data.AvailableContractsManager
@@ -201,6 +202,12 @@ class ContractPortalBlockEntity(
 
     val inputItemsEmpty get() = cachedInput.isEmpty || cachedInput.items.all { itemStack -> itemStack.isEmpty }
 
+    fun updateMode(mode: ContractPortalMode) {
+        level?.setBlockAndUpdate(blockPos, blockState.setValue(MODE, mode))
+        level?.gameEvent(null, GameEvent.BLOCK_CHANGE, blockPos)
+        level?.sendBlockUpdated(blockPos, blockState, blockState, UPDATE_ALL)
+    }
+
     companion object {
         val STORAGE_ID = ResourceLocation("${ModBlockEntityRegistry.CONTRACT_PORTAL.id}_storage")
         fun serverTick(
@@ -219,11 +226,19 @@ class ContractPortalBlockEntity(
                     val contractTag = ContractTagHelper.getContractTag(portal.contractSlot) ?: return false
                     val contract = LoadedContracts[contractTag] ?: return false
 
-                    if (level.hasNeighborSignal(blockPos)) {
-                        level.setBlockAndUpdate(blockPos, blockState.setValue(MODE, ContractPortalMode.COIN))
-                        level.gameEvent(null, GameEvent.BLOCK_CHANGE, blockPos)
-                        level.sendBlockUpdated(blockPos, blockState, blockState, UPDATE_ALL)
-                        return true
+                    if (contract is BoundContract) {
+                        val linkedPortal = contract.getLinkedPortal(level)
+                        if (linkedPortal == null) {
+                            portal.updateMode(ContractPortalMode.NOT_CONNECTED)
+                            return true
+                        }
+
+                        if (linkedPortal.lastPlayer == portal.lastPlayer
+                            && ModConfig.SERVER.boundContractRequiresTwoPlayers.get()
+                        ) {
+                            portal.updateMode(ContractPortalMode.ERROR)
+                            return true
+                        }
                     }
 
                     val didConsume = portal.tryConsume(contract, contractTag)
@@ -232,6 +247,10 @@ class ContractPortalBlockEntity(
 
                     if (didConsume && contract is AbyssalContract && contract.isComplete) {
                         playSound(level, blockPos, ModSoundRegistry.COMPLETE_CONTRACT.get())
+                    }
+
+                    if (didUpdate) {
+                        level.sendBlockUpdated(blockPos, blockState, blockState, UPDATE_ALL)
                     }
 
                     if (didConsume || didSuck || didUpdate) {
@@ -244,30 +263,21 @@ class ContractPortalBlockEntity(
                 }
 
                 ContractPortalMode.COIN -> {
-                    val stackToSpit = if (!portal.cachedRewards.isEmpty) {
-                        portal.cachedRewards.items.first { !it.isEmpty }
-                    } else if (portal.contractSlot.isEmpty && !portal.cachedInput.isEmpty) {
-                        portal.cachedInput.items.firstOrNull { itemStack -> !itemStack.isEmpty }
-                    } else {
-                        null
+                    val stackToSpit = when {
+                        !portal.cachedRewards.isEmpty ->
+                            portal.cachedRewards.items.first { !it.isEmpty }
+                        !portal.cachedInput.isEmpty ->
+                            portal.cachedInput.items.firstOrNull { itemStack -> !itemStack.isEmpty }
+                        else -> null
                     }
 
                     if (stackToSpit == null) {
-                        if (level.hasNeighborSignal(blockPos)) {
-                            return false
-                        }
-
-                        level.setBlockAndUpdate(
-                            blockPos, blockState.setValue(
-                                MODE, if (portal.contractSlot.isEmpty) {
-                                    ContractPortalMode.UNLIT
-                                } else {
-                                    ContractPortalMode.LIT
-                                }
-                            )
+                        portal.updateMode(
+                            when (portal.contractSlot.isEmpty) {
+                                true -> ContractPortalMode.UNLIT
+                                false -> ContractPortalMode.LIT
+                            }
                         )
-                        level.gameEvent(null, GameEvent.BLOCK_CHANGE, blockPos)
-                        level.sendBlockUpdated(blockPos, blockState, blockState, UPDATE_ALL)
                         return true
                     }
 
@@ -284,7 +294,28 @@ class ContractPortalBlockEntity(
                     return true
                 }
 
-                else -> {}
+                else -> {
+                    val contract = LoadedContracts[portal.contractSlot] as? BoundContract
+
+                    if (contract == null) {
+                        portal.updateMode(ContractPortalMode.UNLIT)
+                        return true
+                    }
+
+                    val linkedPortal = contract.getLinkedPortal(level)
+                    if (linkedPortal == null) {
+                        return false
+                    }
+
+                    if (linkedPortal.lastPlayer == portal.lastPlayer
+                        && ModConfig.SERVER.boundContractRequiresTwoPlayers.get()
+                    ) {
+                        return false
+                    }
+
+                    portal.updateMode(ContractPortalMode.LIT)
+                    return true
+                }
             }
 
             return false
@@ -415,6 +446,15 @@ class ContractPortalBlockEntity(
     }
 
     private fun tryConsume(contract: Contract, contractTag: ContractTag): Boolean {
+        val level = this.level
+        if (level == null) {
+            return false
+        }
+
+        if (level.hasNeighborSignal(blockPos)) {
+            return false
+        }
+
         val rewards = contract.tryConsumeFromItems(contractTag, this)
 
         if (rewards.isEmpty()) {
