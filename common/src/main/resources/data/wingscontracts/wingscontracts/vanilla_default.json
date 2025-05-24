@@ -2,7 +2,7 @@
   "contracts": [
     {
       "targetItems": "iron_ingot",
-      "countPerUnit": 32,
+      "countPerUnit": 24,
       "reward": 2
     },
     {
@@ -16,7 +16,7 @@
     },
     {
       "targetItems": "gold_ingot",
-      "countPerUnit": 12,
+      "countPerUnit": 8,
       "reward": 2
     },
     {

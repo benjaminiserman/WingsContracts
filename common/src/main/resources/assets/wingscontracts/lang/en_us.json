@@ -66,6 +66,7 @@
     "commands.wingscontracts.failed.load": "Error: failed to load contract.",
     "commands.wingscontracts.failed.not_in_hand": "Error: no contract in hand.",
     "commands.wingscontracts.failed.unavailable_page": "Error: page %d does not exist. Last page is %d.",
+    "commands.wingscontracts.argument.contract_type.invalid": "Unknown contract type: %s at position %d: %d<--[HERE]",
 
 
     "item.wingscontracts.contract": "%s Contract",
@@ -103,9 +104,16 @@
     "wingscontracts.subtitles.complete_contract": "Contract completes",
 
 
+    "wingscontracts.gui.goggles.contract_portal.complete": "Complete!",
     "wingscontracts.gui.goggles.contract_portal.header": "    Contract Info:",
     "wingscontracts.gui.goggles.contract_portal.progress": "    Progress for this cycle:",
     "wingscontracts.gui.goggles.contract_portal.remaining_time": "    Remaining time:",
+    "wingscontracts.gui.goggles.contract_portal.remaining_time_level_up": "    Remaining time until renewal & level up:",
+    "wingscontracts.gui.goggles.contract_portal.ready": "    Ready to exchange.",
+    "wingscontracts.gui.goggles.contract_portal.not_connected": "    Matching contract is unloaded or inactive.",
+    "wingscontracts.gui.goggles.contract_portal.error_same_player1": "    Cannot exchange:",
+    "wingscontracts.gui.goggles.contract_portal.error_same_player2": "    Both side were placed by the same player.",
+    "wingscontracts.gui.goggles.contract_portal.error_same_player3": "    The server is configured not to allow this.",
 
 
     "wingscontracts.ponder.contract_portal.intro.header": "Using the Contract Portal",
@@ -115,9 +123,13 @@
     "wingscontracts.ponder.contract_portal.wool.header": "Muting the Contract Portal",
     "wingscontracts.ponder.contract_portal.wool.text_1": "Placing a wool block adjacent to the contract portal silences it.",
     "wingscontracts.ponder.contract_portal.redstone_input.header": "Redstone Input",
-    "wingscontracts.ponder.contract_portal.redstone_input.text_1": "Upon receiving a redstone signal, the Contract Portal spits out all of its cached rewards.",
+    "wingscontracts.ponder.contract_portal.redstone_input.text_1": "Upon receiving a redstone signal, the Contract Portal pauses exchanging rewards.",
     "wingscontracts.ponder.contract_portal.redstone_output.header": "Redstone Output",
     "wingscontracts.ponder.contract_portal.redstone_output.text_1": "The Contract Portal emits a comparator signal based on how full its cached rewards container is.",
+    "wingscontracts.ponder.contract_portal.bound_contract.header": "Bound Contracts",
+    "wingscontracts.ponder.contract_portal.bound_contract.text_1": "Bound contracts allow two players to exchange items with one another at long distances.",
+    "wingscontracts.ponder.contract_portal.bound_contract.text_2": "To create one, right-click the ground with a blank bound contract and fill in the UI.",
+    "wingscontracts.ponder.contract_portal.bound_contract.text_3": "On some servers items may be destroyed in transit. Hover over a blank bound contract to see the loss rate.",
     "wingscontracts.ponder.tag.contract_portal": "Contracts",
     "wingscontracts.ponder.tag.contract_portal.description": "Items and Components related to contracts",
 
@@ -175,9 +187,9 @@
     "wingscontracts.data.botania.quartz": "Botanical Quartz",
     "wingscontracts.data.botania.quartz.short_targets": "of Botania's Quartz",
     "wingscontracts.data.botania.brew_vial": "Brew Vial",
-    "wingscontracts.data.botania.brew_vial.desc": "accepts non-empty Brew Vials",
+    "wingscontracts.data.botania.brew_vial.short_targets": "Brew Vials",
     "wingscontracts.data.botania.brew_flask": "Brew Flask",
-    "wingscontracts.data.botania.brew_flask.desc": "accepts non-empty Brew Flasks",
+    "wingscontracts.data.botania.brew_flask.short_targets": "Brew Flasks",
     "wingscontracts.data.botania.filled_mana_tablet": "Filled Mana Tablet",
     "wingscontracts.data.botania.filled_mana_tablet.desc": "accepts 100% full mana tablets",
     "wingscontracts.data.botania.tiny_potato": "Tiny Potato",

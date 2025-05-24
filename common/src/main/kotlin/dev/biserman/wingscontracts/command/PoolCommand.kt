@@ -3,7 +3,7 @@ package dev.biserman.wingscontracts.command
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.ArgumentBuilder
 import dev.biserman.wingscontracts.WingsContractsMod
-import dev.biserman.wingscontracts.server.AvailableContractsData
+import dev.biserman.wingscontracts.data.AvailableContractsData
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.commands.arguments.EntityArgument

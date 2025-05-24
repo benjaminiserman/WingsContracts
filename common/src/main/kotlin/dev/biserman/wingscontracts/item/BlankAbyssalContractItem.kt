@@ -2,9 +2,9 @@ package dev.biserman.wingscontracts.item
 
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.config.ModConfig
+import dev.biserman.wingscontracts.data.AvailableContractsData
 import dev.biserman.wingscontracts.data.AvailableContractsManager
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
-import dev.biserman.wingscontracts.server.AvailableContractsData
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
@@ -29,7 +29,8 @@ class BlankAbyssalContractItem(properties: Properties) : Item(properties) {
                 return InteractionResultHolder.success(itemStack)
             }
 
-            val contract = AvailableContractsData.get(level).generateContract(AvailableContractsManager.randomTag())
+            val contract =
+                AvailableContractsData.get(level).generator.generateContract(AvailableContractsManager.randomTag())
             val newContractStack = contract.createItem()
             player.setItemInHand(interactionHand, newContractStack)
 

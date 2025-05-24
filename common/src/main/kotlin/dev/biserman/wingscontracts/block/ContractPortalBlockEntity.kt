@@ -513,7 +513,7 @@ class ContractPortalBlockEntity(
 
     override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
         val contract = LoadedContracts[contractSlot] ?: return false
-        return contract.addToGoggleTooltip(tooltip, isPlayerSneaking)
+        return contract.addToGoggleTooltip(this, tooltip, isPlayerSneaking)
     }
 
     override fun getSlotsForFace(direction: Direction): IntArray {

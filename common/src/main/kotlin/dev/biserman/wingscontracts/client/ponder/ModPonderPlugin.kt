@@ -1,10 +1,7 @@
 package dev.biserman.wingscontracts.client.ponder
 
 import dev.biserman.wingscontracts.WingsContractsMod
-import dev.biserman.wingscontracts.client.ponder.scenes.IntroScene
-import dev.biserman.wingscontracts.client.ponder.scenes.RedstoneInputScene
-import dev.biserman.wingscontracts.client.ponder.scenes.RedstoneOutputScene
-import dev.biserman.wingscontracts.client.ponder.scenes.WoolScene
+import dev.biserman.wingscontracts.client.ponder.scenes.*
 import dev.biserman.wingscontracts.command.LoadContractCommand
 import dev.biserman.wingscontracts.registry.ModBlockRegistry
 import net.createmod.ponder.api.registration.PonderPlugin
@@ -12,6 +9,7 @@ import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper
 import net.createmod.ponder.api.registration.PonderTagRegistrationHelper
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.Level
+import java.util.*
 
 object ModPonderPlugin : PonderPlugin {
     val CONTRACT_CATEGORY = WingsContractsMod.prefix("contract_portal")
@@ -22,6 +20,21 @@ object ModPonderPlugin : PonderPlugin {
         "abyssal"
     ).createItem()
 
+    val uuid1 = UUID.randomUUID()
+    val uuid2 = UUID.randomUUID()
+
+    fun getExampleBoundContract1(level: Level) = LoadContractCommand.loadContract(
+        "{\"targetItems\":\"minecraft:diamond\",\"countPerUnit\": 1, \"id\": $uuid1, \"matchingContractId\": $uuid2}",
+        level,
+        "bound"
+    ).createItem()
+
+    fun getExampleBoundContract2(level: Level) = LoadContractCommand.loadContract(
+        "{\"targetItems\":\"minecraft:dirt\",\"countPerUnit\": 1, \"id\": $uuid2, \"matchingContractId\": $uuid1}",
+        level,
+        "bound"
+    ).createItem()
+
     override fun getModId() = WingsContractsMod.MOD_ID
 
     override fun registerScenes(helper: PonderSceneRegistrationHelper<ResourceLocation>) {
@@ -29,6 +42,7 @@ object ModPonderPlugin : PonderPlugin {
         WoolScene.register(helper)
         RedstoneInputScene.register(helper)
         RedstoneOutputScene.register(helper)
+        BoundContractScene.register(helper)
     }
 
     override fun registerTags(helper: PonderTagRegistrationHelper<ResourceLocation?>) {

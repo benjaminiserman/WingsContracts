@@ -1,9 +1,12 @@
 package dev.biserman.wingscontracts.core
 
 import dev.biserman.wingscontracts.WingsContractsMod
+import dev.biserman.wingscontracts.block.ContractPortalBlock
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
+import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
 import dev.biserman.wingscontracts.config.ModConfig
+import dev.biserman.wingscontracts.data.AvailableContractsData
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
@@ -12,7 +15,6 @@ import dev.biserman.wingscontracts.nbt.ContractTagHelper.int
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.uuid
 import dev.biserman.wingscontracts.nbt.ItemCondition
 import dev.biserman.wingscontracts.registry.ModItemRegistry
-import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import net.minecraft.ChatFormatting
 import net.minecraft.nbt.CompoundTag
@@ -177,8 +179,44 @@ class BoundContract(
         }
     }
 
-    override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
+    override fun addToGoggleTooltip(
+        portal: ContractPortalBlockEntity,
+        tooltip: MutableList<Component>,
+        isPlayerSneaking: Boolean
+    ): Boolean {
         tooltip.add(Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.header"))
+
+        val portalMode = portal.level?.getBlockState(portal.blockPos)?.getValue(ContractPortalBlock.MODE) ?: return true
+        when (portalMode) {
+            ContractPortalMode.LIT -> tooltip.add(
+                Component
+                    .translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.ready")
+                    .withStyle(ChatFormatting.GRAY)
+            )
+            ContractPortalMode.NOT_CONNECTED -> tooltip.add(
+                Component
+                    .translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.not_connected")
+                    .withStyle(ChatFormatting.YELLOW)
+            )
+            ContractPortalMode.ERROR -> {
+                tooltip.add(
+                    Component
+                        .translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.error_same_player1")
+                        .withStyle(ChatFormatting.RED)
+                )
+                tooltip.add(
+                    Component
+                        .translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.error_same_player2")
+                        .withStyle(ChatFormatting.RED)
+                )
+                tooltip.add(
+                    Component
+                        .translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.error_same_player3")
+                        .withStyle(ChatFormatting.RED)
+                )
+            }
+            else -> CommonComponents.EMPTY
+        }
 
         return true
     }

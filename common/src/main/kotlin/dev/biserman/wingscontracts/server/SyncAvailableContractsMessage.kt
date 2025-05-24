@@ -3,6 +3,7 @@ package dev.biserman.wingscontracts.server
 import dev.architectury.networking.NetworkManager
 import dev.architectury.networking.simple.BaseS2CMessage
 import dev.architectury.networking.simple.MessageType
+import dev.biserman.wingscontracts.data.AvailableContractsData
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.server.level.ServerLevel

@@ -2,7 +2,7 @@ package dev.biserman.wingscontracts.block.state.properties
 
 import net.minecraft.util.StringRepresentable
 
-enum class ContractPortalMode(key: String, i: Int) : StringRepresentable {
+enum class ContractPortalMode(val key: String, val i: Int) : StringRepresentable {
     UNLIT("UNLIT", 0),
     LIT("LIT", 1),
     COIN("COIN", 2),

@@ -99,6 +99,9 @@ object IntroScene {
             .showControls(util.vector().centerOf(1, 1, 1), Pointing.DOWN, 40)
             .rightClick()
 
+
+        scene.idle(50)
+
         scene.world().modifyBlockEntity<ContractPortalBlockEntity>(
             util.grid().at(1, 1, 1), ContractPortalBlockEntity::class.java
         ) {
@@ -109,8 +112,6 @@ object IntroScene {
             { it.setValue(ContractPortalBlock.MODE, ContractPortalMode.COIN) },
             false
         )
-
-        scene.idle(50)
 
         scene.world().createItemEntity(util.vector().topOf(1, 1, 1), Vec3(-0.1, 0.45, 0.1), ItemStack(Items.EMERALD, 2))
     }

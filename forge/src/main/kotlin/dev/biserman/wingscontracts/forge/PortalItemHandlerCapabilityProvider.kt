@@ -1,6 +1,5 @@
 package dev.biserman.wingscontracts.forge
 
-import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import net.minecraft.core.Direction
 import net.minecraft.world.level.block.entity.BlockEntity
@@ -29,14 +28,11 @@ class PortalItemHandlerCapabilityProvider(val portal: ContractPortalBlockEntity)
     companion object {
         fun attachCapabilities(event: AttachCapabilitiesEvent<BlockEntity>) {
             val entity = event.`object`
-            when (entity) {
-                is ContractPortalBlockEntity -> {
-                    WingsContractsMod.LOGGER.info("attaching portal capability")
-                    event.addCapability(
-                        ContractPortalBlockEntity.STORAGE_ID,
-                        PortalItemHandlerCapabilityProvider(entity)
-                    )
-                }
+            if (entity is ContractPortalBlockEntity) {
+                event.addCapability(
+                    ContractPortalBlockEntity.STORAGE_ID,
+                    PortalItemHandlerCapabilityProvider(entity)
+                )
             }
         }
     }

@@ -1,7 +1,5 @@
 package dev.biserman.wingscontracts.core
 
-import com.google.gson.JsonObject
-import com.mojang.serialization.JsonOps
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.data.LoadedContracts
@@ -22,7 +20,6 @@ import net.minecraft.core.NonNullList
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.NbtOps
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
@@ -280,7 +277,11 @@ abstract class Contract(
         return consumedItems
     }
 
-    open fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean) = false
+    open fun addToGoggleTooltip(
+        portal: ContractPortalBlockEntity,
+        tooltip: MutableList<Component>,
+        isPlayerSneaking: Boolean
+    ) = false
 
     abstract val rewardPerUnit: Int
 
@@ -427,8 +428,5 @@ abstract class Contract(
             timeRemaining < 1000 * 60 * 60 * 24 -> ChatFormatting.YELLOW
             else -> ChatFormatting.DARK_PURPLE
         }
-
-        fun fromJson(json: JsonObject): ContractTag =
-            ContractTag(JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json) as CompoundTag)
     }
 }

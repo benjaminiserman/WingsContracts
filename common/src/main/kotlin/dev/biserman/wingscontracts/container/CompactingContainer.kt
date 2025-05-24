@@ -1,6 +1,6 @@
 package dev.biserman.wingscontracts.container
 
-import dev.biserman.wingscontracts.server.AvailableContractsData
+import dev.biserman.wingscontracts.data.AvailableContractsData
 import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.world.SimpleContainer
 import net.minecraft.world.item.ItemStack

@@ -5,6 +5,7 @@ import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
 import dev.biserman.wingscontracts.config.GrowthFunctionOptions
 import dev.biserman.wingscontracts.config.ModConfig
+import dev.biserman.wingscontracts.data.AvailableContractsData
 import dev.biserman.wingscontracts.data.AvailableContractsManager
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.boolean
@@ -15,7 +16,6 @@ import dev.biserman.wingscontracts.nbt.ContractTagHelper.reward
 import dev.biserman.wingscontracts.nbt.ItemCondition
 import dev.biserman.wingscontracts.nbt.Reward
 import dev.biserman.wingscontracts.registry.ModItemRegistry
-import dev.biserman.wingscontracts.server.AvailableContractsData
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.ChatFormatting
@@ -311,28 +311,36 @@ class AbyssalContract(
         return data.rarityThresholds.indexOfLast { (maxPossibleReward / reward.count) * rewardUnitValue > it } + 1
     }
 
-    override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
+    override fun addToGoggleTooltip(
+        portal: ContractPortalBlockEntity,
+        tooltip: MutableList<Component>,
+        isPlayerSneaking: Boolean
+    ): Boolean {
         tooltip.add(Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.header"))
+
+        val completedComponent = if (isComplete) {
+            Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.complete")
+        } else {
+            Component.literal("$unitsFulfilled / $unitsDemanded")
+        }
 
         tooltip.add(
             Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.progress")
                 .withStyle(ChatFormatting.GRAY)
                 .append(CommonComponents.SPACE)
-                .append(
-                    Component.literal("$unitsFulfilled / $unitsDemanded")
-                        .withStyle(ChatFormatting.AQUA)
-                )
-
+                .append(completedComponent.withStyle(ChatFormatting.AQUA))
         )
 
         val nextCycleStart = currentCycleStart + cycleDurationMs
         val timeRemaining = nextCycleStart - System.currentTimeMillis()
         val timeRemainingString = "     " + DenominationsHelper.denominateDurationToString(timeRemaining)
-        tooltip.add(
+        val timeRemainingComponent = if (isComplete) {
+            Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.remaining_time_level_up")
+        } else {
             Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.remaining_time")
-                .withStyle(ChatFormatting.GRAY)
-        )
+        }
 
+        tooltip.add(timeRemainingComponent.withStyle(ChatFormatting.GRAY))
         tooltip.add(Component.literal(timeRemainingString).withStyle(getTimeRemainingColor(timeRemaining)))
 
         return true
@@ -413,7 +421,7 @@ class AbyssalContract(
                 reward = when (reward) {
                     is Reward.Defined -> reward.itemStack
                     is Reward.Random ->
-                        data?.getRandomReward(reward.value) ?: AvailableContractsData.FALLBACK_REWARD.item
+                        data?.generator?.getRandomReward(reward.value) ?: AvailableContractsData.FALLBACK_REWARD.item
                 },
                 level = tag.level ?: 1,
                 quantityGrowthFactor = tag.quantityGrowthFactor ?: ModConfig.SERVER.defaultGrowthFactor.get(),

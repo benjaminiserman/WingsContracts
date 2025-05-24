@@ -42,7 +42,8 @@
       "targetItems": "botania:quartz_dark,botania:quartz_mana,botania:quartz_blaze,botania:quartz_lavender,botania:quartz_red,botania:quartz_elven,botania:quartz_sunny",
       "countPerUnit": 8,
       "reward": 2,
-      "name": "wingscontracts.data.botania.quartz"
+      "name": "wingscontracts.data.botania.quartz",
+      "shortTargetList": "wingscontracts.data.botania.quartz.short_targets"
     },
     {
       "targetItems": "botania:mana_powder",
@@ -99,7 +100,7 @@
       "reward": 18,
       "baseUnitsDemanded": 16,
       "name": "wingscontracts.data.botania.brew_vial",
-      "description": "wingscontracts.data.botania.brew_vial.desc"
+      "shortTargetList": "wingscontracts.data.botania.brew_vial.short_targets"
     },
     {
       "targetItems": "botania:brew_flask",
@@ -107,7 +108,7 @@
       "reward": 20,
       "baseUnitsDemanded": 16,
       "name": "wingscontracts.data.botania.brew_flask",
-      "description": "wingscontracts.data.botania.brew_flask.desc"
+      "shortTargetList": "wingscontracts.data.botania.brew_flask.short_targets"
     },
     {
       "targetTags": "#botania:functional_special_flowers",

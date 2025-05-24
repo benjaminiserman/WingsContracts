@@ -2,8 +2,11 @@
 
 package dev.biserman.wingscontracts.nbt
 
+import com.google.gson.JsonObject
+import com.mojang.serialization.JsonOps
 import dev.biserman.wingscontracts.config.ModConfig
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtOps
 import net.minecraft.world.item.ItemStack
 import kotlin.math.max
 import kotlin.reflect.KProperty
@@ -11,6 +14,11 @@ import kotlin.reflect.KProperty
 @JvmInline
 value class ContractTag(val tag: CompoundTag) {
     override fun toString() = "ContractTag($tag)"
+
+    companion object {
+        fun fromJson(json: JsonObject): ContractTag =
+            ContractTag(JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json) as CompoundTag)
+    }
 }
 
 sealed class Reward {

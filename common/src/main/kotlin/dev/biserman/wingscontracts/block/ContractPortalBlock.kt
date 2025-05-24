@@ -5,10 +5,10 @@ package dev.biserman.wingscontracts.block
 import dev.architectury.registry.menu.MenuRegistry
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.config.ModConfig
+import dev.biserman.wingscontracts.data.AvailableContractsData
 import dev.biserman.wingscontracts.item.ContractItem
 import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
-import dev.biserman.wingscontracts.server.AvailableContractsData
 import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundSource

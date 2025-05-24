@@ -1,7 +1,7 @@
 package dev.biserman.wingscontracts.gui
 
 import dev.biserman.wingscontracts.WingsContractsMod
-import dev.biserman.wingscontracts.server.AvailableContractsData
+import dev.biserman.wingscontracts.data.AvailableContractsData
 import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen

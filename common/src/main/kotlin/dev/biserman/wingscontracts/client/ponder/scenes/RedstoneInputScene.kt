@@ -59,32 +59,6 @@ object RedstoneInputScene {
             false
         )
 
-        scene.idle(75)
-
-        val droppedItems = listOf(
-            ItemStack(Items.DIAMOND, 2),
-            ItemStack(Items.DIAMOND, 2),
-            ItemStack(Items.DIAMOND, 2),
-            ItemStack(Items.DIAMOND, 2),
-        )
-
-        droppedItems.forEach {
-            var item = scene.world().createItemEntity(portalPosition.above(2).center, Vec3.ZERO, it)
-            scene.idle(10)
-            scene.world().modifyEntity(item, Entity::discard)
-        }
-
-        scene.idle(75)
-
-        scene.overlay()
-            .showText(75)
-            .text("text1")
-            .attachKeyFrame()
-            .pointAt(util.vector().topOf(portalPosition))
-            .placeNearTarget()
-
-        scene.idle(75)
-
         scene.overlay()
             .showControls(leverPosition.center, Pointing.DOWN, 40)
             .rightClick()
@@ -99,6 +73,38 @@ object RedstoneInputScene {
             { it.setValue(RedStoneWireBlock.POWER, 15) },
             false
         )
+
+        scene.idle(50)
+
+        scene.overlay()
+            .showText(75)
+            .text("text1")
+            .attachKeyFrame()
+            .pointAt(util.vector().topOf(portalPosition))
+            .placeNearTarget()
+
+        scene.idle(80)
+
+        val droppedItems = listOf(
+            ItemStack(Items.DIAMOND, 2),
+            ItemStack(Items.DIAMOND, 2),
+            ItemStack(Items.DIAMOND, 2),
+            ItemStack(Items.DIAMOND, 2),
+        )
+
+        droppedItems.forEach {
+            var item = scene.world().createItemEntity(portalPosition.above(2).center, Vec3.ZERO, it)
+            scene.idle(10)
+            scene.world().modifyEntity(item, Entity::discard)
+        }
+
+        scene.idle(20)
+        scene.overlay()
+            .showControls(util.vector().topOf(portalPosition), Pointing.DOWN, 40)
+            .rightClick()
+
+        scene.idle(50)
+
         scene.world().modifyBlockEntity<ContractPortalBlockEntity>(
             portalPosition, ContractPortalBlockEntity::class.java
         ) {
@@ -110,8 +116,9 @@ object RedstoneInputScene {
             false
         )
 
-        scene.idle(50)
-
-        scene.world().createItemEntity(portalPosition.above().center, Vec3(-0.1, 0.45, 0.1), ItemStack(Items.EMERALD, 2))
+        droppedItems.forEach {
+            scene.idle(10)
+            scene.world().createItemEntity(portalPosition.above().center, Vec3(-0.1, 0.45, 0.1), it)
+        }
     }
 }
