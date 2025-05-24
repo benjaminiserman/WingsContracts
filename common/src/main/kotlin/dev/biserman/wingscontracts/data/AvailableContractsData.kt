@@ -70,6 +70,7 @@ class AvailableContractsData : SavedData() {
         for (i in 0..<container.containerSize) {
             container.items[i] = generator.generateContract(AvailableContractsManager.randomTag()).createItem()
         }
+        LoadedContracts.clear()
         SyncAvailableContractsMessage(level).sendToAll(level.server)
     }
 

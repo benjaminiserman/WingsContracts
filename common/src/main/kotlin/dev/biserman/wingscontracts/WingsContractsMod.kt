@@ -11,10 +11,10 @@ import dev.biserman.wingscontracts.client.WingsContractsClient
 import dev.biserman.wingscontracts.client.ponder.ModPonderPlugin
 import dev.biserman.wingscontracts.compat.CompatMods
 import dev.biserman.wingscontracts.compat.computercraft.ModItemDetailProvider
+import dev.biserman.wingscontracts.data.AvailableContractsData
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.registry.*
 import dev.biserman.wingscontracts.scoreboard.ScoreboardHandler
-import dev.biserman.wingscontracts.data.AvailableContractsData
 import dev.biserman.wingscontracts.server.WingsContractsNetHandler
 import net.createmod.ponder.foundation.PonderIndex
 import net.minecraft.advancements.CriteriaTriggers

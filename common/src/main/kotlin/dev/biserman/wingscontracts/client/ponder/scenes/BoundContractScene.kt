@@ -137,6 +137,8 @@ object BoundContractScene {
             scene.world().modifyEntity(item, Entity::discard)
         }
 
+        scene.idle(20)
+
         scene.overlay()
             .showControls(util.vector().topOf(portal1Position), Pointing.DOWN, 40)
             .rightClick()
