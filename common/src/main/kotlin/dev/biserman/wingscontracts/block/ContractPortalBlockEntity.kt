@@ -168,10 +168,6 @@ class ContractPortalBlockEntity(
         compoundTag.put("Rewards", cachedRewardsTag)
     }
 
-    private fun setCooldown(i: Int) {
-        this.cooldownTime = i
-    }
-
     override fun getUpdateTag(): CompoundTag = this.saveWithoutMetadata()
 
     override fun getUpdatePacket(): Packet<ClientGamePacketListener>? = ClientboundBlockEntityDataPacket.create(this)
@@ -218,7 +214,7 @@ class ContractPortalBlockEntity(
             if (portal.cooldownTime > 0) {
                 return false
             }
-            portal.setCooldown(0)
+            portal.cooldownTime = (0)
 
             when (portal.blockState.getValue(MODE)) {
                 ContractPortalMode.UNLIT -> {}
@@ -254,11 +250,11 @@ class ContractPortalBlockEntity(
                     }
 
                     if (didConsume || didSuck || didUpdate) {
-                        portal.setCooldown(5)
+                        portal.cooldownTime = (5)
                         setChanged(level, blockPos, blockState)
                         return true
                     } else {
-                        portal.setCooldown(10)
+                        portal.cooldownTime = (10)
                     }
                 }
 
@@ -290,7 +286,7 @@ class ContractPortalBlockEntity(
 
                     playSound(level, blockPos, ModSoundRegistry.PORTAL_SPIT.get())
 
-                    portal.setCooldown(10)
+                    portal.cooldownTime = (10)
                     return true
                 }
 
@@ -437,7 +433,7 @@ class ContractPortalBlockEntity(
         }
 
         if (movedItems && !simulate) {
-            setCooldown(10)
+            cooldownTime = 10
         }
 
         setChanged()

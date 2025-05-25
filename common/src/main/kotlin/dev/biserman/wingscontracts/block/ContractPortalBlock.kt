@@ -109,11 +109,11 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
     }
 
     override fun getShape(
-        blockState: BlockState, blockGetter: BlockGetter, blockPos: BlockPos,
+        blockState: BlockState,
+        blockGetter: BlockGetter,
+        blockPos: BlockPos,
         collisionContext: CollisionContext
-    ): VoxelShape {
-        return SHAPE
-    }
+    ): VoxelShape = SHAPE
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
         builder.add(MODE)

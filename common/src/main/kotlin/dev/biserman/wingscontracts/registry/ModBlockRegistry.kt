@@ -4,6 +4,7 @@ import dev.architectury.registry.registries.DeferredRegister
 import dev.architectury.registry.registries.RegistrySupplier
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.block.ContractPortalBlock
+import dev.biserman.wingscontracts.block.ContractSpigotBlock
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
@@ -24,12 +25,24 @@ object ModBlockRegistry {
         "contract_portal"
     ) {
         ContractPortalBlock(
-            BlockBehaviour.Properties.copy(Blocks.ENCHANTING_TABLE)
+            BlockBehaviour.Properties
+                .copy(Blocks.ENCHANTING_TABLE)
                 .lightLevel { state: BlockState ->
                     ContractPortalBlock.getLightLevel(
                         state
                     )
                 }.requiresCorrectToolForDrops()
+        )
+    }
+
+    val CONTRACT_SPIGOT: RegistrySupplier<Block?> = registerBlockWithItem(
+        "contract_spigot"
+    ) {
+        ContractSpigotBlock(
+            BlockBehaviour.Properties
+                .copy(Blocks.ENCHANTING_TABLE)
+                .lightLevel { 11 }
+                .requiresCorrectToolForDrops()
         )
     }
 

@@ -1,0 +1,120 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "minecraft:block/block",
+	"textures": {
+		"1": "wingscontracts:block/contract_portal_side",
+		"2": "wingscontracts:block/contract_portal_top",
+		"3": "wingscontracts:block/contract_portal_bottom",
+		"4": "wingscontracts:block/portal",
+		"particle": "wingscontracts:block/contract_portal_bottom"
+	},
+	"elements": [
+		{
+			"from": [13, 4, 0],
+			"to": [16, 16, 3],
+			"rotation": {"angle": 0, "axis": "y", "origin": [10, 7, 7]},
+			"faces": {
+				"north": {"uv": [13, 4, 16, 16], "rotation": 180, "texture": "#4"},
+				"east": {"uv": [0, 4, 3, 16], "rotation": 180, "texture": "#1"},
+				"up": {"uv": [0, 13, 3, 16], "rotation": 180, "texture": "#3"},
+				"down": {"uv": [0, 0, 3, 3], "rotation": 180, "texture": "#2"}
+			}
+		},
+		{
+			"from": [13, 4, 3],
+			"to": [16, 16, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [10, 7, 7]},
+			"faces": {
+				"east": {"uv": [3, 4, 13, 16], "rotation": 180, "texture": "#1"},
+				"west": {"uv": [3, 4, 13, 16], "rotation": 180, "texture": "#1"},
+				"up": {"uv": [0, 3, 3, 13], "rotation": 180, "texture": "#3"},
+				"down": {"uv": [0, 3, 3, 13], "rotation": 180, "texture": "#2"}
+			}
+		},
+		{
+			"from": [13, 4, 13],
+			"to": [16, 16, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [10, 7, 7]},
+			"faces": {
+				"east": {"uv": [13, 4, 16, 16], "rotation": 180, "texture": "#1"},
+				"south": {"uv": [0, 4, 3, 16], "rotation": 180, "texture": "#1"},
+				"up": {"uv": [0, 0, 3, 3], "rotation": 180, "texture": "#3"},
+				"down": {"uv": [0, 13, 3, 16], "rotation": 180, "texture": "#2"}
+			}
+		},
+		{
+			"from": [3, 4, 0],
+			"to": [13, 16, 3],
+			"rotation": {"angle": 0, "axis": "y", "origin": [10, 7, 7]},
+			"faces": {
+				"north": {"uv": [3, 4, 13, 16], "rotation": 180, "texture": "#1"},
+				"south": {"uv": [3, 4, 13, 16], "rotation": 180, "texture": "#1"},
+				"up": {"uv": [3, 13, 13, 16], "rotation": 180, "texture": "#3"},
+				"down": {"uv": [3, 0, 13, 3], "rotation": 180, "texture": "#2"}
+			}
+		},
+		{
+			"from": [3, 10, 3],
+			"to": [13, 16, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [10, 7, 7]},
+			"faces": {
+				"up": {"uv": [3, 3, 13, 13], "rotation": 180, "texture": "#3"},
+				"down": {"uv": [3, 3, 13, 13], "rotation": 180, "texture": "#2"}
+			}
+		},
+		{
+			"from": [3, 4, 13],
+			"to": [13, 16, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [10, 7, 7]},
+			"faces": {
+				"north": {"uv": [3, 4, 13, 16], "rotation": 180, "texture": "#1"},
+				"south": {"uv": [3, 4, 13, 16], "rotation": 180, "texture": "#1"},
+				"up": {"uv": [2, 0, 14, 3], "rotation": 180, "texture": "#3"},
+				"down": {"uv": [3, 13, 13, 16], "rotation": 180, "texture": "#2"}
+			}
+		},
+		{
+			"from": [0, 4, 0],
+			"to": [3, 16, 3],
+			"rotation": {"angle": 0, "axis": "y", "origin": [10, 7, 7]},
+			"faces": {
+				"north": {"uv": [0, 4, 3, 16], "rotation": 180, "texture": "#4"},
+				"west": {"uv": [13, 4, 16, 16], "rotation": 180, "texture": "#1"},
+				"up": {"uv": [13, 13, 16, 16], "rotation": 180, "texture": "#3"},
+				"down": {"uv": [13, 0, 16, 3], "rotation": 180, "texture": "#2"}
+			}
+		},
+		{
+			"from": [0, 4, 3],
+			"to": [3, 16, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [10, 7, 7]},
+			"faces": {
+				"east": {"uv": [3, 4, 13, 16], "rotation": 180, "texture": "#1"},
+				"west": {"uv": [3, 4, 13, 16], "rotation": 180, "texture": "#1"},
+				"up": {"uv": [13, 3, 16, 13], "rotation": 180, "texture": "#3"},
+				"down": {"uv": [13, 3, 16, 13], "rotation": 180, "texture": "#2"}
+			}
+		},
+		{
+			"from": [0, 4, 13],
+			"to": [3, 16, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [10, 7, 7]},
+			"faces": {
+				"south": {"uv": [13, 4, 16, 16], "rotation": 180, "texture": "#1"},
+				"west": {"uv": [0, 4, 3, 16], "rotation": 180, "texture": "#1"},
+				"up": {"uv": [13, 0, 16, 3], "rotation": 180, "texture": "#3"},
+				"down": {"uv": [13, 13, 16, 16], "rotation": 180, "texture": "#2"}
+			}
+		},
+		{
+			"name": "portal",
+			"from": [3, 6, 2],
+			"to": [13, 7, 13],
+			"light_emission": 11,
+			"rotation": {"angle": 0, "axis": "y", "origin": [10, 7, 7]},
+			"faces": {
+				"down": {"uv": [3, 3, 13, 13], "rotation": 180, "texture": "#1"}
+			}
+		}
+	]
+}

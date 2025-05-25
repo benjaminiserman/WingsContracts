@@ -248,6 +248,8 @@ class AbyssalContract(
 
         consumeUnits(unitCount, portal)
 
+
+
         unitsFulfilledEver += unitCount
         tag.unitsFulfilledEver = unitsFulfilledEver
 
