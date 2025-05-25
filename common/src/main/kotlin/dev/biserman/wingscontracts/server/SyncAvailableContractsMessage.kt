@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerLevel
 
 class SyncAvailableContractsMessage(val compoundTag: CompoundTag) : BaseS2CMessage() {
     constructor(level: ServerLevel) : this(AvailableContractsData.get(level).save(CompoundTag()))
-    constructor(buffer: FriendlyByteBuf) : this(buffer.readNbt()!!)
+    constructor(buffer: FriendlyByteBuf) : this(buffer.readNbt() ?: CompoundTag())
 
     override fun getType(): MessageType = WingsContractsNetHandler.SYNC_AVAILABLE_CONTRACTS
 

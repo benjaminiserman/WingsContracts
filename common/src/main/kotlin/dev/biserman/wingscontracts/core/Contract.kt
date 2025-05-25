@@ -88,7 +88,7 @@ abstract class Contract(
     val displayItems by lazy {
         if (displayItem == null) {
             if (targetItems.isEmpty() && targetTags.isEmpty() && targetBlockTags.isEmpty()) {
-                listOf(ModItemRegistry.QUESTION_MARK.get()!!.defaultInstance)
+                listOf(ModItemRegistry.QUESTION_MARK.get()?.defaultInstance ?: ItemStack.EMPTY)
             } else {
                 targetItems.map { it.defaultInstance }.plus(targetTags.flatMap {
                     BuiltInRegistries.ITEM.getTagOrEmpty(it).map { holder -> holder.value().defaultInstance }

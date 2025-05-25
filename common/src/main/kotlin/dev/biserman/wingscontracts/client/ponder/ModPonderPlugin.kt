@@ -48,7 +48,7 @@ object ModPonderPlugin : PonderPlugin {
     override fun registerTags(helper: PonderTagRegistrationHelper<ResourceLocation?>) {
         helper.registerTag(CONTRACT_CATEGORY)
             .addToIndex()
-            .item(ModBlockRegistry.CONTRACT_PORTAL.get()!!, true, false)
+            .item(ModBlockRegistry.CONTRACT_PORTAL.get() ?: return, true, false)
             .register()
 
         helper.addToTag(CONTRACT_CATEGORY)

@@ -104,7 +104,7 @@ class ContractPortalBlockEntity(
     override fun setRemoved() {
         super.setRemoved()
         val contractId = LoadedContracts[contractSlot]?.id
-        PortalLinker.get(level!!).linkedPortals.remove(contractId)
+        PortalLinker.get(level ?: return).linkedPortals.remove(contractId)
     }
 
     override fun load(compoundTag: CompoundTag) {

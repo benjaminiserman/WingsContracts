@@ -83,7 +83,7 @@ class BoundContractCreationScreen(menu: BoundContractCreationMenu, inventory: In
 
     override fun keyPressed(key: Int, mouseX: Int, mouseY: Int): Boolean {
         if (key == 256) {
-            Minecraft.getInstance().player!!.closeContainer()
+            Minecraft.getInstance().player?.closeContainer()
         }
 
         return nameBox.keyPressed(key, mouseX, mouseY)
@@ -134,14 +134,14 @@ class BoundContractCreationScreen(menu: BoundContractCreationMenu, inventory: In
 
         val upButton = ScrollButton(x + 4, y + 4, +1)
         val downButton = ScrollButton(x + 4, y + BUTTON_HEIGHT + TEXT_HEIGHT + 4, -1)
-        val textField = StringWidget(
+        val textField: StringWidget = StringWidget(
             x + 1,
             y + BUTTON_HEIGHT + 4,
             BUTTON_WIDTH + 6,
             TEXT_HEIGHT,
             CommonComponents.EMPTY,
             font
-        ).alignCenter()!!
+        ).alignCenter()
         val widgets = listOf(this, upButton, downButton, textField)
 
         init {

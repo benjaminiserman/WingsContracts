@@ -9,6 +9,8 @@ import dev.biserman.wingscontracts.item.BlankAbyssalContractItem
 import dev.biserman.wingscontracts.item.BlankBoundContractItem
 import dev.biserman.wingscontracts.item.ContractItem
 import net.minecraft.core.registries.Registries
+import net.minecraft.resources.ResourceKey
+import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.CreativeModeTabs
 import net.minecraft.world.item.Item
 
@@ -18,7 +20,7 @@ object ModItemRegistry {
         Registries.ITEM
     )
 
-    val creativeTab = CreativeModeTabs.REDSTONE_BLOCKS!!
+    val creativeTab: ResourceKey<CreativeModeTab> = CreativeModeTabs.REDSTONE_BLOCKS
 
     val BLANK_ABYSSAL_CONTRACT: RegistrySupplier<Item> = ITEMS.register(
         "blank_abyssal_contract"

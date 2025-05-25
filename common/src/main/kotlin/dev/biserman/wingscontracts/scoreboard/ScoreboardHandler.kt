@@ -21,7 +21,7 @@ object ScoreboardHandler {
     fun add(level: ServerLevel, player: Player, amount: Int) {
         val score = level.scoreboard.getOrCreatePlayerScore(
             player.scoreboardName,
-            level.scoreboard.getObjective(SCOREBOARD_NAME)!!
+            level.scoreboard.getObjective(SCOREBOARD_NAME) ?: return
         )
         score.score = score.score + amount
     }

@@ -2,8 +2,8 @@ package dev.biserman.wingscontracts.command
 
 import com.mojang.brigadier.builder.ArgumentBuilder
 import dev.biserman.wingscontracts.WingsContractsMod
-import dev.biserman.wingscontracts.core.Contract.Companion.id
 import dev.biserman.wingscontracts.command.ModCommand.giveContract
+import dev.biserman.wingscontracts.core.Contract.Companion.id
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
@@ -20,7 +20,12 @@ object CopyContractCommand {
             .executes { context -> copyContract(context.source) }
 
     fun copyContract(sourceStack: CommandSourceStack): Int {
-        val tag = ContractTagHelper.getContractTag(sourceStack.player!!.mainHandItem)?.tag?.copy()
+        val player = sourceStack.player
+        if (player == null) {
+            return 0
+        }
+
+        val tag = ContractTagHelper.getContractTag(player.mainHandItem)?.tag?.copy()
         if (tag == null) {
             sourceStack.sendFailure(Component.translatable("commands.${WingsContractsMod.MOD_ID}.failed.not_in_hand"))
             return 0
@@ -32,7 +37,7 @@ object CopyContractCommand {
         return giveContract(
             sourceStack,
             LoadedContracts[contractTag],
-            listOf(sourceStack.player!!)
+            listOf(player)
         )
     }
 }

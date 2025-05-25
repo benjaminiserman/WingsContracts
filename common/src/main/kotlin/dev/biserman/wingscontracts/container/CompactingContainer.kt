@@ -26,7 +26,7 @@ class CompactingContainer(containerSize: Int) : SimpleContainer(containerSize) {
                 continue
             }
 
-            val currencySum = currencyGroup.value.sumOf { it.count * currencyMap[it.item]!! }
+            val currencySum = currencyGroup.value.sumOf { it.count * (currencyMap[it.item] ?: 0.0) }
             for (entry in DenominationsHelper.denominate(currencySum, currencyMap)) {
                 items[i] = ItemStack(entry.first, entry.second)
                 i += 1

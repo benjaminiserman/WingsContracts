@@ -21,7 +21,7 @@ import java.util.*
 
 
 class CreateBoundContractsMessage(val compoundTag: CompoundTag) : BaseC2SMessage() {
-    constructor(buffer: FriendlyByteBuf) : this(buffer.readNbt()!!)
+    constructor(buffer: FriendlyByteBuf) : this(buffer.readNbt() ?: CompoundTag())
 
     override fun getType(): MessageType = WingsContractsNetHandler.CREATE_BOUND_CONTRACTS
 

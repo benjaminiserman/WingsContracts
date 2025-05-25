@@ -33,13 +33,4 @@ class ContractPortalPeripheral(private val portal: ContractPortalBlockEntity) : 
 
     @LuaFunction
     fun getCachedInputDetails(): List<Map<String, Any>> = portal.cachedInput.items.filter { !it.isEmpty }.map { it.details }
-//
-//    @LuaFunction
-//    fun getCachedRewardsDenominationDetails(): List<Map<String, Any>> =
-//        AvailableContractsData.get(portal.level!!).currencyHandler
-//            .denominateCurrency(portal.cachedRewards)
-//            .asSequence()
-//            .filter { !it.isEmpty }
-//            .map { it.details }
-//            .toList()
 }

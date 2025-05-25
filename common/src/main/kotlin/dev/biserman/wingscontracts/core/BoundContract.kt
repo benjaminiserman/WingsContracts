@@ -129,7 +129,8 @@ class BoundContract(
     override val rewardPerUnit get() = otherSideCountPerUnit
 
     override fun tryConsumeFromItems(tag: ContractTag, portal: ContractPortalBlockEntity): List<ItemStack> {
-        val otherPortal = PortalLinker.get(portal.level!!).linkedPortals[matchingContractId] ?: return listOf()
+        val otherPortal = PortalLinker.get(portal.level ?: return listOf())
+            .linkedPortals[matchingContractId] ?: return listOf()
         val otherTag = ContractTagHelper.getContractTag(otherPortal.contractSlot) ?: return listOf()
         val otherContract = LoadedContracts[otherTag] ?: return listOf()
         val level = portal.level ?: return listOf()

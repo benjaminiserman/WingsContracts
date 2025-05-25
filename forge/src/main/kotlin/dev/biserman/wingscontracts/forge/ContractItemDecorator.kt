@@ -1,5 +1,6 @@
 package dev.biserman.wingscontracts.forge
 
+import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.registry.ModItemRegistry
 import net.minecraft.client.Minecraft
@@ -40,8 +41,15 @@ class ContractItemDecorator : IItemDecorator {
         @JvmStatic
         @SubscribeEvent
         fun registerItemDecorations(event: RegisterItemDecorationsEvent) {
-            event.register(ModItemRegistry.ABYSSAL_CONTRACT.get()!!, instance)
-            event.register(ModItemRegistry.BOUND_CONTRACT.get()!!, instance)
+            val abyssalContract = ModItemRegistry.ABYSSAL_CONTRACT.get()
+            val boundContract = ModItemRegistry.BOUND_CONTRACT.get()
+
+            if (abyssalContract == null || boundContract == null) {
+                WingsContractsMod.LOGGER.error("Unable to register item decorations: abyssalContract or boundContract could not be found.")
+            }
+
+            event.register(abyssalContract, instance)
+            event.register(boundContract, instance)
         }
     }
 }

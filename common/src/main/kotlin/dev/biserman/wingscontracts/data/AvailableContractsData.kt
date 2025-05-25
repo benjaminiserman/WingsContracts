@@ -52,7 +52,7 @@ class AvailableContractsData : SavedData() {
         currentCycleStart += cyclesPassed * ModConfig.SERVER.availableContractsPoolRefreshPeriodMs.get()
         remainingPicks.keys.forEach {
             remainingPicks[it] = min(
-                remainingPicks[it]!! + ModConfig.SERVER.availableContractsPoolPicks.get(),
+                (remainingPicks[it] ?: 0) + ModConfig.SERVER.availableContractsPoolPicks.get(),
                 ModConfig.SERVER.availableContractsPoolPicksCap.get()
             )
         }
@@ -104,7 +104,7 @@ class AvailableContractsData : SavedData() {
                 return
             }
 
-            world.server.getLevel(Level.OVERWORLD)!!.dataStorage.set(
+            world.server.getLevel(Level.OVERWORLD)?.dataStorage?.set(
                 IDENTIFIER, data
             )
         }
@@ -114,9 +114,9 @@ class AvailableContractsData : SavedData() {
                 return fakeData
             }
 
-            val data = world.server.getLevel(Level.OVERWORLD)!!.dataStorage.computeIfAbsent(
+            val data = world.server.getLevel(Level.OVERWORLD)?.dataStorage?.computeIfAbsent(
                 AvailableContractsData::load, ::AvailableContractsData, IDENTIFIER
-            )
+            ) ?: fakeData
 
             return data
         }
