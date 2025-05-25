@@ -1,9 +1,6 @@
 package dev.biserman.wingscontracts.entity
 
-import com.simibubi.create.infrastructure.ponder.scenes.fluid.HosePulleyScenes.level
-import dev.biserman.wingscontracts.nbt.ContractTagHelper.itemStack
 import dev.biserman.wingscontracts.registry.ModEntityRegistry
-import net.minecraft.core.SectionPos.z
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.item.ItemStack
@@ -17,9 +14,10 @@ class FakeItemEntity(entityType: EntityType<FakeItemEntity>, level: Level) :
         x: Double,
         y: Double,
         z: Double,
-        itemStack: ItemStack
+        itemStack: ItemStack,
     ) : this(ModEntityRegistry.FAKE_ITEM.get(), level) {
         setPos(x, y, z)
+        setDeltaMovement(0.0, 0.0, 0.0)
         this.item = itemStack
     }
 
@@ -40,6 +38,5 @@ class FakeItemEntity(entityType: EntityType<FakeItemEntity>, level: Level) :
 
         realItemEntity.setPos(x, y, z)
         realItemEntity.deltaMovement = deltaMovement
-        realItemEntity.bobOffs = bobOffs
     }
 }

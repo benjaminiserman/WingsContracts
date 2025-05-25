@@ -119,7 +119,7 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
         builder.add(MODE)
     }
 
-    override fun <T : BlockEntity?> getTicker(
+    override fun <T : BlockEntity> getTicker(
         level: Level, blockState: BlockState,
         blockEntityType: BlockEntityType<T>
     ): BlockEntityTicker<T>? {

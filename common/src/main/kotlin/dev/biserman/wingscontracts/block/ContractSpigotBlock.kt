@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.BaseEntityBlock
+import net.minecraft.world.level.block.RenderShape
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityTicker
 import net.minecraft.world.level.block.entity.BlockEntityType
@@ -26,7 +27,11 @@ class ContractSpigotBlock(properties: Properties) : BaseEntityBlock(properties) 
         blockState: BlockState
     ): BlockEntity = ContractSpigotBlockEntity(blockPos, blockState)
 
-    override fun <T : BlockEntity?> getTicker(
+    override fun getRenderShape(blockState: BlockState): RenderShape {
+        return RenderShape.MODEL
+    }
+
+    override fun <T : BlockEntity> getTicker(
         level: Level, blockState: BlockState,
         blockEntityType: BlockEntityType<T>
     ): BlockEntityTicker<T>? {

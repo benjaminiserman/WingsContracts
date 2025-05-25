@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "wingscontracts:block/contract_spigot"
+    }
+  }
+}

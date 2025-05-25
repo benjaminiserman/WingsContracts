@@ -34,6 +34,7 @@ object WingsContractsMod {
         ModBlockRegistry.register()
         ModItemRegistry.register()
         ModBlockEntityRegistry.register()
+        ModEntityRegistry.register()
         ModSoundRegistry.register()
         ModCommandRegistry.register()
         ModMenuRegistry.register()
