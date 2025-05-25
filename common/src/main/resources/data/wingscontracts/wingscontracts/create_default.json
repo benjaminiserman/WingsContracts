@@ -17,11 +17,6 @@
       "reward": 3
     },
     {
-      "targetItems": "create:super_glue",
-      "countPerUnit": 6,
-      "reward": 2
-    },
-    {
       "targetItems": "create:flywheel",
       "countPerUnit": 2,
       "reward": 10,
@@ -117,5 +112,11 @@
       "countPerUnit": 48,
       "requiresAny": "create"
     }
+  ],
+  "blockedRewards": [
+    "create:flywheel",
+    "create:potato_cannon",
+    "create:transmitter",
+    "create:steam_whistle"
   ]
 }

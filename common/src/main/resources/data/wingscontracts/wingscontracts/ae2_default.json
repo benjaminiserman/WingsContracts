@@ -29,5 +29,8 @@
       "baseUnitsDemanded": 32,
       "name": "wingscontracts.data.ae2.processors"
     }
+  ],
+  "blockedRewards": [
+    "ae2:singularity"
   ]
 }

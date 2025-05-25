@@ -9,6 +9,8 @@ import net.minecraft.world.level.Level
 class FakeItemEntity(entityType: EntityType<FakeItemEntity>, level: Level) :
     ItemEntity(entityType, level) {
 
+    var realItemEntity: ItemEntity = ItemEntity(this)
+
     constructor (
         level: Level,
         x: Double,
@@ -21,15 +23,15 @@ class FakeItemEntity(entityType: EntityType<FakeItemEntity>, level: Level) :
         this.item = itemStack
     }
 
-    val realItemEntity: ItemEntity = ItemEntity(this)
-
     init {
+        realItemEntity = realItemEntity ?: ItemEntity(this)
         setNeverPickUp()
         realItemEntity.setNeverPickUp()
     }
 
     override fun getItem(): ItemStack {
-        return ItemStack.EMPTY
+//        return ItemStack.EMPTY
+        return realItemEntity.item
     }
 
     override fun tick() {
