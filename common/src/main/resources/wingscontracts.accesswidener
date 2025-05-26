@@ -5,3 +5,7 @@ accessible method net/minecraft/core/NonNullList <init> (Ljava/util/List;Ljava/l
 accessible field net/minecraft/commands/synchronization/ArgumentTypeInfos BY_CLASS Ljava/util/Map;
 accessible method net/minecraft/world/entity/item/ItemEntity <init> (Lnet/minecraft/world/entity/item/ItemEntity;)V
 accessible field net/minecraft/world/entity/Entity level Lnet/minecraft/world/level/Level;
+accessible field net/minecraft/world/entity/item/ItemEntity DATA_ITEM Lnet/minecraft/network/syncher/EntityDataAccessor;
+accessible field net/minecraft/client/renderer/entity/ItemEntityRenderer itemRenderer Lnet/minecraft/client/renderer/entity/ItemRenderer;
+accessible field net/minecraft/client/renderer/entity/ItemEntityRenderer random Lnet/minecraft/util/RandomSource;
+accessible method net/minecraft/client/renderer/entity/ItemEntityRenderer getRenderAmount (Lnet/minecraft/world/item/ItemStack;)I

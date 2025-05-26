@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    }
+  },
+  "pattern": [
+    "OOO",
+    "GOG",
+    " E "
+  ],
+  "result": {
+    "item": "wingscontracts:contract_spigot"
+  },
+  "show_notification": false
+}

@@ -82,6 +82,9 @@
     "item.wingscontracts.abyssal_coin": "Abyssal Obol",
     "item.wingscontracts.question_mark": "Matching",
     "item.wingscontracts.star": "Completed",
+    "item.wingscontracts.exclamation_mark": "Paused",
+    "item.wingscontracts.yellow_exclamation_mark": "Not Found",
+    "item.wingscontracts.red_exclamation_mark": "Cheater!",
 
 
     "block.wingscontracts.contract_portal": "Contract Portal",

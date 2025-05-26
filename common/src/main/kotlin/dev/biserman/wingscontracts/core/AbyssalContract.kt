@@ -247,7 +247,7 @@ class AbyssalContract(
         }
 
         val consumedUnits = consumeUnits(unitCount, portal)
-        SpigotLinker.get(portal.level ?: return listOf()).itemsToSpit.addAll(consumedUnits)
+        SpigotLinker.get(portal.level ?: return listOf()).spitItems(consumedUnits)
 
         unitsFulfilledEver += unitCount
         tag.unitsFulfilledEver = unitsFulfilledEver

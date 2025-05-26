@@ -17,41 +17,26 @@ class ContractSpigotBlockEntity(
     blockPos,
     blockState
 ) {
-    var cooldownTime: Int = 0
-
-    fun createItem(itemStack: ItemStack) {
+    fun spitItem(itemStack: ItemStack) {
         val level = level ?: return
         level.addFreshEntity(
             FakeItemEntity(
                 level,
-                blockPos.x.toDouble(),
+                blockPos.x + 0.5,
                 blockPos.y - 0.5,
-                blockPos.z.toDouble(),
+                blockPos.z + 0.5,
                 itemStack
             )
         )
     }
 
-    companion object {
-        fun serverTick(
-            level: Level, blockPos: BlockPos, blockState: BlockState,
-            spigot: ContractSpigotBlockEntity
-        ): Boolean {
-            --spigot.cooldownTime
-            if (spigot.cooldownTime > 0) {
-                return false
-            }
-            spigot.cooldownTime = 0
+    override fun setLevel(level: Level) {
+        super.setLevel(level)
+        SpigotLinker.get(level).linkedSpigots.add(this)
+    }
 
-            val itemToSpit = SpigotLinker.get(level).itemsToSpit.removeFirstOrNull()
-            if (itemToSpit == null) {
-                return false
-            }
-
-            spigot.createItem(itemToSpit)
-            spigot.cooldownTime = 10
-
-            return true
-        }
+    override fun setRemoved() {
+        super.setRemoved()
+        SpigotLinker.get(level ?: return).linkedSpigots.remove(this)
     }
 }

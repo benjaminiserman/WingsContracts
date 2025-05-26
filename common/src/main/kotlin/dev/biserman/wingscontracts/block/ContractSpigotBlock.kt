@@ -31,19 +31,6 @@ class ContractSpigotBlock(properties: Properties) : BaseEntityBlock(properties) 
         return RenderShape.MODEL
     }
 
-    override fun <T : BlockEntity> getTicker(
-        level: Level, blockState: BlockState,
-        blockEntityType: BlockEntityType<T>
-    ): BlockEntityTicker<T>? {
-        return if (level.isClientSide) {
-            null
-        } else {
-            createTickerHelper(
-                blockEntityType, ModBlockEntityRegistry.CONTRACT_SPIGOT.get(), ContractSpigotBlockEntity::serverTick
-            )
-        }
-    }
-
     companion object {
         private val SHAPE: VoxelShape = box(0.0, 4.0, 0.0, 16.0, 16.0, 16.0)
     }
