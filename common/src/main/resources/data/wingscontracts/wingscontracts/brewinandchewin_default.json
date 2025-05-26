@@ -40,5 +40,9 @@
       "countPerUnit": 24,
       "reward": 2
     }
+  ],
+  "blockedRewards": [
+    "brewinandchewin:strongroot_ale",
+    "brewinandchewin:steel_toe_stout"
   ]
 }

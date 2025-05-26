@@ -45,5 +45,8 @@
       "targetItems": "neapolitan:banana",
       "countPerUnit": 32
     }
+  ],
+  "blockedRewards": [
+    "neapolitan:adzuki_stew"
   ]
 }

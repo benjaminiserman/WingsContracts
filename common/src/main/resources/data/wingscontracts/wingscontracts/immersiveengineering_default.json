@@ -36,5 +36,9 @@
       "countPerUnit": 64,
       "reward": 2
     }
+  ],
+  "blockedRewards": [
+    "immersiveengineering:revolver",
+    "immersiveengineering:component_electronic_adv"
   ]
 }

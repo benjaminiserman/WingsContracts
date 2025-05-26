@@ -27,5 +27,8 @@
       "countPerUnit": 16,
       "reward": 3
     }
+  ],
+  "blockedRewards": [
+    "tfmg:compact_engine"
   ]
 }

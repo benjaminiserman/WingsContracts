@@ -37,5 +37,10 @@
       "countPerUnit": 32,
       "reward": 3
     }
+  ],
+  "blockedRewards": [
+    "pneumaticcraft:capacitor",
+    "pneumaticcraft:transistor",
+    "pneumaticcraft:printed_circuit_board"
   ]
 }
