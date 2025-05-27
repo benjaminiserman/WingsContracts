@@ -34,6 +34,7 @@ repositories {
     }
     maven("https://squiddev.cc/maven/")
     maven("https://maven.createmod.net")
+    maven("https://maven.tterrag.com/")
 }
 
 dependencies {
@@ -51,8 +52,14 @@ dependencies {
     val ccTweakedVersion = rootProject.property("cc_tweaked_version")
     compileOnly("cc.tweaked:cc-tweaked-$minecraftVersion-forge-api:$ccTweakedVersion")
 
-    val createVersion = rootProject.property("create_version")
-    compileOnly("com.simibubi.create:create-$minecraftVersion:$createVersion:slim")
+    if (rootProject.property("create_enable") == "true") {
+        val createVersion = rootProject.property("create_version")
+        val ponderVersion = rootProject.property("ponder_version")
+        val registrateVersion = rootProject.property("registrate_version")
+        compileOnly("com.simibubi.create:create-$minecraftVersion:$createVersion:slim") { isTransitive = false }
+        compileOnly("net.createmod.ponder:Ponder-Forge-$minecraftVersion:$ponderVersion") { isTransitive = false }
+        compileOnly("com.tterrag.registrate:Registrate:${registrateVersion}")
+    }
 }
 
 tasks.processResources {

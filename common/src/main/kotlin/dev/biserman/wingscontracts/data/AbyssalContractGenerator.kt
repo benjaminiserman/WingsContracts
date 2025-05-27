@@ -11,7 +11,7 @@ import dev.biserman.wingscontracts.core.Contract.Companion.rarity
 import dev.biserman.wingscontracts.core.Contract.Companion.startTime
 import dev.biserman.wingscontracts.core.Contract.Companion.targetConditions
 import dev.biserman.wingscontracts.core.Contract.Companion.targetItems
-import dev.biserman.wingscontracts.data.AvailableContractsData.Companion.random
+import dev.biserman.wingscontracts.data.ContractSavedData.Companion.random
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.Reward
 import net.minecraft.world.item.ItemStack
@@ -21,7 +21,7 @@ import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.roundToInt
 
-class AbyssalContractGenerator(val data: AvailableContractsData) {
+class AbyssalContractGenerator(val data: ContractSavedData) {
     private fun vary(value: Double, multiplier: Double): Double {
         val variance = ModConfig.SERVER.variance.get()
         val randomFactor = random.nextDouble()

@@ -1,6 +1,6 @@
 package dev.biserman.wingscontracts.container
 
-import dev.biserman.wingscontracts.data.AvailableContractsData
+import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.data.AvailableContractsManager
 import dev.biserman.wingscontracts.server.SyncAvailableContractsMessage
 import net.minecraft.server.level.ServerLevel
@@ -17,13 +17,13 @@ class AvailableContractsContainerSlot(
 ) : Slot(availableContractsContainer, index, x, y) {
     override fun onTake(player: Player, itemStack: ItemStack) {
         if (!player.isCreative) {
-            AvailableContractsData.setRemainingPicks(player, AvailableContractsData.remainingPicks(player) - 1)
+            ContractSavedData.setRemainingPicks(player, ContractSavedData.remainingPicks(player) - 1)
         }
 
         if (player is ServerPlayer) {
             if (item.isEmpty) {
                 set(
-                    AvailableContractsData
+                    ContractSavedData
                         .get(player.level())
                         .generator
                         .generateContract(AvailableContractsManager.randomTag())
@@ -35,7 +35,7 @@ class AvailableContractsContainerSlot(
     }
 
     override fun mayPickup(player: Player): Boolean =
-        player.isCreative || AvailableContractsData.remainingPicks(player) > 0
+        player.isCreative || ContractSavedData.remainingPicks(player) > 0
 
     override fun mayPlace(itemStack: ItemStack): Boolean = false
 }

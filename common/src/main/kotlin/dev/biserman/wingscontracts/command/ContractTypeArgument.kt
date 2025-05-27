@@ -10,7 +10,7 @@ import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.BoundContract
 import dev.biserman.wingscontracts.core.Contract
-import dev.biserman.wingscontracts.data.AvailableContractsData
+import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.nbt.ContractTag
 import net.minecraft.commands.SharedSuggestionProvider
 import net.minecraft.network.chat.Component
@@ -41,7 +41,7 @@ class ContractTypeArgument : ArgumentType<String> {
 
     companion object {
         val options = mapOf<String, (Level, ContractTag) -> Contract>(
-            "abyssal" to { level, tag -> AbyssalContract.load(tag, AvailableContractsData.get(level)) },
+            "abyssal" to { level, tag -> AbyssalContract.load(tag, ContractSavedData.get(level)) },
             "bound" to { level, tag -> BoundContract.load(tag) }
         )
 

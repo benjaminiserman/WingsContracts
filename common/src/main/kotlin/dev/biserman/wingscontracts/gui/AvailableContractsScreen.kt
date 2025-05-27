@@ -1,7 +1,7 @@
 package dev.biserman.wingscontracts.gui
 
 import dev.biserman.wingscontracts.WingsContractsMod
-import dev.biserman.wingscontracts.data.AvailableContractsData
+import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
@@ -32,7 +32,7 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
         graphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 4210752, false)
 
         val timeTilRefreshUnits = DenominationsHelper.denominate(
-            AvailableContractsData.get(inventory.player.level()).nextCycleStart - System.currentTimeMillis(),
+            ContractSavedData.get(inventory.player.level()).nextCycleStart - System.currentTimeMillis(),
             DenominationsHelper.timeDenominationsWithoutMs
         ).asSequence().map { it.first.key to it.second }.toMap()
 
@@ -65,7 +65,7 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
         )
         val remainingPicksLabel = Component.translatable(
             "${WingsContractsMod.MOD_ID}.gui.contract_portal.remaining_picks",
-            if (inventory.player.isCreative) "∞" else AvailableContractsData.remainingPicks(inventory.player)
+            if (inventory.player.isCreative) "∞" else ContractSavedData.remainingPicks(inventory.player)
                 .toString()
         )
         graphics.drawString(

@@ -9,3 +9,4 @@ accessible field net/minecraft/world/entity/item/ItemEntity DATA_ITEM Lnet/minec
 accessible field net/minecraft/client/renderer/entity/ItemEntityRenderer itemRenderer Lnet/minecraft/client/renderer/entity/ItemRenderer;
 accessible field net/minecraft/client/renderer/entity/ItemEntityRenderer random Lnet/minecraft/util/RandomSource;
 accessible method net/minecraft/client/renderer/entity/ItemEntityRenderer getRenderAmount (Lnet/minecraft/world/item/ItemStack;)I
+accessible field net/minecraft/world/scores/Scoreboard playerScores Ljava/util/Map;

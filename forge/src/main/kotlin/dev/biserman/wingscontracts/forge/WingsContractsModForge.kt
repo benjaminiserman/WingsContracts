@@ -18,9 +18,11 @@ class WingsContractsModForge {
         @Suppress("removal")
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, WingsContractsConfig.SERVER_SPEC)
 
-        EventBuses.registerModEventBus(WingsContractsMod.MOD_ID, MOD_BUS)
+        val modBus = MOD_BUS
+        EventBuses.registerModEventBus(WingsContractsMod.MOD_ID, modBus)
 
         WingsContractsMod.init(ForgePlatformHelper())
+        ForgeModCompat.init(modBus)
 
         if (ModList.get().isLoaded(CompatMods.COMPUTERCRAFT)) {
             ModPeripheralProvider.register()

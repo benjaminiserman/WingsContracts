@@ -4,6 +4,7 @@ import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.container.AvailableContractsContainer
+import dev.biserman.wingscontracts.scoreboard.ScoreboardHandler
 import dev.biserman.wingscontracts.server.SyncAvailableContractsMessage
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
@@ -16,7 +17,7 @@ import net.minecraft.world.level.saveddata.SavedData
 import java.util.*
 import kotlin.math.min
 
-class AvailableContractsData : SavedData() {
+class ContractSavedData : SavedData() {
     val container = AvailableContractsContainer()
     val remainingPicks = mutableMapOf<String, Int>()
     var currentCycleStart: Long = 0
@@ -57,6 +58,8 @@ class AvailableContractsData : SavedData() {
             )
         }
 
+        ScoreboardHandler.resetPeriodic(level)
+
         refresh(level)
     }
 
@@ -85,10 +88,10 @@ class AvailableContractsData : SavedData() {
 
         val random = Random()
 
-        var fakeData = AvailableContractsData()
+        var fakeData = ContractSavedData()
 
-        fun load(nbt: CompoundTag): AvailableContractsData {
-            val availableContracts = AvailableContractsData()
+        fun load(nbt: CompoundTag): ContractSavedData {
+            val availableContracts = ContractSavedData()
             ContainerHelper.loadAllItems(nbt.getCompound(CONTRACT_LIST), availableContracts.container.items)
             val remainingPicksTag = nbt.getCompound(REMAINING_PICKS)
             remainingPicksTag.allKeys.forEach { key ->
@@ -98,7 +101,7 @@ class AvailableContractsData : SavedData() {
             return availableContracts
         }
 
-        fun set(world: Level, data: AvailableContractsData) {
+        fun set(world: Level, data: ContractSavedData) {
             fakeData = data
             if (world !is ServerLevel) {
                 return
@@ -109,13 +112,13 @@ class AvailableContractsData : SavedData() {
             )
         }
 
-        fun get(world: Level): AvailableContractsData {
+        fun get(world: Level): ContractSavedData {
             if (world !is ServerLevel) {
                 return fakeData
             }
 
             val data = world.server.getLevel(Level.OVERWORLD)?.dataStorage?.computeIfAbsent(
-                AvailableContractsData::load, ::AvailableContractsData, IDENTIFIER
+                ContractSavedData::load, ::ContractSavedData, IDENTIFIER
             ) ?: fakeData
 
             return data

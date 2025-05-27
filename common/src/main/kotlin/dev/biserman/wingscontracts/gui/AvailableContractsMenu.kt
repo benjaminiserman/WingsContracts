@@ -3,7 +3,7 @@ package dev.biserman.wingscontracts.gui
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.registry.ModMenuRegistry
 import dev.biserman.wingscontracts.container.AvailableContractsContainerSlot
-import dev.biserman.wingscontracts.data.AvailableContractsData
+import dev.biserman.wingscontracts.data.ContractSavedData
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack
 class AvailableContractsMenu(id: Int, inventory: Inventory) :
     AbstractContainerMenu(ModMenuRegistry.CONTRACT_PORTAL.get(), id) {
 
-    val data = AvailableContractsData.get(inventory.player.level())
+    val data = ContractSavedData.get(inventory.player.level())
     val container = data.container
 
     init {

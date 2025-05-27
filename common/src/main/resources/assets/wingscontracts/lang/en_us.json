@@ -88,6 +88,8 @@
 
 
     "block.wingscontracts.contract_portal": "Contract Portal",
+    "block.wingscontracts.contract_portal.display_source.main": "Contract Leaderboard",
+    "block.wingscontracts.contract_portal.display_source.periodic": "Periodic Contract Leaderboard",
     "block.wingscontracts.contract_spigot": "Contract Spigot",
 
 

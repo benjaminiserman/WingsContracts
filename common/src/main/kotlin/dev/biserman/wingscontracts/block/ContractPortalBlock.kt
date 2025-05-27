@@ -5,7 +5,7 @@ package dev.biserman.wingscontracts.block
 import dev.architectury.registry.menu.MenuRegistry
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.config.ModConfig
-import dev.biserman.wingscontracts.data.AvailableContractsData
+import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.item.ContractItem
 import dev.biserman.wingscontracts.registry.ModBlockEntityRegistry
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
@@ -160,7 +160,7 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
                 )
                 while (!blockEntity.cachedRewards.isEmpty) {
                     val rewardStackToSpit =
-                        AvailableContractsData.get(level).currencyHandler.splitHighestDenomination(blockEntity.cachedRewards.items.first { !it.isEmpty })
+                        ContractSavedData.get(level).currencyHandler.splitHighestDenomination(blockEntity.cachedRewards.items.first { !it.isEmpty })
                     while (rewardStackToSpit.count > 0) {
                         val splitStack = rewardStackToSpit.split(
                             min(

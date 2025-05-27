@@ -5,8 +5,8 @@ import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
 import dev.biserman.wingscontracts.config.GrowthFunctionOptions
 import dev.biserman.wingscontracts.config.ModConfig
-import dev.biserman.wingscontracts.data.AvailableContractsData
 import dev.biserman.wingscontracts.data.AvailableContractsManager
+import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.boolean
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.double
@@ -308,7 +308,7 @@ class AbyssalContract(
             return maxUnitsDemanded * reward.count
         }
 
-    fun calculateRarity(data: AvailableContractsData, rewardUnitValue: Double): Int {
+    fun calculateRarity(data: ContractSavedData, rewardUnitValue: Double): Int {
         return data.rarityThresholds.indexOfLast { (maxPossibleReward / reward.count) * rewardUnitValue > it } + 1
     }
 
@@ -398,7 +398,7 @@ class AbyssalContract(
         var (ContractTag).baseUnitsDemanded by int()
         var (ContractTag).unitsFulfilled by int()
 
-        fun load(tag: ContractTag, data: AvailableContractsData? = null): AbyssalContract {
+        fun load(tag: ContractTag, data: ContractSavedData? = null): AbyssalContract {
             val reward = tag.reward ?: Reward.Random(1.0)
             return AbyssalContract(
                 id = tag.id ?: UUID.randomUUID(),
@@ -422,7 +422,7 @@ class AbyssalContract(
                 reward = when (reward) {
                     is Reward.Defined -> reward.itemStack
                     is Reward.Random ->
-                        data?.generator?.getRandomReward(reward.value) ?: AvailableContractsData.FALLBACK_REWARD.item
+                        data?.generator?.getRandomReward(reward.value) ?: ContractSavedData.FALLBACK_REWARD.item
                 },
                 level = tag.level ?: 1,
                 quantityGrowthFactor = tag.quantityGrowthFactor ?: ModConfig.SERVER.defaultGrowthFactor.get(),

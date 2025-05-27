@@ -3,7 +3,7 @@ package dev.biserman.wingscontracts.command
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.ArgumentBuilder
 import dev.biserman.wingscontracts.WingsContractsMod
-import dev.biserman.wingscontracts.data.AvailableContractsData
+import dev.biserman.wingscontracts.data.ContractSavedData
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.commands.arguments.EntityArgument
@@ -17,7 +17,7 @@ object PoolCommand {
                     { Component.translatable("commands.${WingsContractsMod.MOD_ID}.refresh") },
                     true
                 )
-                AvailableContractsData.get(context.source.level).refresh(context.source.level)
+                ContractSavedData.get(context.source.level).refresh(context.source.level)
                 0
             })
             .then(Commands.literal("clear").executes { context ->
@@ -25,7 +25,7 @@ object PoolCommand {
                     { Component.translatable("commands.${WingsContractsMod.MOD_ID}.clear") },
                     true
                 )
-                AvailableContractsData.get(context.source.level).clear(context.source.level)
+                ContractSavedData.get(context.source.level).clear(context.source.level)
                 0
             })
             .then(
@@ -38,7 +38,7 @@ object PoolCommand {
                                         Commands.argument("amount", IntegerArgumentType.integer()).executes { context ->
                                             val player = EntityArgument.getPlayer(context, "target")
                                             val amount = IntegerArgumentType.getInteger(context, "amount")
-                                            AvailableContractsData.setRemainingPicks(player, amount, true)
+                                            ContractSavedData.setRemainingPicks(player, amount, true)
                                             context.source.sendSuccess({
                                                 Component.translatable(
                                                     "commands.${WingsContractsMod.MOD_ID}.set_picks",
@@ -60,7 +60,7 @@ object PoolCommand {
                                     ).executes { context ->
                                         val player = EntityArgument.getPlayer(context, "target")
                                         val amount = IntegerArgumentType.getInteger(context, "amount")
-                                        AvailableContractsData.addRemainingPicks(player, amount, true)
+                                        ContractSavedData.addRemainingPicks(player, amount, true)
                                         context.source.sendSuccess({
                                             Component.translatable(
                                                 "commands.${WingsContractsMod.MOD_ID}.add_picks",

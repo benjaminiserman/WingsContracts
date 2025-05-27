@@ -9,6 +9,9 @@ class SpigotLinker {
     val linkedSpigots = mutableListOf<ContractSpigotBlockEntity>()
 
     fun spitItem(itemStack: ItemStack) {
+        if (linkedSpigots.isEmpty()) {
+            return
+        }
         linkedSpigots[Random.nextInt(linkedSpigots.count())].spitItem(itemStack)
     }
 

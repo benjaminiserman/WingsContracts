@@ -6,7 +6,7 @@ import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
 import dev.biserman.wingscontracts.config.ModConfig
-import dev.biserman.wingscontracts.data.AvailableContractsData
+import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
@@ -248,7 +248,7 @@ class BoundContract(
         var (ContractTag).otherSideCountPerUnit by int()
         var (ContractTag).otherSideTargets by csv()
 
-        fun load(tag: ContractTag, data: AvailableContractsData? = null): BoundContract {
+        fun load(tag: ContractTag, data: ContractSavedData? = null): BoundContract {
             return BoundContract(
                 id = tag.id ?: UUID.randomUUID(),
                 targetItems = tag.targetItems ?: listOf(),

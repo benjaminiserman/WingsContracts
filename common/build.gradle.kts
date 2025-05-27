@@ -1,5 +1,6 @@
 repositories {
     maven("https://maven.shedaniel.me/")
+    maven("https://maven.tterrag.com/")
     maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/")
     maven("https://squiddev.cc/maven/")
     maven("https://maven.createmod.net")
@@ -29,8 +30,10 @@ dependencies {
     if (rootProject.property("create_enable") == "true") {
         val createVersion = rootProject.property("create_version")
         val ponderVersion = rootProject.property("ponder_version")
+        val registrateVersion = rootProject.property("registrate_version")
         compileOnly("com.simibubi.create:create-$minecraftVersion:$createVersion:slim") { isTransitive = false }
         compileOnly("net.createmod.ponder:Ponder-Forge-$minecraftVersion:$ponderVersion") { isTransitive = false }
+        compileOnly("com.tterrag.registrate:Registrate:${registrateVersion}")
     }
 
     implementation(kotlin("reflect"))
