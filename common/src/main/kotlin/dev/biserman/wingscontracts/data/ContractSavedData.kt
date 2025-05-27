@@ -71,7 +71,7 @@ class ContractSavedData : SavedData() {
     fun refresh(level: ServerLevel) {
         container.clearContent()
         for (i in 0..<container.containerSize) {
-            container.items[i] = generator.generateContract(AvailableContractsManager.randomTag()).createItem()
+            container.items[i] = generator.generateContract(ContractDataReloadListener.randomTag()).createItem()
         }
         LoadedContracts.clear()
         SyncAvailableContractsMessage(level).sendToAll(level.server)

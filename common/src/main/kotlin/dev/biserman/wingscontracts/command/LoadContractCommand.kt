@@ -9,7 +9,7 @@ import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.BoundContract
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.data.ContractSavedData
-import dev.biserman.wingscontracts.data.AvailableContractsManager
+import dev.biserman.wingscontracts.data.ContractDataReloadListener
 import dev.biserman.wingscontracts.nbt.ContractTag
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
@@ -59,7 +59,7 @@ object LoadContractCommand {
             if (index != null) {
                 return ContractSavedData.get(level).generator.generateContract(
                     ContractTag(
-                        AvailableContractsManager.availableContracts[index].tag.copy()
+                        ContractDataReloadListener.availableContracts[index].tag.copy()
                     )
                 )
             }

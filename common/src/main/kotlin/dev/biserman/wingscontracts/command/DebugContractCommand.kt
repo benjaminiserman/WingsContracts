@@ -3,7 +3,7 @@ package dev.biserman.wingscontracts.command
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.ArgumentBuilder
 import dev.biserman.wingscontracts.WingsContractsMod
-import dev.biserman.wingscontracts.data.AvailableContractsManager
+import dev.biserman.wingscontracts.data.ContractDataReloadListener
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.network.chat.Component
@@ -27,7 +27,7 @@ object DebugContractCommand {
 
     const val PAGE_SIZE = 20
     fun listPage(sourceStack: CommandSourceStack, page: Int): Int {
-        val maxPage = (AvailableContractsManager.availableContracts.size / PAGE_SIZE) + 1
+        val maxPage = (ContractDataReloadListener.availableContracts.size / PAGE_SIZE) + 1
         if (page > maxPage) {
             sourceStack.sendFailure(
                 Component.translatable(
@@ -40,9 +40,9 @@ object DebugContractCommand {
         }
 
         sourceStack.sendSuccess({ Component.literal("==========================") }, true)
-        for (entry in AvailableContractsManager.availableContracts.withIndex().toList().subList(
+        for (entry in ContractDataReloadListener.availableContracts.withIndex().toList().subList(
             (page - 1) * PAGE_SIZE,
-            min(page * PAGE_SIZE, AvailableContractsManager.availableContracts.size)
+            min(page * PAGE_SIZE, ContractDataReloadListener.availableContracts.size)
         )) {
             sourceStack.sendSuccess({ Component.literal("${entry.index}. ${entry.value.tag}") }, true)
         }

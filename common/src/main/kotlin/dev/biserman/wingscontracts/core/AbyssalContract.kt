@@ -5,7 +5,7 @@ import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.compat.computercraft.DetailsHelper.details
 import dev.biserman.wingscontracts.config.GrowthFunctionOptions
 import dev.biserman.wingscontracts.config.ModConfig
-import dev.biserman.wingscontracts.data.AvailableContractsManager
+import dev.biserman.wingscontracts.data.ContractDataReloadListener
 import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper.boolean
@@ -262,7 +262,7 @@ class AbyssalContract(
         get() = unitsFulfilled >= unitsDemanded
 
     fun formatReward(count: Int): String {
-        val rewardEntry = AvailableContractsManager.defaultRewards.firstOrNull { it.item.item == reward.item }
+        val rewardEntry = ContractDataReloadListener.defaultRewards.firstOrNull { it.item.item == reward.item }
         return if (rewardEntry == null || rewardEntry.formatString == null) {
             "$count ${reward.displayName.string.trimBrackets()}"
         } else {

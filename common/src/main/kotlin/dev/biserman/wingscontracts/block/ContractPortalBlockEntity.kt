@@ -13,7 +13,7 @@ import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.BoundContract
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.core.PortalLinker
-import dev.biserman.wingscontracts.data.AvailableContractsManager
+import dev.biserman.wingscontracts.data.ContractDataReloadListener
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
@@ -470,7 +470,7 @@ class ContractPortalBlockEntity(
                 ScoreboardHandler.add(
                     serverLevel,
                     player,
-                    rewards.sumOf { floor(AvailableContractsManager.valueReward(it)) }
+                    rewards.sumOf { floor(ContractDataReloadListener.valueReward(it)) }
                 )
 
                 if (contract.unitsFulfilled >= contract.unitsDemanded) {

@@ -30,7 +30,7 @@ val GSON: Gson = (GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().creat
 
 class RewardBagEntry(val item: ItemStack, val value: Double, val weight: Int, val formatString: String? = null)
 
-object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "wingscontracts") {
+object ContractDataReloadListener : SimpleJsonResourceReloadListener(GSON, "wingscontracts") {
     private val allAvailableContracts = mutableListOf<ContractTag>()
     private val nonDefaultAvailableContracts = mutableListOf<ContractTag>()
     val availableContracts
@@ -66,7 +66,7 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "wings
     override fun prepare(
         resourceManager: ResourceManager,
         profilerFiller: ProfilerFiller
-    ): Map<ResourceLocation?, JsonElement?>? {
+    ): Map<ResourceLocation, JsonElement> {
         allAvailableContracts.clear()
         nonDefaultAvailableContracts.clear()
         allDefaultRewards.clear()

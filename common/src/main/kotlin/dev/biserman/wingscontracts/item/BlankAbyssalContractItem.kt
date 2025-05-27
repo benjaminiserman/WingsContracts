@@ -3,7 +3,7 @@ package dev.biserman.wingscontracts.item
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.data.ContractSavedData
-import dev.biserman.wingscontracts.data.AvailableContractsManager
+import dev.biserman.wingscontracts.data.ContractDataReloadListener
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
@@ -30,7 +30,7 @@ class BlankAbyssalContractItem(properties: Properties) : Item(properties) {
             }
 
             val contract =
-                ContractSavedData.get(level).generator.generateContract(AvailableContractsManager.randomTag())
+                ContractSavedData.get(level).generator.generateContract(ContractDataReloadListener.randomTag())
             val newContractStack = contract.createItem()
             player.setItemInHand(interactionHand, newContractStack)
 

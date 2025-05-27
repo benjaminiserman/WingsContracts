@@ -1,7 +1,7 @@
 package dev.biserman.wingscontracts.container
 
 import dev.biserman.wingscontracts.data.ContractSavedData
-import dev.biserman.wingscontracts.data.AvailableContractsManager
+import dev.biserman.wingscontracts.data.ContractDataReloadListener
 import dev.biserman.wingscontracts.server.SyncAvailableContractsMessage
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
@@ -26,7 +26,7 @@ class AvailableContractsContainerSlot(
                     ContractSavedData
                         .get(player.level())
                         .generator
-                        .generateContract(AvailableContractsManager.randomTag())
+                        .generateContract(ContractDataReloadListener.randomTag())
                         .createItem()
                 )
             }

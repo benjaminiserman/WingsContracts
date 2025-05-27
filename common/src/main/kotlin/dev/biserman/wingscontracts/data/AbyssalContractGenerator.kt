@@ -48,7 +48,7 @@ class AbyssalContractGenerator(val data: ContractSavedData) {
             val rewardValue = vary(reward.value, ModConfig.SERVER.defaultRewardMultiplier.get())
             if (random.nextDouble() <= ModConfig.SERVER.replaceRewardWithRandomPercent.get()) {
                 for (_try in 1..5) { // attempt 5 times to find a working item
-                    val otherContract = AvailableContractsManager.randomTag()
+                    val otherContract = ContractDataReloadListener.randomTag()
                     val otherContractItem = otherContract.targetItems?.get(0) ?: continue
 
                     // skip multi-item contracts
@@ -62,7 +62,7 @@ class AbyssalContractGenerator(val data: ContractSavedData) {
                     }
 
                     // skip contracts that are on the reward blocklist
-                    if (AvailableContractsManager.rewardBlocklist
+                    if (ContractDataReloadListener.rewardBlocklist
                             .contains(otherContractItem.`arch$registryName`().toString())
                     ) {
                         continue
@@ -120,7 +120,7 @@ class AbyssalContractGenerator(val data: ContractSavedData) {
 
     private fun getCount(reward: RewardBagEntry, value: Double) = round(value / reward.value).toInt()
     fun getRandomReward(value: Double): ItemStack {
-        val sufficientlyCheapRewardsBag = AvailableContractsManager.defaultRewards.filter { getCount(it, value) >= 1 }
+        val sufficientlyCheapRewardsBag = ContractDataReloadListener.defaultRewards.filter { getCount(it, value) >= 1 }
         val sufficientlyCheapRewardsWeightSum = sufficientlyCheapRewardsBag.sumOf { it.weight }
 
         if (sufficientlyCheapRewardsWeightSum > 0) {
@@ -134,9 +134,9 @@ class AbyssalContractGenerator(val data: ContractSavedData) {
             }
         }
 
-        val lastFit = AvailableContractsManager.defaultRewards.lastOrNull { getCount(it, value) >= 1 }
+        val lastFit = ContractDataReloadListener.defaultRewards.lastOrNull { getCount(it, value) >= 1 }
         return if (lastFit == null) {
-            AvailableContractsManager.defaultRewards.minBy { it.value }.item.copy()
+            ContractDataReloadListener.defaultRewards.minBy { it.value }.item.copy()
         } else {
             return lastFit.item.copyWithCount(lastFit.item.count * getCount(lastFit, value))
         }
