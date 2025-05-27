@@ -1,5 +1,6 @@
 package dev.biserman.wingscontracts.client.ponder
 
+import com.simibubi.create.infrastructure.ponder.AllCreatePonderTags
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.client.ponder.scenes.*
 import dev.biserman.wingscontracts.command.LoadContractCommand
@@ -55,6 +56,9 @@ object ModPonderPlugin : PonderPlugin {
 
         helper.addToTag(CONTRACT_CATEGORY)
             .add(ModBlockRegistry.CONTRACT_SPIGOT.id)
+            .add(ModBlockRegistry.CONTRACT_PORTAL.id)
+
+        helper.addToTag(AllCreatePonderTags.DISPLAY_SOURCES)
             .add(ModBlockRegistry.CONTRACT_PORTAL.id)
     }
 }
