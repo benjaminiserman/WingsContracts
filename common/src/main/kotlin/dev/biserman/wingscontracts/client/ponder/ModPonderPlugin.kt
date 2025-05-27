@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level
 import java.util.*
 
 object ModPonderPlugin : PonderPlugin {
-    val CONTRACT_CATEGORY = WingsContractsMod.prefix("contract_portal")
+    val CONTRACT_CATEGORY = WingsContractsMod.prefix("contracts")
 
     fun getExampleContract(level: Level) = LoadContractCommand.loadContract(
         "{\"targetItems\":\"minecraft:diamond\",\"countPerUnit\": 8,\"reward\":{\"Count\": 1,\"id\":\"minecraft:emerald\"}}",
@@ -43,15 +43,18 @@ object ModPonderPlugin : PonderPlugin {
         RedstoneInputScene.register(helper)
         RedstoneOutputScene.register(helper)
         BoundContractScene.register(helper)
+        SpigotScene.register(helper)
     }
 
-    override fun registerTags(helper: PonderTagRegistrationHelper<ResourceLocation?>) {
+    override fun registerTags(helper: PonderTagRegistrationHelper<ResourceLocation>) {
         helper.registerTag(CONTRACT_CATEGORY)
             .addToIndex()
+            .item(ModBlockRegistry.CONTRACT_SPIGOT.get() ?: return, true, false)
             .item(ModBlockRegistry.CONTRACT_PORTAL.get() ?: return, true, false)
             .register()
 
         helper.addToTag(CONTRACT_CATEGORY)
+            .add(ModBlockRegistry.CONTRACT_SPIGOT.id)
             .add(ModBlockRegistry.CONTRACT_PORTAL.id)
     }
 }
