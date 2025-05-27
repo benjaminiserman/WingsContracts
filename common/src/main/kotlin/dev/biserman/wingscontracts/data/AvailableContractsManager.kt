@@ -63,6 +63,20 @@ object AvailableContractsManager : SimpleJsonResourceReloadListener(GSON, "wings
             fullRewardBlocklist.toList()
         }
 
+    override fun prepare(
+        resourceManager: ResourceManager,
+        profilerFiller: ProfilerFiller
+    ): Map<ResourceLocation?, JsonElement?>? {
+        allAvailableContracts.clear()
+        nonDefaultAvailableContracts.clear()
+        allDefaultRewards.clear()
+        nonDefaultDefaultRewards.clear()
+        fullRewardBlocklist.clear()
+        nonDefaultRewardBlocklist.clear()
+
+        return super.prepare(resourceManager, profilerFiller)
+    }
+
     fun randomTag() =
         if (availableContracts.isEmpty()) {
             WingsContractsMod.LOGGER.warn("Available contracts pool is empty, returning unknown contract.")

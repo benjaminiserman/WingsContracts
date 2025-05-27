@@ -811,7 +811,7 @@
       "reward": 1,
       "baseUnitsDemanded": 96,
       "name": "wingscontracts.data.gerund",
-      "description": "wingscontracts.gerund.desc"
+      "description": "wingscontracts.data.gerund.desc"
     }
   ],
   "blockedRewards": [
