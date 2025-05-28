@@ -19,6 +19,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val contractPortalInputSlots: ForgeConfigSpec.IntValue
     val boundContractLossRate: ForgeConfigSpec.DoubleValue
     val boundContractRequiresTwoPlayers: ForgeConfigSpec.BooleanValue
+    val announceCycleLeaderboard: ForgeConfigSpec.IntValue
 
     // Contract Defaults
     val defaultRewardMultiplier: ForgeConfigSpec.DoubleValue
@@ -128,6 +129,10 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
         boundContractRequiresTwoPlayers =
             builder.comment("If true, a different player must place each end of the bound contract into its respective portal in order for the exchange to work.")
                 .define("boundContractRequiresTwoPlayers", true)
+
+        announceCycleLeaderboard =
+            builder.comment("If non-zero, this number of players from the top of this cycle's contract score leaderboard will have their scores announced in chat at the end of the cycle.")
+                .defineInRange("announceCycleLeaderboard", 0, 0, Int.MAX_VALUE)
 
         builder.pop()
         builder.push("Contract Defaults")

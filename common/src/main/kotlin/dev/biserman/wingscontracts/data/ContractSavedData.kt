@@ -58,6 +58,10 @@ class ContractSavedData : SavedData() {
             )
         }
 
+        val playersToShow = ModConfig.SERVER.announceCycleLeaderboard.get()
+        if (playersToShow != 0) {
+            ScoreboardHandler.announceTopScores(level, playersToShow)
+        }
         ScoreboardHandler.resetPeriodic(level)
 
         refresh(level)

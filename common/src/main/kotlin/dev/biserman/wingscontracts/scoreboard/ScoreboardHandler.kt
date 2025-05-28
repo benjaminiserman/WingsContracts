@@ -1,11 +1,14 @@
 package dev.biserman.wingscontracts.scoreboard
 
+import com.simibubi.create.infrastructure.ponder.scenes.fluid.HosePulleyScenes.level
 import dev.biserman.wingscontracts.WingsContractsMod
+import net.minecraft.commands.arguments.ObjectiveArgument.objective
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.scores.Score
 import net.minecraft.world.scores.criteria.ObjectiveCriteria
+import kotlin.collections.sortedDescending
 
 object ScoreboardHandler {
     const val CONTRACT_SCORE = "${WingsContractsMod.MOD_ID}.contract_score"
@@ -50,5 +53,24 @@ object ScoreboardHandler {
         level.scoreboard.playerScores.forEach { kvp ->
             kvp.value.remove(objective)
         }
+    }
+
+    fun announceTopScores(level: ServerLevel, count: Int) {
+        val objective = level.scoreboard.getObjective(CONTRACT_SCORE_PERIODIC)
+        val topScores = level.scoreboard.playerScores
+            .map { kvp ->
+                object {
+                    val playerName = kvp.key
+                    val score = kvp.value[objective]?.score ?: 0
+                }
+            }.filter { it.score != 0 }
+            .sortedByDescending { it.score }
+            .take(count)
+
+        level.server.sendSystemMessage(
+            Component.literal(
+                topScores.withIndex()
+                    .joinToString("\n") { "${it.index + 1}. ${it.value.playerName} - ${it.value.score}" })
+        )
     }
 }
