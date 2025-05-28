@@ -54,19 +54,6 @@ object ScoreboardHandler {
         }
     }
 
-fun twoSum(nums: IntArray, target: Int): IntArray {
-    val withIndex = nums.withIndex()
-    val firstIndex =
-        withIndex.first { checkEntry ->
-            withIndex.any { it.value + checkEntry.value == target && it.index != checkEntry.index }
-        }.index
-    val secondIndex = withIndex
-        .first { it.value == target - nums[firstIndex] && it.index != firstIndex }
-        .index
-
-    return intArrayOf(firstIndex, secondIndex)
-}
-
     fun announceTopScores(level: ServerLevel, count: Int) {
         val objective = level.scoreboard.getObjective(CONTRACT_SCORE_PERIODIC)
         val topScores = level.scoreboard.playerScores
