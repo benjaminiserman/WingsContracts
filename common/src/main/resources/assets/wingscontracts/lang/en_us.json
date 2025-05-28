@@ -89,11 +89,13 @@
 
     "block.wingscontracts.contract_portal": "Contract Portal",
     "block.wingscontracts.contract_portal.display_source.main": "Contract Leaderboard",
-    "block.wingscontracts.contract_portal.display_source.periodic": "Periodic Contract Leaderboard",
+    "block.wingscontracts.contract_portal.display_source.periodic": "Cycle Contract Leaderboard",
     "block.wingscontracts.contract_spigot": "Contract Spigot",
 
 
     "scoreboard.wingscontracts.contract_score": "Contract Score",
+    "scoreboard.wingscontracts.contract_score_periodic": "Cycle Contract Score",
+    "scoreboard.wingscontracts.contract_score_periodic.message": "Cycle complete! Final scores:",
 
 
     "wingscontracts.gui.contract_portal.short_title": "Portal",

@@ -1,14 +1,13 @@
 package dev.biserman.wingscontracts.scoreboard
 
-import com.simibubi.create.infrastructure.ponder.scenes.fluid.HosePulleyScenes.level
 import dev.biserman.wingscontracts.WingsContractsMod
-import net.minecraft.commands.arguments.ObjectiveArgument.objective
+import net.minecraft.network.chat.ChatType
+import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.server.players.PlayerList
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.scores.Score
 import net.minecraft.world.scores.criteria.ObjectiveCriteria
-import kotlin.collections.sortedDescending
 
 object ScoreboardHandler {
     const val CONTRACT_SCORE = "${WingsContractsMod.MOD_ID}.contract_score"
@@ -50,10 +49,23 @@ object ScoreboardHandler {
 
     fun resetPeriodic(level: ServerLevel) {
         val objective = level.scoreboard.getObjective(CONTRACT_SCORE_PERIODIC)
-        level.scoreboard.playerScores.forEach { kvp ->
-            kvp.value.remove(objective)
+        for (player in level.scoreboard.trackedPlayers) {
+            level.scoreboard.resetPlayerScore(player, objective)
         }
     }
+
+fun twoSum(nums: IntArray, target: Int): IntArray {
+    val withIndex = nums.withIndex()
+    val firstIndex =
+        withIndex.first { checkEntry ->
+            withIndex.any { it.value + checkEntry.value == target && it.index != checkEntry.index }
+        }.index
+    val secondIndex = withIndex
+        .first { it.value == target - nums[firstIndex] && it.index != firstIndex }
+        .index
+
+    return intArrayOf(firstIndex, secondIndex)
+}
 
     fun announceTopScores(level: ServerLevel, count: Int) {
         val objective = level.scoreboard.getObjective(CONTRACT_SCORE_PERIODIC)
@@ -67,10 +79,19 @@ object ScoreboardHandler {
             .sortedByDescending { it.score }
             .take(count)
 
-        level.server.sendSystemMessage(
-            Component.literal(
-                topScores.withIndex()
-                    .joinToString("\n") { "${it.index + 1}. ${it.value.playerName} - ${it.value.score}" })
+        if (topScores.isEmpty()) {
+            return
+        }
+
+        level.server.playerList.broadcastSystemMessage(
+            Component.translatable("scoreboard.${WingsContractsMod.MOD_ID}.contract_score_periodic.message")
+                .append(CommonComponents.NEW_LINE)
+                .append(
+                    Component.literal(
+                        topScores.withIndex()
+                            .joinToString("\n") { "${it.index + 1}. ${it.value.playerName} - ${it.value.score}" }
+                    )),
+            false
         )
     }
 }
