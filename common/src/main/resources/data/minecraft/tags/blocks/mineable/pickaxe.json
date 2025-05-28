@@ -1,5 +1,6 @@
 {
   "values": [
-    "wingscontracts:contract_portal"
+    "wingscontracts:contract_portal",
+    "wingscontracts:contract_spigot"
   ]
 }
