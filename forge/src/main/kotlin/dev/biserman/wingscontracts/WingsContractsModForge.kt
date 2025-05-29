@@ -1,7 +1,6 @@
-package dev.biserman.wingscontracts.forge
+package dev.biserman.wingscontracts
 
 import dev.architectury.platform.forge.EventBuses
-import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.compat.CompatMods
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraftforge.common.MinecraftForge

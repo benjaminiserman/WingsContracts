@@ -1,4 +1,4 @@
-package dev.biserman.wingscontracts.forge
+package dev.biserman.wingscontracts
 
 import com.simibubi.create.foundation.data.CreateRegistrate
 import net.minecraftforge.eventbus.api.IEventBus

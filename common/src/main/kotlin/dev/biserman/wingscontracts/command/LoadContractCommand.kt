@@ -8,8 +8,8 @@ import dev.biserman.wingscontracts.command.ModCommand.giveContract
 import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.BoundContract
 import dev.biserman.wingscontracts.core.Contract
-import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.data.ContractDataReloadListener
+import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.nbt.ContractTag
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
@@ -57,6 +57,7 @@ object LoadContractCommand {
         try {
             val index = jsonString.toIntOrNull()
             if (index != null) {
+                ContractDataReloadListener.tryValidateEmptyTags()
                 return ContractSavedData.get(level).generator.generateContract(
                     ContractTag(
                         ContractDataReloadListener.availableContracts[index].tag.copy()

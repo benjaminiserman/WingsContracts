@@ -13,6 +13,7 @@ loom {
     forge.apply {
         convertAccessWideners.set(true)
         extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
+        mixinConfig("wingscontracts.mixins.json")
     }
 }
 

@@ -90,14 +90,14 @@ abstract class Contract(
             if (targetItems.isEmpty() && targetTags.isEmpty() && targetBlockTags.isEmpty()) {
                 listOf(ModItemRegistry.QUESTION_MARK.get()?.defaultInstance ?: ItemStack.EMPTY)
             } else {
-                targetItems.map { it.defaultInstance }.plus(targetTags.flatMap {
-                    BuiltInRegistries.ITEM.getTagOrEmpty(it).map { holder -> holder.value().defaultInstance }
-                }).plus(
-                    targetBlockTags.flatMap {
+                targetItems.map { it.defaultInstance }
+                    .plus(targetTags.flatMap {
+                        BuiltInRegistries.ITEM.getTagOrEmpty(it)
+                            .map { holder -> holder.value().defaultInstance }
+                    }).plus(targetBlockTags.flatMap {
                         BuiltInRegistries.BLOCK.getTagOrEmpty(it)
                             .map { holder -> holder.value().asItem().defaultInstance }
-                    }
-                )
+                    })
             }
         } else {
             listOf(displayItem)

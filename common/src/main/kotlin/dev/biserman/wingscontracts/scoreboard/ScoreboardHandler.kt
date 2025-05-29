@@ -1,11 +1,9 @@
 package dev.biserman.wingscontracts.scoreboard
 
 import dev.biserman.wingscontracts.WingsContractsMod
-import net.minecraft.network.chat.ChatType
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
-import net.minecraft.server.players.PlayerList
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.scores.criteria.ObjectiveCriteria
 

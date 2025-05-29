@@ -1,4 +1,4 @@
-package dev.biserman.wingscontracts.forge
+package dev.biserman.wingscontracts
 
 import net.minecraftforge.fml.loading.FMLPaths
 import java.nio.file.Path

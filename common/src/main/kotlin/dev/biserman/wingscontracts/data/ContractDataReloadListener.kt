@@ -13,10 +13,14 @@ import dev.biserman.wingscontracts.core.Contract.Companion.requiresAll
 import dev.biserman.wingscontracts.core.Contract.Companion.requiresAny
 import dev.biserman.wingscontracts.core.Contract.Companion.requiresNot
 import dev.biserman.wingscontracts.core.Contract.Companion.targetBlockTagKeys
+import dev.biserman.wingscontracts.core.Contract.Companion.targetBlockTags
 import dev.biserman.wingscontracts.core.Contract.Companion.targetConditionsKeys
 import dev.biserman.wingscontracts.core.Contract.Companion.targetItemKeys
+import dev.biserman.wingscontracts.core.Contract.Companion.targetItems
 import dev.biserman.wingscontracts.core.Contract.Companion.targetTagKeys
+import dev.biserman.wingscontracts.core.Contract.Companion.targetTags
 import dev.biserman.wingscontracts.nbt.ContractTag
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
 import net.minecraft.network.chat.Component
@@ -49,6 +53,7 @@ object ContractDataReloadListener : SimpleJsonResourceReloadListener(GSON, "wing
         } else {
             allDefaultRewards.toList()
         }
+
     fun valueReward(itemStack: ItemStack): Double {
         val reward = defaultRewards.find { it.item.item == itemStack.item } ?: return 0.0
         return itemStack.count * reward.value / reward.item.count
@@ -62,6 +67,8 @@ object ContractDataReloadListener : SimpleJsonResourceReloadListener(GSON, "wing
         } else {
             fullRewardBlocklist.toList()
         }
+
+    var areTagsValidated = false
 
     override fun prepare(
         resourceManager: ResourceManager,
@@ -77,21 +84,25 @@ object ContractDataReloadListener : SimpleJsonResourceReloadListener(GSON, "wing
         return super.prepare(resourceManager, profilerFiller)
     }
 
-    fun randomTag() =
+    fun randomTag(): ContractTag {
+        tryValidateEmptyTags()
+
         if (availableContracts.isEmpty()) {
             WingsContractsMod.LOGGER.warn("Available contracts pool is empty, returning unknown contract.")
             val contract = ContractTag(CompoundTag())
             contract.name = Component.translatable("${WingsContractsMod.MOD_ID}.contract.unknown").string
-            contract
+            return contract
         } else {
-            ContractTag(availableContracts.random().tag.copy())
+            return ContractTag(availableContracts.random().tag.copy())
         }
+    }
 
     override fun apply(
         jsonMap: Map<ResourceLocation, JsonElement>,
         resourceManager: ResourceManager,
         profilerFiller: ProfilerFiller
     ) {
+        areTagsValidated = false
         WingsContractsMod.LOGGER.info("Building available contracts pool...")
         var skippedBecauseUnloaded = 0
         for ((resourceLocation, json) in jsonMap) {
@@ -157,16 +168,24 @@ object ContractDataReloadListener : SimpleJsonResourceReloadListener(GSON, "wing
         var skippedBecauseUnloaded = 0
         for (contract in parsedContracts) {
             // skip contracts that only apply to unloaded mods
-            val allItemsFailedLoad = (contract.targetItemKeys ?: listOf())
+            val targetItemKeys = contract.targetItemKeys ?: listOf()
+            val targetTagKeys = contract.targetTagKeys ?: listOf()
+            val targetBlockTagKeys = contract.targetBlockTagKeys ?: listOf()
+
+            val allItemsFailedLoad = targetItemKeys
                 .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0]) }
-            val allTagsFailedLoad = (contract.targetTagKeys ?: listOf())
+            val allBlockTagsFailedLoad = targetBlockTagKeys
                 .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0].trimStart('#')) }
-            val allBlockTagsFailedLoad = (contract.targetBlockTagKeys ?: listOf())
-                .all { it.contains(':') && !Platform.isModLoaded(it.split(":")[0].trimStart('#')) }
+
+            val isJustCondition = !contract.targetConditionsKeys.isNullOrBlank()
+                    && targetItemKeys.isEmpty()
+                    && targetTagKeys.isEmpty()
+                    && targetBlockTagKeys.isEmpty()
+
             val allFailedLoad = allItemsFailedLoad
-                    && allTagsFailedLoad
                     && allBlockTagsFailedLoad
-                    && contract.targetConditionsKeys.isNullOrBlank()
+                    && !isJustCondition
+                    && targetTagKeys.isEmpty()
 
             // check for required mods
             val allRequiredModsLoaded = contract.requiresAll.isNullOrBlank()
@@ -202,5 +221,35 @@ object ContractDataReloadListener : SimpleJsonResourceReloadListener(GSON, "wing
         }
 
         return skippedBecauseUnloaded
+    }
+
+    fun tryValidateEmptyTags() {
+        if (!areTagsValidated) {
+            WingsContractsMod.LOGGER.info("Checking for invalid tag contracts...")
+            removeEmptyTags(allAvailableContracts)
+            removeEmptyTags(nonDefaultAvailableContracts)
+            areTagsValidated = true
+        }
+    }
+
+    fun removeEmptyTags(contractList: MutableList<ContractTag>) {
+        contractList.removeIf { contract ->
+            val itemTags = contract.targetTags ?: listOf()
+            val blockTags = contract.targetBlockTags ?: listOf()
+            val targetItems = contract.targetItems ?: listOf()
+
+            if (itemTags.isEmpty() && blockTags.isEmpty()) {
+                return@removeIf false
+            }
+
+            if (itemTags.all { BuiltInRegistries.ITEM.getTagOrEmpty(it).count() == 0 }
+                && blockTags.all { BuiltInRegistries.BLOCK.getTagOrEmpty(it).count() == 0 }
+                && targetItems.isEmpty()) {
+                WingsContractsMod.LOGGER.warn("Removing empty tag contract: $contract")
+                return@removeIf true
+            }
+
+            return@removeIf false
+        }
     }
 }

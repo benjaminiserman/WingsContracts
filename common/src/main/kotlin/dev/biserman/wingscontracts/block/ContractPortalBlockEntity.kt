@@ -2,7 +2,6 @@
 
 package dev.biserman.wingscontracts.block
 
-import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.advancements.ContractCompleteTrigger
 import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
@@ -65,8 +64,7 @@ class ContractPortalBlockEntity(
 ) :
     BlockEntity(ModBlockEntityRegistry.CONTRACT_PORTAL.get(), blockPos, blockState),
     MenuProvider,
-    WorldlyContainer,
-    IHaveGoggleInformation {
+    WorldlyContainer {
     var cooldownTime: Int
     var contractSlot: ItemStack = ItemStack.EMPTY
         set(value) {
@@ -507,10 +505,6 @@ class ContractPortalBlockEntity(
         player: Player
     ): AbstractContainerMenu = ModMenuRegistry.CONTRACT_PORTAL.get().create(i, inventory)
 
-    override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
-        val contract = LoadedContracts[contractSlot] ?: return false
-        return contract.addToGoggleTooltip(this, tooltip, isPlayerSneaking)
-    }
 
     override fun getSlotsForFace(direction: Direction): IntArray {
         return when (direction) {

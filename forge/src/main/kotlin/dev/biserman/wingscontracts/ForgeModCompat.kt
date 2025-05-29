@@ -1,11 +1,10 @@
-package dev.biserman.wingscontracts.forge
+package dev.biserman.wingscontracts
 
 import com.simibubi.create.api.behaviour.display.DisplaySource
 import dev.architectury.event.events.client.ClientLifecycleEvent
 import dev.architectury.platform.Platform
 import dev.architectury.utils.Env
 import dev.architectury.utils.EnvExecutor
-import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.client.ponder.ModPonderPlugin
 import dev.biserman.wingscontracts.compat.CompatMods.CREATE
 import dev.biserman.wingscontracts.compat.create.LeaderboardDisplaySource

@@ -1,7 +1,7 @@
 package dev.biserman.wingscontracts.container
 
-import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.data.ContractDataReloadListener
+import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.server.SyncAvailableContractsMessage
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
@@ -21,15 +21,13 @@ class AvailableContractsContainerSlot(
         }
 
         if (player is ServerPlayer) {
-            if (item.isEmpty) {
-                set(
-                    ContractSavedData
-                        .get(player.level())
-                        .generator
-                        .generateContract(ContractDataReloadListener.randomTag())
-                        .createItem()
-                )
-            }
+            set(
+                ContractSavedData
+                    .get(player.level())
+                    .generator
+                    .generateContract(ContractDataReloadListener.randomTag())
+                    .createItem()
+            )
             SyncAvailableContractsMessage(player.level() as ServerLevel).sendTo(player)
         }
     }

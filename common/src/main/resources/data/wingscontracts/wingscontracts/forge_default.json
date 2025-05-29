@@ -115,29 +115,28 @@
     },
     {
       "targetTags": "#forge:fruits",
-      "countPerUnit": 48,
-      "requiresAny": "neapolitan,fruitsdelight"
+      "countPerUnit": 64
+    },
+    {
+      "targetTags": "#forge:grain",
+      "countPerUnit": 64
     },
     {
       "targetTags": "#forge:plates/steel",
-      "requiresAny": "tfmg,immersiveengineering",
       "countPerUnit": 16,
       "reward": 2
     },
     {
       "targetTags": "#forge:wires",
-      "requiresAny": "tfmg,immersiveengineering,createaddition",
       "countPerUnit": 32,
       "baseUnitsDemanded": 96
     },
     {
       "targetTags": "#forge:salt",
-      "requiresAny": "vegandelight,mekanism,garnished",
       "countPerUnit": 64
     },
     {
       "targetTags": "#forge:dough",
-      "requiresAny": "farmersdelight,create,garnished",
       "countPerUnit": 48,
       "baseUnitsDemanded": 96
     },
