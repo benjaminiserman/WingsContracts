@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "Wing's Contracts Mod",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "Me!"
+  ],
+  "contact": {
+    "homepage": "",
+    "sources": "https://github.com/benjaminiserman/WingsContracts"
+  },
+  "license": "MIT",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "dev.biserman.wingscontracts.fabric.WingsContractsModFabric"
+      }
+    ]
+  },
+  "mixins": [
+    "wingscontracts.mixins.json"
+  ],
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=${minecraft_version}",
+    "architectury": ">=${architectury_version}",
+    "fabric-language-kotlin": ">=${fabric_kotlin_version}",
+    "forgeconfigapiport": "*"
+  }
+}

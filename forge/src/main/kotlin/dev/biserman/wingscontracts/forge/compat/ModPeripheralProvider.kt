@@ -1,4 +1,4 @@
-package dev.biserman.wingscontracts
+package dev.biserman.wingscontracts.forge.compat
 
 import dan200.computercraft.api.ForgeComputerCraftAPI
 import dan200.computercraft.api.peripheral.IPeripheral

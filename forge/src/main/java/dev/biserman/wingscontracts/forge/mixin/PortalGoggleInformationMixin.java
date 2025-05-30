@@ -1,4 +1,4 @@
-package dev.biserman.wingscontracts.mixin;
+package dev.biserman.wingscontracts.forge.mixin;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity;

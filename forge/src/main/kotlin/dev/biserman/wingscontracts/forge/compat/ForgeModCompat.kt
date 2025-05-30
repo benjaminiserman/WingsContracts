@@ -1,12 +1,13 @@
-package dev.biserman.wingscontracts
+package dev.biserman.wingscontracts.forge.compat
 
 import com.simibubi.create.api.behaviour.display.DisplaySource
 import dev.architectury.event.events.client.ClientLifecycleEvent
 import dev.architectury.platform.Platform
 import dev.architectury.utils.Env
 import dev.architectury.utils.EnvExecutor
+import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.client.ponder.ModPonderPlugin
-import dev.biserman.wingscontracts.compat.CompatMods.CREATE
+import dev.biserman.wingscontracts.compat.CompatMods
 import dev.biserman.wingscontracts.compat.create.LeaderboardDisplaySource
 import dev.biserman.wingscontracts.scoreboard.ScoreboardHandler
 import net.createmod.ponder.foundation.PonderIndex
@@ -14,11 +15,10 @@ import net.minecraft.core.registries.Registries
 import net.minecraftforge.eventbus.api.IEventBus
 import net.minecraftforge.registries.ForgeRegistries
 
-
 object ForgeModCompat {
     @Suppress("removal", "DEPRECATION")
     fun init(modBus: IEventBus) {
-        if (Platform.isModLoaded(CREATE)) {
+        if (Platform.isModLoaded(CompatMods.CREATE)) {
             val createRegistrate = KotlinCreateRegistrate(WingsContractsMod.MOD_ID)
             createRegistrate.registerEventListeners(modBus)
 

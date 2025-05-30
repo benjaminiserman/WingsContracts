@@ -1,4 +1,4 @@
-package dev.biserman.wingscontracts.mixin
+package dev.biserman.wingscontracts.forge.mixin
 
 import net.minecraftforge.fml.loading.LoadingModList
 import org.objectweb.asm.tree.ClassNode
@@ -9,7 +9,7 @@ class ModMixinPlugin : IMixinConfigPlugin {
     override fun onLoad(mixinPackage: String) {}
     override fun getRefMapperConfig() = null
     override fun shouldApplyMixin(targetClassName: String, mixinClassName: String): Boolean {
-        if (mixinClassName == "dev.biserman.wingscontracts.mixin.PortalGoggleInformationMixin") {
+        if (mixinClassName == "dev.biserman.wingscontracts.forge.mixin.PortalGoggleInformationMixin") {
             return LoadingModList.get().mods.any { it.modId == "create" }
         }
 

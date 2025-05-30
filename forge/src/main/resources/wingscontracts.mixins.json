@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "dev.biserman.wingscontracts.mixin",
+  "package": "dev.biserman.wingscontracts.forge.mixin",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "mixins": [
@@ -9,5 +9,5 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "plugin": "dev.biserman.wingscontracts.mixin.ModMixinPlugin"
+  "plugin": "dev.biserman.wingscontracts.forge.mixin.ModMixinPlugin"
 }

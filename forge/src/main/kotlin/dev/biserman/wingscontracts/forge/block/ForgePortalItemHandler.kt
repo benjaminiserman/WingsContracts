@@ -1,4 +1,4 @@
-package dev.biserman.wingscontracts
+package dev.biserman.wingscontracts.forge.block
 
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.container.ISidedPortalItemHandler

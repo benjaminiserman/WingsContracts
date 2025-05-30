@@ -1,4 +1,4 @@
-package dev.biserman.wingscontracts
+package dev.biserman.wingscontracts.forge.block
 
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import net.minecraft.core.Direction
@@ -30,11 +30,10 @@ class PortalItemHandlerCapabilityProvider(val portal: ContractPortalBlockEntity)
             val entity = event.`object`
             if (entity is ContractPortalBlockEntity) {
                 event.addCapability(
-                    ContractPortalBlockEntity.STORAGE_ID,
+                    ContractPortalBlockEntity.Companion.STORAGE_ID,
                     PortalItemHandlerCapabilityProvider(entity)
                 )
             }
         }
     }
 }
-

@@ -1,7 +1,11 @@
-package dev.biserman.wingscontracts
+package dev.biserman.wingscontracts.forge
 
 import dev.architectury.platform.forge.EventBuses
+import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.compat.CompatMods
+import dev.biserman.wingscontracts.forge.block.PortalItemHandlerCapabilityProvider
+import dev.biserman.wingscontracts.forge.compat.ForgeModCompat
+import dev.biserman.wingscontracts.forge.compat.ModPeripheralProvider
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.ModList
@@ -20,7 +24,7 @@ class WingsContractsModForge {
         val modBus = MOD_BUS
         EventBuses.registerModEventBus(WingsContractsMod.MOD_ID, modBus)
 
-        WingsContractsMod.init(ForgePlatformHelper())
+        WingsContractsMod.init()
         ForgeModCompat.init(modBus)
 
         if (ModList.get().isLoaded(CompatMods.COMPUTERCRAFT)) {
