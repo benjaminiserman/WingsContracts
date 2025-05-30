@@ -128,7 +128,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
 
         boundContractRequiresTwoPlayers =
             builder.comment("If true, a different player must place each end of the bound contract into its respective portal in order for the exchange to work.")
-                .define("boundContractRequiresTwoPlayers", true)
+                .define("boundContractRequiresTwoPlayers", false)
 
         announceCycleLeaderboard =
             builder.comment("If non-zero, this number of players from the top of this cycle's contract score leaderboard will have their scores announced in chat at the end of the cycle.")
