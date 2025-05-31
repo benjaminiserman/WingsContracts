@@ -4,6 +4,7 @@ import dev.architectury.networking.NetworkManager
 import dev.architectury.networking.simple.BaseS2CMessage
 import dev.architectury.networking.simple.MessageType
 import dev.biserman.wingscontracts.data.ContractSavedData
+import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.server.level.ServerLevel
@@ -20,6 +21,6 @@ class SyncAvailableContractsMessage(val compoundTag: CompoundTag) : BaseS2CMessa
     }
 
     override fun handle(context: NetworkManager.PacketContext) {
-        ContractSavedData.set(context.player.level(), ContractSavedData.load(compoundTag))
+        ContractSavedData.set(Minecraft.getInstance().level!!, ContractSavedData.load(compoundTag))
     }
 }

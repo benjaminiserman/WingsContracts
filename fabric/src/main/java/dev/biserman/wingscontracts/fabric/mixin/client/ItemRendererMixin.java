@@ -39,7 +39,7 @@ public abstract class ItemRendererMixin {
                 && itemDisplayContext == ItemDisplayContext.GUI) {
             var displayItem = Contract.Companion.getDisplayItem(itemStack, 0f); // make this use deltaTime somehow
             poseStack.pushPose();
-            poseStack.scale(0.375f, 0.375f, 0.375f);
+            poseStack.scale(0.5f, 0.5f, 0.5f);
             poseStack.translate(0, 0, +1.0);
             renderStatic(displayItem, itemDisplayContext, i, j, poseStack, multiBufferSource, Minecraft.getInstance().level, 1);
             poseStack.popPose();
