@@ -5,8 +5,16 @@
         "id": "wingscontracts:abyssal_coin",
         "Count": 1
       },
-      "value": 0.5,
+      "value": 1,
       "weight": 1
+    },
+    {
+      "item": {
+        "id": "numismatics:spur",
+        "Count": 1
+      },
+      "value": 1,
+      "weight": 2
     }
   ]
 }
