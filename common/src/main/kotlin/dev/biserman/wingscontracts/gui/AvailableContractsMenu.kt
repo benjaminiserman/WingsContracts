@@ -17,7 +17,7 @@ class AvailableContractsMenu(id: Int, inventory: Inventory) :
     val container = data.container
 
     init {
-        val maxOptions = ModConfig.SERVER.availableContractsPoolOptions.get()
+        val maxOptions = ModConfig.SERVER.abyssalContractsPoolOptions.get()
         checkContainerSize(container, maxOptions)
         container.startOpen(inventory.player)
 
@@ -67,7 +67,7 @@ class AvailableContractsMenu(id: Int, inventory: Inventory) :
             val itemStack = slot.item
             if (!this.moveItemStackTo(
                     itemStack,
-                    ModConfig.SERVER.availableContractsPoolOptions.get(),
+                    ModConfig.SERVER.abyssalContractsPoolOptions.get(),
                     this.slots.size,
                     true
                 )

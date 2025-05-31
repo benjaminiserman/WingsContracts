@@ -1,18 +1,19 @@
 package dev.biserman.wingscontracts.config
 
+import dev.biserman.wingscontracts.WingsContractsMod
 import net.minecraftforge.common.ForgeConfigSpec
 
 class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val denominations: ForgeConfigSpec.ConfigValue<String>
-    val contractGrowthFunction: ForgeConfigSpec.EnumValue<GrowthFunctionOptions>
-    val availableContractsPoolRefreshPeriodMs: ForgeConfigSpec.LongValue
-    val availableContractsPoolOptions: ForgeConfigSpec.IntValue
-    val availableContractsPoolPicks: ForgeConfigSpec.IntValue
-    val availableContractsPoolPicksCap: ForgeConfigSpec.IntValue
-    val allowBlankContractInitialization: ForgeConfigSpec.BooleanValue
+    val abyssalContractGrowthFunction: ForgeConfigSpec.EnumValue<GrowthFunctionOptions>
+    val abyssalContractsPoolRefreshPeriodMs: ForgeConfigSpec.LongValue
+    val abyssalContractsPoolOptions: ForgeConfigSpec.IntValue
+    val abyssalContractsPoolPicks: ForgeConfigSpec.IntValue
+    val abyssalContractsPoolPicksCap: ForgeConfigSpec.IntValue
+    val allowBlankAbyssalContractUse: ForgeConfigSpec.BooleanValue
     val disableDefaultContractOptions: ForgeConfigSpec.BooleanValue
     val variance: ForgeConfigSpec.DoubleValue
-    val replaceRewardWithRandomPercent: ForgeConfigSpec.DoubleValue
+    val replaceRewardWithRandomRate: ForgeConfigSpec.DoubleValue
     val replaceRewardWithRandomFactor: ForgeConfigSpec.DoubleValue
     val replaceRewardWithRandomBlocklist: ForgeConfigSpec.ConfigValue<String>
     val rarityThresholdsString: ForgeConfigSpec.ConfigValue<String>
@@ -28,7 +29,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val defaultCycleDurationMs: ForgeConfigSpec.LongValue
     val defaultAuthor: ForgeConfigSpec.ConfigValue<String>
     val defaultMaxLevel: ForgeConfigSpec.ConfigValue<Int>
-    val defaultGrowthFactor: ForgeConfigSpec.DoubleValue
+    val defaultQuantityGrowthFactor: ForgeConfigSpec.DoubleValue
 
     init {
         builder.push("General")
@@ -41,33 +42,33 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
                 """.trimIndent()
             ).define("denominations", defaultDenominations)
 
-        contractGrowthFunction = builder.comment(
+        abyssalContractGrowthFunction = builder.comment(
             """
             The function that determines how a contract's quantity demanded increases as it levels up. 
             LINEAR: unitsDemanded = baseUnitsDemanded + baseUnitsDemanded * (growthFactor - 1) * (level - 1)
             EXPONENTIAL: unitsDemanded = baseUnitsDemanded * growthFactor ** (level - 1)
             """.trimIndent()
-        ).defineEnum("contractGrowthFunction", GrowthFunctionOptions.EXPONENTIAL)
+        ).defineEnum("abyssalContractGrowthFunction", GrowthFunctionOptions.EXPONENTIAL)
 
-        availableContractsPoolRefreshPeriodMs =
-            builder.comment("The default time for the available Abyssal Contracts pool to refresh, in milliseconds. E.g.: 86400000 for one day, 604800000 for one week")
-                .defineInRange("availableContractsPoolRefreshPeriodMs", 86400000L, 60_000, Long.MAX_VALUE)
+        abyssalContractsPoolRefreshPeriodMs =
+            builder.comment("The default time for the Abyssal Contracts pool to refresh, in milliseconds. E.g.: 86400000 for one day, 604800000 for one week.")
+                .defineInRange("abyssalContractsPoolRefreshPeriodMs", 86400000L, 60_000, Long.MAX_VALUE)
 
-        availableContractsPoolOptions =
+        abyssalContractsPoolOptions =
             builder.comment("Determines how many Abyssal Contracts are available in the pool at any one time. Set to zero to disable the Abyssal Contracts pool.")
-                .defineInRange("availableContractsPoolOptions", 10, 0, 10)
+                .defineInRange("abyssalContractsPoolOptions", 10, 0, 10)
 
-        availableContractsPoolPicks =
+        abyssalContractsPoolPicks =
             builder.comment("Determines how many picks each player gets from the Abyssal Contracts pool per refresh period.")
-                .defineInRange("availableContractsPoolPicks", 1, 0, Int.MAX_VALUE)
+                .defineInRange("abyssalContractsPoolPicks", 1, 0, Int.MAX_VALUE)
 
-        availableContractsPoolPicksCap =
+        abyssalContractsPoolPicksCap =
             builder.comment("Determines the maximum number of picks from the Abyssal Contracts pool each player can have saved up.")
-                .defineInRange("availableContractsPoolPicksCap", 3, 0, Int.MAX_VALUE)
+                .defineInRange("abyssalContractsPoolPicksCap", 3, 0, Int.MAX_VALUE)
 
-        allowBlankContractInitialization =
+        allowBlankAbyssalContractUse =
             builder.comment("If true, Blank Abyssal Contracts can be right-clicked to become a randomized usable Abyssal Contract.")
-                .define("allowBlankContractInitialization", true)
+                .define("allowBlankAbyssalContractUse", true)
 
         disableDefaultContractOptions =
             builder.comment(
@@ -92,9 +93,9 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
             )
                 .defineInRange("variance", 0.33, 0.0, Double.MAX_VALUE)
 
-        replaceRewardWithRandomPercent =
+        replaceRewardWithRandomRate =
             builder.comment("This percentage of Abyssal Contracts generated that are set to the default reward currency will instead have their reward switched to a random input from another contract.")
-                .defineInRange("replaceRewardWithRandomPercent", 0.8, 0.0, 1.0)
+                .defineInRange("replaceRewardWithRandomRate", 0.8, 0.0, 1.0)
 
         replaceRewardWithRandomFactor =
             builder.comment("The reward from an Abyssal Contract with its reward randomly replaced will have its count multiplied by this factor.")
@@ -115,7 +116,12 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
                 )
 
         rarityThresholdsString =
-            builder.comment("The max-level reward necessary to reach rarities Uncommon, Rare, and Epic respectively as a comma-separated list of integers.")
+            builder.comment(
+                """
+                The max-level reward value necessary to reach rarities Uncommon, Rare, and Epic respectively as a comma-separated list of integers.
+                You can set this to "" to set all Abyssal Contracts to Common by default.
+                """.trimIndent()
+            )
                 .define("rarityThresholds", "16000,32000,64000")
 
         contractPortalInputSlots =
@@ -139,7 +145,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
 
         defaultRewardMultiplier =
             builder.comment("Datapacked contracts with an unspecified or integer reward will have their reward count multiplied by this factor, then rounded (to a minimum of 1).")
-                .defineInRange("defaultRewardMultiplier", 2.0, 0.0, Double.MAX_VALUE)
+                .defineInRange("defaultRewardMultiplier", 1.0, 0.0, Double.MAX_VALUE)
 
         defaultUnitsDemandedMultiplier =
             builder.comment("All new Abyssal Contracts pulled from the pool will have their base units demanded multiplied by this factor, then rounded (to a minimum of 1).")
@@ -150,23 +156,29 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
                 .defineInRange("defaultCountPerUnitMultiplier", 1.0, 0.0, Double.MAX_VALUE)
 
         defaultCycleDurationMs =
-            builder.comment("The default length of a cycle period, in milliseconds. E.g.: 86400000 for one day, 604800000 for one week")
+            builder.comment("The default length of a cycle period, in milliseconds. E.g.: 86400000 for one day, 604800000 for one week.")
                 .defineInRange("defaultCycleDurationMs", 86400000L, 60_000, Long.MAX_VALUE)
 
         defaultAuthor =
-            builder.comment("The default author name for Abyssal Contracts")
-                .define("defaultAuthor", "§kThe Abyss§r")
+            builder.comment(
+                """
+                The default author name for Abyssal Contracts.
+                While this value is a lang key by default, you can enter the author name here directly if the name is the same in all languages.
+                This is purely cosmetic and used for theming—feel free to set it to \"\" to remove the default Abyssal Contract author entirely.
+                """.trimIndent()
+            )
+                .define("defaultAuthor", "${WingsContractsMod.MOD_ID}.default_author")
 
         defaultMaxLevel =
-            builder.comment("The default max level for Abyssal Contracts. If negative or zero, the contract will have no max level.")
+            builder.comment("The default max level for Abyssal Contracts. If negative or zero, the contract will have no max level. If one, Abyssal Contracts will never level up.")
                 .define("defaultMaxLevel", 10)
 
-        defaultGrowthFactor = builder.comment(
+        defaultQuantityGrowthFactor = builder.comment(
             """
-            The default growth factor for Abyssal Contracts.
-            See contractGrowthFunction above to see how this is used.
+            The default quantity growth factor for Abyssal Contracts.
+            See abyssalContractGrowthFunction above to see how this is used.
             """.trimIndent()
-        ).defineInRange("defaultGrowthFactor", 2.0, 0.00001, 100.0)
+        ).defineInRange("defaultQuantityGrowthFactor", 2.0, 0.00001, 100.0)
 
         builder.pop()
     }

@@ -191,7 +191,7 @@ class AbyssalContract(
             return 0
         }
 
-        return when (val growthFn = ModConfig.SERVER.contractGrowthFunction.get()) {
+        return when (val growthFn = ModConfig.SERVER.abyssalContractGrowthFunction.get()) {
             GrowthFunctionOptions.LINEAR -> {
                 val growth = (baseUnitsDemanded * (level - 1) * (quantityGrowthFactor - 1)).toInt()
                 baseUnitsDemanded + growth
@@ -425,7 +425,7 @@ class AbyssalContract(
                         data?.generator?.getRandomReward(reward.value) ?: ContractSavedData.FALLBACK_REWARD.item
                 },
                 level = tag.level ?: 1,
-                quantityGrowthFactor = tag.quantityGrowthFactor ?: ModConfig.SERVER.defaultGrowthFactor.get(),
+                quantityGrowthFactor = tag.quantityGrowthFactor ?: ModConfig.SERVER.defaultQuantityGrowthFactor.get(),
                 maxLevel = tag.maxLevel ?: ModConfig.SERVER.defaultMaxLevel.get(),
                 isActive = tag.isActive ?: true
             )

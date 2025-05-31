@@ -4,6 +4,7 @@ package dev.biserman.wingscontracts.nbt
 
 import dev.architectury.registry.fuel.FuelRegistry
 import dev.biserman.wingscontracts.WingsContractsMod
+import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier
 import net.minecraft.world.item.ArmorItem
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.ItemStack
+import kotlin.math.max
 
 class ItemCondition(val text: String, val match: (ItemStack) -> Boolean) {
     override fun toString() = text
@@ -136,21 +138,21 @@ object ItemConditionParser {
             "hasFoil" -> ({ it.hasFoil().toString() })
             "rarity" -> ({ it.rarity.ordinal.toString() })
             "isDamageable" -> ({ it.isDamageableItem.toString() })
-            "durabilityPercent" -> ({ (it.damageValue.toDouble() / it.maxDamage.toDouble()).toString() })
+            "durabilityPercent" -> ({ (it.damageValue.toDouble() / max(1.0, it.maxDamage.toDouble())).toString() })
             "isEnchantable" -> ({ it.isEnchantable.toString() })
             "isEnchanted" -> ({ it.isEnchanted.toString() })
             "isFireResistant" -> ({ it.item.isFireResistant.toString() })
             "isEdible" -> ({ it.item.isEdible.toString() })
             "maxStackSize" -> ({ it.item.maxStackSize.toString() })
             "maxDamage" -> ({ it.item.maxDamage.toString() })
-            "nutrition" -> ({ it.item.foodProperties?.nutrition?.toString() ?: "0" })
+            "nutrition" -> ({ it.item.foodProperties?.nutrition?.toString() ?: "0.0" })
             "saturationModifier" -> ({ it.item.foodProperties?.saturationModifier?.toString() ?: "0.0" })
             "isMeat" -> ({ it.item.foodProperties?.isMeat?.toString() ?: "false" })
             "canAlwaysEat" -> ({ it.item.foodProperties?.canAlwaysEat()?.toString() ?: "false" })
             "isFastFood" -> ({ it.item.foodProperties?.isFastFood?.toString() ?: "false" })
             "isBlock" -> ({ (it.item is BlockItem).toString() })
             "class" -> ({ it.item.javaClass.name })
-            "displayName" -> ({ it.displayName.string })
+            "displayName" -> ({ it.displayName.string.trimBrackets() })
             "burnTicks" -> ({ FuelRegistry.get(it).toString() })
             else -> throw Error("Condition key not recognized: ${keyComponents[0]}")
         }

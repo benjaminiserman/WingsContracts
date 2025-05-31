@@ -2,8 +2,8 @@ package dev.biserman.wingscontracts.item
 
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.config.ModConfig
-import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.data.ContractDataReloadListener
+import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
@@ -23,7 +23,7 @@ class BlankAbyssalContractItem(properties: Properties) : Item(properties) {
         interactionHand: InteractionHand
     ): InteractionResultHolder<ItemStack> {
         val itemStack = player.getItemInHand(interactionHand)
-        if (ModConfig.SERVER.allowBlankContractInitialization.get()) {
+        if (ModConfig.SERVER.allowBlankAbyssalContractUse.get()) {
             if (level !is ServerLevel) {
                 player.playSound(ModSoundRegistry.WRITE_CONTRACT.get())
                 return InteractionResultHolder.success(itemStack)
@@ -46,7 +46,7 @@ class BlankAbyssalContractItem(properties: Properties) : Item(properties) {
         components: MutableList<Component>,
         tooltipFlag: TooltipFlag
     ) {
-        if (ModConfig.SERVER.allowBlankContractInitialization.get()) {
+        if (ModConfig.SERVER.allowBlankAbyssalContractUse.get()) {
             components.add(
                 Component
                     .translatable("item.${WingsContractsMod.MOD_ID}.blank_abyssal_contract.desc.can")

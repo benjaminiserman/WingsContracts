@@ -222,7 +222,12 @@ abstract class Contract(
         )
 
         if (author.isNotBlank()) {
-            components.add(translateContract("author", author).withStyle(ChatFormatting.DARK_PURPLE))
+            components.add(
+                translateContract(
+                    "author",
+                    Component.translatable(author).string
+                ).withStyle(ChatFormatting.DARK_PURPLE)
+            )
         }
 
         return components

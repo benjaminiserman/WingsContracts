@@ -21,7 +21,7 @@ class ContractSavedData : SavedData() {
     val container = AvailableContractsContainer()
     val remainingPicks = mutableMapOf<String, Int>()
     var currentCycleStart: Long = 0
-    val nextCycleStart get() = currentCycleStart + ModConfig.SERVER.availableContractsPoolRefreshPeriodMs.get()
+    val nextCycleStart get() = currentCycleStart + ModConfig.SERVER.abyssalContractsPoolRefreshPeriodMs.get()
 
     val rarityThresholds by lazy { ModConfig.SERVER.rarityThresholdsString.get().split(",").map { it.toInt() } }
     val currencyHandler by lazy { DenominatedCurrenciesHandler() }
@@ -43,18 +43,18 @@ class ContractSavedData : SavedData() {
 
     fun serverTick(level: ServerLevel) {
         val cyclesPassed =
-            (System.currentTimeMillis() - currentCycleStart) / ModConfig.SERVER.availableContractsPoolRefreshPeriodMs.get()
+            (System.currentTimeMillis() - currentCycleStart) / ModConfig.SERVER.abyssalContractsPoolRefreshPeriodMs.get()
 
         if (cyclesPassed <= 0) {
             return
         }
 
         WingsContractsMod.LOGGER.info("starting new cycle $currentCycleStart")
-        currentCycleStart += cyclesPassed * ModConfig.SERVER.availableContractsPoolRefreshPeriodMs.get()
+        currentCycleStart += cyclesPassed * ModConfig.SERVER.abyssalContractsPoolRefreshPeriodMs.get()
         remainingPicks.keys.forEach {
             remainingPicks[it] = min(
-                (remainingPicks[it] ?: 0) + ModConfig.SERVER.availableContractsPoolPicks.get(),
-                ModConfig.SERVER.availableContractsPoolPicksCap.get()
+                (remainingPicks[it] ?: 0) + ModConfig.SERVER.abyssalContractsPoolPicks.get(),
+                ModConfig.SERVER.abyssalContractsPoolPicksCap.get()
             )
         }
 
@@ -131,7 +131,7 @@ class ContractSavedData : SavedData() {
         fun remainingPicks(player: Player): Int {
             val remainingPicksMap = get(player.level()).remainingPicks
             val id = player.uuid.toString()
-            return remainingPicksMap.computeIfAbsent(id) { ModConfig.SERVER.availableContractsPoolPicks.get() }
+            return remainingPicksMap.computeIfAbsent(id) { ModConfig.SERVER.abyssalContractsPoolPicks.get() }
         }
 
         fun setRemainingPicks(player: Player, picks: Int, update: Boolean = false) {

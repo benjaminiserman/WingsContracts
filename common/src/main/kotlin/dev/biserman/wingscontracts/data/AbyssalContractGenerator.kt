@@ -46,7 +46,7 @@ class AbyssalContractGenerator(val data: ContractSavedData) {
         val reward = tag.reward ?: Reward.Random(1.0)
         if (reward is Reward.Random) {
             val rewardValue = vary(reward.value, ModConfig.SERVER.defaultRewardMultiplier.get())
-            if (random.nextDouble() <= ModConfig.SERVER.replaceRewardWithRandomPercent.get()) {
+            if (random.nextDouble() <= ModConfig.SERVER.replaceRewardWithRandomRate.get()) {
                 for (_try in 1..5) { // attempt 5 times to find a working item
                     val otherContract = ContractDataReloadListener.randomTag()
                     val otherContractItem = otherContract.targetItems?.get(0) ?: continue

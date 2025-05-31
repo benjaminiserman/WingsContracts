@@ -71,7 +71,7 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
                 val blockEntity = level.getBlockEntity(blockPos)
                 if (player is ServerPlayer
                     && blockEntity is ContractPortalBlockEntity
-                    && ModConfig.SERVER.availableContractsPoolOptions.get() != 0
+                    && ModConfig.SERVER.abyssalContractsPoolOptions.get() != 0
                 ) {
                     MenuRegistry.openMenu(player, blockEntity)
                     return InteractionResult.CONSUME

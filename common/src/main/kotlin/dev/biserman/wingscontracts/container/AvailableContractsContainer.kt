@@ -9,9 +9,9 @@ import net.minecraft.world.item.ItemStack
 
 class AvailableContractsContainer() : Container {
     val items: NonNullList<ItemStack> =
-        NonNullList.withSize(ModConfig.SERVER.availableContractsPoolOptions.get(), ItemStack.EMPTY)
+        NonNullList.withSize(ModConfig.SERVER.abyssalContractsPoolOptions.get(), ItemStack.EMPTY)
 
-    override fun getContainerSize(): Int = ModConfig.SERVER.availableContractsPoolOptions.get()
+    override fun getContainerSize(): Int = ModConfig.SERVER.abyssalContractsPoolOptions.get()
     override fun isEmpty(): Boolean = items.isEmpty() || items.all { it.isEmpty }
     override fun getItem(i: Int): ItemStack? = items[i]
 
