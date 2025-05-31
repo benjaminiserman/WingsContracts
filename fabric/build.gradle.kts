@@ -4,6 +4,8 @@ plugins {
 
 repositories {
     maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/")
+    maven("https://mvn.devos.one/snapshots")
+    maven("https://maven.tterrag.com/")
 }
 
 architectury {
@@ -25,6 +27,8 @@ configurations {
     developmentFabric.extendsFrom(common)
 }
 
+base.archivesName = "wingscontracts-fabric"
+
 dependencies {
     modImplementation("net.fabricmc:fabric-loader:${rootProject.property("fabric_loader_version")}")
     modApi("net.fabricmc.fabric-api:fabric-api:${rootProject.property("fabric_api_version")}")
@@ -39,7 +43,6 @@ dependencies {
 
     // Fabric Kotlin
     modImplementation("net.fabricmc:fabric-language-kotlin:${rootProject.property("fabric_kotlin_version")}")
-
     modImplementation("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${rootProject.property("forgeconfigapiport_version")}")
 }
 

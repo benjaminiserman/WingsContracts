@@ -27,6 +27,8 @@ configurations {
     developmentForge.extendsFrom(common)
 }
 
+base.archivesName = "wingscontracts-forge"
+
 repositories {
     // KFF
     maven {

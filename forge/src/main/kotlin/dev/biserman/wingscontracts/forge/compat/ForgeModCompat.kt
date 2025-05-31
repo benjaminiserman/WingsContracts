@@ -16,7 +16,7 @@ import net.minecraftforge.eventbus.api.IEventBus
 import net.minecraftforge.registries.ForgeRegistries
 
 object ForgeModCompat {
-    @Suppress("removal", "DEPRECATION")
+    @Suppress("DEPRECATION")
     fun init(modBus: IEventBus) {
         if (Platform.isModLoaded(CompatMods.CREATE)) {
             val createRegistrate = KotlinCreateRegistrate(WingsContractsMod.MOD_ID)
@@ -64,6 +64,4 @@ object ForgeModCompat {
             }
         }
     }
-
-
 }

@@ -2,9 +2,7 @@ package dev.biserman.wingscontracts.fabric.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.biserman.wingscontracts.core.Contract;
-import dev.biserman.wingscontracts.data.LoadedContracts;
 import dev.biserman.wingscontracts.item.ContractItem;
-import kotlin.reflect.jvm.internal.impl.metadata.ProtoBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
