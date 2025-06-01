@@ -40,6 +40,9 @@
     "wingscontracts.contract.expires_in": "Expired in %d cycles",
     "wingscontracts.contract.total_fulfilled": "Total Units Fulfilled Ever: %d (%d → %d)",
     "wingscontracts.contract.author": "Author: %s",
+    "wingscontracts.contract.default_reward_format": "%d %s",
+    "wingscontracts.contract.enchanted_reward_format": "%d Enchanted %s",
+    "wingscontracts.contract.enchanted_book_format": "%d %s %s",
 
     "wingscontracts.contract.abyssal.rewards": "Rewards %s for every %d",
     "wingscontracts.contract.abyssal.max_reward_cycle": "Max Reward this Cycle: %s",

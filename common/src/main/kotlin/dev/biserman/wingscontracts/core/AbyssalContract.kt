@@ -24,6 +24,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
 import net.minecraft.util.Mth
 import net.minecraft.world.item.Item
@@ -283,10 +284,31 @@ class AbyssalContract(
 
     fun formatReward(count: Int): String {
         val rewardEntry = ContractDataReloadListener.defaultRewards.firstOrNull { it.item.item == reward.item }
-        return if (rewardEntry == null || rewardEntry.formatString == null) {
-            "$count ${reward.displayName.string.trimBrackets()}"
+        if (rewardEntry == null || rewardEntry.formatString == null) {
+            val trimmed = reward.displayName.string.trimBrackets()
+            when {
+                reward.item == Items.ENCHANTED_BOOK -> {
+                    val enchantments = reward.tag?.getList("StoredEnchantments", 10)?.mapNotNull { tag ->
+                        if (tag !is CompoundTag) {
+                            return@mapNotNull null
+                        }
+
+                        val resourceLocation = ResourceLocation.tryParse(tag.getString("id")) ?: return@mapNotNull null
+                        val level = tag.getInt("lvl")
+
+                        val name =
+                            Component.translatable("enchantment.${resourceLocation.namespace}.${resourceLocation.path}").string
+                        val levelString = Component.translatable("enchantment.level.$level").string
+
+                        return@mapNotNull "$name $levelString"
+                    } ?: listOf()
+                    return translateContract("enchanted_book_format", count, enchantments.joinToString(" + "), trimmed).string
+                }
+                reward.isEnchanted -> return translateContract("enchanted_reward_format", count, trimmed).string
+                else -> return "$count $trimmed"
+            }
         } else {
-            String.format(rewardEntry.formatString, count)
+            return String.format(rewardEntry.formatString, count)
         }
     }
 
