@@ -2,6 +2,7 @@ package dev.biserman.wingscontracts.command
 
 import com.mojang.brigadier.builder.ArgumentBuilder
 import dev.biserman.wingscontracts.WingsContractsMod
+import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.Contract
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
@@ -18,26 +19,37 @@ object ModCommand {
             .then(CopyContractCommand.register())
             .then(PoolCommand.register())
 
-    fun giveContract(sourceStack: CommandSourceStack, contract: Contract?, players: Collection<ServerPlayer>): Int {
+    fun giveContract(sourceStack: CommandSourceStack, contract: Contract?, player: ServerPlayer?): Int {
         if (contract == null) {
             sourceStack.sendFailure(Component.translatable("commands.${WingsContractsMod.MOD_ID}.failed.load"))
             return 0
         }
 
-        for (player in players) {
-            val itemStack = contract.createItem()
-            val didAdd = player.inventory.add(itemStack)
-            if (!didAdd) {
-                val itemEntity = player.drop(itemStack, false)
-                if (itemEntity != null) {
-                    itemEntity.setNoPickUpDelay()
-                    itemEntity.setTarget(player.uuid)
-                }
-            }
-
-            sourceStack.sendSuccess({ Component.translatable("commands.${WingsContractsMod.MOD_ID}.give_contract", player.name.string) }, true)
+        if (player == null) {
+            sourceStack.sendFailure(Component.translatable("commands.${WingsContractsMod.MOD_ID}.failed.only_one_player"))
+            return 0
         }
 
+        if (contract is AbyssalContract) {
+            contract.initialize()
+        }
+
+        val itemStack = contract.createItem()
+        val didAdd = player.inventory.add(itemStack)
+        if (!didAdd) {
+            val itemEntity = player.drop(itemStack, false)
+            if (itemEntity != null) {
+                itemEntity.setNoPickUpDelay()
+                itemEntity.setTarget(player.uuid)
+            }
+        }
+
+        sourceStack.sendSuccess({
+            Component.translatable(
+                "commands.${WingsContractsMod.MOD_ID}.give_contract",
+                player.name.string
+            )
+        }, true)
         return 1
     }
 }

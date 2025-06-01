@@ -31,6 +31,7 @@ class BlankAbyssalContractItem(properties: Properties) : Item(properties) {
 
             val contract =
                 ContractSavedData.get(level).generator.generateContract(ContractDataReloadListener.randomTag())
+            contract.initialize()
             val newContractStack = contract.createItem()
             player.setItemInHand(interactionHand, newContractStack)
 

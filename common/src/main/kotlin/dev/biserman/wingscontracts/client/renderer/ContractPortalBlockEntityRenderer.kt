@@ -32,6 +32,7 @@ class ContractPortalBlockEntityRenderer(private val context: BlockEntityRenderer
         val mode = portal.blockState.getValue(ContractPortalBlock.MODE)
         val showItem = when {
             contract.isComplete -> ModItemRegistry.STAR.get().defaultInstance
+            contract.isDisabled -> ModItemRegistry.DISABLED.get().defaultInstance
             mode == ContractPortalMode.NOT_CONNECTED -> ModItemRegistry.YELLOW_EXCLAMATION_MARK.get().defaultInstance
             mode == ContractPortalMode.ERROR -> ModItemRegistry.RED_EXCLAMATION_MARK.get().defaultInstance
             level.hasNeighborSignal(blockPos) -> ModItemRegistry.EXCLAMATION_MARK.get().defaultInstance

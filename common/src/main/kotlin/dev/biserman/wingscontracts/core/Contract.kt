@@ -49,7 +49,7 @@ abstract class Contract(
     val targetBlockTags: List<TagKey<Block>> = listOf(),
     val targetConditions: List<ItemCondition> = listOf(),
 
-    val startTime: Long = System.currentTimeMillis(),
+    var startTime: Long = System.currentTimeMillis(),
 
     val countPerUnit: Int = 1,
     var unitsFulfilledEver: Long = 0,
@@ -62,6 +62,11 @@ abstract class Contract(
     val displayItem: ItemStack? = null
 ) {
     fun matches(itemStack: ItemStack): Boolean {
+        // fail to match everything when disabled
+        if (isDisabled) {
+            return false
+        }
+
         // if any targetCondition fails, return false
         if (targetConditions.isNotEmpty()) {
             if (targetConditions.any { !it.match(itemStack) }) {
@@ -84,6 +89,8 @@ abstract class Contract(
 
         return targetConditions.isNotEmpty() // blank contracts return false unless they have nbt conditions
     }
+
+    open val isDisabled get() = false
 
     val displayItems by lazy {
         if (displayItem == null) {
@@ -137,9 +144,9 @@ abstract class Contract(
         return@lazy translateContract("empty").string
     }
 
-    open fun tryUpdateTick(tag: ContractTag?): Boolean = false
+    open fun tryUpdateTick(tag: ContractTag): Boolean = false
 
-    open fun renew(tag: ContractTag, newCycleStart: Long) {}
+    open fun renew(tag: ContractTag, cyclesPassed: Int, newCycleStart: Long) {}
 
     open fun onContractFulfilled(tag: ContractTag) {}
 

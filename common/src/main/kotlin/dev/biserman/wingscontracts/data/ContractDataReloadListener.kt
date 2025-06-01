@@ -103,7 +103,7 @@ object ContractDataReloadListener : SimpleJsonResourceReloadListener(GSON, "wing
         profilerFiller: ProfilerFiller
     ) {
         areTagsValidated = false
-        WingsContractsMod.LOGGER.info("Building available contracts pool...")
+        WingsContractsMod.LOGGER.info("Building abyssal contracts pool...")
         var skippedBecauseUnloaded = 0
         for ((resourceLocation, json) in jsonMap) {
             if (resourceLocation.path.startsWith("_")) {

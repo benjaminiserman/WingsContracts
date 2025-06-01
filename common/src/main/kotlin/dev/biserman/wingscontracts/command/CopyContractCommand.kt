@@ -37,7 +37,7 @@ object CopyContractCommand {
         return giveContract(
             sourceStack,
             LoadedContracts[contractTag],
-            listOf(player)
+            player
         )
     }
 }

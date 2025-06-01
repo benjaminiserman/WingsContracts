@@ -38,7 +38,7 @@ object LoadContractCommand {
                                                 context.source.level,
                                                 StringArgumentType.getString(context, "type"),
                                             ),
-                                            EntityArgument.getPlayers(context, "targets")
+                                            EntityArgument.getPlayer(context, "targets")
                                         )
                                     }).executes { context ->
                                 giveContract(
@@ -48,7 +48,7 @@ object LoadContractCommand {
                                         context.source.level,
                                         StringArgumentType.getString(context, "type"),
                                     ),
-                                    EntityArgument.getPlayers(context, "targets")
+                                    context.source.player
                                 )
                             })
             )

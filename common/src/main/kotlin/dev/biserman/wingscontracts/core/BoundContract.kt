@@ -260,7 +260,7 @@ class BoundContract(
                 startTime = tag.startTime ?: System.currentTimeMillis(),
                 countPerUnit = tag.countPerUnit ?: 64,
                 unitsFulfilledEver = tag.unitsFulfilledEver ?: 0,
-                author = tag.author ?: ModConfig.SERVER.defaultAuthor.get(),
+                author = tag.author ?: "",
                 name = tag.name,
                 matchingContractId = tag.matchingContractId ?: UUID.randomUUID()
             )

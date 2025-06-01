@@ -52,6 +52,9 @@ object ModItemRegistry {
     val QUESTION_MARK: RegistrySupplier<Item> = ITEMS.register(
         "question_mark"
     ) { Item(Item.Properties().stacksTo(16)) }
+    val DISABLED: RegistrySupplier<Item> = ITEMS.register(
+        "disabled"
+    ) { Item(Item.Properties().stacksTo(16)) }
     val STAR: RegistrySupplier<Item> = ITEMS.register(
         "star"
     ) { Item(Item.Properties().stacksTo(16)) }

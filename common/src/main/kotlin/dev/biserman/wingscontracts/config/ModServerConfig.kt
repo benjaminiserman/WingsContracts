@@ -30,6 +30,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val defaultAuthor: ForgeConfigSpec.ConfigValue<String>
     val defaultMaxLevel: ForgeConfigSpec.ConfigValue<Int>
     val defaultQuantityGrowthFactor: ForgeConfigSpec.DoubleValue
+    val defaultExpiresIn: ForgeConfigSpec.ConfigValue<Int>
 
     init {
         builder.push("General")
@@ -64,7 +65,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
 
         abyssalContractsPoolPicksCap =
             builder.comment("Determines the maximum number of picks from the Abyssal Contracts pool each player can have saved up.")
-                .defineInRange("abyssalContractsPoolPicksCap", 3, 0, Int.MAX_VALUE)
+                .defineInRange("abyssalContractsPoolPicksCap", 1, 0, Int.MAX_VALUE)
 
         allowBlankAbyssalContractUse =
             builder.comment("If true, Blank Abyssal Contracts can be right-clicked to become a randomized usable Abyssal Contract.")
@@ -179,6 +180,14 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
             See abyssalContractGrowthFunction above to see how this is used.
             """.trimIndent()
         ).defineInRange("defaultQuantityGrowthFactor", 2.0, 0.00001, 100.0)
+
+        defaultExpiresIn =
+            builder.comment(
+                """
+                The default number of cycles until an Abyssal Contract expires and becomes unusable.
+                When set to a negative value, contracts never expire.
+                """.trimIndent()
+            ).define("defaultExpiresIn", -1)
 
         builder.pop()
     }

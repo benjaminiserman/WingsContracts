@@ -5,7 +5,6 @@ import dev.biserman.wingscontracts.core.AbyssalContract
 import dev.biserman.wingscontracts.core.AbyssalContract.Companion.baseUnitsDemanded
 import dev.biserman.wingscontracts.core.AbyssalContract.Companion.currentCycleStart
 import dev.biserman.wingscontracts.core.AbyssalContract.Companion.reward
-import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.core.Contract.Companion.countPerUnit
 import dev.biserman.wingscontracts.core.Contract.Companion.rarity
 import dev.biserman.wingscontracts.core.Contract.Companion.startTime
@@ -30,7 +29,7 @@ class AbyssalContractGenerator(val data: ContractSavedData) {
         return max(1.0, value * multiplier * varianceFactor)
     }
 
-    fun generateContract(tag: ContractTag): Contract {
+    fun generateContract(tag: ContractTag): AbyssalContract {
         tag.currentCycleStart = data.currentCycleStart
         tag.startTime = data.currentCycleStart
         tag.baseUnitsDemanded =

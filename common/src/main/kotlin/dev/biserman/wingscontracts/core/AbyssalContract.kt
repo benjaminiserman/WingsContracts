@@ -52,6 +52,7 @@ class AbyssalContract(
     val baseUnitsDemanded: Int,
     var unitsFulfilled: Int,
     unitsFulfilledEver: Long,
+    var expiresIn: Int,
 
     author: String,
     name: String?,
@@ -66,7 +67,8 @@ class AbyssalContract(
     val quantityGrowthFactor: Double,
     val maxLevel: Int,
 
-    var isActive: Boolean
+    var isActive: Boolean,
+    var isInitialized: Boolean
 ) : Contract(
     1,
     id,
@@ -165,11 +167,17 @@ class AbyssalContract(
 
     fun getCycleInfo(): MutableList<Component> {
         val components = mutableListOf<Component>()
-        val nextCycleStart = currentCycleStart + cycleDurationMs
+        val start = if (isInitialized) currentCycleStart else System.currentTimeMillis()
+        val nextCycleStart = start + cycleDurationMs
         val timeRemaining = nextCycleStart - System.currentTimeMillis()
         val timeRemainingString = DenominationsHelper.denominateDurationToString(timeRemaining)
 
         val timeRemainingColor = getTimeRemainingColor(timeRemaining)
+
+        if (isDisabled) {
+            components.add(translateContract("disabled").withStyle(ChatFormatting.GRAY))
+            return components
+        }
 
         if (Date(nextCycleStart) <= Date()) {
             components.add(translateContract("cycle_complete").withStyle(ChatFormatting.DARK_PURPLE))
@@ -181,8 +189,14 @@ class AbyssalContract(
             components.add(Component.literal("  $timeRemainingString").withStyle(timeRemainingColor))
         }
 
+        if (expiresIn > 0) {
+            components.add(translateContract("expires_in", expiresIn).withStyle(ChatFormatting.DARK_PURPLE))
+        }
+
         return components
     }
+
+    override val isDisabled get() = !isActive
 
     val unitsDemanded: Int get() = unitsDemandedAtLevel(level)
 
@@ -203,11 +217,19 @@ class AbyssalContract(
 
     override val rewardPerUnit get() = reward.count
 
-    override fun tryUpdateTick(tag: ContractTag?): Boolean {
-        if (!isActive || tag == null) {
+    val cyclesPassed get() = ((System.currentTimeMillis() - currentCycleStart) / cycleDurationMs).toInt()
+    val newCycleStart get() = currentCycleStart + cycleDurationMs * cyclesPassed
+
+    override fun tryUpdateTick(tag: ContractTag): Boolean {
+        if (!isActive) {
             return false
         }
 
+        if (!isInitialized) {
+            initialize(tag)
+        }
+
+        // for bound contracts that run forever
         if (cycleDurationMs <= 0) {
             if (isComplete) {
                 onContractFulfilled(tag)
@@ -219,10 +241,8 @@ class AbyssalContract(
             }
         }
 
-        val currentTime = System.currentTimeMillis()
-        val cyclesPassed = ((currentTime - currentCycleStart) / cycleDurationMs).toInt()
         if (cyclesPassed > 0) {
-            renew(tag, currentCycleStart + cycleDurationMs * cyclesPassed)
+            renew(tag, cyclesPassed, newCycleStart)
             return true
         }
 
@@ -242,7 +262,7 @@ class AbyssalContract(
 
     override fun tryConsumeFromItems(tag: ContractTag, portal: ContractPortalBlockEntity): List<ItemStack> {
         val unitCount = countConsumableUnits(portal.cachedInput.items)
-        if (unitCount == 0) {
+        if (unitCount == 0 || expiresIn == 0) {
             return listOf()
         }
 
@@ -283,7 +303,25 @@ class AbyssalContract(
         return rewardsList
     }
 
-    override fun renew(tag: ContractTag, newCycleStart: Long) {
+    fun initialize(tag: ContractTag? = null) {
+        isInitialized = true
+        tag?.isInitialized = true
+        startTime = System.currentTimeMillis()
+        tag?.startTime = startTime
+        currentCycleStart = startTime
+        tag?.currentCycleStart = currentCycleStart
+    }
+
+    override fun renew(tag: ContractTag, cyclesPassed: Int, newCycleStart: Long) {
+        if (isInitialized && expiresIn > 0) {
+            expiresIn = max(0, expiresIn - cyclesPassed)
+            tag.expiresIn = expiresIn
+            if (expiresIn == 0) {
+                isActive = false
+                tag.isActive = isActive
+            }
+        }
+
         if (isComplete) {
             onContractFulfilled(tag)
         }
@@ -318,6 +356,11 @@ class AbyssalContract(
         isPlayerSneaking: Boolean
     ): Boolean {
         tooltip.add(Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.header"))
+
+        if (isDisabled) {
+            Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.disabled")
+            return true
+        }
 
         val completedComponent = if (isComplete) {
             Component.translatable("${WingsContractsMod.MOD_ID}.gui.goggles.contract_portal.complete")
@@ -354,11 +397,13 @@ class AbyssalContract(
         tag.cycleDurationMs = cycleDurationMs
         tag.baseUnitsDemanded = baseUnitsDemanded
         tag.unitsFulfilled = unitsFulfilled
+        tag.expiresIn = expiresIn
         tag.reward = Reward.Defined(reward)
         tag.level = level
         tag.quantityGrowthFactor = quantityGrowthFactor
         tag.maxLevel = maxLevel
         tag.isActive = isActive
+        tag.isInitialized = isInitialized
 
         return tag
     }
@@ -395,8 +440,11 @@ class AbyssalContract(
 
         var (ContractTag).currentCycleStart by long()
         var (ContractTag).cycleDurationMs by long()
+        var (ContractTag).expiresIn by int()
         var (ContractTag).baseUnitsDemanded by int()
         var (ContractTag).unitsFulfilled by int()
+
+        var (ContractTag).isInitialized by boolean()
 
         fun load(tag: ContractTag, data: ContractSavedData? = null): AbyssalContract {
             val reward = tag.reward ?: Reward.Random(1.0)
@@ -413,6 +461,7 @@ class AbyssalContract(
                 baseUnitsDemanded = tag.baseUnitsDemanded ?: 64,
                 unitsFulfilled = tag.unitsFulfilled ?: 0,
                 unitsFulfilledEver = tag.unitsFulfilledEver ?: 0,
+                expiresIn = tag.expiresIn ?: ModConfig.SERVER.defaultExpiresIn.get(),
                 author = tag.author ?: ModConfig.SERVER.defaultAuthor.get(),
                 name = tag.name,
                 description = tag.description,
@@ -427,7 +476,8 @@ class AbyssalContract(
                 level = tag.level ?: 1,
                 quantityGrowthFactor = tag.quantityGrowthFactor ?: ModConfig.SERVER.defaultQuantityGrowthFactor.get(),
                 maxLevel = tag.maxLevel ?: ModConfig.SERVER.defaultMaxLevel.get(),
-                isActive = tag.isActive ?: true
+                isActive = tag.isActive ?: true,
+                isInitialized = tag.isInitialized ?: false
             )
         }
     }
