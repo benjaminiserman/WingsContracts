@@ -136,7 +136,7 @@
     },
     {
       "targetItems": "glowstone_dust",
-      "countPerUnit": 48,
+      "countPerUnit": 24,
       "reward": 2
     },
     {
@@ -178,7 +178,7 @@
     },
     {
       "targetItems": "blaze_rod",
-      "countPerUnit": 16,
+      "countPerUnit": 4,
       "reward": 2
     },
     {
