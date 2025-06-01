@@ -33,15 +33,19 @@ class AbyssalContractGenerator(val data: ContractSavedData) {
         tag.currentCycleStart = data.currentCycleStart
         tag.startTime = data.currentCycleStart
         tag.baseUnitsDemanded =
-            vary(
-                tag.baseUnitsDemanded?.toDouble() ?: 64.0,
-                ModConfig.SERVER.defaultUnitsDemandedMultiplier.get()
-            ).roundToInt()
+            max(
+                vary(
+                    tag.baseUnitsDemanded?.toDouble() ?: 64.0,
+                    ModConfig.SERVER.defaultUnitsDemandedMultiplier.get()
+                ).roundToInt(), 1
+            )
         tag.countPerUnit =
-            vary(
-                tag.countPerUnit?.toDouble() ?: 16.0,
-                ModConfig.SERVER.defaultCountPerUnitMultiplier.get()
-            ).roundToInt()
+            max(
+                vary(
+                    tag.countPerUnit?.toDouble() ?: 16.0,
+                    ModConfig.SERVER.defaultCountPerUnitMultiplier.get()
+                ).roundToInt(), 1
+            )
         val reward = tag.reward ?: Reward.Random(1.0)
         if (reward is Reward.Random) {
             val rewardValue = vary(reward.value, ModConfig.SERVER.defaultRewardMultiplier.get())

@@ -113,7 +113,7 @@
       "requiresAny": "create"
     }
   ],
-  "blockedRewards": [
+  "blockedReplacementRewards": [
     "create:flywheel",
     "create:potato_cannon",
     "create:transmitter",

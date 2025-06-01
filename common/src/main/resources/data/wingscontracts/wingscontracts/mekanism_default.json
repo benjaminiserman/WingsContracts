@@ -45,7 +45,7 @@
       "reward": 64
     }
   ],
-  "blockedRewards": [
+  "blockedReplacementRewards": [
     "mekanism:alloy_atomic",
     "mekanism:pellet_antimatter",
     "mekanism:hdpe_sheet"

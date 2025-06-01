@@ -27,7 +27,7 @@ object DebugContractCommand {
 
     const val PAGE_SIZE = 20
     fun listPage(sourceStack: CommandSourceStack, page: Int): Int {
-        ContractDataReloadListener.tryValidateEmptyTags()
+        ContractDataReloadListener.tryValidateContracts()
         val maxPage = (ContractDataReloadListener.availableContracts.size / PAGE_SIZE) + 1
         if (page > maxPage) {
             sourceStack.sendFailure(

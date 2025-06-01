@@ -46,7 +46,7 @@
       "countPerUnit": 32
     }
   ],
-  "blockedRewards": [
+  "blockedReplacementRewards": [
     "neapolitan:adzuki_stew"
   ]
 }

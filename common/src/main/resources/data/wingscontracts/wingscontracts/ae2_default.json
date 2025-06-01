@@ -30,7 +30,7 @@
       "name": "wingscontracts.data.ae2.processors"
     }
   ],
-  "blockedRewards": [
+  "blockedReplacementRewards": [
     "ae2:singularity"
   ]
 }

@@ -41,7 +41,7 @@
       "reward": 2
     }
   ],
-  "blockedRewards": [
+  "blockedReplacementRewards": [
     "brewinandchewin:strongroot_ale",
     "brewinandchewin:steel_toe_stout"
   ]

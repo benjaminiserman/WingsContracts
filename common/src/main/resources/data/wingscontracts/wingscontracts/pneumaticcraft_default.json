@@ -38,7 +38,7 @@
       "reward": 3
     }
   ],
-  "blockedRewards": [
+  "blockedReplacementRewards": [
     "pneumaticcraft:capacitor",
     "pneumaticcraft:transistor",
     "pneumaticcraft:printed_circuit_board"

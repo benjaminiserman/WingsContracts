@@ -37,7 +37,7 @@
       "reward": 2
     }
   ],
-  "blockedRewards": [
+  "blockedReplacementRewards": [
     "immersiveengineering:revolver",
     "immersiveengineering:component_electronic_adv"
   ]

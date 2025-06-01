@@ -28,7 +28,7 @@
       "reward": 3
     }
   ],
-  "blockedRewards": [
+  "blockedReplacementRewards": [
     "tfmg:compact_engine"
   ]
 }

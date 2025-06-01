@@ -15,7 +15,6 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
     val variance: ForgeConfigSpec.DoubleValue
     val replaceRewardWithRandomRate: ForgeConfigSpec.DoubleValue
     val replaceRewardWithRandomFactor: ForgeConfigSpec.DoubleValue
-    val replaceRewardWithRandomBlocklist: ForgeConfigSpec.ConfigValue<String>
     val rarityThresholdsString: ForgeConfigSpec.ConfigValue<String>
     val contractPortalInputSlots: ForgeConfigSpec.IntValue
     val boundContractLossRate: ForgeConfigSpec.DoubleValue
@@ -102,20 +101,6 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
             builder.comment("The reward from an Abyssal Contract with its reward randomly replaced will have its count multiplied by this factor.")
                 .defineInRange("replaceRewardWithRandomFactor", 0.5, 0.0, Double.MAX_VALUE)
 
-        replaceRewardWithRandomBlocklist =
-            builder.comment("Items on this comma-separated list cannot appear as randomly replaced rewards in contracts.")
-                .define(
-                    "replaceRewardWithRandomBlocklist",
-                    listOf(
-                        "minecraft:potion",
-                        "minecraft:splash_potion",
-                        "minecraft:lingering_potion",
-                        "minecraft:enchanted_book",
-                        "botania:brew_vial",
-                        "botania:brew_flask"
-                    ).joinToString(",")
-                )
-
         rarityThresholdsString =
             builder.comment(
                 """
@@ -127,7 +112,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
 
         contractPortalInputSlots =
             builder.comment("Determines how many unconverted stacks of input items a Contract Portal can hold at once.")
-                .defineInRange("contractPortalInputSlots", 27, 1, 1024)
+                .defineInRange("contractPortalInputSlots", 54, 1, 1024)
 
         boundContractLossRate =
             builder.comment("What percentage of the time should bound contract item exchanges fail and destroy the swapped items?")

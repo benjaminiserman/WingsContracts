@@ -47,7 +47,7 @@
       "reward": 2
     }
   ],
-  "blockedRewards": [
+  "blockedReplacementRewards": [
     "fruitsdelight:jelly_bread",
     "fruitsdelight:hawberry_roll"
   ]

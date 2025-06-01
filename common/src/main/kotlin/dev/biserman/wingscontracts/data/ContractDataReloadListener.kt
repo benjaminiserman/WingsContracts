@@ -8,6 +8,7 @@ import dev.architectury.platform.Platform
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.core.AbyssalContract
+import dev.biserman.wingscontracts.core.Contract.Companion.countPerUnit
 import dev.biserman.wingscontracts.core.Contract.Companion.name
 import dev.biserman.wingscontracts.core.Contract.Companion.requiresAll
 import dev.biserman.wingscontracts.core.Contract.Companion.requiresAny
@@ -29,6 +30,7 @@ import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener
 import net.minecraft.util.profiling.ProfilerFiller
 import net.minecraft.world.item.ItemStack
+import kotlin.math.pow
 
 val GSON: Gson = (GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create()
 
@@ -68,7 +70,7 @@ object ContractDataReloadListener : SimpleJsonResourceReloadListener(GSON, "wing
             fullRewardBlocklist.toList()
         }
 
-    var areTagsValidated = false
+    var areContractsValidated = false
 
     override fun prepare(
         resourceManager: ResourceManager,
@@ -85,7 +87,7 @@ object ContractDataReloadListener : SimpleJsonResourceReloadListener(GSON, "wing
     }
 
     fun randomTag(): ContractTag {
-        tryValidateEmptyTags()
+        tryValidateContracts()
 
         if (availableContracts.isEmpty()) {
             WingsContractsMod.LOGGER.warn("Available contracts pool is empty, returning unknown contract.")
@@ -102,7 +104,7 @@ object ContractDataReloadListener : SimpleJsonResourceReloadListener(GSON, "wing
         resourceManager: ResourceManager,
         profilerFiller: ProfilerFiller
     ) {
-        areTagsValidated = false
+        areContractsValidated = false
         WingsContractsMod.LOGGER.info("Building abyssal contracts pool...")
         var skippedBecauseUnloaded = 0
         for ((resourceLocation, json) in jsonMap) {
@@ -144,7 +146,7 @@ object ContractDataReloadListener : SimpleJsonResourceReloadListener(GSON, "wing
                     nonDefaultDefaultRewards.addAll(parsedDefaultRewards)
                 }
 
-                val parsedRewardBlocklist = jsonObject.get("blockedRewards")
+                val parsedRewardBlocklist = jsonObject.get("blockedReplacementRewards")
                     ?.asJsonArray?.map { it.asString } ?: listOf()
                 fullRewardBlocklist.addAll(parsedRewardBlocklist)
                 if (!isDefault) {
@@ -223,12 +225,14 @@ object ContractDataReloadListener : SimpleJsonResourceReloadListener(GSON, "wing
         return skippedBecauseUnloaded
     }
 
-    fun tryValidateEmptyTags() {
-        if (!areTagsValidated) {
-            WingsContractsMod.LOGGER.info("Checking for invalid tag contracts...")
-            removeEmptyTags(allAvailableContracts)
-            removeEmptyTags(nonDefaultAvailableContracts)
-            areTagsValidated = true
+    fun tryValidateContracts() {
+        if (!areContractsValidated) {
+            WingsContractsMod.LOGGER.info("Checking for invalid contracts...")
+            listOf(allAvailableContracts, nonDefaultAvailableContracts).forEach { contractList ->
+                removeEmptyTags(contractList)
+                removeImpossibleUnitDemands(contractList)
+            }
+            areContractsValidated = true
         }
     }
 
@@ -246,6 +250,37 @@ object ContractDataReloadListener : SimpleJsonResourceReloadListener(GSON, "wing
                 && blockTags.all { BuiltInRegistries.BLOCK.getTagOrEmpty(it).count() == 0 }
                 && targetItems.isEmpty()) {
                 WingsContractsMod.LOGGER.warn("Removing empty tag contract: $contract")
+                return@removeIf true
+            }
+
+            return@removeIf false
+        }
+    }
+
+    // remove contracts that would be impossible to fulfill due to the interaction between their target's max stack size and
+    // the container size of the Contract Portal
+    fun removeImpossibleUnitDemands(contractList: MutableList<ContractTag>) {
+        contractList.removeIf { contract ->
+            val countPerUnit = contract.countPerUnit ?: 64
+
+            val itemTags = contract.targetTags ?: listOf()
+            val blockTags = contract.targetBlockTags ?: listOf()
+            val targetItems = contract.targetItems ?: listOf()
+
+            val maxStackSize =
+                itemTags.flatMap { BuiltInRegistries.ITEM.getTagOrEmpty(it).map { it.value().maxStackSize } }
+                    .plus(blockTags.flatMap {
+                        BuiltInRegistries.BLOCK.getTagOrEmpty(it).map { it.value().asItem().maxStackSize }
+                    })
+                    .plus(targetItems.map { it.maxStackSize })
+                    .maxOrNull() ?: 64
+
+            val defaultCountPerUnitMultiplier = ModConfig.SERVER.defaultCountPerUnitMultiplier.get()
+            val variance = ModConfig.SERVER.variance.get()
+            val portalContainerSize = ModConfig.SERVER.contractPortalInputSlots.get()
+
+            if (countPerUnit * defaultCountPerUnitMultiplier * (1 + variance).pow(2) > portalContainerSize * maxStackSize) {
+                WingsContractsMod.LOGGER.warn("Removing contract with countPerUnit too large for contract portal: $contract")
                 return@removeIf true
             }
 
