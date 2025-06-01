@@ -79,6 +79,22 @@
         "tag": {
           "StoredEnchantments": [
             {
+              "lvl": 3,
+              "id": "minecraft:frost_walker"
+            }
+          ]
+        }
+      },
+      "value": 2,
+      "weight": 1
+    },
+    {
+      "item": {
+        "id": "minecraft:enchanted_book",
+        "Count": 1,
+        "tag": {
+          "StoredEnchantments": [
+            {
               "lvl": 4,
               "id": "minecraft:depth_strider"
             }
