@@ -42,6 +42,10 @@ class ContractSavedData : SavedData() {
     }
 
     fun serverTick(level: ServerLevel) {
+        if (ModConfig.SERVER.abyssalContractsPoolRefreshPeriodMs.get() <= 0) {
+            return
+        }
+
         val cyclesPassed =
             (System.currentTimeMillis() - currentCycleStart) / ModConfig.SERVER.abyssalContractsPoolRefreshPeriodMs.get()
 

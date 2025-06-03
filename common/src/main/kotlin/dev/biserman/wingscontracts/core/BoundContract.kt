@@ -139,6 +139,10 @@ class BoundContract(
             return listOf()
         }
 
+        if (portal.isPowered || otherPortal.isPowered) {
+            return listOf()
+        }
+
         val unitCount = min(
             countConsumableUnits(portal.cachedInput.items),
             otherContract.countConsumableUnits(otherPortal.cachedInput.items)

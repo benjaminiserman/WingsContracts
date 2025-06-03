@@ -1,6 +1,7 @@
 package dev.biserman.wingscontracts.gui
 
 import dev.biserman.wingscontracts.WingsContractsMod
+import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.client.gui.GuiGraphics
@@ -51,18 +52,6 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
         }
 
         val rightTitleEdge = imageWidth - titleLabelY
-        val refreshLabel = Component.translatable(
-            "${WingsContractsMod.MOD_ID}.gui.contract_portal.refreshes_in",
-            timeTilRefresh
-        ).string
-        graphics.drawString(
-            font,
-            refreshLabel,
-            rightTitleEdge - font.width(refreshLabel),
-            titleLabelY,
-            0x404040,
-            false
-        )
         val remainingPicksLabel = Component.translatable(
             "${WingsContractsMod.MOD_ID}.gui.contract_portal.remaining_picks",
             if (inventory.player.isCreative) "∞" else ContractSavedData.remainingPicks(inventory.player)
@@ -72,10 +61,25 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
             font,
             remainingPicksLabel,
             rightTitleEdge - font.width(remainingPicksLabel),
-            titleLabelY + font.lineHeight + 2,
+            titleLabelY,
             0x404040,
             false
         )
+
+        if (ModConfig.SERVER.abyssalContractsPoolRefreshPeriodMs.get() > 0) {
+            val refreshLabel = Component.translatable(
+                "${WingsContractsMod.MOD_ID}.gui.contract_portal.refreshes_in",
+                timeTilRefresh
+            ).string
+            graphics.drawString(
+                font,
+                refreshLabel,
+                rightTitleEdge - font.width(refreshLabel),
+                titleLabelY + font.lineHeight + 2,
+                0x404040,
+                false
+            )
+        }
     }
 
     override fun renderBg(graphics: GuiGraphics, f: Float, i: Int, j: Int) {

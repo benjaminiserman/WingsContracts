@@ -23,6 +23,7 @@ object DebugContractCommand {
                                 IntegerArgumentType.getInteger(context, "page")
                             )
                         })
+                    .executes { context -> listPage(context.source, 1) }
             )
 
     const val PAGE_SIZE = 20

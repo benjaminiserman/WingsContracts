@@ -51,8 +51,13 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
         ).defineEnum("abyssalContractGrowthFunction", GrowthFunctionOptions.EXPONENTIAL)
 
         abyssalContractsPoolRefreshPeriodMs =
-            builder.comment("The default time for the Abyssal Contracts pool to refresh, in milliseconds. E.g.: 86400000 for one day, 604800000 for one week.")
-                .defineInRange("abyssalContractsPoolRefreshPeriodMs", 86400000L, 60_000, Long.MAX_VALUE)
+            builder.comment(
+                """
+                The default time for the Abyssal Contracts pool to refresh, in milliseconds. E.g.: 86400000 for one day, 604800000 for one week.
+                If set to zero or negative one, the Abyssal Contracts Pool never refreshes.
+                """
+            )
+                .defineInRange("abyssalContractsPoolRefreshPeriodMs", 86400000L, -1, Long.MAX_VALUE)
 
         abyssalContractsPoolOptions =
             builder.comment("Determines how many Abyssal Contracts are available in the pool at any one time. Set to zero to disable the Abyssal Contracts pool.")

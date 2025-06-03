@@ -202,6 +202,8 @@ class ContractPortalBlockEntity(
         level?.sendBlockUpdated(blockPos, blockState, blockState, UPDATE_ALL)
     }
 
+    val isPowered get() = level?.hasNeighborSignal(blockPos) == true
+
     companion object {
         val STORAGE_ID = ResourceLocation("${ModBlockEntityRegistry.CONTRACT_PORTAL.id}_storage")
         fun serverTick(
@@ -445,7 +447,7 @@ class ContractPortalBlockEntity(
             return false
         }
 
-        if (level.hasNeighborSignal(blockPos)) {
+        if (isPowered) {
             return false
         }
 

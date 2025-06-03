@@ -21,7 +21,7 @@
         "id": "minecraft:heart_of_the_sea",
         "Count": 1
       },
-      "value": 1,
+      "value": 0.125,
       "weight": 4
     },
     {
@@ -43,9 +43,9 @@
     {
       "item": {
         "id": "minecraft:experience_bottle",
-        "Count": 16
+        "Count": 1
       },
-      "value": 1,
+      "value": 0.0625,
       "weight": 4
     },
     {

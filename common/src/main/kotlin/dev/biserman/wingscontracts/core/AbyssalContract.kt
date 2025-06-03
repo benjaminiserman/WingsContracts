@@ -98,7 +98,7 @@ class AbyssalContract(
                 "item.${WingsContractsMod.MOD_ID}.contract.abyssal",
                 rarityString,
                 nameString,
-                numeralString
+                if (level > 1) numeralString else ""
             )
         }
 
@@ -302,7 +302,12 @@ class AbyssalContract(
 
                         return@mapNotNull "$name $levelString"
                     } ?: listOf()
-                    return translateContract("enchanted_book_format", count, enchantments.joinToString(" + "), trimmed).string
+                    return translateContract(
+                        "enchanted_book_format",
+                        count,
+                        enchantments.joinToString(" + "),
+                        trimmed
+                    ).string
                 }
                 reward.isEnchanted -> return translateContract("enchanted_reward_format", count, trimmed).string
                 else -> return "$count $trimmed"
