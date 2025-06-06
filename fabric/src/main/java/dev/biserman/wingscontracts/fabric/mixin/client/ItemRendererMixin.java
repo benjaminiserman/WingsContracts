@@ -37,11 +37,15 @@ public abstract class ItemRendererMixin {
         if (!itemStack.isEmpty()
                 && itemStack.getItem() instanceof ContractItem
                 && itemDisplayContext == ItemDisplayContext.GUI) {
-            var displayItem = Contract.Companion.getDisplayItem(itemStack, 0f); // make this use deltaTime somehow
+            var level = Minecraft.getInstance().level;
+            if (level == null) {
+                return;
+            }
+            var displayItem = Contract.Companion.getDisplayItem(itemStack, (float)level.getGameTime());
             poseStack.pushPose();
             poseStack.scale(0.5f, 0.5f, 0.5f);
             poseStack.translate(0, 0, +1.0);
-            renderStatic(displayItem, itemDisplayContext, i, j, poseStack, multiBufferSource, Minecraft.getInstance().level, 1);
+            renderStatic(displayItem, itemDisplayContext, i, j, poseStack, multiBufferSource, level, 1);
             poseStack.popPose();
         }
     }
