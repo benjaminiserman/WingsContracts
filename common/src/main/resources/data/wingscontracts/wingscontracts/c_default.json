@@ -1,0 +1,145 @@
+{
+  "contracts": [
+    {
+      "targetTags": "#c:mushrooms",
+      "countPerUnit": 24
+    },
+    {
+      "targetTags": "#c:ingots",
+      "countPerUnit": 32
+    },
+    {
+      "targetTags": "#c:cobblestone",
+      "countPerUnit": 512
+    },
+    {
+      "targetTags": "#c:stone",
+      "countPerUnit": 256
+    },
+    {
+      "targetTags": "#c:sandstone_blocks",
+      "countPerUnit": 192
+    },
+    {
+      "targetTags": "#c:crops",
+      "countPerUnit": 64
+    },
+    {
+      "targetTags": "#c:foods/vegetables",
+      "countPerUnit": 64
+    },
+    {
+      "targetTags": "#c:dusts",
+      "countPerUnit": 48
+    },
+    {
+      "targetTags": "#c:dyes",
+      "countPerUnit": 48
+    },
+    {
+      "targetTags": "#c:gems",
+      "countPerUnit": 32
+    },
+    {
+      "targetTags": "#c:quartz",
+      "countPerUnit": 24
+    },
+    {
+      "targetTags": "#c:seeds",
+      "countPerUnit": 64
+    },
+    {
+      "targetTags": "#c:foods/berries",
+      "countPerUnit": 64
+    },
+    {
+      "targetTags": "#c:slimeballs",
+      "countPerUnit": 24
+    },
+    {
+      "targetTags": "#c:string",
+      "countPerUnit": 24,
+      "requiresAny": "supplementaries"
+    },
+    {
+      "targetTags": "#c:armors",
+      "countPerUnit": 4
+    },
+    {
+      "targetTags": "#c:heads",
+      "countPerUnit": 4,
+      "reward": 6,
+      "baseUnitsDemanded": 32
+    },
+    {
+      "targetTags": "#c:tools",
+      "countPerUnit": 12
+    },
+    {
+      "targetTags": "#c:tools,#c:armors",
+      "targetConditions": "tag.Damage>0",
+      "countPerUnit": 8,
+      "baseUnitsDemanded": 128,
+      "name": "wingscontracts.data.c.damaged_equipment",
+      "description": "wingscontracts.data.c.damaged_equipment.desc"
+    },
+    {
+      "targetTags": "#c:armors",
+      "targetConditions": "attribute.minecraft:generic.armor_toughness.add>0.0",
+      "countPerUnit": 3,
+      "reward": 3,
+      "name": "wingscontracts.data.c.tough_armor",
+      "description": "wingscontracts.data.c.tough_armor.desc"
+    },
+    {
+      "targetTags": "#c:raw_materials",
+      "countPerUnit": 24,
+      "reward": 2
+    },
+    {
+      "targetTags": "#c:nuggets",
+      "countPerUnit": 128
+    },
+    {
+      "targetBlockTags": "#c:concretes",
+      "countPerUnit": 128,
+      "reward": 2
+    },
+    {
+      "targetTags": "#c:barrels",
+      "countPerUnit": 18
+    },
+    {
+      "targetTags": "#c:foods/fruits",
+      "countPerUnit": 64
+    },
+    {
+      "targetTags": "#c:grain",
+      "countPerUnit": 64
+    },
+    {
+      "targetTags": "#c:plates/steel",
+      "countPerUnit": 16,
+      "reward": 2
+    },
+    {
+      "targetTags": "#c:wires",
+      "countPerUnit": 32,
+      "baseUnitsDemanded": 96
+    },
+    {
+      "targetTags": "#c:salts",
+      "countPerUnit": 64
+    },
+    {
+      "targetTags": "#c:dough",
+      "countPerUnit": 48,
+      "baseUnitsDemanded": 96
+    },
+    {
+      "targetBlockTags": "#c:storage_blocks",
+      "countPerUnit": 16,
+      "reward": 2
+    }
+  ]
+}

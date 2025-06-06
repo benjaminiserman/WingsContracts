@@ -194,6 +194,11 @@
     "wingscontracts.data.sharp_swords": "Sharp Swords",
     "wingscontracts.data.sharp_swords.desc": "accepts swords that deal at least 6 damage",
 
+    "wingscontracts.data.c.damaged_equipment": "Damaged Equipment",
+    "wingscontracts.data.c.damaged_equipment.desc": "accepts equipment at less than full durability",
+    "wingscontracts.data.c.tough_armor": "Tough Armor",
+    "wingscontracts.data.c.tough_armor.desc": "accepts armor that adds to your toughness",
+
     "wingscontracts.data.forge.damaged_equipment": "Damaged Equipment",
     "wingscontracts.data.forge.damaged_equipment.desc": "accepts equipment at less than full durability",
     "wingscontracts.data.forge.tough_armor": "Tough Armor",

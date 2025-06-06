@@ -121,7 +121,7 @@ class ModServerConfig(builder: ForgeConfigSpec.Builder) {
 
         boundContractLossRate =
             builder.comment("What percentage of the time should bound contract item exchanges fail and destroy the swapped items?")
-                .defineInRange("boundContractLossRate", 0.05, 0.0, 1.0)
+                .defineInRange("boundContractLossRate", 0.1, 0.0, 1.0)
 
         boundContractRequiresTwoPlayers =
             builder.comment("If true, a different player must place each end of the bound contract into its respective portal in order for the exchange to work.")
