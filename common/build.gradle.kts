@@ -4,6 +4,7 @@ repositories {
     maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/")
     maven("https://squiddev.cc/maven/")
     maven("https://maven.createmod.net")
+    maven("https://mvn.devos.one/snapshots") // Registrate
 }
 
 architectury {
@@ -22,19 +23,17 @@ dependencies {
     modApi("dev.architectury:architectury:${rootProject.property("architectury_version")}")
     modApi("fuzs.forgeconfigapiport:forgeconfigapiport-common:${rootProject.property("forgeconfigapiport_version")}")
     val minecraftVersion = rootProject.property("minecraft_version")
-    if (rootProject.property("cc_tweaked_enable") == "true") {
-        val ccTweakedVersion = rootProject.property("cc_tweaked_version")
-        compileOnly("cc.tweaked:cc-tweaked-$minecraftVersion-core-api:$ccTweakedVersion")
-        compileOnly("cc.tweaked:cc-tweaked-$minecraftVersion-common-api:$ccTweakedVersion")
-    }
-    if (rootProject.property("create_enable") == "true") {
-        val createVersion = rootProject.property("create_version")
-        val ponderVersion = rootProject.property("ponder_version")
-        val registrateVersion = rootProject.property("registrate_version")
-        compileOnly("com.simibubi.create:create-$minecraftVersion:$createVersion:slim") { isTransitive = false }
-        compileOnly("net.createmod.ponder:Ponder-Forge-$minecraftVersion:$ponderVersion") { isTransitive = false }
-        compileOnly("com.tterrag.registrate:Registrate:${registrateVersion}")
-    }
+    val ccTweakedMinecraftVersion = rootProject.property("cc_tweaked_minecraft_version")
+    val ccTweakedVersion = rootProject.property("cc_tweaked_version")
+    compileOnly("cc.tweaked:cc-tweaked-$ccTweakedMinecraftVersion-core-api:$ccTweakedVersion")
+    compileOnly("cc.tweaked:cc-tweaked-$ccTweakedMinecraftVersion-common-api:$ccTweakedVersion")
+
+    val createVersion = rootProject.property("create_version")
+    val ponderVersion = rootProject.property("ponder_version")
+    val registrateVersion = rootProject.property("registrate_version")
+    compileOnly("com.simibubi.create:create-$minecraftVersion:$createVersion:slim") { isTransitive = false }
+    compileOnly("net.createmod.ponder:Ponder-NeoForge-$minecraftVersion:$ponderVersion") { isTransitive = false }
+    compileOnly("com.tterrag.registrate:Registrate:${registrateVersion}")
 
     implementation(kotlin("reflect"))
 }
