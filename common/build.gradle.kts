@@ -5,6 +5,7 @@ repositories {
     maven("https://squiddev.cc/maven/")
     maven("https://maven.createmod.net")
     maven("https://mvn.devos.one/snapshots") // Registrate
+    maven("https://maven.neoforged.net/releases/")
 }
 
 architectury {
@@ -21,7 +22,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${rootProject.property("fabric_loader_version")}")
     // Remove the next line if you don't want to depend on the API
     modApi("dev.architectury:architectury:${rootProject.property("architectury_version")}")
-    modApi("fuzs.forgeconfigapiport:forgeconfigapiport-common:${rootProject.property("forgeconfigapiport_version")}")
+    modApi("fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:${rootProject.property("forgeconfigapiport_version")}")
     val minecraftVersion = rootProject.property("minecraft_version")
     val ccTweakedMinecraftVersion = rootProject.property("cc_tweaked_minecraft_version")
     val ccTweakedVersion = rootProject.property("cc_tweaked_version")

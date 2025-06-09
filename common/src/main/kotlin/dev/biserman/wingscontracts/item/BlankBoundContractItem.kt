@@ -44,7 +44,7 @@ class BlankBoundContractItem(properties: Properties) : Item(properties), MenuPro
 
     override fun appendHoverText(
         itemStack: ItemStack,
-        level: Level?,
+        tooltipContext: TooltipContext,
         components: MutableList<Component>,
         tooltipFlag: TooltipFlag
     ) {

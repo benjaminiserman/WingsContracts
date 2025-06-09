@@ -68,7 +68,7 @@ class BoundContractCreationScreen(menu: BoundContractCreationMenu, inventory: In
     }
 
     override fun render(graphics: GuiGraphics, x: Int, y: Int, partialTick: Float) {
-        renderBackground(graphics)
+        renderBackground(graphics, x, y, partialTick)
         super.render(graphics, x, y, partialTick)
         nameBox.render(graphics, x, y, partialTick)
 
@@ -93,7 +93,7 @@ class BoundContractCreationScreen(menu: BoundContractCreationMenu, inventory: In
 
     companion object {
         val TEXTURE: ResourceLocation =
-            ResourceLocation(WingsContractsMod.MOD_ID, "textures/gui/bound_contract_creation.png")
+            ResourceLocation.fromNamespaceAndPath(WingsContractsMod.MOD_ID, "textures/gui/bound_contract_creation.png")
         const val IMAGE_WIDTH = 176
         const val IMAGE_HEIGHT = 189
     }
@@ -156,7 +156,7 @@ class BoundContractCreationScreen(menu: BoundContractCreationMenu, inventory: In
 
         override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) {}
 
-        override fun mouseScrolled(d: Double, e: Double, f: Double): Boolean {
+        override fun mouseScrolled(d: Double, e: Double, f: Double, g: Double): Boolean {
             val trueDelta = if (hasShiftDown()) f.roundToInt() * 10 else f.roundToInt()
             scrollValue += trueDelta
             return true

@@ -3,6 +3,8 @@ package dev.biserman.wingscontracts.scoreboard
 import dev.biserman.wingscontracts.WingsContractsMod
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.numbers.FixedFormat
+import net.minecraft.network.chat.numbers.NumberFormat
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.scores.criteria.ObjectiveCriteria
@@ -17,7 +19,9 @@ object ScoreboardHandler {
                 CONTRACT_SCORE,
                 ObjectiveCriteria.DUMMY,
                 Component.translatable("scoreboard.$CONTRACT_SCORE"),
-                ObjectiveCriteria.RenderType.INTEGER
+                ObjectiveCriteria.RenderType.INTEGER,
+                true,
+                null
             )
         }
 
@@ -26,29 +30,29 @@ object ScoreboardHandler {
                 CONTRACT_SCORE_PERIODIC,
                 ObjectiveCriteria.DUMMY,
                 Component.translatable("scoreboard.$CONTRACT_SCORE_PERIODIC"),
-                ObjectiveCriteria.RenderType.INTEGER
+                ObjectiveCriteria.RenderType.INTEGER,
+                true,
+                null
             )
         }
     }
 
     fun add(level: ServerLevel, player: Player, amount: Int) {
-        val score = level.scoreboard.getOrCreatePlayerScore(
-            player.scoreboardName,
+        level.scoreboard.getOrCreatePlayerScore(
+            player,
             level.scoreboard.getObjective(CONTRACT_SCORE) ?: return
-        )
-        score.score = score.score + amount
+        ).add(amount)
 
-        val periodicScore = level.scoreboard.getOrCreatePlayerScore(
-            player.scoreboardName,
+        level.scoreboard.getOrCreatePlayerScore(
+            player,
             level.scoreboard.getObjective(CONTRACT_SCORE_PERIODIC) ?: return
-        )
-        periodicScore.score = periodicScore.score + amount
+        ).add(amount)
     }
 
     fun resetPeriodic(level: ServerLevel) {
-        val objective = level.scoreboard.getObjective(CONTRACT_SCORE_PERIODIC)
+        val objective = level.scoreboard.getObjective(CONTRACT_SCORE_PERIODIC) ?: return
         for (player in level.scoreboard.trackedPlayers) {
-            level.scoreboard.resetPlayerScore(player, objective)
+            level.scoreboard.resetSinglePlayerScore(player, objective)
         }
     }
 

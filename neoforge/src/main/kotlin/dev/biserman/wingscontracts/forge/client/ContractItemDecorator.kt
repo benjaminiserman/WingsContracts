@@ -7,10 +7,10 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.world.item.ItemStack
-import net.minecraftforge.client.IItemDecorator
-import net.minecraftforge.client.event.RegisterItemDecorationsEvent
-import net.minecraftforge.eventbus.api.SubscribeEvent
-import net.minecraftforge.fml.common.Mod
+import net.neoforged.bus.api.SubscribeEvent
+import net.neoforged.fml.common.Mod
+import net.neoforged.neoforge.client.IItemDecorator
+import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent
 
 class ContractItemDecorator : IItemDecorator {
     override fun render(

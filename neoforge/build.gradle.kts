@@ -48,8 +48,8 @@ dependencies {
     implementation("thedarkcolour:kotlinforforge:${rootProject.property("kotlin_for_forge_version")}")
 
     val minecraftVersion = rootProject.property("minecraft_version")
-    val ccTweakedMinecraftVersion = rootProject.property("minecraft_version")
-    val ccTweakedVersion = rootProject.property("cc_tweaked_minecraft_version")
+    val ccTweakedMinecraftVersion = rootProject.property("cc_tweaked_minecraft_version")
+    val ccTweakedVersion = rootProject.property("cc_tweaked_version")
     compileOnly("cc.tweaked:cc-tweaked-$ccTweakedMinecraftVersion-forge-api:$ccTweakedVersion")
 
     val createVersion = rootProject.property("create_version")

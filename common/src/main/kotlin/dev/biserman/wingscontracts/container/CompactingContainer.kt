@@ -12,7 +12,7 @@ class CompactingContainer(containerSize: Int) : SimpleContainer(containerSize) {
         // compare count to maxStackSize to maintain invariant that compacting never increases slots used
         val allItems = items.groupBy {
             it.count <= it.maxStackSize
-                    && (it.tag?.isEmpty != false)
+                    && it.components.isEmpty
                     && currencyHandler.isCurrency(it)
         }
         val currencyItems = allItems[true]

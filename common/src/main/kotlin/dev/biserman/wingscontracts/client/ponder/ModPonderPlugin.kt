@@ -21,8 +21,8 @@ object ModPonderPlugin : PonderPlugin {
         "abyssal"
     ).createItem()
 
-    val uuid1 = UUID.randomUUID()
-    val uuid2 = UUID.randomUUID()
+    val uuid1: UUID = UUID.randomUUID()
+    val uuid2: UUID = UUID.randomUUID()
 
     fun getExampleBoundContract1(level: Level) = LoadContractCommand.loadContract(
         "{\"targetItems\":\"minecraft:diamond\",\"countPerUnit\": 1, \"id\": $uuid1, \"matchingContractId\": $uuid2}",

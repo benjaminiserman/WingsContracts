@@ -1,8 +1,8 @@
 package dev.biserman.wingscontracts.config
 
-import net.minecraftforge.common.ForgeConfigSpec
+import net.neoforged.neoforge.common.ModConfigSpec
 
-class ModCommonConfig(builder: ForgeConfigSpec.Builder) {
+class ModCommonConfig(builder: ModConfigSpec.Builder) {
     init {
         builder.push("""
             This mod is entirely configured through server configs and datapacks.

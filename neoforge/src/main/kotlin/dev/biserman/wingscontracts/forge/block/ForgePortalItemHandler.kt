@@ -3,11 +3,9 @@ package dev.biserman.wingscontracts.neoforge.block
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.container.ISidedPortalItemHandler
 import net.minecraft.world.item.ItemStack
-import net.minecraftforge.common.capabilities.AutoRegisterCapability
-import net.minecraftforge.items.IItemHandler
+import net.neoforged.neoforge.items.IItemHandler
 import kotlin.math.min
 
-@AutoRegisterCapability
 class ForgePortalItemHandler(val portal: ContractPortalBlockEntity) :
     IItemHandler,
     ISidedPortalItemHandler {

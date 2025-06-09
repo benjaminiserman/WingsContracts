@@ -27,7 +27,7 @@ class ContractItem(properties: Properties) : Item(properties) {
 
     override fun appendHoverText(
         itemStack: ItemStack,
-        level: Level?,
+        tooltipContext: TooltipContext,
         components: MutableList<Component>,
         tooltipFlag: TooltipFlag
     ) {

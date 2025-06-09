@@ -2,9 +2,11 @@
 
 package dev.biserman.wingscontracts.nbt
 
+import com.simibubi.create.content.logistics.item.filter.attribute.ItemAttribute
 import dev.architectury.registry.fuel.FuelRegistry
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
+import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
@@ -14,6 +16,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier
 import net.minecraft.world.item.ArmorItem
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.component.ItemAttributeModifiers
 import kotlin.math.max
 
 class ItemCondition(val text: String, val match: (ItemStack) -> Boolean) {
@@ -22,9 +25,9 @@ class ItemCondition(val text: String, val match: (ItemStack) -> Boolean) {
 
 object ItemConditionParser {
     val attributeOperationsMap = mapOf(
-        "add" to AttributeModifier.Operation.ADDITION,
-        "multBase" to AttributeModifier.Operation.MULTIPLY_BASE,
-        "multTotal" to AttributeModifier.Operation.MULTIPLY_TOTAL
+        "add" to AttributeModifier.Operation.ADD_VALUE,
+        "multBase" to AttributeModifier.Operation.ADD_MULTIPLIED_BASE,
+        "multTotal" to AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
     )
 
     fun parseEntries(text: String): List<String> {
@@ -72,19 +75,14 @@ object ItemConditionParser {
     }
 
     private fun (ItemStack).getAttributeValue(attribute: Attribute, operation: AttributeModifier.Operation): Double {
-        val item = this.item
-        val equipmentSlot = when {
-            item is ArmorItem -> item.equipmentSlot
-            else -> EquipmentSlot.MAINHAND
-        }
-
         val relevantModifiers = this
-            .getAttributeModifiers(equipmentSlot)
-            .get(attribute)
-            .filter { it.operation == operation }
-            .map { it.amount }
+            .getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY)
+            .modifiers
+            .filter { it.attribute.value() == attribute }
+            .filter { it.modifier.operation == operation }
+            .map { it.modifier.amount }
 
-        return if (operation == AttributeModifier.Operation.ADDITION) {
+        return if (operation == AttributeModifier.Operation.ADD_VALUE) {
             relevantModifiers.sum()
         } else {
             relevantModifiers.reduce(Double::times)

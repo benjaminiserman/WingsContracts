@@ -9,9 +9,10 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
+import net.minecraft.world.level.material.MapColor
 import java.util.function.Supplier
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -25,8 +26,10 @@ object ModBlockRegistry {
         "contract_portal"
     ) {
         ContractPortalBlock(
-            BlockBehaviour.Properties
-                .copy(Blocks.ENCHANTING_TABLE)
+            BlockBehaviour.Properties.of()
+                .mapColor(MapColor.COLOR_RED)
+                .instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops()
+                .strength(5.0f, 1200.0f)
                 .lightLevel { state: BlockState ->
                     ContractPortalBlock.getLightLevel(
                         state
@@ -39,8 +42,10 @@ object ModBlockRegistry {
         "contract_spigot"
     ) {
         ContractSpigotBlock(
-            BlockBehaviour.Properties
-                .copy(Blocks.ENCHANTING_TABLE)
+            BlockBehaviour.Properties.of()
+                .mapColor(MapColor.COLOR_RED)
+                .instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops()
+                .strength(5.0f, 1200.0f)
                 .lightLevel { 11 }
                 .requiresCorrectToolForDrops()
         )

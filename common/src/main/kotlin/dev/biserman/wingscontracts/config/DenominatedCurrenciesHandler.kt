@@ -74,7 +74,7 @@ class DenominatedCurrenciesHandler() {
         val (splitItem, splitCount) = DenominationsHelper.getLargestDenomination(stackValue, denominations)
             ?: return itemStack.split(min(itemStack.count, itemStack.maxStackSize))
 
-        val cappedSplitCount = min(splitCount, splitItem.maxStackSize)
+        val cappedSplitCount = min(splitCount, splitItem.defaultMaxStackSize)
         val splitItemValue = denominations[splitItem] ?: throw Error()
         val splitStackValue = cappedSplitCount * splitItemValue
 

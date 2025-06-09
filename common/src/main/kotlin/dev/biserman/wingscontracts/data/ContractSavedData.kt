@@ -126,7 +126,7 @@ class ContractSavedData : SavedData() {
             }
 
             val data = world.server.getLevel(Level.OVERWORLD)?.dataStorage?.computeIfAbsent(
-                ContractSavedData::load, ::ContractSavedData, IDENTIFIER
+                ::ContractSavedData, IDENTIFIER
             ) ?: fakeData
 
             return data

@@ -9,9 +9,9 @@ import net.minecraft.server.packs.PackType
 object ModReloadListenerRegistry {
     fun register() {
         ReloadListenerRegistry.register(
-            PackType.SERVER_DATA, ContractDataReloadListener, ResourceLocation(
-                WingsContractsMod.MOD_ID, "available_contracts"
-            )
+            PackType.SERVER_DATA,
+            ContractDataReloadListener,
+            ResourceLocation.fromNamespaceAndPath(WingsContractsMod.MOD_ID, "available_contracts")
         )
     }
 }

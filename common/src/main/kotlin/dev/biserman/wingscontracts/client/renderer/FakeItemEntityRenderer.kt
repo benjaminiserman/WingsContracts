@@ -34,7 +34,7 @@ class FakeItemEntityRenderer(context: EntityRendererProvider.Context) : ItemEnti
         val bakedModel =
             this.itemRenderer.getModel(itemStack, itemEntity.level(), null as LivingEntity?, itemEntity.id)
         val isGui3d = bakedModel.isGui3d
-        val renderAmount = this.getRenderAmount(itemStack)
+        val renderAmount = ItemEntityRenderer.getRenderedAmount(itemStack.count)
         val bounceY = Mth.sin((itemEntity.age.toFloat() + frameTime) / 10.0f + itemEntity.bobOffs) * 0.1f + 0.1f
         val yScale = bakedModel.transforms.getTransform(ItemDisplayContext.GROUND).scale.y()
         poseStack.translate(0.0f, bounceY + 0.25f * yScale, 0.0f)

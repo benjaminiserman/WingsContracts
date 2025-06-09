@@ -11,9 +11,9 @@ import dev.biserman.wingscontracts.compat.CompatMods
 import dev.biserman.wingscontracts.compat.create.LeaderboardDisplaySource
 import dev.biserman.wingscontracts.scoreboard.ScoreboardHandler
 import net.createmod.ponder.foundation.PonderIndex
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
-import net.minecraftforge.eventbus.api.IEventBus
-import net.minecraftforge.registries.ForgeRegistries
+import net.neoforged.bus.api.IEventBus
 
 object ForgeModCompat {
     @Suppress("DEPRECATION")
@@ -27,9 +27,9 @@ object ForgeModCompat {
                     .displaySource(name, factory)
                     .onRegisterAfter(Registries.BLOCK_ENTITY_TYPE) { source ->
                         val id = WingsContractsMod.prefix("contract_portal_be")
-                        if (ForgeRegistries.BLOCK_ENTITY_TYPES.containsKey(id)) {
+                        if (BuiltInRegistries.BLOCK_ENTITY_TYPE.containsKey(id)) {
                             DisplaySource.BY_BLOCK_ENTITY.add(
-                                ForgeRegistries.BLOCK_ENTITY_TYPES.getValue(id),
+                                BuiltInRegistries.BLOCK_ENTITY_TYPE.get(id),
                                 source
                             )
                         } else {

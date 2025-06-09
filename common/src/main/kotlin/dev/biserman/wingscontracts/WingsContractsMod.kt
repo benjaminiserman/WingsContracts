@@ -33,7 +33,7 @@ object WingsContractsMod {
         ModCommandRegistry.register()
         ModMenuRegistry.register()
         ModReloadListenerRegistry.register()
-        CriteriaTriggers.register(ContractCompleteTrigger.INSTANCE)
+        CriteriaTriggers.register(ContractCompleteTrigger.ID.toString(), ContractCompleteTrigger.INSTANCE)
 
         WingsContractsNetHandler.init()
 
@@ -65,5 +65,5 @@ object WingsContractsMod {
         }
     }
 
-    fun prefix(path: String) = ResourceLocation("$MOD_ID:$path")
+    fun prefix(path: String): ResourceLocation = ResourceLocation.parse("$MOD_ID:$path")!!
 }

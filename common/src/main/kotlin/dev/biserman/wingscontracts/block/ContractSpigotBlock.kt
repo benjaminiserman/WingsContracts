@@ -1,5 +1,6 @@
 package dev.biserman.wingscontracts.block
 
+import com.mojang.serialization.MapCodec
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.block.BaseEntityBlock
@@ -22,6 +23,10 @@ class ContractSpigotBlock(properties: Properties) : BaseEntityBlock(properties) 
         blockPos: BlockPos,
         blockState: BlockState
     ): BlockEntity = ContractSpigotBlockEntity(blockPos, blockState)
+
+    override fun codec(): MapCodec<out BaseEntityBlock?>? {
+        TODO("Not yet implemented")
+    }
 
     override fun getRenderShape(blockState: BlockState): RenderShape {
         return RenderShape.MODEL

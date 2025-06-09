@@ -205,7 +205,7 @@ class ContractPortalBlockEntity(
     val isPowered get() = level?.hasNeighborSignal(blockPos) == true
 
     companion object {
-        val STORAGE_ID = ResourceLocation("${ModBlockEntityRegistry.CONTRACT_PORTAL.id}_storage")
+        val STORAGE_ID: ResourceLocation = ResourceLocation.parse("${ModBlockEntityRegistry.CONTRACT_PORTAL.id}_storage")
         fun serverTick(
             level: Level, blockPos: BlockPos, blockState: BlockState,
             portal: ContractPortalBlockEntity
@@ -350,7 +350,7 @@ class ContractPortalBlockEntity(
 
         private fun canMergeItems(itemStack: ItemStack, itemStack2: ItemStack): Boolean {
             return itemStack.count <= itemStack.maxStackSize
-                    && ItemStack.isSameItemSameTags(itemStack, itemStack2)
+                    && ItemStack.isSameItemSameComponents(itemStack, itemStack2)
         }
 
         private val INSIDE: VoxelShape = Block.box(2.0, 11.0, 2.0, 14.0, 16.0, 14.0)

@@ -19,7 +19,7 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
     }
 
     override fun render(graphics: GuiGraphics, x: Int, y: Int, partialTick: Float) {
-        this.renderBackground(graphics)
+        this.renderBackground(graphics, x, y, partialTick)
         super.render(graphics, x, y, partialTick)
 
         this.renderTooltip(graphics, x, y)
@@ -90,6 +90,6 @@ class AvailableContractsScreen(menu: AvailableContractsMenu, val inventory: Inve
 
     companion object {
         val TEXTURE: ResourceLocation =
-            ResourceLocation(WingsContractsMod.MOD_ID, "textures/gui/contract_portal.png")
+            ResourceLocation.fromNamespaceAndPath(WingsContractsMod.MOD_ID, "textures/gui/contract_portal.png")
     }
 }

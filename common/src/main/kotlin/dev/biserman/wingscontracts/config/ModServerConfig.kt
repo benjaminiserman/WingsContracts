@@ -1,35 +1,35 @@
 package dev.biserman.wingscontracts.config
 
 import dev.biserman.wingscontracts.WingsContractsMod
-import net.minecraftforge.common.ForgeConfigSpec
+import net.neoforged.neoforge.common.ModConfigSpec
 
-class ModServerConfig(builder: ForgeConfigSpec.Builder) {
-    val denominations: ForgeConfigSpec.ConfigValue<String>
-    val abyssalContractGrowthFunction: ForgeConfigSpec.EnumValue<GrowthFunctionOptions>
-    val abyssalContractsPoolRefreshPeriodMs: ForgeConfigSpec.LongValue
-    val abyssalContractsPoolOptions: ForgeConfigSpec.IntValue
-    val abyssalContractsPoolPicks: ForgeConfigSpec.IntValue
-    val abyssalContractsPoolPicksCap: ForgeConfigSpec.IntValue
-    val allowBlankAbyssalContractUse: ForgeConfigSpec.BooleanValue
-    val disableDefaultContractOptions: ForgeConfigSpec.BooleanValue
-    val variance: ForgeConfigSpec.DoubleValue
-    val replaceRewardWithRandomRate: ForgeConfigSpec.DoubleValue
-    val replaceRewardWithRandomFactor: ForgeConfigSpec.DoubleValue
-    val rarityThresholdsString: ForgeConfigSpec.ConfigValue<String>
-    val contractPortalInputSlots: ForgeConfigSpec.IntValue
-    val boundContractLossRate: ForgeConfigSpec.DoubleValue
-    val boundContractRequiresTwoPlayers: ForgeConfigSpec.BooleanValue
-    val announceCycleLeaderboard: ForgeConfigSpec.IntValue
+class ModServerConfig(builder: ModConfigSpec.Builder) {
+    val denominations: ModConfigSpec.ConfigValue<String>
+    val abyssalContractGrowthFunction: ModConfigSpec.EnumValue<GrowthFunctionOptions>
+    val abyssalContractsPoolRefreshPeriodMs: ModConfigSpec.LongValue
+    val abyssalContractsPoolOptions: ModConfigSpec.IntValue
+    val abyssalContractsPoolPicks: ModConfigSpec.IntValue
+    val abyssalContractsPoolPicksCap: ModConfigSpec.IntValue
+    val allowBlankAbyssalContractUse: ModConfigSpec.BooleanValue
+    val disableDefaultContractOptions: ModConfigSpec.BooleanValue
+    val variance: ModConfigSpec.DoubleValue
+    val replaceRewardWithRandomRate: ModConfigSpec.DoubleValue
+    val replaceRewardWithRandomFactor: ModConfigSpec.DoubleValue
+    val rarityThresholdsString: ModConfigSpec.ConfigValue<String>
+    val contractPortalInputSlots: ModConfigSpec.IntValue
+    val boundContractLossRate: ModConfigSpec.DoubleValue
+    val boundContractRequiresTwoPlayers: ModConfigSpec.BooleanValue
+    val announceCycleLeaderboard: ModConfigSpec.IntValue
 
     // Contract Defaults
-    val defaultRewardMultiplier: ForgeConfigSpec.DoubleValue
-    val defaultUnitsDemandedMultiplier: ForgeConfigSpec.DoubleValue
-    val defaultCountPerUnitMultiplier: ForgeConfigSpec.DoubleValue
-    val defaultCycleDurationMs: ForgeConfigSpec.LongValue
-    val defaultAuthor: ForgeConfigSpec.ConfigValue<String>
-    val defaultMaxLevel: ForgeConfigSpec.ConfigValue<Int>
-    val defaultQuantityGrowthFactor: ForgeConfigSpec.DoubleValue
-    val defaultExpiresIn: ForgeConfigSpec.ConfigValue<Int>
+    val defaultRewardMultiplier: ModConfigSpec.DoubleValue
+    val defaultUnitsDemandedMultiplier: ModConfigSpec.DoubleValue
+    val defaultCountPerUnitMultiplier: ModConfigSpec.DoubleValue
+    val defaultCycleDurationMs: ModConfigSpec.LongValue
+    val defaultAuthor: ModConfigSpec.ConfigValue<String>
+    val defaultMaxLevel: ModConfigSpec.ConfigValue<Int>
+    val defaultQuantityGrowthFactor: ModConfigSpec.DoubleValue
+    val defaultExpiresIn: ModConfigSpec.ConfigValue<Int>
 
     init {
         builder.push("General")
