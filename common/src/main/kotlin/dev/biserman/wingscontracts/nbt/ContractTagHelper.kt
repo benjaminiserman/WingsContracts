@@ -5,9 +5,16 @@ package dev.biserman.wingscontracts.nbt
 import com.google.gson.JsonObject
 import com.mojang.serialization.JsonOps
 import dev.biserman.wingscontracts.config.ModConfig
+import net.minecraft.client.Minecraft
+import net.minecraft.core.HolderLookup
+import net.minecraft.core.RegistryAccess
+import net.minecraft.core.component.DataComponents
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
+import net.minecraft.server.MinecraftServer
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.component.CustomData
 import kotlin.math.max
 import kotlin.reflect.KProperty
 
@@ -29,14 +36,24 @@ sealed class Reward {
 @Suppress("MemberVisibilityCanBePrivate")
 object ContractTagHelper {
     const val CONTRACT_INFO_KEY = "contractInfo"
+    var registryAccess: HolderLookup.Provider? = null
 
     fun getContractTag(contractItemStack: ItemStack): ContractTag? {
-        val contractTag = contractItemStack.tag?.getCompound(CONTRACT_INFO_KEY) ?: return null
+        val contractTag =
+            contractItemStack.components.get(DataComponents.CUSTOM_DATA)?.tag?.getCompound(CONTRACT_INFO_KEY)
+                ?: return null
         return ContractTag(contractTag)
     }
 
     fun setContractTag(contractItemStack: ItemStack, contractTag: ContractTag) {
-        contractItemStack.addTagElement(CONTRACT_INFO_KEY, contractTag.tag)
+        contractItemStack.update(DataComponents.CUSTOM_DATA, CustomData.of(CompoundTag())) {
+            // unsafe mutations!
+            it.tag.put(
+                CONTRACT_INFO_KEY,
+                contractTag.tag
+            )
+            it
+        }
     }
 
     class Property<T>(
@@ -57,8 +74,8 @@ object ContractTagHelper {
         }
     }
 
-fun string(key: String? = null) =
-    Property(key, safeGet(CompoundTag::getString), CompoundTag::putString)
+    fun string(key: String? = null) =
+        Property(key, safeGet(CompoundTag::getString), CompoundTag::putString)
 
     fun int(key: String? = null) =
         Property(key, safeGet(CompoundTag::getInt), CompoundTag::putInt)
@@ -83,16 +100,24 @@ fun string(key: String? = null) =
                 val loadedValue = max(1.0, this.getDouble(it))
                 return@safeGet Reward.Random(loadedValue)
             } else if (this.contains(it)) {
-                val itemStack = ItemStack.of(this.getCompound(it))
+                val itemStack = ItemStack.parse(
+                    registryAccess
+                        ?: return@safeGet Reward.Defined(ItemStack.EMPTY),
+                    this.getCompound(it)
+                ).orElse(ItemStack.EMPTY)
                 itemStack.count = this.getCompound(it).getInt("Count")
                 return@safeGet Reward.Defined(itemStack)
             } else {
                 return@safeGet Reward.Random(ModConfig.SERVER.defaultRewardMultiplier.get())
             }
-        }, { safeKey, value ->
+        }, safeWrite@{ safeKey, value ->
             when (value) {
                 is Reward.Defined -> {
-                    val tag = value.itemStack.save(CompoundTag())
+                    val tag = value.itemStack.save(
+                        registryAccess
+                            ?: return@safeWrite,
+                        CompoundTag()
+                    ) as CompoundTag
                     tag.putInt("Count", value.itemStack.count)
                     this.put(safeKey, tag)
                 }
@@ -103,14 +128,22 @@ fun string(key: String? = null) =
     fun itemStack(key: String? = null) =
         Property(key, safeGet {
             if (this.contains(it)) {
-                val itemStack = ItemStack.of(this.getCompound(it))
+                val itemStack = ItemStack.parse(
+                    registryAccess
+                        ?: return@safeGet ItemStack.EMPTY,
+                    this.getCompound(it)
+                ).orElse(ItemStack.EMPTY)
                 itemStack.count = this.getCompound(it).getInt("Count")
                 return@safeGet itemStack
             } else {
                 return@safeGet null
             }
-        }, { safeKey, value ->
-            val tag = value.save(CompoundTag())
+        }, safeWrite@{ safeKey, value ->
+            val tag = value.save(
+                registryAccess
+                    ?: return@safeWrite,
+                CompoundTag()
+            ) as CompoundTag
             tag.putInt("Count", value.count)
             this.put(safeKey, tag)
         })

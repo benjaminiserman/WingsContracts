@@ -24,15 +24,14 @@ class ContractSpigotBlock(properties: Properties) : BaseEntityBlock(properties) 
         blockState: BlockState
     ): BlockEntity = ContractSpigotBlockEntity(blockPos, blockState)
 
-    override fun codec(): MapCodec<out BaseEntityBlock?>? {
-        TODO("Not yet implemented")
-    }
+    override fun codec() = CODEC
 
     override fun getRenderShape(blockState: BlockState): RenderShape {
         return RenderShape.MODEL
     }
 
     companion object {
+        val CODEC: MapCodec<ContractSpigotBlock> = simpleCodec { properties -> ContractSpigotBlock(properties) }
         private val SHAPE: VoxelShape = box(0.0, 4.0, 0.0, 16.0, 16.0, 16.0)
     }
 }

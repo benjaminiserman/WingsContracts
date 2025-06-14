@@ -5,6 +5,7 @@ package dev.biserman.wingscontracts.nbt
 import com.simibubi.create.content.logistics.item.filter.attribute.ItemAttribute
 import dev.architectury.registry.fuel.FuelRegistry
 import dev.biserman.wingscontracts.WingsContractsMod
+import dev.biserman.wingscontracts.core.name
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
@@ -15,9 +16,12 @@ import net.minecraft.world.entity.ai.attributes.Attribute
 import net.minecraft.world.entity.ai.attributes.AttributeModifier
 import net.minecraft.world.item.ArmorItem
 import net.minecraft.world.item.BlockItem
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.component.ItemAttributeModifiers
+import kotlin.jvm.optionals.getOrNull
 import kotlin.math.max
+import kotlin.toString
 
 class ItemCondition(val text: String, val match: (ItemStack) -> Boolean) {
     override fun toString() = text
@@ -105,7 +109,8 @@ object ItemConditionParser {
 
         fun wrapNavigate(
             default: String
-        ): (ItemStack) -> String = ({ navigate(navigationComponents, default)(it.tag) })
+        ): (ItemStack) -> String =
+            ({ navigate(navigationComponents, default)(it.get(DataComponents.CUSTOM_DATA)?.tag) })
 
         val fetchItemValue: (ItemStack) -> String = when (keyComponents[0]) {
             "tag" -> when {
@@ -139,19 +144,59 @@ object ItemConditionParser {
             "durabilityPercent" -> ({ (it.damageValue.toDouble() / max(1.0, it.maxDamage.toDouble())).toString() })
             "isEnchantable" -> ({ it.isEnchantable.toString() })
             "isEnchanted" -> ({ it.isEnchanted.toString() })
-            "isFireResistant" -> ({ it.item.isFireResistant.toString() })
-            "isEdible" -> ({ it.item.isEdible.toString() })
-            "maxStackSize" -> ({ it.item.maxStackSize.toString() })
-            "maxDamage" -> ({ it.item.maxDamage.toString() })
-            "nutrition" -> ({ it.item.foodProperties?.nutrition?.toString() ?: "0.0" })
-            "saturationModifier" -> ({ it.item.foodProperties?.saturationModifier?.toString() ?: "0.0" })
-            "isMeat" -> ({ it.item.foodProperties?.isMeat?.toString() ?: "false" })
-            "canAlwaysEat" -> ({ it.item.foodProperties?.canAlwaysEat()?.toString() ?: "false" })
-            "isFastFood" -> ({ it.item.foodProperties?.isFastFood?.toString() ?: "false" })
+            "isFireResistant" -> ({ (it.components.get(DataComponents.FIRE_RESISTANT) != null).toString() })
+            "isEdible" -> ({ (it.components.get(DataComponents.FOOD) != null).toString() })
+            "maxStackSize" -> ({
+                (it.components.get(DataComponents.MAX_STACK_SIZE) ?: Item.DEFAULT_MAX_STACK_SIZE).toString()
+            })
+            "maxDamage" -> ({ it.get(DataComponents.MAX_DAMAGE)?.toString() ?: "0" })
+            "nutrition" -> ({ it.get(DataComponents.FOOD)?.nutrition?.toString() ?: "0" })
+            "saturationModifier" -> ({ it.get(DataComponents.FOOD)?.saturation()?.toString() ?: "0.0" })
+            "canAlwaysEat" -> ({ it.get(DataComponents.FOOD)?.canAlwaysEat?.toString() ?: "false" })
+            "eatSeconds" -> ({ it.get(DataComponents.FOOD)?.eatSeconds?.toString() ?: Int.MAX_VALUE.toString() })
             "isBlock" -> ({ (it.item is BlockItem).toString() })
             "class" -> ({ it.item.javaClass.name })
             "displayName" -> ({ it.displayName.string.trimBrackets() })
             "burnTicks" -> ({ FuelRegistry.get(it).toString() })
+            "damage" -> ({ it.get(DataComponents.DAMAGE)?.toString() ?: "0" })
+            "isUnbreakable" -> ({ it.get(DataComponents.UNBREAKABLE)?.toString() ?: "false" })
+            "customName" -> ({ it.get(DataComponents.CUSTOM_NAME)?.string?.trimBrackets() ?: "" })
+            "itemName" -> ({ it.get(DataComponents.ITEM_NAME)?.string?.trimBrackets() ?: "" })
+            "lore" -> ({ it.get(DataComponents.LORE)?.toString() ?: "" })
+            "repairCost" -> ({ it.get(DataComponents.REPAIR_COST)?.toString() ?: "0" })
+            "hasGlintOverride" -> ({ it.get(DataComponents.ENCHANTMENT_GLINT_OVERRIDE)?.toString() ?: "false" })
+            "isTool" -> ({ (it.components.get(DataComponents.TOOL) != null).toString() })
+            "miningSpeed" -> ({ it.get(DataComponents.TOOL)?.defaultMiningSpeed?.toString() ?: "0.0" })
+            "damagePerBlock" -> ({ it.get(DataComponents.TOOL)?.damagePerBlock?.toString() ?: "0" })
+            "enchantments" -> ({ it.get(DataComponents.ENCHANTMENTS)?.enchantments?.toString() ?: "" })
+            "storedEnchantments" -> ({ it.get(DataComponents.STORED_ENCHANTMENTS)?.enchantments?.toString() ?: "" })
+            "dyedColor" -> ({ it.get(DataComponents.DYED_COLOR)?.rgb?.toString(16) ?: "" })
+            "hasArmorTrim" -> ({ (it.components.get(DataComponents.TRIM) != null).toString() })
+            "armorTrimPattern" -> ({
+                it.get(DataComponents.TRIM)?.pattern()?.value()?.templateItem?.value()?.`arch$registryName`()
+                    ?.toString() ?: ""
+            })
+            "armorTrimMaterial" -> ({
+                it.get(DataComponents.TRIM)?.material()?.value()?.ingredient?.value()?.`arch$registryName`()?.toString()
+                    ?: ""
+            })
+            "isJukeboxPlayable" -> ({ (it.components.get(DataComponents.JUKEBOX_PLAYABLE) != null).toString() })
+            "jukeboxSong" -> ({ it.get(DataComponents.JUKEBOX_PLAYABLE)?.song?.key?.location()?.toString() ?: "" })
+            "noteBlockSound" -> ({ it.get(DataComponents.NOTE_BLOCK_SOUND)?.toString() ?: "false" })
+            "baseDyeColor" -> ({ it.get(DataComponents.BASE_COLOR)?.name?.trimBrackets() ?: "" })
+            "suspiciousStewEffects" -> ({
+                it.get(DataComponents.SUSPICIOUS_STEW_EFFECTS)?.effects?.joinToString(",") {
+                    it.effect().unwrapKey().getOrNull().toString()
+                } ?: ""
+            })
+            "potionEffects" -> ({
+                it.get(DataComponents.POTION_CONTENTS)?.allEffects?.joinToString(",") {
+                    it.effect.unwrapKey().getOrNull().toString()
+                } ?: ""
+            })
+            "potionColor" -> ({ it.get(DataComponents.POTION_CONTENTS)?.color?.toString(16) ?: "" })
+            "potionCustomColor" -> ({ it.get(DataComponents.POTION_CONTENTS)?.customColor?.getOrNull()?.toString(16) ?: "" })
+            "potionType" -> ({ it.get(DataComponents.POTION_CONTENTS)?.potion?.get()?.unwrapKey()?.getOrNull()?.toString() ?: "" })
             else -> throw Error("Condition key not recognized: ${keyComponents[0]}")
         }
 

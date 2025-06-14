@@ -1,56 +1,48 @@
 package dev.biserman.wingscontracts.advancements
 
-import com.google.gson.JsonObject
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import dev.biserman.wingscontracts.WingsContractsMod.prefix
+import dev.biserman.wingscontracts.advancements.ContractCompleteTrigger.TriggerInstance
 import dev.biserman.wingscontracts.nbt.ItemConditionParser
-import net.minecraft.advancements.critereon.*
-import net.minecraft.server.level.ServerLevel
+import net.minecraft.advancements.critereon.ContextAwarePredicate
+import net.minecraft.advancements.critereon.EntityPredicate
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.util.StringRepresentable
 import net.minecraft.world.item.ItemStack
+import java.util.*
 import java.util.function.Predicate
 
-class ContractCompleteTrigger : SimpleCriterionTrigger<ContractCompleteTrigger.Instance>() {
-    override fun getId() = ID
-
-    public override fun createInstance(
-        json: JsonObject, playerPred: ContextAwarePredicate, conditions: DeserializationContext
-    ) = Instance(
-        playerPred, json.get("item_matches").asString, LocationPredicate.fromJson(json.get("location"))
-    )
-
-    fun trigger(player: ServerPlayer, stack: ItemStack, world: ServerLevel, x: Int, y: Int, z: Int) {
-        trigger(player, Predicate { instance: Instance -> instance.test(stack, world, x, y, z) })
+class ContractCompleteTrigger : SimpleCriterionTrigger<TriggerInstance>() {
+    fun trigger(player: ServerPlayer, stack: ItemStack) {
+        trigger(player, Predicate { instance: TriggerInstance -> instance.matches(stack) })
     }
 
-    class Instance(
-        playerPredicate: ContextAwarePredicate, val conditionString: String, val location: LocationPredicate
-    ) : AbstractCriterionTriggerInstance(
-        ID, playerPredicate
-    ) {
-        val conditions by lazy { ItemConditionParser.parse(conditionString) }
-        override fun getCriterion() = ID
+    override fun codec(): Codec<TriggerInstance> = CODEC
 
-        fun test(stack: ItemStack, world: ServerLevel, x: Int, y: Int, z: Int): Boolean {
-            return conditions.all { it.match(stack) } && this.location.matches(
-                world, x.toDouble(), y.toDouble(), z.toDouble()
-            )
+    class TriggerInstance(
+        val player: Optional<ContextAwarePredicate>, val conditionString: Optional<String>
+    ) : SimpleInstance {
+        val conditions by lazy { ItemConditionParser.parse(conditionString.get()) }
+
+        fun matches(stack: ItemStack): Boolean {
+            return conditions.all { it.match(stack) }
         }
 
-        override fun serializeToJson(serializationContext: SerializationContext): JsonObject {
-            val json: JsonObject = super.serializeToJson(serializationContext)
-            if (conditions !== NbtPredicate.ANY) {
-                json.addProperty("item_matches", conditionString)
-            }
-            if (location !== LocationPredicate.ANY) {
-                json.add("location", location.serializeToJson())
-            }
-
-            return json
-        }
+        override fun player() = player
     }
 
     companion object {
         val ID = prefix("contract_complete")
         val INSTANCE = ContractCompleteTrigger()
+        val CODEC: Codec<TriggerInstance> = RecordCodecBuilder.create {
+            it.group(
+                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player")
+                    .forGetter { it.player },
+                StringRepresentable.StringRepresentableCodec.STRING.optionalFieldOf("item_matches")
+                    .forGetter { it.conditionString })
+                .apply(it, ::TriggerInstance)
+        }
     }
 }

@@ -10,3 +10,5 @@ accessible field net/minecraft/client/renderer/entity/ItemEntityRenderer itemRen
 accessible field net/minecraft/client/renderer/entity/ItemEntityRenderer random Lnet/minecraft/util/RandomSource;
 accessible method net/minecraft/client/renderer/entity/ItemEntityRenderer getRenderedAmount (I)I
 accessible class net/minecraft/world/scores/PlayerScores
+accessible field net/minecraft/world/item/component/CustomData tag Lnet/minecraft/nbt/CompoundTag;
+accessible field net/minecraft/world/item/enchantment/ItemEnchantments enchantments Lit/unimi/dsi/fastutil/objects/Object2IntOpenHashMap;

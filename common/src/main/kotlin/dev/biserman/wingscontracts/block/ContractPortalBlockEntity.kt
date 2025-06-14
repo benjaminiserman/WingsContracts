@@ -23,6 +23,7 @@ import dev.biserman.wingscontracts.registry.ModSoundRegistry
 import dev.biserman.wingscontracts.scoreboard.ScoreboardHandler
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.core.HolderLookup
 import net.minecraft.core.NonNullList
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
@@ -105,31 +106,35 @@ class ContractPortalBlockEntity(
         PortalLinker.get(level ?: return).linkedPortals.remove(contractId)
     }
 
-    override fun load(compoundTag: CompoundTag) {
-        super.load(compoundTag)
-
+    override fun loadAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
         this.cooldownTime = compoundTag.getInt("SuckCooldown")
-        this.contractSlot = ItemStack.of(compoundTag.getCompound("ContractSlot"))
+        this.contractSlot = ItemStack.parse(provider, compoundTag.getCompound("ContractSlot")).orElse(ItemStack.EMPTY)
         this.lastPlayer = compoundTag.getUUID("LastPlayer")
 
-        loadAllItems(compoundTag.getCompound("Items"), cachedInput.items)
-        loadAllItems(compoundTag.getCompound("Rewards"), cachedRewards.items)
+        loadAllItems(compoundTag.getCompound("Items"), cachedInput.items, provider)
+        loadAllItems(compoundTag.getCompound("Rewards"), cachedRewards.items, provider)
+
+        super.loadAdditional(compoundTag, provider)
     }
 
     @Suppress("KotlinConstantConditions")
-    fun loadAllItems(containerTag: CompoundTag, containerList: NonNullList<ItemStack>) {
+    fun loadAllItems(
+        containerTag: CompoundTag,
+        containerList: NonNullList<ItemStack>,
+        provider: HolderLookup.Provider
+    ) {
         val listTag: ListTag = containerTag.getList("Items", 10)
 
         for (i in listTag.indices) {
             val compoundTag2 = listTag.getCompound(i)
             val count = compoundTag2.getByte("Slot").toInt() and 255
             if (count >= 0 && count < containerList.size) {
-                containerList[count] = ItemStack.of(compoundTag2)
+                containerList[count] = ItemStack.parse(provider, compoundTag2).orElse(ItemStack.EMPTY)
             }
         }
     }
 
-    fun saveAllItems(containerList: NonNullList<ItemStack>): CompoundTag {
+    fun saveAllItems(containerList: NonNullList<ItemStack>, provider: HolderLookup.Provider): CompoundTag {
         val listTag = ListTag()
 
         for (i in containerList.indices) {
@@ -137,7 +142,7 @@ class ContractPortalBlockEntity(
             if (!itemStack.isEmpty) {
                 val slotTag = CompoundTag()
                 slotTag.putByte("Slot", i.toByte())
-                itemStack.save(slotTag)
+                itemStack.save(provider, slotTag)
                 listTag.add(slotTag)
             }
         }
@@ -150,23 +155,23 @@ class ContractPortalBlockEntity(
         return containerTag
     }
 
-    override fun saveAdditional(compoundTag: CompoundTag) {
-        super.saveAdditional(compoundTag)
+    override fun saveAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
+        super.saveAdditional(compoundTag, provider)
         compoundTag.putInt("SuckCooldown", this.cooldownTime)
         compoundTag.putUUID("LastPlayer", this.lastPlayer)
 
         val contractSlotTag = CompoundTag()
-        contractSlot.save(contractSlotTag)
+        contractSlot.save(provider, contractSlotTag)
         compoundTag.put("ContractSlot", contractSlotTag)
 
-        val cachedInputsTag = saveAllItems(cachedInput.items)
-        val cachedRewardsTag = saveAllItems(cachedRewards.items)
+        val cachedInputsTag = saveAllItems(cachedInput.items, provider)
+        val cachedRewardsTag = saveAllItems(cachedRewards.items, provider)
 
         compoundTag.put("Items", cachedInputsTag)
         compoundTag.put("Rewards", cachedRewardsTag)
     }
 
-    override fun getUpdateTag(): CompoundTag = this.saveWithoutMetadata()
+    override fun getUpdateTag(provider: HolderLookup.Provider): CompoundTag = this.saveWithoutMetadata(provider)
 
     override fun getUpdatePacket(): Packet<ClientGamePacketListener>? = ClientboundBlockEntityDataPacket.create(this)
 
@@ -205,7 +210,9 @@ class ContractPortalBlockEntity(
     val isPowered get() = level?.hasNeighborSignal(blockPos) == true
 
     companion object {
-        val STORAGE_ID: ResourceLocation = ResourceLocation.parse("${ModBlockEntityRegistry.CONTRACT_PORTAL.id}_storage")
+        val STORAGE_ID: ResourceLocation =
+            ResourceLocation.parse("${ModBlockEntityRegistry.CONTRACT_PORTAL.id}_storage")
+
         fun serverTick(
             level: Level, blockPos: BlockPos, blockState: BlockState,
             portal: ContractPortalBlockEntity
@@ -474,14 +481,7 @@ class ContractPortalBlockEntity(
                 )
 
                 if (contract.unitsFulfilled >= contract.unitsDemanded) {
-                    ContractCompleteTrigger.INSTANCE.trigger(
-                        player,
-                        contractSlot,
-                        serverLevel,
-                        blockPos.x,
-                        blockPos.y,
-                        blockPos.z
-                    )
+                    ContractCompleteTrigger.INSTANCE.trigger(player, contractSlot)
                 }
             }
         }

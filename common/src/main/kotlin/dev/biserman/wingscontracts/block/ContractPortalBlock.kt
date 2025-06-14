@@ -183,9 +183,7 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
         return ContractPortalBlockEntity(blockPos, blockState)
     }
 
-    override fun codec(): MapCodec<out BaseEntityBlock?>? {
-        TODO("Not yet implemented")
-    }
+    override fun codec() = CODEC
 
     override fun getRenderShape(blockState: BlockState): RenderShape {
         return RenderShape.MODEL
@@ -251,6 +249,8 @@ class ContractPortalBlock(properties: Properties) : BaseEntityBlock(properties) 
     override fun isPathfindable(blockState: BlockState, pathComputationType: PathComputationType) = false
 
     companion object {
+        val CODEC: MapCodec<ContractPortalBlock> = simpleCodec { properties -> ContractPortalBlock(properties) }
+
         val MODE: EnumProperty<ContractPortalMode> = EnumProperty.create(
             "mode",
             ContractPortalMode::class.java

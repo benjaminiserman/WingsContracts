@@ -12,6 +12,7 @@ import dev.biserman.wingscontracts.client.renderer.FakeItemEntityRenderer
 import dev.biserman.wingscontracts.compat.CompatMods
 import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.data.LoadedContracts
+import dev.biserman.wingscontracts.nbt.ContractTagHelper
 import dev.biserman.wingscontracts.registry.*
 import dev.biserman.wingscontracts.scoreboard.ScoreboardHandler
 import dev.biserman.wingscontracts.server.WingsContractsNetHandler
@@ -40,6 +41,7 @@ object WingsContractsMod {
         CompatMods.init()
 
         LifecycleEvent.SERVER_LEVEL_LOAD.register(ScoreboardHandler::init)
+        LifecycleEvent.SERVER_LEVEL_LOAD.register { level -> ContractTagHelper.registryAccess = level.registryAccess() }
 
         TickEvent.Server.SERVER_LEVEL_POST.register { level ->
             ContractSavedData.get(level).serverTick(level)
@@ -47,6 +49,9 @@ object WingsContractsMod {
 
         EnvExecutor.runInEnv(Env.CLIENT) {
             Runnable {
+                ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register { level ->
+                    ContractTagHelper.registryAccess = level.registryAccess()
+                }
                 ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register { level ->
                     LoadedContracts.clear()
                     ContractSavedData.fakeData =
