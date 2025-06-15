@@ -6,6 +6,7 @@ import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.container.AvailableContractsContainer
 import dev.biserman.wingscontracts.scoreboard.ScoreboardHandler
 import dev.biserman.wingscontracts.server.SyncAvailableContractsMessage
+import net.minecraft.core.HolderLookup
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.ContainerHelper
@@ -27,9 +28,9 @@ class ContractSavedData : SavedData() {
     val currencyHandler by lazy { DenominatedCurrenciesHandler() }
     val generator by lazy { AbyssalContractGenerator(this) }
 
-    override fun save(compoundTag: CompoundTag): CompoundTag {
+    override fun save(compoundTag: CompoundTag, provider: HolderLookup.Provider): CompoundTag {
         val contractListTag = CompoundTag()
-        ContainerHelper.saveAllItems(contractListTag, container.items)
+        ContainerHelper.saveAllItems(contractListTag, container.items, provider)
         val remainingPicksTag = CompoundTag()
         remainingPicks.forEach { userId, picks ->
             remainingPicksTag.putInt(userId, picks)
@@ -98,9 +99,9 @@ class ContractSavedData : SavedData() {
 
         var fakeData = ContractSavedData()
 
-        fun load(nbt: CompoundTag): ContractSavedData {
+        fun load(nbt: CompoundTag, provider: HolderLookup.Provider): ContractSavedData {
             val availableContracts = ContractSavedData()
-            ContainerHelper.loadAllItems(nbt.getCompound(CONTRACT_LIST), availableContracts.container.items)
+            ContainerHelper.loadAllItems(nbt.getCompound(CONTRACT_LIST), availableContracts.container.items, provider)
             val remainingPicksTag = nbt.getCompound(REMAINING_PICKS)
             remainingPicksTag.allKeys.forEach { key ->
                 availableContracts.remainingPicks[key] = remainingPicksTag.getInt(key)
@@ -125,8 +126,9 @@ class ContractSavedData : SavedData() {
                 return fakeData
             }
 
+            @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
             val data = world.server.getLevel(Level.OVERWORLD)?.dataStorage?.computeIfAbsent(
-                ::ContractSavedData, IDENTIFIER
+                Factory(::ContractSavedData, ContractSavedData::load, null), IDENTIFIER
             ) ?: fakeData
 
             return data

@@ -13,11 +13,11 @@ class LeaderboardDisplaySource(val objectiveString: String, val langKey: String)
     override fun provideEntries(context: DisplayLinkContext, maxRows: Int): Stream<IntAttached<MutableComponent>> {
         val scoreboard = context.level().scoreboard
         val objective = scoreboard.getObjective(objectiveString) ?: return Stream.empty()
-        val scores = scoreboard.getPlayerScores(objective)
+        val scores = scoreboard.listPlayerScores(objective)
 
         return scores.mapIndexed { index, score ->
             IntAttached.with(
-                score.score,
+                score.value,
                 Component.literal("${index + 1}. ${score.owner}")
             )
         }.stream()

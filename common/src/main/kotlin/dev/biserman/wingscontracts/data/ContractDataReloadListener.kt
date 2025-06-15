@@ -21,6 +21,7 @@ import dev.biserman.wingscontracts.core.Contract.Companion.targetItems
 import dev.biserman.wingscontracts.core.Contract.Companion.targetTagKeys
 import dev.biserman.wingscontracts.core.Contract.Companion.targetTags
 import dev.biserman.wingscontracts.nbt.ContractTag
+import dev.biserman.wingscontracts.nbt.ContractTagHelper
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
@@ -30,6 +31,7 @@ import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener
 import net.minecraft.util.profiling.ProfilerFiller
 import net.minecraft.world.item.ItemStack
+import kotlin.jvm.optionals.getOrNull
 import kotlin.math.pow
 
 val GSON: Gson = (GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create()
@@ -123,14 +125,22 @@ object ContractDataReloadListener : SimpleJsonResourceReloadListener(GSON, "wing
                 } ?: listOf()
                 skippedBecauseUnloaded += validateContracts(parsedContracts, resourceLocation, isDefault)
 
-                val parsedDefaultRewards = jsonObject.get("rewards")?.asJsonArray?.map {
+                val parsedDefaultRewards = jsonObject.get("rewards")?.asJsonArray?.mapNotNull {
+                    val itemStack = ItemStack.parse(
+                        ContractTagHelper.registryAccess!!,
+                        JsonOps.INSTANCE.convertTo(
+                            NbtOps.INSTANCE,
+                            it.asJsonObject.get("item")
+                        ) as CompoundTag
+                    ).getOrNull()
+
+                    if (itemStack == null) {
+                        WingsContractsMod.LOGGER.warn("Could not find itemStack ${it.asJsonObject.get("item")}")
+                        return@mapNotNull null
+                    }
+
                     RewardBagEntry(
-                        ItemStack.of(
-                            JsonOps.INSTANCE.convertTo(
-                                NbtOps.INSTANCE,
-                                it.asJsonObject.get("item")
-                            ) as CompoundTag
-                        ),
+                        itemStack,
                         it.asJsonObject.get("value").asDouble,
                         it.asJsonObject.get("weight").asInt,
                         if (it.asJsonObject.has("formatString")) {
@@ -268,11 +278,11 @@ object ContractDataReloadListener : SimpleJsonResourceReloadListener(GSON, "wing
             val targetItems = contract.targetItems ?: listOf()
 
             val maxStackSize =
-                itemTags.flatMap { BuiltInRegistries.ITEM.getTagOrEmpty(it).map { it.value().maxStackSize } }
+                itemTags.flatMap { BuiltInRegistries.ITEM.getTagOrEmpty(it).map { it.value().defaultMaxStackSize } }
                     .plus(blockTags.flatMap {
-                        BuiltInRegistries.BLOCK.getTagOrEmpty(it).map { it.value().asItem().maxStackSize }
+                        BuiltInRegistries.BLOCK.getTagOrEmpty(it).map { it.value().asItem().defaultMaxStackSize }
                     })
-                    .plus(targetItems.map { it.maxStackSize })
+                    .plus(targetItems.map { it.defaultMaxStackSize })
                     .maxOrNull() ?: 64
 
             val defaultCountPerUnitMultiplier = ModConfig.SERVER.defaultCountPerUnitMultiplier.get()

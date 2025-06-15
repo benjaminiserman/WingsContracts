@@ -112,7 +112,7 @@ object ItemConditionParser {
         ): (ItemStack) -> String =
             ({ navigate(navigationComponents, default)(it.get(DataComponents.CUSTOM_DATA)?.tag) })
 
-        val fetchItemValue: (ItemStack) -> String = when (keyComponents[0]) {
+        val fetchItemValue2: (ItemStack) -> String = when (keyComponents[0]) {
             "tag" -> when {
                 value == "true" || value == "false" -> wrapNavigate("false")
                 value.toIntOrNull() != null -> wrapNavigate("0")
@@ -198,6 +198,12 @@ object ItemConditionParser {
             "potionCustomColor" -> ({ it.get(DataComponents.POTION_CONTENTS)?.customColor?.getOrNull()?.toString(16) ?: "" })
             "potionType" -> ({ it.get(DataComponents.POTION_CONTENTS)?.potion?.get()?.unwrapKey()?.getOrNull()?.toString() ?: "" })
             else -> throw Error("Condition key not recognized: ${keyComponents[0]}")
+        }
+
+        val fetchItemValue: (ItemStack) -> String = {
+            val itemValue = fetchItemValue2(it)
+            WingsContractsMod.LOGGER.debug(itemValue)
+            itemValue
         }
 
         val compareToValue: String.() -> Int = when {

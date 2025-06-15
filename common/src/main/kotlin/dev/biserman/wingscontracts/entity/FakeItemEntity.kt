@@ -35,9 +35,9 @@ class FakeItemEntity :
         item = ModItemRegistry.RED_EXCLAMATION_MARK.get().defaultInstance
     }
 
-    override fun defineSynchedData() {
-        super.defineSynchedData()
-        this.getEntityData().define(DATA_REAL_ITEM, ItemStack.EMPTY)
+    override fun defineSynchedData(builder: SynchedEntityData.Builder) {
+        super.defineSynchedData(builder)
+        builder.define(DATA_REAL_ITEM, ItemStack.EMPTY)
     }
 
     override fun onSyncedDataUpdated(entityDataAccessor: EntityDataAccessor<*>) {

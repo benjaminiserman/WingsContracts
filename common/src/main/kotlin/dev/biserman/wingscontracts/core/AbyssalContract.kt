@@ -20,11 +20,11 @@ import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.ChatFormatting
 import net.minecraft.core.NonNullList
+import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
 import net.minecraft.util.Mth
 import net.minecraft.world.item.Item
@@ -32,6 +32,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Block
 import java.util.*
+import kotlin.jvm.optionals.getOrNull
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -287,14 +288,10 @@ class AbyssalContract(
         if (rewardEntry == null || rewardEntry.formatString == null) {
             val trimmed = reward.displayName.string.trimBrackets()
             when {
-                reward.item == Items.ENCHANTED_BOOK -> {
-                    val enchantments = reward.tag?.getList("StoredEnchantments", 10)?.mapNotNull { tag ->
-                        if (tag !is CompoundTag) {
-                            return@mapNotNull null
-                        }
-
-                        val resourceLocation = ResourceLocation.tryParse(tag.getString("id")) ?: return@mapNotNull null
-                        val level = tag.getInt("lvl")
+                reward.has(DataComponents.STORED_ENCHANTMENTS) -> {
+                    val enchantments = reward.get(DataComponents.STORED_ENCHANTMENTS)?.entrySet()?.mapNotNull { kvp ->
+                        val resourceLocation = kvp.key.unwrapKey().getOrNull()?.location() ?: return@mapNotNull null
+                        val level = kvp.intValue
 
                         val name =
                             Component.translatable("enchantment.${resourceLocation.namespace}.${resourceLocation.path}").string
@@ -302,6 +299,7 @@ class AbyssalContract(
 
                         return@mapNotNull "$name $levelString"
                     } ?: listOf()
+
                     return translateContract(
                         "enchanted_book_format",
                         count,
