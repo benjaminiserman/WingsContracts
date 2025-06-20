@@ -368,7 +368,8 @@ class AbyssalContract(
             return maxUnitsDemanded * reward.count
         }
 
-    fun calculateRarity(data: ContractSavedData, rewardUnitValue: Double): Int {
+    fun calculateRarity(data: ContractSavedData): Int {
+        val rewardUnitValue = ContractDataReloadListener.valueReward(reward)
         return data.rarityThresholds.indexOfLast { (maxPossibleReward / reward.count) * rewardUnitValue > it } + 1
     }
 
@@ -412,7 +413,7 @@ class AbyssalContract(
         return true
     }
 
-    override fun save(nbt: CompoundTag?): ContractTag {
+    override fun save(nbt: CompoundTag): ContractTag {
         val tag = super.save(nbt)
 
         tag.currentCycleStart = currentCycleStart

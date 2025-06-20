@@ -2,6 +2,7 @@ package dev.biserman.wingscontracts.core
 
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
+import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
@@ -17,6 +18,7 @@ import dev.biserman.wingscontracts.registry.ModItemRegistry
 import dev.biserman.wingscontracts.util.ComponentHelper.trimBrackets
 import net.minecraft.ChatFormatting
 import net.minecraft.core.NonNullList
+import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.nbt.CompoundTag
@@ -25,10 +27,7 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
 import net.minecraft.util.Mth
-import net.minecraft.world.item.BlockItem
-import net.minecraft.world.item.Item
-import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Items
+import net.minecraft.world.item.*
 import net.minecraft.world.level.block.Block
 import java.util.*
 import kotlin.math.min
@@ -295,8 +294,8 @@ abstract class Contract(
 
     abstract val rewardPerUnit: Int
 
-    open fun save(nbt: CompoundTag? = null): ContractTag {
-        val tag = ContractTag(nbt ?: CompoundTag())
+    open fun save(nbt: CompoundTag): ContractTag {
+        val tag = ContractTag(nbt)
 
         tag.type = type
         tag.id = id
@@ -321,9 +320,13 @@ abstract class Contract(
     abstract val item: Item
     fun createItem(): ItemStack {
         val itemStack = ItemStack(item)
-        val tag = save(null)
+
+        val tag = save(CompoundTag())
         ContractTagHelper.setContractTag(itemStack, tag)
         LoadedContracts.update(this)
+        if (this is AbyssalContract) {
+            itemStack.set(DataComponents.RARITY, Rarity.BY_ID.apply(calculateRarity(ContractSavedData.fakeData)))
+        }
 
         return itemStack
     }

@@ -224,7 +224,7 @@ class BoundContract(
         return true
     }
 
-    override fun save(nbt: CompoundTag?): ContractTag {
+    override fun save(nbt: CompoundTag): ContractTag {
         val tag = super.save(nbt)
         tag.matchingContractId = matchingContractId
         tag.otherSideCountPerUnit = otherSideCountPerUnit
