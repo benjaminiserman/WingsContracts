@@ -6,6 +6,7 @@ import dev.biserman.wingscontracts.core.AbyssalContract.Companion.baseUnitsDeman
 import dev.biserman.wingscontracts.core.AbyssalContract.Companion.currentCycleStart
 import dev.biserman.wingscontracts.core.AbyssalContract.Companion.reward
 import dev.biserman.wingscontracts.core.Contract.Companion.countPerUnit
+import dev.biserman.wingscontracts.core.Contract.Companion.rarity
 import dev.biserman.wingscontracts.core.Contract.Companion.startTime
 import dev.biserman.wingscontracts.core.Contract.Companion.targetConditions
 import dev.biserman.wingscontracts.core.Contract.Companion.targetItems
@@ -113,6 +114,8 @@ class AbyssalContractGenerator(val data: ContractSavedData) {
             if (tag.reward is Reward.Random) {
                 tag.reward = Reward.Defined(getRandomReward(rewardValue))
             }
+
+            tag.rarity = tag.rarity ?: AbyssalContract.load(tag, data).calculateRarity(data, reward.value)
         }
 
         return AbyssalContract.load(tag, data)

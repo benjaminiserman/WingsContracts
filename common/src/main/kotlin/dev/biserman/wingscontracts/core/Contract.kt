@@ -2,7 +2,6 @@ package dev.biserman.wingscontracts.core
 
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
-import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
@@ -57,7 +56,8 @@ abstract class Contract(
     val name: String? = null,
     val description: String? = null,
     val shortTargetList: String? = null,
-    val displayItem: ItemStack? = null
+    val displayItem: ItemStack? = null,
+    val rarity: Int? = null
 ) {
     fun matches(itemStack: ItemStack): Boolean {
         // fail to match everything when disabled
@@ -306,6 +306,7 @@ abstract class Contract(
         tag.startTime = startTime
         tag.countPerUnit = countPerUnit
         tag.unitsFulfilledEver = unitsFulfilledEver
+        tag.rarity = rarity
         tag.author = author
         tag.name = name
         tag.description = description
@@ -324,8 +325,8 @@ abstract class Contract(
         val tag = save(CompoundTag())
         ContractTagHelper.setContractTag(itemStack, tag)
         LoadedContracts.update(this)
-        if (this is AbyssalContract) {
-            itemStack.set(DataComponents.RARITY, Rarity.BY_ID.apply(calculateRarity(ContractSavedData.fakeData)))
+        if (rarity != null) {
+            itemStack.set(DataComponents.RARITY, Rarity.BY_ID.apply(rarity))
         }
 
         return itemStack
@@ -346,6 +347,7 @@ abstract class Contract(
 
         var (ContractTag).countPerUnit by int()
         var (ContractTag).unitsFulfilledEver by long()
+        var (ContractTag).rarity by int()
 
         var (ContractTag).author by string()
         var (ContractTag).name by string()

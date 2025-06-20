@@ -65,6 +65,7 @@ class BoundContract(
     null,
     null,
     null,
+    null
 ) {
     override val item: Item get() = ModItemRegistry.BOUND_CONTRACT.get()
     override fun getDisplayName(rarity: Int): MutableComponent {

@@ -61,6 +61,7 @@ class AbyssalContract(
     description: String?,
     shortTargetList: String?,
     displayItem: ItemStack?,
+    rarity: Int?,
 
     val reward: ItemStack,
 
@@ -84,7 +85,8 @@ class AbyssalContract(
     name,
     description,
     shortTargetList,
-    displayItem
+    displayItem,
+    rarity
 ) {
     override val item: Item get() = ModItemRegistry.ABYSSAL_CONTRACT.get()
     override fun getDisplayName(rarity: Int): MutableComponent {
@@ -368,8 +370,7 @@ class AbyssalContract(
             return maxUnitsDemanded * reward.count
         }
 
-    fun calculateRarity(data: ContractSavedData): Int {
-        val rewardUnitValue = ContractDataReloadListener.valueReward(reward)
+    fun calculateRarity(data: ContractSavedData, rewardUnitValue: Double): Int {
         return data.rarityThresholds.indexOfLast { (maxPossibleReward / reward.count) * rewardUnitValue > it } + 1
     }
 
@@ -490,6 +491,7 @@ class AbyssalContract(
                 description = tag.description,
                 shortTargetList = tag.shortTargetList,
                 displayItem = tag.displayItem,
+                rarity = tag.rarity,
                 reward = when (reward) {
                     is Reward.Defined -> reward.itemStack
                     is Reward.Random ->
