@@ -1,11 +1,12 @@
 package dev.biserman.wingscontracts.data
 
+import dev.architectury.networking.NetworkManager
 import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.config.DenominatedCurrenciesHandler
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.container.AvailableContractsContainer
 import dev.biserman.wingscontracts.scoreboard.ScoreboardHandler
-import dev.biserman.wingscontracts.server.SyncAvailableContractsMessage
+import dev.biserman.wingscontracts.server.SyncAvailableContractsPacket
 import net.minecraft.core.HolderLookup
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
@@ -74,7 +75,7 @@ class ContractSavedData : SavedData() {
 
     fun clear(level: ServerLevel) {
         container.clearContent()
-        SyncAvailableContractsMessage(level).sendToAll(level.server)
+        NetworkManager.sendToPlayers(level.players(), SyncAvailableContractsPacket(level))
     }
 
     fun refresh(level: ServerLevel) {
@@ -83,7 +84,7 @@ class ContractSavedData : SavedData() {
             container.items[i] = generator.generateContract(ContractDataReloadListener.randomTag()).createItem()
         }
         LoadedContracts.clear()
-        SyncAvailableContractsMessage(level).sendToAll(level.server)
+        NetworkManager.sendToPlayers(level.players(), SyncAvailableContractsPacket(level))
     }
 
 
@@ -147,7 +148,7 @@ class ContractSavedData : SavedData() {
 
             val level = player.level()
             if (update && level is ServerLevel) {
-                SyncAvailableContractsMessage(level).sendToAll(level.server)
+                NetworkManager.sendToPlayers(level.players(), SyncAvailableContractsPacket(level))
             }
         }
 
@@ -158,7 +159,7 @@ class ContractSavedData : SavedData() {
 
             val level = player.level()
             if (update && level is ServerLevel) {
-                SyncAvailableContractsMessage(level).sendToAll(level.server)
+                NetworkManager.sendToPlayers(level.players(), SyncAvailableContractsPacket(level))
             }
         }
     }

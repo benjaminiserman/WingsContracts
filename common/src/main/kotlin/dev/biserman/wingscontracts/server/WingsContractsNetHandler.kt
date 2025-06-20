@@ -1,21 +1,26 @@
 package dev.biserman.wingscontracts.server
 
 import dev.architectury.event.events.common.PlayerEvent
-import dev.architectury.networking.simple.SimpleNetworkManager
-import dev.biserman.wingscontracts.WingsContractsMod
+import dev.architectury.networking.NetworkManager
 import net.minecraft.server.level.ServerLevel
 
 object WingsContractsNetHandler {
-    val NET: SimpleNetworkManager? = SimpleNetworkManager.create(WingsContractsMod.MOD_ID)
-
-    val SYNC_AVAILABLE_CONTRACTS = NET?.registerS2C("sync_available_contracts", ::SyncAvailableContractsMessage)!!
-    val CREATE_BOUND_CONTRACTS = NET?.registerC2S("create_bound_contracts", ::CreateBoundContractsMessage)!!
+    val SYNC_AVAILABLE_CONTRACTS = NetworkManager.registerReceiver(
+        NetworkManager.Side.S2C,
+        SyncAvailableContractsPacket.PACKET_ID,
+        SyncAvailableContractsPacket.PACKET_CODEC,
+        SyncAvailableContractsPacket::handle
+    )
+    val CREATE_BOUND_CONTRACTS = NetworkManager.registerReceiver(
+        NetworkManager.Side.S2C,
+        CreateBoundContractsPacket.PACKET_ID,
+        CreateBoundContractsPacket.PACKET_CODEC,
+        CreateBoundContractsPacket::handle
+    )
 
     fun init() {
         PlayerEvent.PLAYER_JOIN.register { player ->
-            SyncAvailableContractsMessage(player.level() as ServerLevel).sendTo(
-                player
-            )
+            NetworkManager.sendToPlayer(player, SyncAvailableContractsPacket(player.level() as ServerLevel))
         }
     }
 }

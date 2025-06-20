@@ -57,12 +57,12 @@ object ScoreboardHandler {
     }
 
     fun announceTopScores(level: ServerLevel, count: Int) {
-        val objective = level.scoreboard.getObjective(CONTRACT_SCORE_PERIODIC)
+        val objective = level.scoreboard.getObjective(CONTRACT_SCORE_PERIODIC) ?: return
         val topScores = level.scoreboard.playerScores
             .map { kvp ->
                 object {
                     val playerName = kvp.key
-                    val score = kvp.value[objective]?.score ?: 0
+                    val score = kvp.value[objective]?.value ?: 0
                 }
             }.filter { it.score != 0 }
             .sortedByDescending { it.score }

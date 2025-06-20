@@ -8,12 +8,12 @@ import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
 import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.screens.Screen
+import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Rarity
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.level.Level
 import kotlin.math.ceil
@@ -22,7 +22,9 @@ class ContractItem(properties: Properties) : Item(properties) {
     override fun getName(itemStack: ItemStack): Component {
         val contract = LoadedContracts[itemStack]
             ?: return Component.translatable("item.${WingsContractsMod.MOD_ID}.contract.unknown")
-        return contract.displayName
+        val rarity = itemStack.get(DataComponents.RARITY)?.ordinal ?: 0
+
+        return contract.getDisplayName(rarity)
     }
 
     override fun appendHoverText(
@@ -48,11 +50,6 @@ class ContractItem(properties: Properties) : Item(properties) {
                 )
 
         components.addAll(contract.getDescription(Screen.hasShiftDown(), holdShift))
-    }
-
-    override fun getRarity(itemStack: ItemStack): Rarity {
-        val contract = LoadedContracts[itemStack] ?: return super.getRarity(itemStack)
-        return Rarity.entries[contract.rarity ?: 0]
     }
 
     override fun inventoryTick(itemStack: ItemStack, level: Level, entity: Entity, i: Int, bl: Boolean) {

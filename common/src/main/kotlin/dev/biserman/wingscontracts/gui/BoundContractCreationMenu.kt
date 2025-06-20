@@ -1,12 +1,13 @@
 package dev.biserman.wingscontracts.gui
 
+import dev.architectury.networking.NetworkManager
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
 import dev.biserman.wingscontracts.core.Contract.Companion.countPerUnit
 import dev.biserman.wingscontracts.core.Contract.Companion.name
 import dev.biserman.wingscontracts.core.Contract.Companion.targetItems
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.registry.ModMenuRegistry
-import dev.biserman.wingscontracts.server.CreateBoundContractsMessage
+import dev.biserman.wingscontracts.server.CreateBoundContractsPacket
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.Container
 import net.minecraft.world.entity.player.Inventory
@@ -96,7 +97,7 @@ class BoundContractCreationMenu(id: Int, inventory: Inventory) :
         submitTag.put("Left", left.tag)
         submitTag.put("Right", right.tag)
 
-        CreateBoundContractsMessage(submitTag).sendToServer()
+        NetworkManager.sendToServer(CreateBoundContractsPacket(submitTag))
     }
 
     override fun canDragTo(slot: Slot): Boolean = slot !is MatchingItemSlot

@@ -58,7 +58,6 @@ abstract class Contract(
     val name: String? = null,
     val description: String? = null,
     val shortTargetList: String? = null,
-    val rarity: Int? = null,
     val displayItem: ItemStack? = null
 ) {
     fun matches(itemStack: ItemStack): Boolean {
@@ -150,10 +149,9 @@ abstract class Contract(
 
     open fun onContractFulfilled(tag: ContractTag) {}
 
-    open val displayName: MutableComponent
-        get() = Component.translatable(
-            "item.${WingsContractsMod.MOD_ID}.contract", Component.translatable(name ?: targetName).string
-        )
+    open fun getDisplayName(rarity: Int): MutableComponent = Component.translatable(
+        "item.${WingsContractsMod.MOD_ID}.contract", Component.translatable(name ?: targetName).string
+    )
 
     fun getTargetListComponents(displayShort: Boolean): List<MutableComponent> {
         val totalSize = targetItems.size + targetTags.size + targetBlockTags.size
@@ -313,7 +311,6 @@ abstract class Contract(
         tag.name = name
         tag.description = description
         tag.shortTargetList = shortTargetList
-        tag.rarity = rarity
         tag.displayItem = displayItem
 
         return tag
@@ -351,7 +348,6 @@ abstract class Contract(
         var (ContractTag).name by string()
         var (ContractTag).description by string()
         var (ContractTag).shortTargetList by string()
-        var (ContractTag).rarity by int()
         var (ContractTag).displayItem by itemStack()
 
         val (ContractTag).requiresAll by string() // only needed at gen-time

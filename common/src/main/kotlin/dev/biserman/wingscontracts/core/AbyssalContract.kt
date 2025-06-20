@@ -60,7 +60,6 @@ class AbyssalContract(
     name: String?,
     description: String?,
     shortTargetList: String?,
-    rarity: Int?,
     displayItem: ItemStack?,
 
     val reward: ItemStack,
@@ -85,23 +84,21 @@ class AbyssalContract(
     name,
     description,
     shortTargetList,
-    rarity,
     displayItem
 ) {
     override val item: Item get() = ModItemRegistry.ABYSSAL_CONTRACT.get()
-    override val displayName: MutableComponent
-        get() {
-            val rarityString = Component.translatable("${WingsContractsMod.MOD_ID}.rarity.${rarity ?: 0}").string
-            val nameString = Component.translatable(name ?: targetName).string
-            val numeralString = Component.translatable("enchantment.level.$level").string
+    override fun getDisplayName(rarity: Int): MutableComponent {
+        val rarityString = Component.translatable("${WingsContractsMod.MOD_ID}.rarity.${rarity}").string
+        val nameString = Component.translatable(name ?: targetName).string
+        val numeralString = Component.translatable("enchantment.level.$level").string
 
-            return Component.translatable(
-                "item.${WingsContractsMod.MOD_ID}.contract.abyssal",
-                rarityString,
-                nameString,
-                if (level > 1) numeralString else ""
-            )
-        }
+        return Component.translatable(
+            "item.${WingsContractsMod.MOD_ID}.contract.abyssal",
+            rarityString,
+            nameString,
+            if (level > 1) numeralString else ""
+        )
+    }
 
     override fun getBasicInfo(list: MutableList<Component>?): MutableList<Component> {
         val components = list ?: mutableListOf()
@@ -491,7 +488,6 @@ class AbyssalContract(
                 name = tag.name,
                 description = tag.description,
                 shortTargetList = tag.shortTargetList,
-                rarity = tag.rarity,
                 displayItem = tag.displayItem,
                 reward = when (reward) {
                     is Reward.Defined -> reward.itemStack
