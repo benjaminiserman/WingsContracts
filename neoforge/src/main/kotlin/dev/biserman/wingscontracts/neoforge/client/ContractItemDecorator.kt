@@ -8,7 +8,6 @@ import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.world.item.ItemStack
 import net.neoforged.bus.api.SubscribeEvent
-import net.neoforged.fml.common.Mod
 import net.neoforged.neoforge.client.IItemDecorator
 import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent
 
@@ -34,7 +33,6 @@ class ContractItemDecorator : IItemDecorator {
         return false
     }
 
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     companion object {
         val instance = ContractItemDecorator()
 

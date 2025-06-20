@@ -45,7 +45,7 @@ dependencies {
     shadowCommon(project(":common", "transformProductionNeoForge")) { isTransitive = false }
 
     // Kotlin For Forge
-    implementation("thedarkcolour:kotlinforforge:${rootProject.property("kotlin_for_forge_version")}")
+    implementation("thedarkcolour:kotlinforforge-neoforge:${rootProject.property("kotlin_for_forge_version")}")
 
     val minecraftVersion = rootProject.property("minecraft_version")
     val ccTweakedMinecraftVersion = rootProject.property("cc_tweaked_minecraft_version")
