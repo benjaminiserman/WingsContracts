@@ -1,35 +1,31 @@
 package dev.biserman.wingscontracts.neoforge.block
 
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
+import dev.biserman.wingscontracts.registry.ModBlockRegistry
 import net.minecraft.core.Direction
-import net.minecraft.world.level.block.entity.BlockEntity
+import net.neoforged.bus.api.SubscribeEvent
+import net.neoforged.neoforge.capabilities.Capabilities
 import net.neoforged.neoforge.capabilities.ICapabilityProvider
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent
+import net.neoforged.neoforge.items.IItemHandler
 
-class PortalItemHandlerCapabilityProvider(val portal: ContractPortalBlockEntity) : ICapabilityProvider {
-    override fun <T : Any?> getCapability(
-        capability: Capability<T>,
-        arg: Direction?
-    ): LazyOptional<T?> = getCapability(capability)
+object PortalItemHandlerCapabilityProvider : ICapabilityProvider<ContractPortalBlockEntity, Direction, IItemHandler> {
+    override fun getCapability(
+        portal: ContractPortalBlockEntity,
+        direction: Direction
+    ): IItemHandler = ForgePortalItemHandler(portal)
 
-    override fun <T : Any?> getCapability(capability: Capability<T>): LazyOptional<T?> {
-        if (capability == ForgeCapabilities.ITEM_HANDLER) {
-            return LazyOptional
-                .of { ForgePortalItemHandler(portal) }
-                .cast()
-        }
-
-        return LazyOptional.empty()
-    }
-
-    companion object {
-        fun attachCapabilities(event: AttachCapabilitiesEvent<BlockEntity>) {
-            val entity = event.`object`
-            if (entity is ContractPortalBlockEntity) {
-                event.addCapability(
-                    ContractPortalBlockEntity.Companion.STORAGE_ID,
-                    PortalItemHandlerCapabilityProvider(entity)
+    @SubscribeEvent
+    fun registerCapability(event: RegisterCapabilitiesEvent) {
+        event.registerBlock(
+            Capabilities.ItemHandler.BLOCK,
+            { level, pos, _, blockEntity, side ->
+                getCapability(
+                    blockEntity as ContractPortalBlockEntity,
+                    side ?: Direction.UP
                 )
-            }
-        }
+            },
+            ModBlockRegistry.CONTRACT_PORTAL.get()
+        )
     }
 }

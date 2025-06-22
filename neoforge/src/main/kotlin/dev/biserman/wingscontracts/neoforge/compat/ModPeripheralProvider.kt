@@ -1,31 +1,38 @@
 package dev.biserman.wingscontracts.neoforge.compat
 
-import dan200.computercraft.api.ForgeComputerCraftAPI
 import dan200.computercraft.api.peripheral.IPeripheral
+import dan200.computercraft.api.peripheral.PeripheralCapability
+import dev.architectury.platform.Platform
 import dev.biserman.wingscontracts.block.ContractPortalBlockEntity
+import dev.biserman.wingscontracts.compat.CompatMods
 import dev.biserman.wingscontracts.compat.computercraft.ContractPortalPeripheral
-import net.minecraft.core.BlockPos
+import dev.biserman.wingscontracts.registry.ModBlockRegistry
 import net.minecraft.core.Direction
-import net.minecraft.world.level.Level
-import net.minecraft.world.level.block.entity.BlockEntity
+import net.neoforged.bus.api.SubscribeEvent
+import net.neoforged.neoforge.capabilities.ICapabilityProvider
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent
 
-class ModPeripheralProvider : IPeripheralProvider {
-    val blockEntityPeripheralMap = mutableMapOf<BlockEntity, IPeripheral>()
+object ModPeripheralProvider : ICapabilityProvider<ContractPortalBlockEntity, Direction, IPeripheral> {
+    override fun getCapability(
+        portal: ContractPortalBlockEntity,
+        direction: Direction
+    ): IPeripheral = ContractPortalPeripheral(portal)
 
-    override fun getPeripheral(level: Level, blockPos: BlockPos, direction: Direction): LazyOptional<IPeripheral> {
-        return when (val blockEntity = level.getBlockEntity(blockPos)) {
-            is ContractPortalBlockEntity -> {
-                val peripheral = blockEntityPeripheralMap.getOrPut(blockEntity) { ContractPortalPeripheral(blockEntity) }
-                return LazyOptional.of { peripheral }
-            }
-
-            else -> LazyOptional.of(null)
+    @SubscribeEvent
+    fun registerCapability(event: RegisterCapabilitiesEvent) {
+        if (!Platform.isModLoaded(CompatMods.COMPUTERCRAFT)) {
+            return
         }
-    }
 
-    companion object {
-        fun register() {
-            ForgeComputerCraftAPI.registerPeripheralProvider(ModPeripheralProvider())
-        }
+        event.registerBlock(
+            PeripheralCapability.get(),
+            { level, pos, _, blockEntity, side ->
+                getCapability(
+                    blockEntity as ContractPortalBlockEntity,
+                    side ?: Direction.UP
+                )
+            },
+            ModBlockRegistry.CONTRACT_PORTAL.get()
+        )
     }
 }
