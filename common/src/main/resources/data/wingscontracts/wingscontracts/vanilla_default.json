@@ -165,7 +165,7 @@
       "targetItems": "nether_star",
       "countPerUnit": 1,
       "baseUnitsDemanded": 16,
-      "reward": 64
+      "reward": 32
     },
     {
       "targetItems": "slime_ball",
@@ -393,7 +393,7 @@
     {
       "targetItems": "experience_bottle",
       "countPerUnit": 2,
-      "reward": 16,
+      "reward": 8,
       "baseUnitsDemanded": 16
     },
     {

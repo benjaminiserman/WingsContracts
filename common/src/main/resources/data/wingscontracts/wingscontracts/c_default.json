@@ -25,7 +25,7 @@
       "countPerUnit": 64
     },
     {
-      "targetTags": "#c:foods/vegetables",
+      "targetTags": "#c:foods/vegetable",
       "countPerUnit": 64
     },
     {
@@ -49,7 +49,7 @@
       "countPerUnit": 64
     },
     {
-      "targetTags": "#c:foods/berries",
+      "targetTags": "#c:foods/berry",
       "countPerUnit": 64
     },
     {
@@ -110,7 +110,7 @@
       "countPerUnit": 18
     },
     {
-      "targetTags": "#c:foods/fruits",
+      "targetTags": "#c:foods/fruit",
       "countPerUnit": 64
     },
     {
