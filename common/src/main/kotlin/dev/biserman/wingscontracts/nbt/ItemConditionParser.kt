@@ -139,9 +139,6 @@ object ItemConditionParser {
             })
 
             "attribute" -> attribute@ ({
-                it.components.get(DataComponents.ATTRIBUTE_MODIFIERS)?.modifiers?.forEach { modifier ->
-                    WingsContractsMod.LOGGER.info("${modifier.attribute.registeredName}, ${modifier.modifier.operation}, ${modifier.modifier.amount}, ${modifier.modifier().id}")
-                }
                 it.getAttributeValue(
                     BuiltInRegistries.ATTRIBUTE.get(
                         ResourceLocation.tryParse(
@@ -246,7 +243,6 @@ object ItemConditionParser {
 
         val fetchItemValue: (ItemStack) -> String = {
             val itemValue = fetchItemValue2(it)
-            WingsContractsMod.LOGGER.info("Condition $condition evaluated to $itemValue")
             itemValue
         }
 
