@@ -16,7 +16,7 @@
       "baseUnitsDemanded": 16
     },
     {
-      "targetConditions": "enchantments<-$.*}=>5[,}].*",
+      "targetConditions": "enchantments<-.*}=>5[,}].*",
       "reward": 16,
       "countPerUnit": 1,
       "requiresAny": "create_enchantment_industry",
@@ -25,7 +25,7 @@
       "baseUnitsDemanded": 16
     },
     {
-      "targetConditions": "enchantments<-$.*}=>6[,}].*",
+      "targetConditions": "enchantments<-.*}=>6[,}].*",
       "reward": 24,
       "countPerUnit": 1,
       "requiresAll": "create_enchantment_industry,quark",

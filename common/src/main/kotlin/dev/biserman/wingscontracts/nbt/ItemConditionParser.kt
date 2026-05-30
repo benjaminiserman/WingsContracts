@@ -155,9 +155,9 @@ object ItemConditionParser {
                 ).toString()
             })
 
-            "mod" -> ({ BuiltInRegistries.ITEM.getKey(it.item)?.namespace ?: "" })
-            "path" -> ({ BuiltInRegistries.ITEM.getKey(it.item)?.path ?: "" })
-            "id" -> ({ BuiltInRegistries.ITEM.getKey(it.item)?.toString() ?: "" })
+            "mod" -> ({ BuiltInRegistries.ITEM.getKey(it.item).namespace ?: "" })
+            "path" -> ({ BuiltInRegistries.ITEM.getKey(it.item).path ?: "" })
+            "id" -> ({ BuiltInRegistries.ITEM.getKey(it.item).toString() })
             "isBarVisible" -> ({ it.isBarVisible.toString() })
             "barWidth" -> ({ it.barWidth.toString() })
             "barColor" -> ({ it.barColor.toString(16) })
@@ -206,13 +206,13 @@ object ItemConditionParser {
             "armorTrimPattern" -> attribute@ ({
                 BuiltInRegistries.ITEM.getKey(
                     it.get(DataComponents.TRIM)?.pattern()?.value()?.templateItem?.value() ?: return@attribute ""
-                )?.toString() ?: ""
+                ).toString()
             })
 
             "armorTrimMaterial" -> attribute@ ({
                 BuiltInRegistries.ITEM.getKey(
                     it.get(DataComponents.TRIM)?.material()?.value()?.ingredient?.value() ?: return@attribute ""
-                )?.toString() ?: ""
+                ).toString()
             })
 
             "isJukeboxPlayable" -> ({ (it.components.get(DataComponents.JUKEBOX_PLAYABLE) != null).toString() })
