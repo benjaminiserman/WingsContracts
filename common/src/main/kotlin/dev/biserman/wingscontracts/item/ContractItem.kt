@@ -10,7 +10,6 @@ import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.Component
-import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -55,9 +54,8 @@ class ContractItem(properties: Properties) : Item(properties) {
     override fun inventoryTick(itemStack: ItemStack, level: Level, entity: Entity, i: Int, bl: Boolean) {
         val contract = LoadedContracts[itemStack] ?: return
         val contractTag = ContractTagHelper.getContractTag(itemStack) ?: return
-        if (level is ServerLevel) {
-            contract.tryUpdateTick(contractTag)
-        } else if (contract.unitsFulfilledEver != contractTag.unitsFulfilledEver
+        contract.tryUpdateTick(contractTag)
+        if (contract.unitsFulfilledEver != contractTag.unitsFulfilledEver
             || (contract is ServerContract && contract.currentCycleStart != contractTag.currentCycleStart)) {
             // this is a cheap check to invalidate the cache and avoid certain sync issues
             LoadedContracts.invalidate(contract.id)
