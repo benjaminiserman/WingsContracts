@@ -8,11 +8,11 @@ import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.container.CompactingContainer
-import dev.biserman.wingscontracts.core.AbyssalContract
+import dev.biserman.wingscontracts.core.ServerContract
 import dev.biserman.wingscontracts.core.BoundContract
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.core.PortalLinker
-import dev.biserman.wingscontracts.data.ContractDataReloadListener
+import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTag
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
@@ -21,6 +21,7 @@ import dev.biserman.wingscontracts.registry.ModBlockRegistry
 import dev.biserman.wingscontracts.registry.ModMenuRegistry
 import dev.biserman.wingscontracts.registry.ModSoundRegistry
 import dev.biserman.wingscontracts.scoreboard.ScoreboardHandler
+import dev.biserman.wingscontracts.util.DenominationsHelper
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
@@ -244,11 +245,14 @@ class ContractPortalBlockEntity(
                         }
                     }
 
-                    val didConsume = portal.tryConsume(contract, contractTag)
                     val didSuck = portal.suckInItems(contract, level)
+                    if (didSuck) {
+                        portal.normalizeCurrencyInput(contract)
+                    }
+                    val didConsume = portal.tryConsume(contract, contractTag)
                     val didUpdate = contract.tryUpdateTick(contractTag)
 
-                    if (didConsume && contract is AbyssalContract && contract.isComplete) {
+                    if (didConsume && contract is ServerContract && contract.isComplete) {
                         playSound(level, blockPos, ModSoundRegistry.COMPLETE_CONTRACT.get())
                     }
 
@@ -447,6 +451,48 @@ class ContractPortalBlockEntity(
         return mutItemStack
     }
 
+    fun normalizeCurrencyInput(contract: Contract) {
+        val anchor = contract.currencyAnchor ?: return
+        val denominations = ContractSavedData.fakeData.currencyHandler.itemToCurrencyMap[anchor] ?: return
+        val anchorValue = denominations[anchor]?.toLong() ?: return
+        if (anchorValue <= 0) return
+
+        val writeableSlots = cachedInput.items.withIndex()
+            .filter { (_, s) -> s.isEmpty || denominations.containsKey(s.item) }
+            .map { it.index }
+        val currencyValue = writeableSlots
+            .map { cachedInput.getItem(it) }
+            .filter { !it.isEmpty }
+            .sumOf { denominations[it.item]!!.toLong() * it.count }
+        if (currencyValue <= 0) return
+
+        // Normalize to the anchor; any sub-anchor remainder spills into smaller denominations.
+        val normalizationDenoms = denominations
+            .filterValues { it.toLong() <= anchorValue }
+            .mapValues { it.value.toLong() }
+        val targetStacks = DenominationsHelper.denominate(currencyValue, normalizationDenoms)
+            .asSequence()
+            .flatMap { (item, count) ->
+                val maxStack = item.defaultMaxStackSize
+                val full = count / maxStack
+                val rem = count % maxStack
+                sequence {
+                    repeat(full) { yield(ItemStack(item, maxStack)) }
+                    if (rem > 0) yield(ItemStack(item, rem))
+                }
+            }
+            .toList()
+        if (targetStacks.size > writeableSlots.size) return
+
+        for ((i, slot) in writeableSlots.withIndex()) {
+            val desired = targetStacks.getOrElse(i) { ItemStack.EMPTY }
+            val current = cachedInput.getItem(slot)
+            if (!ItemStack.matches(current, desired)) {
+                cachedInput.setItem(slot, desired)
+            }
+        }
+    }
+
     private fun tryConsume(contract: Contract, contractTag: ContractTag): Boolean {
         val level = this.level ?: return false
 
@@ -454,27 +500,23 @@ class ContractPortalBlockEntity(
             return false
         }
 
-        val rewards = contract.tryConsumeFromItems(contractTag, this)
+        val result = contract.tryConsumeFromItems(contractTag, this)
 
-        if (rewards.isEmpty()) {
+        if (result.unitsConsumed == 0) {
             return false
         }
 
-        for (itemStack in rewards) {
+        for (itemStack in result.items) {
             cachedRewards.addItem(itemStack)
         }
 
         val serverLevel = level as? ServerLevel
-        if (contract is AbyssalContract && serverLevel != null) {
+        if (contract is ServerContract && serverLevel != null) {
             val player = serverLevel.getPlayerByUUID(lastPlayer) as? ServerPlayer
             if (player == null) {
                 WingsContractsMod.LOGGER.warn("Contract Portal $blockPos could not find last player with UUID $lastPlayer")
             } else {
-                ScoreboardHandler.add(
-                    serverLevel,
-                    player,
-                    rewards.sumOf { floor(ContractDataReloadListener.data.valueReward(it)) }
-                )
+                ScoreboardHandler.add(serverLevel, player, result.scoreboardValue.toInt())
 
                 if (contract.unitsFulfilled >= contract.unitsDemanded) {
                     ContractCompleteTrigger.INSTANCE.trigger(player, contractSlot)
@@ -575,6 +617,7 @@ class ContractPortalBlockEntity(
     override fun setItem(i: Int, itemStack: ItemStack) {
         if (i < inputSlotsCount) {
             cachedInput.setItem(i, itemStack)
+            LoadedContracts[contractSlot]?.let { normalizeCurrencyInput(it) }
         } else {
             cachedRewards.setItem(i - inputSlotsCount, itemStack)
         }

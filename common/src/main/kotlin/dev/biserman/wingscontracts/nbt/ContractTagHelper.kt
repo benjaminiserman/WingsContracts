@@ -4,11 +4,15 @@ package dev.biserman.wingscontracts.nbt
 
 import com.google.gson.JsonObject
 import com.mojang.serialization.JsonOps
+import dev.biserman.wingscontracts.WingsContractsMod
 import dev.biserman.wingscontracts.config.ModConfig
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.NbtOps
+import net.minecraft.nbt.StringTag
+import net.minecraft.nbt.Tag
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.component.CustomData
 import kotlin.math.max
@@ -27,6 +31,7 @@ value class ContractTag(val tag: CompoundTag) {
 sealed class Reward {
     class Defined(val itemStack: ItemStack) : Reward()
     class Random(val value: Double) : Reward()
+    class Commands(val commands: List<String>, val label: String, val value: Double) : Reward()
 }
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -86,18 +91,40 @@ object ContractTagHelper {
         key, safeGet(CompoundTag::getBoolean), CompoundTag::putBoolean
     )
 
+    inline fun <reified T : Enum<T>> enum(key: String? = null): Property<T> {
+        val getFn: (CompoundTag).(String) -> T? = { name ->
+            val raw = this.getString(name)
+            if (raw.isEmpty()) null else try {
+                enumValueOf<T>(raw)
+            } catch (_: IllegalArgumentException) {
+                WingsContractsMod.LOGGER.warn(
+                    "Failed to parse '$raw' as ${T::class.simpleName} for key '$name'; valid values: ${
+                        enumValues<T>().joinToString { it.name }
+                    }"
+                )
+                null
+            }
+        }
+        val putFn: (CompoundTag).(String, T) -> Unit = { putKey, value -> this.putString(putKey, value.name) }
+        return Property(key, getFn, putFn)
+    }
+
     fun reward(key: String? = null) =
         Property(key, safeGet {
             if (this.contains(it, 99)) { // if the tag is just an integer, replace with default reward
                 val loadedValue = max(1.0, this.getDouble(it))
                 return@safeGet Reward.Random(loadedValue)
             } else if (this.contains(it)) {
-                val itemStack = ItemStack.parseOptional(
-                    registryAccess!!,
-//                        ?: return@safeGet Reward.Defined(ItemStack.EMPTY),
-                    this.getCompound(it)
-                )
-                itemStack.count = this.getCompound(it).getInt("Count")
+                val compound = this.getCompound(it)
+                if (compound.contains("commands", Tag.TAG_LIST.toInt())) {
+                    val list = compound.getList("commands", Tag.TAG_STRING.toInt())
+                    val commands = (0 until list.size).map { i -> list.getString(i) }
+                    val label = compound.getString("label")
+                    val cmdValue = compound.getDouble("value")
+                    return@safeGet Reward.Commands(commands, label, cmdValue)
+                }
+                val itemStack = ItemStack.parseOptional(registryAccess!!, compound)
+                itemStack.count = compound.getInt("Count")
                 return@safeGet Reward.Defined(itemStack)
             } else {
                 return@safeGet Reward.Random(ModConfig.SERVER.defaultRewardMultiplier.get())
@@ -107,7 +134,6 @@ object ContractTagHelper {
                 is Reward.Defined -> {
                     val tag = value.itemStack.copyWithCount(1).save(
                         registryAccess!!,
-//                            ?: return@safeWrite,
                         CompoundTag()
                     ) as CompoundTag
                     tag.putInt("Count", value.itemStack.count)
@@ -115,6 +141,16 @@ object ContractTagHelper {
                 }
 
                 is Reward.Random -> this.putDouble(safeKey, value.value)
+
+                is Reward.Commands -> {
+                    val tag = CompoundTag()
+                    val list = ListTag()
+                    value.commands.forEach { list.add(StringTag.valueOf(it)) }
+                    tag.put("commands", list)
+                    tag.putString("label", value.label)
+                    tag.putDouble("value", value.value)
+                    this.put(safeKey, tag)
+                }
             }
         })
 

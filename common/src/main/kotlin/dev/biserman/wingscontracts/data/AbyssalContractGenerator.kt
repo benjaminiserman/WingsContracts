@@ -2,10 +2,10 @@ package dev.biserman.wingscontracts.data
 
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.core.AbyssalContract
-import dev.biserman.wingscontracts.core.AbyssalContract.Companion.baseUnitsDemanded
-import dev.biserman.wingscontracts.core.AbyssalContract.Companion.currentCycleStart
-import dev.biserman.wingscontracts.core.AbyssalContract.Companion.reward
 import dev.biserman.wingscontracts.core.Contract.Companion.countPerUnit
+import dev.biserman.wingscontracts.core.ServerContract.Companion.baseUnitsDemanded
+import dev.biserman.wingscontracts.core.ServerContract.Companion.currentCycleStart
+import dev.biserman.wingscontracts.core.ServerContract.Companion.reward
 import dev.biserman.wingscontracts.core.Contract.Companion.rarity
 import dev.biserman.wingscontracts.core.Contract.Companion.startTime
 import dev.biserman.wingscontracts.core.Contract.Companion.targetConditions
@@ -139,10 +139,10 @@ class AbyssalContractGenerator(val data: ContractSavedData) {
         }
 
         val lastFit = ContractDataReloadListener.data.defaultRewards.lastOrNull { getCount(it, value) >= 1 }
-        return if (lastFit == null) {
-            ContractDataReloadListener.data.defaultRewards.minBy { it.value }.item.copy()
-        } else {
+        if (lastFit != null) {
             return lastFit.item.copyWithCount(lastFit.item.count * getCount(lastFit, value))
         }
+        val cheapest = ContractDataReloadListener.data.defaultRewards.minByOrNull { it.value }
+        return cheapest?.item?.copy() ?: ContractSavedData.FALLBACK_REWARD.item.copy()
     }
 }

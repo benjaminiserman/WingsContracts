@@ -1,9 +1,9 @@
 package dev.biserman.wingscontracts.item
 
 import dev.biserman.wingscontracts.WingsContractsMod
-import dev.biserman.wingscontracts.core.AbyssalContract
-import dev.biserman.wingscontracts.core.AbyssalContract.Companion.currentCycleStart
 import dev.biserman.wingscontracts.core.Contract.Companion.unitsFulfilledEver
+import dev.biserman.wingscontracts.core.ServerContract
+import dev.biserman.wingscontracts.core.ServerContract.Companion.currentCycleStart
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTagHelper
 import net.minecraft.ChatFormatting
@@ -58,7 +58,7 @@ class ContractItem(properties: Properties) : Item(properties) {
         if (level is ServerLevel) {
             contract.tryUpdateTick(contractTag)
         } else if (contract.unitsFulfilledEver != contractTag.unitsFulfilledEver
-            || (contract is AbyssalContract && contract.currentCycleStart != contractTag.currentCycleStart)) {
+            || (contract is ServerContract && contract.currentCycleStart != contractTag.currentCycleStart)) {
             // this is a cheap check to invalidate the cache and avoid certain sync issues
             LoadedContracts.invalidate(contract.id)
         }
@@ -66,27 +66,32 @@ class ContractItem(properties: Properties) : Item(properties) {
 
     override fun isBarVisible(itemStack: ItemStack): Boolean {
         val contract = LoadedContracts[itemStack] ?: return false
-
-        if (contract is AbyssalContract) {
-            val isZeroWidth = getBarWidth(itemStack) == 0
-            val isExpired = System.currentTimeMillis() > contract.currentCycleStart + contract.cycleDurationMs
-            return !isZeroWidth && !isExpired
-        } else {
-            return false
+        if (getBarWidth(itemStack) == 0) return false
+        if (contract is ServerContract && !contract.willCapBeforeLevelUp) {
+            return System.currentTimeMillis() <= contract.currentCycleStart + contract.cycleDurationMs
         }
+        return true
     }
 
     override fun getBarWidth(itemStack: ItemStack): Int {
         val contract = LoadedContracts[itemStack] ?: return 0
-        if (contract is AbyssalContract) {
-            val unitsFulfilled = contract.unitsFulfilled.toFloat()
-            val unitsDemanded = contract.unitsDemanded.toFloat()
-
-            return ceil(unitsFulfilled * 13.0f / unitsDemanded).toInt()
-        } else {
-            return 0
+        val (filled, total) = when {
+            contract is ServerContract && !contract.willCapBeforeLevelUp ->
+                contract.unitsFulfilled.toFloat() to contract.unitsDemanded.toFloat()
+            contract.maxLifetimeUnits > 0 ->
+                contract.unitsFulfilledEver.toFloat() to contract.maxLifetimeUnits.toFloat()
+            else -> return 0
         }
+        if (total <= 0f) return 0
+        return ceil(filled * 13.0f / total).toInt()
     }
 
-    override fun getBarColor(itemStack: ItemStack): Int = 0xff55ff
+    override fun getBarColor(itemStack: ItemStack): Int {
+        val contract = LoadedContracts[itemStack]
+        if (contract != null && contract.maxLifetimeUnits > 0 &&
+            (contract !is ServerContract || contract.willCapBeforeLevelUp)) {
+            return 0x800020
+        }
+        return 0xff55ff
+    }
 }
