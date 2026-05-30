@@ -8,10 +8,10 @@ import dev.biserman.wingscontracts.block.ContractPortalBlock.Companion.MODE
 import dev.biserman.wingscontracts.block.state.properties.ContractPortalMode
 import dev.biserman.wingscontracts.config.ModConfig
 import dev.biserman.wingscontracts.container.CompactingContainer
-import dev.biserman.wingscontracts.core.ServerContract
 import dev.biserman.wingscontracts.core.BoundContract
 import dev.biserman.wingscontracts.core.Contract
 import dev.biserman.wingscontracts.core.PortalLinker
+import dev.biserman.wingscontracts.core.ServerContract
 import dev.biserman.wingscontracts.data.ContractSavedData
 import dev.biserman.wingscontracts.data.LoadedContracts
 import dev.biserman.wingscontracts.nbt.ContractTag
@@ -256,7 +256,7 @@ class ContractPortalBlockEntity(
                         playSound(level, blockPos, ModSoundRegistry.COMPLETE_CONTRACT.get())
                     }
 
-                    if (didUpdate) {
+                    if (didConsume || didUpdate) {
                         level.sendBlockUpdated(blockPos, blockState, blockState, UPDATE_ALL)
                     }
 
