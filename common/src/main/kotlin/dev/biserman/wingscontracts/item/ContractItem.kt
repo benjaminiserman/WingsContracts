@@ -32,10 +32,7 @@ class ContractItem(properties: Properties) : Item(properties) {
         components: MutableList<Component>,
         tooltipFlag: TooltipFlag
     ) {
-        val contract = LoadedContracts[itemStack]
-        if (contract == null) {
-            return
-        }
+        val contract = LoadedContracts[itemStack] ?: return
 
         val holdShift =
             Component.translatable("${WingsContractsMod.MOD_ID}.hold_shift_1")
