@@ -44,18 +44,18 @@
     },
     {
       "targetItems": "farmersdelight:rotten_tomato",
-      "countPerUnit": 8,
-      "reward": 2
+      "countPerUnit": 4,
+      "reward": 1
     },
     {
       "targetItems": "farmersdelight:apple_cider",
       "countPerUnit": 8,
-      "reward": 3
+      "reward": 2
     },
     {
       "targetItems": "farmersdelight:fruit_salad,farmersdelight:mixed_salad,farmersdelight:nether_salad,fruitsdelight:mango_salad,garnished:salad",
       "countPerUnit": 4,
-      "reward": 3,
+      "reward": 2,
       "name": "wingscontracts.data.farmersdelight.salads"
     },
     {
@@ -95,8 +95,8 @@
     },
     {
       "targetItems": "farmersdelight:ratatouille",
-      "countPerUnit": 4,
-      "reward": 4
+      "countPerUnit": 3,
+      "reward": 3
     },
     {
       "targetItems": "farmersdelight:stuffed_pumpkin_block",
