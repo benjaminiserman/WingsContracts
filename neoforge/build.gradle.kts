@@ -64,6 +64,7 @@ dependencies {
 tasks.processResources {
     inputs.property("group", rootProject.property("maven_group"))
     inputs.property("version", project.version)
+    inputs.property("kotlin_for_forge_version_range", rootProject.property("kotlin_for_forge_version_range"))
 
     filesMatching("META-INF/neoforge.mods.toml") {
         expand(mapOf(
@@ -74,6 +75,7 @@ tasks.processResources {
             "minecraft_version" to rootProject.property("minecraft_version"),
             "architectury_version" to rootProject.property("architectury_version"),
             "kotlin_for_forge_version" to rootProject.property("kotlin_for_forge_version"),
+            "kotlin_for_forge_version_range" to rootProject.property("kotlin_for_forge_version_range"),
             "create_version_range" to rootProject.property("create_version_range"),
             "cc_tweaked_version" to rootProject.property("cc_tweaked_version")
         ))

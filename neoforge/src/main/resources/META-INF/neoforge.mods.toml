@@ -37,9 +37,9 @@ side = "BOTH"
 
 [[dependencies.wingscontracts]]
 modId = "kotlinforforge"
-type="required"
-versionRange = "[${kotlin_for_forge_version},)"
 ordering = "AFTER"
+type = "required"
+versionRange = "${kotlin_for_forge_version_range}"
 side = "BOTH"
 
 [[dependencies.wingscontracts]]
